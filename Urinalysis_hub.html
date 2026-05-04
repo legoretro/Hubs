@@ -16,9 +16,10 @@ button,input{font-family:inherit}button{cursor:pointer}
 .site-header{position:sticky;top:0;z-index:30;background:linear-gradient(135deg,var(--wine),var(--orange));box-shadow:0 4px 18px rgba(122,61,0,.32);padding:14px 22px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .site-logo{width:36px;height:36px;border-radius:50%;background:#fff;color:var(--wine);display:grid;place-items:center;font-weight:900;font-size:16px}
 .site-title{flex:1;color:var(--ivory);font-size:clamp(16px,2.5vw,21px);font-weight:800;letter-spacing:.2px}.site-title em{color:#ffe7bd;font-style:normal}
+.mls-home-link{display:inline-flex;align-items:center;justify-content:center;border:1.5px solid rgba(255,255,255,.34);background:rgba(255,255,255,.12);color:#fff7e6;border-radius:999px;padding:7px 13px;font-size:12px;font-weight:800;text-decoration:none;white-space:nowrap}.mls-home-link:hover{background:rgba(255,255,255,.22);color:#fff}
 .nav-tabs{display:flex;gap:6px;flex-wrap:wrap}.nav-tab,.tool-btn,.admin-save-btn,.mini-btn{border:1.5px solid rgba(255,255,255,.28);background:rgba(255,255,255,.1);color:#ffe7bd;border-radius:999px;padding:7px 13px;font-size:12px;font-weight:800;transition:.18s}
 .nav-tab:hover,.tool-btn:hover{background:rgba(255,255,255,.2);color:#fff}.nav-tab.active{background:#fff;color:var(--wine);border-color:#fff}.admin-save-btn{display:none;background:var(--green);border-color:var(--green);color:#fff}.admin-mode .admin-save-btn{display:inline-block}
-.admin-pill{display:none;background:#fff;color:var(--wine);border-radius:999px;padding:4px 10px;font-size:11px;font-weight:900}.admin-mode .admin-pill{display:inline-flex}
+.admin-pill{display:none;background:var(--gold);color:#3d1f00;border-radius:999px;padding:7px 18px;font-size:14px;font-weight:900}.admin-mode .admin-pill{display:inline-flex}.admin-mode #adminBtn{display:none}.admin-exit-btn{display:none}.admin-mode .admin-exit-btn{display:inline-flex}
 .wrap{max-width:1180px;margin:0 auto;padding:24px 18px 60px}.section{display:none}.section.active{display:block}.hero{text-align:center;margin:6px auto 18px;max-width:780px}.hero h1{color:var(--wine);font-size:clamp(26px,5vw,44px);line-height:1.05;margin-bottom:8px}.hero p{color:var(--muted);font-size:14px;line-height:1.55}
 .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}.card{grid-column:span 12;background:var(--ivory);border:1px solid var(--gold);border-top:4px solid var(--orange);border-radius:14px;padding:16px;box-shadow:var(--shadow)}.half{grid-column:span 6}@media(max-width:760px){.half{grid-column:span 12}.site-header{align-items:flex-start}.nav-tabs{width:100%}}
 .card-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.card-title h2{font-size:18px;color:var(--wine)}.tag{font-size:10px;font-weight:900;letter-spacing:1.2px;text-transform:uppercase;color:var(--wine);background:var(--soft);border:1px solid var(--gold);border-radius:999px;padding:4px 9px;white-space:nowrap}
@@ -26,7 +27,8 @@ button,input{font-family:inherit}button{cursor:pointer}
 .table-wrap{width:100%;overflow:auto;border:1px solid var(--line);border-radius:8px;background:#fff}table{width:100%;border-collapse:collapse;font-size:13px}th{background:var(--wine);color:#fff;text-align:left;padding:8px 9px;font-size:10px;text-transform:uppercase;letter-spacing:.7px;white-space:nowrap;min-width:120px}td{border-top:1px solid var(--line);border-right:1px solid rgba(122,61,0,.13);padding:7px 9px;vertical-align:top;min-width:120px}td:last-child{border-right:none}tr:nth-child(even) td{background:#fff8ef}
 .cell-text,.plain-edit{min-height:24px;border-radius:4px;padding:2px 4px;outline:none}.col-label{color:#fff;display:block}.col-input{display:none;width:100%;min-width:110px;border:1px solid rgba(255,255,255,.45);border-radius:5px;background:#fff7c8;color:var(--ink);padding:5px 6px;font-size:12px;font-weight:800}.admin-mode .cell-text,.admin-mode .plain-edit{background:rgba(212,134,10,.1);box-shadow:0 0 0 1px rgba(212,134,10,.45) inset}.admin-mode .col-label{display:none}.admin-mode .col-input{display:block}.cell-text:focus,.plain-edit:focus{background:#fff7c8;box-shadow:0 0 0 1px var(--orange) inset}
 .image-cell{display:grid;gap:7px}.image-preview{display:none;max-width:150px;max-height:110px;border:1px solid var(--gold);border-radius:6px;background:#fff}.image-preview[src]{display:block}.file-input{display:none;font-size:11px;max-width:190px}.admin-mode .file-input{display:block}.empty-image{font-size:12px;color:var(--muted);font-style:italic}.admin-mode .empty-image{display:none}
-.admin-only{display:none}.admin-mode .admin-only{display:inline-flex}.resource-shell{display:grid;gap:14px}.urine-sim{display:grid;grid-template-columns:minmax(180px,280px) 1fr;gap:18px;align-items:center}.tube{width:130px;height:260px;margin:0 auto;border:4px solid rgba(122,61,0,.28);border-top:0;border-radius:0 0 46px 46px;background:#fff;display:flex;align-items:flex-end;overflow:hidden;box-shadow:inset 0 0 18px rgba(122,61,0,.14)}.urine-fill{width:100%;height:76%;background:#f4d33b;transition:.2s}.color-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:9px}.color-choice{border:1.5px solid var(--gold);background:#fff;color:var(--wine);border-radius:8px;padding:8px;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800}.color-choice.active{border-color:var(--wine);box-shadow:0 0 0 2px rgba(212,134,10,.22)}.swatch{width:26px;height:26px;border-radius:50%;border:1px solid rgba(122,61,0,.25);background:var(--swatch)}.sim-label{color:var(--wine);font-size:22px;margin-bottom:8px}.sim-note{color:var(--muted);font-size:13px;line-height:1.45}@media(max-width:720px){.urine-sim{grid-template-columns:1fr}.tube{height:220px}}
+.admin-only{display:none}.admin-mode .admin-only{display:inline-flex}.resource-shell{display:grid;gap:14px}.urine-sim{display:grid;grid-template-columns:minmax(180px,280px) 1fr;gap:18px;align-items:start}.tube{width:130px;height:260px;margin:0 auto;border:4px solid rgba(122,61,0,.28);border-top:0;border-radius:0 0 46px 46px;background:#fff;display:flex;align-items:flex-end;overflow:hidden;box-shadow:inset 0 0 18px rgba(122,61,0,.14)}.urine-fill{width:100%;height:76%;background:#f4d33b;transition:.2s}.sample-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(124px,1fr));gap:9px;margin-bottom:14px}.sample-choice,.color-choice{border:1.5px solid var(--gold);background:#fff;color:var(--wine);border-radius:8px;padding:8px;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800}.sample-choice.active,.color-choice.active{border-color:var(--wine);box-shadow:0 0 0 2px rgba(212,134,10,.22)}.swatch{width:26px;height:26px;border-radius:50%;border:1px solid rgba(122,61,0,.25);background:var(--swatch);flex:0 0 auto}.sim-label{color:var(--wine);font-size:22px;margin-bottom:8px}.sim-note{color:var(--muted);font-size:13px;line-height:1.45}.step-strip{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.step-pill{border:1px solid var(--gold);background:#fff;color:var(--muted);border-radius:999px;padding:5px 8px;font-size:10px;font-weight:900;text-transform:uppercase}.step-pill.active{background:var(--wine);color:#fff;border-color:var(--wine)}.sim-panel{border:1px solid var(--line);background:#fff;border-radius:10px;padding:14px;margin-top:10px}.sim-panel h3{color:var(--wine);font-size:17px;margin-bottom:7px}.sim-panel p{font-size:14px;line-height:1.55;color:var(--ink)}.sim-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.case-editor{display:none;margin-top:14px}.admin-mode .case-editor{display:block}.case-edit-card{border:1px solid var(--gold);background:#fff;border-radius:10px;padding:12px;margin-top:10px}.case-edit-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}.case-edit-grid label{font-size:11px;font-weight:900;text-transform:uppercase;color:var(--wine);display:grid;gap:4px}.case-edit-grid input,.case-edit-grid textarea,.case-edit-grid select{border:1px solid var(--gold);border-radius:7px;padding:7px;background:#fffdf8;color:var(--ink);font-family:Georgia,"Times New Roman",serif;font-size:13px}.case-edit-grid textarea{min-height:68px;resize:vertical}@media(max-width:720px){.urine-sim{grid-template-columns:1fr}.tube{height:220px}}
+.export-options{display:grid;gap:8px;margin:14px 0;text-align:left}.export-options label{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink);cursor:pointer}.export-options input{accent-color:var(--orange)}
 .save-indicator{position:fixed;right:18px;bottom:18px;background:var(--green);color:#fff;border-radius:999px;padding:9px 15px;font-size:13px;font-weight:800;opacity:0;pointer-events:none;transition:.2s;z-index:50}.save-indicator.show{opacity:1}
 .modal-overlay{position:fixed;inset:0;background:rgba(38,22,4,.72);z-index:1000;display:none;align-items:center;justify-content:center}.modal-overlay.visible{display:flex}.modal-box{background:var(--ivory);border-radius:18px;padding:30px;max-width:380px;width:90%;box-shadow:0 20px 60px rgba(122,61,0,.32);text-align:center;border:1px solid var(--gold)}.modal-box h3{font-size:20px;color:var(--wine);margin-bottom:6px}.modal-box p{font-size:13px;color:var(--muted);margin-bottom:18px}.modal-input{width:100%;border:1.5px solid var(--gold);border-radius:10px;padding:10px 14px;font-size:15px;text-align:center;background:#fff;margin-bottom:12px;letter-spacing:3px}.modal-input:focus{outline:none;border-color:var(--orange)}.modal-error{color:var(--danger);font-size:12px;margin-bottom:10px;min-height:16px}.btn{border:none;border-radius:999px;background:var(--orange);color:#fff;padding:8px 16px;font-size:12px;font-weight:900}.btn.ghost{background:transparent;color:var(--muted);border:1.5px solid var(--gold)}
 #printArea{display:none}
@@ -50,18 +52,18 @@ button,input{font-family:inherit}button{cursor:pointer}
 <header class="site-header">
   <div class="site-logo">UA</div>
   <div class="site-title">Urinalysis <em>Hub</em></div>
+  <a class="mls-home-link" href="https://legoretro.github.io/MLS/">Back to MLS Home</a>
   <span class="admin-pill" id="adminBadge">Admin</span>
   <nav class="nav-tabs" aria-label="Urinalysis sections">
-    <button class="nav-tab active" data-section="overview">Overview</button>
-    <button class="nav-tab" data-section="screening">Screening</button>
-    <button class="nav-tab" data-section="microscope">Microscope</button>
-    <button class="nav-tab" data-section="resources">Resources</button>
-    <button class="nav-tab" data-section="simulation">Simulation</button>
+    <button type="button" class="nav-tab active" data-section="overview" onclick="showSection('overview')">Overview</button>
+    <button type="button" class="nav-tab" data-section="screening" onclick="showSection('screening')">Screening</button>
+    <button type="button" class="nav-tab" data-section="microscope" onclick="showSection('microscope')">Microscope</button>
+    <button type="button" class="nav-tab" data-section="resources" onclick="showSection('resources')">Resources</button>
+    <button type="button" class="nav-tab" data-section="simulation" onclick="showSection('simulation')">Simulation</button>
   </nav>
-  <button class="tool-btn" id="editBtn">Edit</button>
-  <button class="admin-save-btn" id="saveBtn">Save</button>
-  <button class="tool-btn" id="printBtn" onclick="printPdf()">Export PDF</button>
-  <button class="tool-btn" onclick="toggleAdminLogin()" id="adminBtn">Admin</button>
+  <button type="button" class="tool-btn" id="printBtn" data-ui-action="open-export" onclick="openExportModal()">Export PDF</button>
+  <button type="button" class="tool-btn" data-ui-action="admin-login" id="adminBtn" onclick="toggleAdminLogin()">Admin</button>
+  <button type="button" class="tool-btn admin-exit-btn" data-ui-action="exit-admin" id="adminExitBtn" onclick="exitAdmin()">Exit Admin</button>
 </header>
 
 <div class="modal-overlay" id="adminModal">
@@ -73,6 +75,25 @@ button,input{font-family:inherit}button{cursor:pointer}
     <div style="display:flex;gap:8px;justify-content:center">
       <button class="btn" onclick="attemptLogin()">Unlock</button>
       <button class="btn ghost" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="exportModal">
+  <div class="modal-box">
+    <h3>Export PDF</h3>
+    <p>Choose what to include. Simulation is never included.</p>
+    <div class="export-options">
+      <label><input type="checkbox" class="export-check" value="overview" checked> Overview</label>
+      <label><input type="checkbox" class="export-check" value="screening" checked> Screening</label>
+      <label><input type="checkbox" class="export-check" value="microscope" checked> Microscope</label>
+      <label><input type="checkbox" class="export-check" value="resources" checked> Resources</label>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+      <button type="button" class="btn" data-ui-action="export-select-all" onclick="selectAllExport(true)">Select All</button>
+      <button type="button" class="btn ghost" data-ui-action="export-clear-all" onclick="selectAllExport(false)">Clear All</button>
+      <button type="button" class="btn" data-ui-action="do-export" onclick="doExport()">Export PDF</button>
+      <button type="button" class="btn ghost" data-ui-action="close-export" onclick="closeExportModal()">Cancel</button>
     </div>
   </div>
 </div>
@@ -132,17 +153,20 @@ button,input{font-family:inherit}button{cursor:pointer}
     </div>
   </section>
   <section class="section" id="simulation">
-    <div class="hero"><h1>Simulation</h1><p>Choose a urine color to start building visual practice cases.</p></div>
+    <div class="hero"><h1>Simulation</h1><p>Pick a urine sample and move through the lab workflow.</p></div>
     <article class="card">
-      <div class="card-title"><h2>Urine Color</h2><span class="tag">Practice</span></div>
+      <div class="card-title"><h2>Urinalysis Lab Simulation</h2><span class="tag">Practice</span></div>
       <div class="urine-sim">
         <div class="tube" aria-hidden="true"><div class="urine-fill" id="urineFill"></div></div>
         <div>
-          <h2 class="sim-label" id="simColorLabel">Yellow</h2>
-          <p class="sim-note">Select a color, then later this can connect to editable findings and questions.</p>
-          <div class="color-grid" id="colorChoices"></div>
+          <h2 class="sim-label" id="simCaseLabel">Sample 1</h2>
+          <p class="sim-note">Pick urine sample -> macroscopic check -> dipstick test -> refractometer specific gravity -> microscopy -> final interpretation -> reveal results.</p>
+          <div class="sample-grid" id="sampleChoices"></div>
+          <div class="step-strip" id="simSteps"></div>
+          <div class="sim-panel" id="simPanel"></div>
         </div>
       </div>
+      <div class="case-editor" id="caseEditor"></div>
     </article>
   </section>
 </main>
@@ -157,11 +181,20 @@ const TABLE_NAME='mls_blood_bank';
 const UA_ROW_ID='ua_hub';
 const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c675';
 (function(){
-  var STORAGE_KEY='urinalysis-hub-edits-v5';
+  var STORAGE_KEY='urinalysis-hub-edits-v6';
   var isAdmin=false;
   var editMode=false;
   var saveTimer=null;
   var state=defaultState();
+  var simSteps=[
+    {key:'pick',title:'Pick urine sample'},
+    {key:'macro',title:'Macroscopic check'},
+    {key:'dipstick',title:'Dipstick test'},
+    {key:'sg',title:'Refractometer specific gravity'},
+    {key:'micro',title:'Microscopy'},
+    {key:'interpretation',title:'Final interpretation'},
+    {key:'reveal',title:'Reveal results'}
+  ];
   var urineColors=[
     {id:'clear',label:'Clear',color:'rgba(245,250,255,.62)'},
     {id:'yellow',label:'Yellow',color:'#f4d33b'},
@@ -199,10 +232,22 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     });
     return {title:title,columns:columns,rows:rows};
   }
+  function defaultSimCases(){
+    return [
+      {name:'Clear Sample',colorId:'clear',macro:'Clear and nearly colorless. Check hydration pattern and specimen concentration.',dipstick:'Usually negative or trace findings depending on case setup.',specificGravity:'1.001-1.005 range suggests very dilute urine.',microscopy:'Few formed elements expected unless another process is present.',interpretation:'Dilute specimen pattern; correlate with collection context.',reveal:'Clear sample: low color intensity with low specific gravity pattern.'},
+      {name:'Yellow Sample',colorId:'yellow',macro:'Clear yellow urine with typical appearance.',dipstick:'Use reagent strip as the first chemical screen.',specificGravity:'Expected mid-range unless concentrated or dilute features are added.',microscopy:'Scan sediment for cells, casts, crystals, bacteria, and artifacts.',interpretation:'Routine baseline sample; interpret by matching all sections.',reveal:'Yellow sample: ordinary color, final meaning depends on chemistry and sediment.'},
+      {name:'Dark Yellow Sample',colorId:'dark-yellow',macro:'Deep yellow appearance; concentration should be considered.',dipstick:'Protein, ketones, bilirubin, and other pads can be edited here.',specificGravity:'Often higher when urine is concentrated.',microscopy:'Concentrated sediment may make formed elements easier to see.',interpretation:'Concentrated specimen pattern unless other findings redirect.',reveal:'Dark yellow sample: concentration is the first pattern to check.'},
+      {name:'Orange Sample',colorId:'orange',macro:'Orange urine; consider pigment, medication, bilirubin, or concentration.',dipstick:'Bilirubin/urobilinogen and blood pad correlations can be edited here.',specificGravity:'Use refractometer value to separate pigment from concentration clues.',microscopy:'Look for crystals, cells, or stained sediment that supports the pattern.',interpretation:'Pigment or concentration pattern; correlate all findings.',reveal:'Orange sample: pigment/concentration workup.'},
+      {name:'Red Sample',colorId:'red',macro:'Red or pink urine; decide if cloudy or clear.',dipstick:'Blood pad result helps separate RBCs from hemoglobin/myoglobin pigment.',specificGravity:'Use SG as a concentration context, not the main red-color answer.',microscopy:'RBCs, RBC morphology, and casts are key checks.',interpretation:'Hematuria or pigment pattern depending on microscopy.',reveal:'Red sample: compare blood pad to RBC microscopy.'},
+      {name:'Green / Blue Sample',colorId:'green-blue',macro:'Green-blue urine; medication, dye, or unusual pigments may be considered.',dipstick:'Chemical pads may be normal or affected by pigments depending on case.',specificGravity:'Measure SG separately; color alone does not determine concentration.',microscopy:'Check for crystals, cells, and artifacts without overcalling color.',interpretation:'Unusual color pattern; use history and lab correlation.',reveal:'Green/blue sample: unusual pigment or medication-style pattern.'},
+      {name:'Purple Sample',colorId:'purple',macro:'Purple urine is unusual and should prompt careful correlation.',dipstick:'Edit strip findings to match the practice scenario.',specificGravity:'SG gives concentration context.',microscopy:'Look for bacteria, crystals, cells, and artifact patterns.',interpretation:'Unusual color case; final interpretation needs all workflow steps.',reveal:'Purple sample: rare color pattern, interpret only after full workup.'}
+    ];
+  }
   function defaultState(){
     return {
-      version:5,
-      notes:{simulation_note:'',selected_color:'yellow'},
+      version:6,
+      notes:{simulation_note:'',selected_color:'yellow',sim_case_index:1,sim_step:0},
+      simCases:defaultSimCases(),
       tables:{
         overview_core:makeTableFrom('Big Picture',['Area','Focus','Why It Matters'],[
           ['Formation','Urine is an ultrafiltrate modified by tubular reabsorption and secretion.','Reflects renal and metabolic function.'],
@@ -236,17 +281,41 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   function escapeHtml(value){return String(value||'').replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]})}
   function mergeState(incoming){
     var base=defaultState();
-    if(!incoming||typeof incoming!=='object'||!incoming.tables||incoming.version!==5)return base;
+    if(!incoming||typeof incoming!=='object'||!incoming.tables)return base;
     Object.keys(base.tables).forEach(function(id){
       if(incoming.tables[id]&&Array.isArray(incoming.tables[id].columns)&&Array.isArray(incoming.tables[id].rows)){
         base.tables[id]=incoming.tables[id];
       }
     });
     if(incoming.notes&&typeof incoming.notes==='object')base.notes=incoming.notes;
+    if(Array.isArray(incoming.simCases)&&incoming.simCases.length)base.simCases=incoming.simCases;
+    base.version=6;
     return base;
   }
   function saveLocal(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
+  function collectVisibleState(){
+    document.querySelectorAll('[data-action="edit-cell"]').forEach(function(el){
+      var table=findTable(el.dataset.table);
+      if(!table)return;
+      var row=table.rows.find(function(item){return item.id===el.dataset.row});
+      if(row){if(!row.cells)row.cells={};row.cells[el.dataset.col]=el.innerHTML}
+    });
+    document.querySelectorAll('[data-action="edit-col"]').forEach(function(el){
+      var table=findTable(el.dataset.table);
+      if(!table)return;
+      var col=table.columns.find(function(item){return item.id===el.dataset.col});
+      if(col)col.label=el.value;
+    });
+    document.querySelectorAll('[data-note-key]').forEach(function(el){
+      state.notes[el.dataset.noteKey]=el.innerHTML;
+    });
+    document.querySelectorAll('[data-case-field]').forEach(function(el){
+      var ci=Number(el.dataset.caseIndex);
+      if(state.simCases&&state.simCases[ci])state.simCases[ci][el.dataset.caseField]=el.value;
+    });
+  }
   function saveDraft(){
+    collectVisibleState();
     saveLocal();
     if(isAdmin) scheduleSave();
   }
@@ -256,15 +325,16 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     renderSimulation();
     try{
       var remote=await sbGet(UA_ROW_ID);
-      if(remote&&remote.tables){state=mergeState(remote);saveLocal();renderAll()}
+      if(remote&&remote.tables&&remote.version===state.version){state=mergeState(remote);saveLocal();renderAll()}
     }catch(e){console.warn('remote load failed',e)}
   }
   function scheduleSave(){clearTimeout(saveTimer);saveTimer=setTimeout(saveNow,650)}
   async function saveNow(){
     if(!isAdmin){showToast('Unlock admin first',true);return false}
+    collectVisibleState();
     saveLocal();
     try{await sbUpsert(UA_ROW_ID,state);showToast('Saved');return true}
-    catch(e){console.error(e);showToast('Saved locally',true);return false}
+    catch(e){console.error(e);showToast('Local saved only. Add UA row in database.',true);return false}
   }
   function tableTools(id){
     return '<button class="mini-btn" data-action="add-row" data-table="'+id+'">Add Row</button>'+
@@ -302,17 +372,59 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     });
   }
   function renderSimulation(){
-    var current=urineColors.find(function(item){return item.id===state.notes.selected_color})||urineColors[1];
+    var cases=state.simCases&&state.simCases.length?state.simCases:defaultSimCases();
+    state.simCases=cases;
+    var index=Math.max(0,Math.min(cases.length-1,Number(state.notes.sim_case_index)||0));
+    var step=Math.max(0,Math.min(simSteps.length-1,Number(state.notes.sim_step)||0));
+    state.notes.sim_case_index=index;
+    state.notes.sim_step=step;
+    var activeCase=cases[index];
+    var current=urineColors.find(function(item){return item.id===activeCase.colorId})||urineColors[1];
     var fill=document.getElementById('urineFill');
-    var label=document.getElementById('simColorLabel');
-    var choices=document.getElementById('colorChoices');
+    var label=document.getElementById('simCaseLabel');
+    var choices=document.getElementById('sampleChoices');
+    var stepStrip=document.getElementById('simSteps');
+    var panel=document.getElementById('simPanel');
     if(fill)fill.style.background=current.color;
-    if(label)label.textContent=current.label;
+    if(label)label.textContent=activeCase.name||current.label;
     if(choices){
-      choices.innerHTML=urineColors.map(function(item){
-        return '<button class="color-choice '+(item.id===current.id?'active':'')+'" data-color-choice="'+item.id+'"><span class="swatch" style="--swatch:'+item.color+'"></span><span>'+escapeHtml(item.label)+'</span></button>';
+      choices.innerHTML=cases.map(function(item,i){
+        var color=urineColors.find(function(c){return c.id===item.colorId})||urineColors[1];
+        return '<button type="button" class="sample-choice '+(i===index?'active':'')+'" data-sim-case="'+i+'" onclick="selectSimCase('+i+')"><span class="swatch" style="--swatch:'+color.color+'"></span><span>'+escapeHtml(item.name||('Sample '+(i+1)))+'</span></button>';
       }).join('');
     }
+    if(stepStrip){
+      stepStrip.innerHTML=simSteps.map(function(item,i){return '<span class="step-pill '+(i===step?'active':'')+'">'+escapeHtml(item.title)+'</span>'}).join('');
+    }
+    if(panel){
+      var content='';
+      if(step===0)content='Choose a sample above, then continue through the lab workflow.';
+      if(step===1)content=activeCase.macro||'';
+      if(step===2)content=activeCase.dipstick||'';
+      if(step===3)content=activeCase.specificGravity||'';
+      if(step===4)content=activeCase.microscopy||'';
+      if(step===5)content=activeCase.interpretation||'';
+      if(step===6)content='<strong>Results:</strong><br>'+escapeHtml(activeCase.reveal||'')+'<br><br><strong>Macro:</strong> '+escapeHtml(activeCase.macro||'')+'<br><strong>Dipstick:</strong> '+escapeHtml(activeCase.dipstick||'')+'<br><strong>Specific gravity:</strong> '+escapeHtml(activeCase.specificGravity||'')+'<br><strong>Microscopy:</strong> '+escapeHtml(activeCase.microscopy||'')+'<br><strong>Interpretation:</strong> '+escapeHtml(activeCase.interpretation||'');
+      panel.innerHTML='<h3>'+escapeHtml(simSteps[step].title)+'</h3><p>'+content+'</p><div class="sim-actions"><button type="button" class="mini-btn" data-sim-step="-1" onclick="moveSimStep(-1)">Back</button><button type="button" class="mini-btn" data-sim-step="1" onclick="moveSimStep(1)">'+(step>=simSteps.length-2?'Reveal Results':'Next')+'</button><button type="button" class="mini-btn" data-sim-reset="1" onclick="restartSim()">Restart</button></div>';
+    }
+    renderCaseEditor();
+  }
+  function renderCaseEditor(){
+    var editor=document.getElementById('caseEditor');
+    if(!editor)return;
+    editor.innerHTML='<div class="card-title"><h2>Edit Simulation Cases</h2><span class="tag">Admin</span></div><button class="mini-btn" data-action="add-case">Add Case</button>'+
+      state.simCases.map(function(item,i){
+        return '<div class="case-edit-card" data-case-edit="'+i+'"><div class="case-edit-grid">'+
+          '<label>Name<input data-case-field="name" data-case-index="'+i+'" value="'+escapeHtml(item.name||'')+'"></label>'+
+          '<label>Color<select data-case-field="colorId" data-case-index="'+i+'">'+urineColors.map(function(color){return '<option value="'+color.id+'" '+(color.id===item.colorId?'selected':'')+'>'+escapeHtml(color.label)+'</option>'}).join('')+'</select></label>'+
+          '<label>Macroscopic check<textarea data-case-field="macro" data-case-index="'+i+'">'+escapeHtml(item.macro||'')+'</textarea></label>'+
+          '<label>Dipstick test<textarea data-case-field="dipstick" data-case-index="'+i+'">'+escapeHtml(item.dipstick||'')+'</textarea></label>'+
+          '<label>Specific gravity<textarea data-case-field="specificGravity" data-case-index="'+i+'">'+escapeHtml(item.specificGravity||'')+'</textarea></label>'+
+          '<label>Microscopy<textarea data-case-field="microscopy" data-case-index="'+i+'">'+escapeHtml(item.microscopy||'')+'</textarea></label>'+
+          '<label>Final interpretation<textarea data-case-field="interpretation" data-case-index="'+i+'">'+escapeHtml(item.interpretation||'')+'</textarea></label>'+
+          '<label>Reveal results<textarea data-case-field="reveal" data-case-index="'+i+'">'+escapeHtml(item.reveal||'')+'</textarea></label>'+
+          '</div><button class="mini-btn danger" data-action="delete-case" data-case-index="'+i+'">Delete Case</button></div>';
+      }).join('');
   }
   function renderAll(){Object.keys(state.tables).forEach(renderTable);renderNotes();renderSimulation();document.body.classList.toggle('admin-mode',editMode)}
   function findTable(id){return state.tables[id]}
@@ -328,21 +440,25 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function setEditMode(on){
     if(on&&!isAdmin){toggleAdminLogin();return}
+    if(!on)collectVisibleState();
     editMode=!!on;
     document.body.classList.toggle('admin-mode',editMode);
-    document.getElementById('editBtn').textContent=on?'Lock':'Edit';
     renderAll();
   }
-  window.toggleAdminLogin=function(){
+  window.exitAdmin=function(){
     if(isAdmin){
+      collectVisibleState();
+      saveLocal();
+      saveNow().catch(function(e){console.warn(e)});
       isAdmin=false;
       editMode=false;
       document.getElementById('adminBadge').classList.remove('visible');
-      document.getElementById('adminBtn').textContent='Admin';
       setEditMode(false);
       showToast('Locked');
-      return;
     }
+  };
+  window.toggleAdminLogin=function(){
+    if(isAdmin){exitAdmin();return}
     document.getElementById('adminModal').classList.add('visible');
     setTimeout(function(){document.getElementById('adminPwInput').focus()},80);
   };
@@ -351,7 +467,6 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(h===PASS_HASH){
       isAdmin=true;
       document.getElementById('adminBadge').classList.add('visible');
-      document.getElementById('adminBtn').textContent='Lock';
       closeModal();
       setEditMode(true);
       showToast('Unlocked');
@@ -361,10 +476,24 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     }
   };
   window.closeModal=function(){document.getElementById('adminModal').classList.remove('visible');document.getElementById('adminErr').textContent='';document.getElementById('adminPwInput').value=''};
-  function showSection(id){document.querySelectorAll('.section').forEach(function(sec){sec.classList.toggle('active',sec.id===id)});document.querySelectorAll('.nav-tab').forEach(function(tab){tab.classList.toggle('active',tab.dataset.section===id)})}
+  window.showSection=function(id){document.querySelectorAll('.section').forEach(function(sec){sec.classList.toggle('active',sec.id===id)});document.querySelectorAll('.nav-tab').forEach(function(tab){tab.classList.toggle('active',tab.dataset.section===id)})};
   document.querySelectorAll('.nav-tab').forEach(function(tab){tab.addEventListener('click',function(){showSection(tab.dataset.section)})});
-  document.getElementById('editBtn').addEventListener('click',function(){if(!isAdmin){toggleAdminLogin();return}setEditMode(!document.body.classList.contains('admin-mode'))});
-  document.getElementById('saveBtn').addEventListener('click',saveNow);
+  window.selectSimCase=function(index){
+    state.notes.sim_case_index=Number(index)||0;
+    state.notes.sim_step=1;
+    saveLocal();
+    renderSimulation();
+  };
+  window.moveSimStep=function(delta){
+    state.notes.sim_step=Math.max(0,Math.min(simSteps.length-1,(Number(state.notes.sim_step)||0)+(Number(delta)||0)));
+    saveLocal();
+    renderSimulation();
+  };
+  window.restartSim=function(){
+    state.notes.sim_step=0;
+    saveLocal();
+    renderSimulation();
+  };
   document.addEventListener('keydown',function(e){if(e.key==='Enter'&&document.getElementById('adminModal').classList.contains('visible'))attemptLogin();if(e.key==='Escape')closeModal()});
   document.addEventListener('input',function(e){
     var el=e.target;
@@ -383,17 +512,70 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       state.notes[el.dataset.noteKey]=el.innerHTML;
       saveDraft();
     }
+    if(el.dataset.caseField){
+      var ci=Number(el.dataset.caseIndex);
+      if(state.simCases[ci]){
+        state.simCases[ci][el.dataset.caseField]=el.value;
+        saveDraft();
+      }
+    }
+  });
+  document.addEventListener('change',function(e){
+    var input=e.target;
+    if(input.dataset.caseField&&isAdmin&&editMode){
+      var ci=Number(input.dataset.caseIndex);
+      if(state.simCases[ci]){
+        state.simCases[ci][input.dataset.caseField]=input.value;
+        saveDraft();
+        renderSimulation();
+      }
+      return;
+    }
   });
   document.addEventListener('click',function(e){
-    var colorBtn=e.target.closest('button[data-color-choice]');
-    if(colorBtn){
-      state.notes.selected_color=colorBtn.dataset.colorChoice;
-      saveDraft();
-      renderSimulation();
+    var uiBtn=e.target.closest('[data-ui-action]');
+    if(uiBtn){
+      var uiAction=uiBtn.dataset.uiAction;
+      if(uiAction==='open-export')openExportModal();
+      if(uiAction==='close-export')closeExportModal();
+      if(uiAction==='export-select-all')selectAllExport(true);
+      if(uiAction==='export-clear-all')selectAllExport(false);
+      if(uiAction==='do-export')doExport();
+      if(uiAction==='admin-login')toggleAdminLogin();
+      if(uiAction==='exit-admin')exitAdmin();
+      return;
+    }
+    var sampleBtn=e.target.closest('[data-sim-case]');
+    if(sampleBtn){
+      selectSimCase(sampleBtn.dataset.simCase);
+      return;
+    }
+    var stepBtn=e.target.closest('[data-sim-step]');
+    if(stepBtn){
+      moveSimStep(stepBtn.dataset.simStep);
+      return;
+    }
+    var resetBtn=e.target.closest('[data-sim-reset]');
+    if(resetBtn){
+      restartSim();
       return;
     }
     var btn=e.target.closest('button[data-action]');
     if(!btn||!isAdmin||!editMode)return;
+    if(btn.dataset.action==='add-case'){
+      state.simCases.push({name:'New Sample',colorId:'yellow',macro:'',dipstick:'',specificGravity:'',microscopy:'',interpretation:'',reveal:''});
+      saveDraft();
+      renderSimulation();
+      return;
+    }
+    if(btn.dataset.action==='delete-case'){
+      if(state.simCases.length>1)state.simCases.splice(Number(btn.dataset.caseIndex),1);
+      state.notes.sim_case_index=0;
+      state.notes.sim_step=0;
+      saveDraft();
+      renderSimulation();
+      return;
+    }
     var table=findTable(btn.dataset.table);
     if(!table)return;
     if(btn.dataset.action==='add-row')addRow(table);
@@ -434,18 +616,21 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   function printSection(title,ids){
     return '<div class="print-page"><h1 class="print-section-title">'+escapeHtml(title)+'</h1>'+ids.map(tablePrintHtml).join('')+'</div>';
   }
-  function simulationPrintHtml(){
-    var current=urineColors.find(function(item){return item.id===state.notes.selected_color})||urineColors[1];
-    return '<div class="print-page"><h1 class="print-section-title">Simulation</h1><div class="print-card"><h2>Urine Color</h2><table><thead><tr><th>Selected Color</th></tr></thead><tbody><tr><td>'+escapeHtml(current.label)+'</td></tr></tbody></table></div></div>';
-  }
-  window.printPdf=function(){
+  window.openExportModal=function(){document.getElementById('exportModal').classList.add('visible')};
+  window.closeExportModal=function(){document.getElementById('exportModal').classList.remove('visible')};
+  window.selectAllExport=function(on){document.querySelectorAll('#exportModal .export-check').forEach(function(box){box.checked=!!on})};
+  window.doExport=function(){
+    collectVisibleState();
     saveLocal();
     if(isAdmin)sbUpsert(UA_ROW_ID,state).catch(function(e){console.warn(e)});
-    var html=printSection('Urinalysis Hub',['overview_core','overview_specimen'])+
-      printSection('Screening',['physical','chemical'])+
-      printSection('Microscope',['cells','casts','crystals','stains','microscopes'])+
-      printSection('Resources',['resources'])+
-      simulationPrintHtml();
+    var selected=Array.from(document.querySelectorAll('#exportModal .export-check:checked')).map(function(box){return box.value});
+    if(!selected.length){showToast('Choose at least one section',true);return}
+    closeExportModal();
+    var html='';
+    if(selected.indexOf('overview')>-1)html+=printSection('Urinalysis Hub',['overview_core','overview_specimen']);
+    if(selected.indexOf('screening')>-1)html+=printSection('Screening',['physical','chemical']);
+    if(selected.indexOf('microscope')>-1)html+=printSection('Microscope',['cells','casts','crystals','stains','microscopes']);
+    if(selected.indexOf('resources')>-1)html+=printSection('Resources',['resources']);
     var area=document.getElementById('printArea');
     area.innerHTML=html;
     document.body.classList.add('printing');
@@ -454,7 +639,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     setTimeout(function(){document.body.classList.remove('printing');area.innerHTML=''},1200);
   };
   window.addEventListener('afterprint',function(){document.body.classList.remove('printing');document.getElementById('printArea').innerHTML=''});
-  window.addEventListener('beforeunload',saveLocal);
+  window.addEventListener('beforeunload',function(){collectVisibleState();saveLocal()});
   loadRemote();
 })();
 </script>
