@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Urinalysis Hub</title>
+<style>
+:root{
+  --wine:#7a3d00;--orange:#d4860a;--gold:#f2c782;--cream:#fff8ef;--ivory:#fffdf8;
+  --soft:#fff1dc;--ink:#261604;--muted:#766554;--green:#1a8c5c;--danger:#8b0a26;
+  --line:rgba(122,61,0,.24);--shadow:0 8px 28px rgba(122,61,0,.13);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Georgia,"Times New Roman",serif;background:var(--cream);color:var(--ink);min-height:100vh}
+button,input{font-family:inherit}button{cursor:pointer}
+.site-header{position:sticky;top:0;z-index:30;background:linear-gradient(135deg,var(--wine),var(--orange));box-shadow:0 4px 18px rgba(122,61,0,.32);padding:14px 22px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.site-logo{width:36px;height:36px;border-radius:50%;background:#fff;color:var(--wine);display:grid;place-items:center;font-weight:900;font-size:16px}
+.site-title{flex:1;color:var(--ivory);font-size:clamp(16px,2.5vw,21px);font-weight:800;letter-spacing:.2px}.site-title em{color:#ffe7bd;font-style:normal}
+.nav-tabs{display:flex;gap:6px;flex-wrap:wrap}.nav-tab,.tool-btn,.admin-save-btn,.mini-btn{border:1.5px solid rgba(255,255,255,.28);background:rgba(255,255,255,.1);color:#ffe7bd;border-radius:999px;padding:7px 13px;font-size:12px;font-weight:800;transition:.18s}
+.nav-tab:hover,.tool-btn:hover{background:rgba(255,255,255,.2);color:#fff}.nav-tab.active{background:#fff;color:var(--wine);border-color:#fff}.admin-save-btn{display:none;background:var(--green);border-color:var(--green);color:#fff}.admin-mode .admin-save-btn{display:inline-block}
+.admin-pill{display:none;background:#fff;color:var(--wine);border-radius:999px;padding:4px 10px;font-size:11px;font-weight:900}.admin-mode .admin-pill{display:inline-flex}
+.wrap{max-width:1180px;margin:0 auto;padding:24px 18px 60px}.section{display:none}.section.active{display:block}.hero{text-align:center;margin:6px auto 18px;max-width:780px}.hero h1{color:var(--wine);font-size:clamp(26px,5vw,44px);line-height:1.05;margin-bottom:8px}.hero p{color:var(--muted);font-size:14px;line-height:1.55}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}.card{grid-column:span 12;background:var(--ivory);border:1px solid var(--gold);border-top:4px solid var(--orange);border-radius:14px;padding:16px;box-shadow:var(--shadow)}.half{grid-column:span 6}@media(max-width:760px){.half{grid-column:span 12}.site-header{align-items:flex-start}.nav-tabs{width:100%}}
+.card-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.card-title h2{font-size:18px;color:var(--wine)}.tag{font-size:10px;font-weight:900;letter-spacing:1.2px;text-transform:uppercase;color:var(--wine);background:var(--soft);border:1px solid var(--gold);border-radius:999px;padding:4px 9px;white-space:nowrap}
+.table-tools{display:none;gap:7px;flex-wrap:wrap;margin:0 0 10px}.admin-mode .table-tools{display:flex}.mini-btn{background:#fff;color:var(--wine);border-color:var(--gold);padding:6px 10px}.mini-btn:hover{background:var(--soft)}.mini-btn.danger{color:var(--danger)}
+.table-wrap{width:100%;overflow:auto;border:1px solid var(--line);border-radius:8px;background:#fff}table{width:100%;border-collapse:collapse;font-size:13px}th{background:var(--wine);color:#fff;text-align:left;padding:8px 9px;font-size:10px;text-transform:uppercase;letter-spacing:.7px;white-space:nowrap;min-width:120px}td{border-top:1px solid var(--line);border-right:1px solid rgba(122,61,0,.13);padding:7px 9px;vertical-align:top;min-width:120px}td:last-child{border-right:none}tr:nth-child(even) td{background:#fff8ef}
+.cell-text,.plain-edit{min-height:24px;border-radius:4px;padding:2px 4px;outline:none}.col-label{color:#fff;display:block}.col-input{display:none;width:100%;min-width:110px;border:1px solid rgba(255,255,255,.45);border-radius:5px;background:#fff7c8;color:var(--ink);padding:5px 6px;font-size:12px;font-weight:800}.admin-mode .cell-text,.admin-mode .plain-edit{background:rgba(212,134,10,.1);box-shadow:0 0 0 1px rgba(212,134,10,.45) inset}.admin-mode .col-label{display:none}.admin-mode .col-input{display:block}.cell-text:focus,.plain-edit:focus{background:#fff7c8;box-shadow:0 0 0 1px var(--orange) inset}
+.image-cell{display:grid;gap:7px}.image-preview{display:none;max-width:150px;max-height:110px;border:1px solid var(--gold);border-radius:6px;background:#fff}.image-preview[src]{display:block}.file-input{display:none;font-size:11px;max-width:190px}.admin-mode .file-input{display:block}.empty-image{font-size:12px;color:var(--muted);font-style:italic}.admin-mode .empty-image{display:none}
+.admin-only{display:none}.admin-mode .admin-only{display:inline-flex}.resource-shell{display:grid;gap:14px}.urine-sim{display:grid;grid-template-columns:minmax(180px,280px) 1fr;gap:18px;align-items:center}.tube{width:130px;height:260px;margin:0 auto;border:4px solid rgba(122,61,0,.28);border-top:0;border-radius:0 0 46px 46px;background:#fff;display:flex;align-items:flex-end;overflow:hidden;box-shadow:inset 0 0 18px rgba(122,61,0,.14)}.urine-fill{width:100%;height:76%;background:#f4d33b;transition:.2s}.color-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:9px}.color-choice{border:1.5px solid var(--gold);background:#fff;color:var(--wine);border-radius:8px;padding:8px;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800}.color-choice.active{border-color:var(--wine);box-shadow:0 0 0 2px rgba(212,134,10,.22)}.swatch{width:26px;height:26px;border-radius:50%;border:1px solid rgba(122,61,0,.25);background:var(--swatch)}.sim-label{color:var(--wine);font-size:22px;margin-bottom:8px}.sim-note{color:var(--muted);font-size:13px;line-height:1.45}@media(max-width:720px){.urine-sim{grid-template-columns:1fr}.tube{height:220px}}
+.save-indicator{position:fixed;right:18px;bottom:18px;background:var(--green);color:#fff;border-radius:999px;padding:9px 15px;font-size:13px;font-weight:800;opacity:0;pointer-events:none;transition:.2s;z-index:50}.save-indicator.show{opacity:1}
+.modal-overlay{position:fixed;inset:0;background:rgba(38,22,4,.72);z-index:1000;display:none;align-items:center;justify-content:center}.modal-overlay.visible{display:flex}.modal-box{background:var(--ivory);border-radius:18px;padding:30px;max-width:380px;width:90%;box-shadow:0 20px 60px rgba(122,61,0,.32);text-align:center;border:1px solid var(--gold)}.modal-box h3{font-size:20px;color:var(--wine);margin-bottom:6px}.modal-box p{font-size:13px;color:var(--muted);margin-bottom:18px}.modal-input{width:100%;border:1.5px solid var(--gold);border-radius:10px;padding:10px 14px;font-size:15px;text-align:center;background:#fff;margin-bottom:12px;letter-spacing:3px}.modal-input:focus{outline:none;border-color:var(--orange)}.modal-error{color:var(--danger);font-size:12px;margin-bottom:10px;min-height:16px}.btn{border:none;border-radius:999px;background:var(--orange);color:#fff;padding:8px 16px;font-size:12px;font-weight:900}.btn.ghost{background:transparent;color:var(--muted);border:1.5px solid var(--gold)}
+#printArea{display:none}
+@media print{
+  body{background:#fff;color:#000;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body.printing .site-header,body.printing .wrap,body.printing .save-indicator,body.printing .modal-overlay{display:none!important}
+  body.printing #printArea{display:block!important}
+  #printArea{font-family:Georgia,"Times New Roman",serif;color:#261604;padding:18px 24px}
+  .print-page{break-after:page}.print-page:last-child{break-after:auto}
+  .print-section-title{font-size:22px;color:#7a3d00;margin:0 0 12px}
+  .print-card{border:1px solid #7a3d00;border-top:4px solid #d4860a;margin-bottom:12px;padding:10px;break-inside:avoid;background:#fffdf8}
+  .print-card h2{font-size:14px;color:#7a3d00;margin-bottom:8px}
+  #printArea table{width:100%;border-collapse:collapse}
+  #printArea th{background:#7a3d00!important;color:#fff;padding:5px 6px;text-align:left;font-size:9px;border:1px solid #7a3d00}
+  #printArea td{padding:5px 6px;border:1px solid #d8b374;vertical-align:top;font-size:10px}
+  #printArea img{display:block;max-width:105px;max-height:80px;border:1px solid #d8b374}
+}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <div class="site-logo">UA</div>
+  <div class="site-title">Urinalysis <em>Hub</em></div>
+  <span class="admin-pill" id="adminBadge">Admin</span>
+  <nav class="nav-tabs" aria-label="Urinalysis sections">
+    <button class="nav-tab active" data-section="overview">Overview</button>
+    <button class="nav-tab" data-section="screening">Screening</button>
+    <button class="nav-tab" data-section="microscope">Microscope</button>
+    <button class="nav-tab" data-section="resources">Resources</button>
+    <button class="nav-tab" data-section="simulation">Simulation</button>
+  </nav>
+  <button class="tool-btn" id="editBtn">Edit</button>
+  <button class="admin-save-btn" id="saveBtn">Save</button>
+  <button class="tool-btn" id="printBtn" onclick="printPdf()">Export PDF</button>
+  <button class="tool-btn" onclick="toggleAdminLogin()" id="adminBtn">Admin</button>
+</header>
+
+<div class="modal-overlay" id="adminModal">
+  <div class="modal-box">
+    <h3>Admin Mode</h3>
+    <p>Enter the password to unlock editing.</p>
+    <input class="modal-input" type="password" id="adminPwInput" placeholder="password" autocomplete="off" maxlength="30"/>
+    <div class="modal-error" id="adminErr"></div>
+    <div style="display:flex;gap:8px;justify-content:center">
+      <button class="btn" onclick="attemptLogin()">Unlock</button>
+      <button class="btn ghost" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<main class="wrap">
+  <section class="section active" id="overview">
+    <div class="hero"><h1>Urinalysis Hub</h1><p>A clean student-to-student reference for screening and microscopic sediment.</p></div>
+    <div class="grid">
+      <article class="card half">
+        <div class="card-title"><h2>Big Picture</h2><span class="tag">Core</span></div>
+        <div class="table-tools" data-tools-for="overview_core"></div>
+        <div class="table-slot" data-table-id="overview_core"></div>
+      </article>
+      <article class="card half">
+        <div class="card-title"><h2>Specimen Handling</h2><span class="tag">Pre-Analytical</span></div>
+        <div class="table-tools" data-tools-for="overview_specimen"></div>
+        <div class="table-slot" data-table-id="overview_specimen"></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section" id="screening">
+    <div class="hero"><h1>Screening</h1><p>Physical and chemical screening tables, ready for your own rows and columns.</p></div>
+    <div class="grid">
+      <article class="card">
+        <div class="card-title"><h2>Physical</h2><span class="tag">Screening</span></div>
+        <div class="table-tools" data-tools-for="physical"></div>
+        <div class="table-slot" data-table-id="physical"></div>
+      </article>
+      <article class="card">
+        <div class="card-title"><h2>Chemical</h2><span class="tag">Screening</span></div>
+        <div class="table-tools" data-tools-for="chemical"></div>
+        <div class="table-slot" data-table-id="chemical"></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section" id="microscope">
+    <div class="hero"><h1>Microscope</h1><p>Build your own tables for cells, casts, crystals, stains, and microscope methods.</p></div>
+    <div class="grid">
+      <article class="card"><div class="card-title"><h2>Cells</h2><span class="tag">Sediment</span></div><div class="table-tools" data-tools-for="cells"></div><div class="table-slot" data-table-id="cells"></div></article>
+      <article class="card"><div class="card-title"><h2>Casts</h2><span class="tag">Sediment</span></div><div class="table-tools" data-tools-for="casts"></div><div class="table-slot" data-table-id="casts"></div></article>
+      <article class="card"><div class="card-title"><h2>Crystals</h2><span class="tag">Sediment</span></div><div class="table-tools" data-tools-for="crystals"></div><div class="table-slot" data-table-id="crystals"></div></article>
+      <article class="card half"><div class="card-title"><h2>Stains</h2><span class="tag">Technique</span></div><div class="table-tools" data-tools-for="stains"></div><div class="table-slot" data-table-id="stains"></div></article>
+      <article class="card half"><div class="card-title"><h2>Microscopes</h2><span class="tag">Technique</span></div><div class="table-tools" data-tools-for="microscopes"></div><div class="table-slot" data-table-id="microscopes"></div></article>
+    </div>
+  </section>
+
+  <section class="section" id="resources">
+    <div class="hero"><h1>Resources</h1><p>A simple place to keep the resource list you want with this hub.</p></div>
+    <div class="resource-shell">
+      <article class="card">
+        <div class="card-title"><h2>Resources</h2><span class="tag">List</span></div>
+        <div class="table-tools" data-tools-for="resources"></div>
+        <div class="table-slot" data-table-id="resources"></div>
+      </article>
+    </div>
+  </section>
+  <section class="section" id="simulation">
+    <div class="hero"><h1>Simulation</h1><p>Choose a urine color to start building visual practice cases.</p></div>
+    <article class="card">
+      <div class="card-title"><h2>Urine Color</h2><span class="tag">Practice</span></div>
+      <div class="urine-sim">
+        <div class="tube" aria-hidden="true"><div class="urine-fill" id="urineFill"></div></div>
+        <div>
+          <h2 class="sim-label" id="simColorLabel">Yellow</h2>
+          <p class="sim-note">Select a color, then later this can connect to editable findings and questions.</p>
+          <div class="color-grid" id="colorChoices"></div>
+        </div>
+      </div>
+    </article>
+  </section>
+</main>
+
+<div id="printArea" aria-hidden="true"></div>
+<div class="save-indicator" id="saveIndicator">Saved</div>
+
+<script>
+const SUPABASE_URL='https://fjrdlasmdhqjqqlvuxwj.supabase.co';
+const SUPABASE_KEY='sb_publishable_UnXRXK6It0PKVmZmixYZeg_WDx9frO2';
+const TABLE_NAME='mls_blood_bank';
+const UA_ROW_ID='ua_hub';
+const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c675';
+(function(){
+  var STORAGE_KEY='urinalysis-hub-edits-v5';
+  var isAdmin=false;
+  var editMode=false;
+  var saveTimer=null;
+  var state=defaultState();
+  var urineColors=[
+    {id:'clear',label:'Clear',color:'rgba(245,250,255,.62)'},
+    {id:'yellow',label:'Yellow',color:'#f4d33b'},
+    {id:'dark-yellow',label:'Dark Yellow',color:'#c99010'},
+    {id:'orange',label:'Orange',color:'#d96b12'},
+    {id:'red',label:'Red',color:'#b21d22'},
+    {id:'green-blue',label:'Green / Blue',color:'#1f9d9a'},
+    {id:'purple',label:'Purple',color:'#7a3ea1'}
+  ];
+  function uid(prefix){return prefix+'_'+Math.random().toString(36).slice(2,9)}
+  function defaultColumns(includeImage){
+    var cols=[{id:uid('col'),label:'',type:'text'},{id:uid('col'),label:'',type:'text'},{id:uid('col'),label:'',type:'text'}];
+    if(includeImage)cols.push({id:uid('col'),label:'Image',type:'image'});
+    return cols;
+  }
+  function blankRows(columns,count){
+    var rows=[];
+    for(var i=0;i<count;i++){
+      var cells={};
+      columns.forEach(function(col){cells[col.id]=''});
+      rows.push({id:uid('row'),cells:cells});
+    }
+    return rows;
+  }
+  function makeTable(title,includeImage){
+    var columns=defaultColumns(includeImage);
+    return {title:title,columns:columns,rows:blankRows(columns,3)};
+  }
+  function makeTableFrom(title,labels,values){
+    var columns=labels.map(function(label){return {id:uid('col'),label:label,type:'text'}});
+    var rows=values.map(function(items){
+      var cells={};
+      columns.forEach(function(col,i){cells[col.id]=items[i]||''});
+      return {id:uid('row'),cells:cells};
+    });
+    return {title:title,columns:columns,rows:rows};
+  }
+  function defaultState(){
+    return {
+      version:5,
+      notes:{simulation_note:'',selected_color:'yellow'},
+      tables:{
+        overview_core:makeTableFrom('Big Picture',['Area','Focus','Why It Matters'],[
+          ['Formation','Urine is an ultrafiltrate modified by tubular reabsorption and secretion.','Reflects renal and metabolic function.'],
+          ['Specimen','Collection, preservation, timing, and mixing affect results.','Poor handling changes chemistry and sediment.'],
+          ['Physical','Color, clarity, specific gravity.','Gives early clues and checks other results.'],
+          ['Chemical','Reagent strip screening.','Connects to metabolic, renal, and infection patterns.'],
+          ['Microscopic','Cells, casts, crystals, organisms, mucus, artifacts.','Confirms and explains physical/chemical findings.']
+        ]),
+        overview_specimen:makeTableFrom('Specimen Handling',['Point','Minimal Note','Result Impact'],[
+          ['Container','Clean, dry, leakproof, properly labeled.','Prevents contamination and ID errors.'],
+          ['Collection','First morning, random, timed, catheterized, clean-catch, suprapubic, or chain-of-custody as needed.','Collection type changes interpretation.'],
+          ['Delay','Room temperature delay can alter sediment and chemistry.','Bacteria increase; cells/casts degrade.'],
+          ['Preservation','Refrigeration or preservatives may be used when testing is delayed.','Refrigeration may form amorphous crystals.']
+        ]),
+        physical:makeTable('Physical',false),
+        chemical:makeTable('Chemical',false),
+        cells:makeTable('Cells',true),
+        casts:makeTable('Casts',true),
+        crystals:makeTable('Crystals',true),
+        stains:makeTable('Stains',false),
+        microscopes:makeTable('Microscopes',false),
+        resources:makeTable('Resources',false)
+      }
+    };
+  }
+  function showToast(msg,isError){var t=document.getElementById('saveIndicator');t.textContent=msg||'Saved';t.style.background=isError?'#8b0a26':'#1a8c5c';t.classList.add('show');setTimeout(function(){t.classList.remove('show')},1600)}
+  async function hashString(str){var buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0')}).join('')}
+  async function supabaseError(r){var d='';try{var b=await r.json();d=b.message||b.details||b.hint||JSON.stringify(b)}catch(e){d=await r.text()}return new Error(d||('HTTP '+r.status))}
+  async function sbGet(id){var r=await fetch(SUPABASE_URL+'/rest/v1/'+TABLE_NAME+'?id=eq.'+encodeURIComponent(id)+'&select=data',{headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY}});if(!r.ok)throw await supabaseError(r);var d=await r.json();return d&&d[0]?d[0].data:null}
+  async function sbUpsert(id,data){var r=await fetch(SUPABASE_URL+'/rest/v1/'+TABLE_NAME+'?on_conflict=id',{method:'POST',headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates'},body:JSON.stringify({id:id,data:data})});if(!r.ok)throw await supabaseError(r);return true}
+  function escapeHtml(value){return String(value||'').replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]})}
+  function mergeState(incoming){
+    var base=defaultState();
+    if(!incoming||typeof incoming!=='object'||!incoming.tables||incoming.version!==5)return base;
+    Object.keys(base.tables).forEach(function(id){
+      if(incoming.tables[id]&&Array.isArray(incoming.tables[id].columns)&&Array.isArray(incoming.tables[id].rows)){
+        base.tables[id]=incoming.tables[id];
+      }
+    });
+    if(incoming.notes&&typeof incoming.notes==='object')base.notes=incoming.notes;
+    return base;
+  }
+  function saveLocal(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
+  function saveDraft(){
+    saveLocal();
+    if(isAdmin) scheduleSave();
+  }
+  async function loadRemote(){
+    try{state=mergeState(JSON.parse(localStorage.getItem(STORAGE_KEY)||'null'))}catch(e){state=defaultState()}
+    renderAll();
+    renderSimulation();
+    try{
+      var remote=await sbGet(UA_ROW_ID);
+      if(remote&&remote.tables){state=mergeState(remote);saveLocal();renderAll()}
+    }catch(e){console.warn('remote load failed',e)}
+  }
+  function scheduleSave(){clearTimeout(saveTimer);saveTimer=setTimeout(saveNow,650)}
+  async function saveNow(){
+    if(!isAdmin){showToast('Unlock admin first',true);return false}
+    saveLocal();
+    try{await sbUpsert(UA_ROW_ID,state);showToast('Saved');return true}
+    catch(e){console.error(e);showToast('Saved locally',true);return false}
+  }
+  function tableTools(id){
+    return '<button class="mini-btn" data-action="add-row" data-table="'+id+'">Add Row</button>'+
+      '<button class="mini-btn" data-action="add-col" data-table="'+id+'">Add Column</button>'+
+      '<button class="mini-btn" data-action="add-img-col" data-table="'+id+'">Add Image Column</button>';
+  }
+  function renderTable(id){
+    var table=state.tables[id];
+    if(!table)return;
+    var tools=document.querySelector('[data-tools-for="'+id+'"]');
+    if(tools)tools.innerHTML=tableTools(id);
+    var slot=document.querySelector('[data-table-id="'+id+'"]');
+    if(!slot)return;
+    var thead='<thead><tr>'+table.columns.map(function(col){
+      return '<th><span class="col-label">'+escapeHtml(col.label)+'</span><input class="col-input" value="'+escapeHtml(col.label)+'" data-table="'+id+'" data-col="'+col.id+'" data-action="edit-col"/><button class="mini-btn danger admin-only" data-action="delete-col" data-table="'+id+'" data-col="'+col.id+'">Delete</button></th>';
+    }).join('')+'<th class="admin-only">Rows</th></tr></thead>';
+    var rows=table.rows.map(function(row){
+      var cells=table.columns.map(function(col){
+        var value=row.cells&&row.cells[col.id]?row.cells[col.id]:'';
+        if(col.type==='image'){
+          var img=value?'<img class="image-preview" src="'+escapeHtml(value)+'" alt="uploaded image"/>':'<div class="empty-image">Blank</div>';
+          return '<td><div class="image-cell">'+img+'<input class="file-input" type="file" accept="image/*" data-action="upload-image" data-table="'+id+'" data-row="'+row.id+'" data-col="'+col.id+'"/></div></td>';
+        }
+        return '<td><div class="cell-text" contenteditable="'+editMode+'" data-table="'+id+'" data-row="'+row.id+'" data-col="'+col.id+'" data-action="edit-cell">'+escapeHtml(value)+'</div></td>';
+      }).join('');
+      return '<tr>'+cells+'<td class="admin-only"><button class="mini-btn danger" data-action="delete-row" data-table="'+id+'" data-row="'+row.id+'">Delete Row</button></td></tr>';
+    }).join('');
+    slot.innerHTML='<div class="table-wrap"><table>'+thead+'<tbody>'+rows+'</tbody></table></div>';
+  }
+  function renderNotes(){
+    document.querySelectorAll('[data-note-key]').forEach(function(el){
+      var key=el.dataset.noteKey;
+      el.contentEditable=editMode?'true':'false';
+      el.innerHTML=state.notes[key]||'';
+    });
+  }
+  function renderSimulation(){
+    var current=urineColors.find(function(item){return item.id===state.notes.selected_color})||urineColors[1];
+    var fill=document.getElementById('urineFill');
+    var label=document.getElementById('simColorLabel');
+    var choices=document.getElementById('colorChoices');
+    if(fill)fill.style.background=current.color;
+    if(label)label.textContent=current.label;
+    if(choices){
+      choices.innerHTML=urineColors.map(function(item){
+        return '<button class="color-choice '+(item.id===current.id?'active':'')+'" data-color-choice="'+item.id+'"><span class="swatch" style="--swatch:'+item.color+'"></span><span>'+escapeHtml(item.label)+'</span></button>';
+      }).join('');
+    }
+  }
+  function renderAll(){Object.keys(state.tables).forEach(renderTable);renderNotes();renderSimulation();document.body.classList.toggle('admin-mode',editMode)}
+  function findTable(id){return state.tables[id]}
+  function addColumn(table,type){
+    var col={id:uid('col'),label:type==='image'?'Image':'',type:type};
+    table.columns.push(col);
+    table.rows.forEach(function(row){if(!row.cells)row.cells={};row.cells[col.id]=''});
+  }
+  function addRow(table){
+    var cells={};
+    table.columns.forEach(function(col){cells[col.id]=''});
+    table.rows.push({id:uid('row'),cells:cells});
+  }
+  function setEditMode(on){
+    if(on&&!isAdmin){toggleAdminLogin();return}
+    editMode=!!on;
+    document.body.classList.toggle('admin-mode',editMode);
+    document.getElementById('editBtn').textContent=on?'Lock':'Edit';
+    renderAll();
+  }
+  window.toggleAdminLogin=function(){
+    if(isAdmin){
+      isAdmin=false;
+      editMode=false;
+      document.getElementById('adminBadge').classList.remove('visible');
+      document.getElementById('adminBtn').textContent='Admin';
+      setEditMode(false);
+      showToast('Locked');
+      return;
+    }
+    document.getElementById('adminModal').classList.add('visible');
+    setTimeout(function(){document.getElementById('adminPwInput').focus()},80);
+  };
+  window.attemptLogin=async function(){
+    var h=await hashString(document.getElementById('adminPwInput').value);
+    if(h===PASS_HASH){
+      isAdmin=true;
+      document.getElementById('adminBadge').classList.add('visible');
+      document.getElementById('adminBtn').textContent='Lock';
+      closeModal();
+      setEditMode(true);
+      showToast('Unlocked');
+    }else{
+      document.getElementById('adminErr').textContent='Incorrect password.';
+      document.getElementById('adminPwInput').value='';
+    }
+  };
+  window.closeModal=function(){document.getElementById('adminModal').classList.remove('visible');document.getElementById('adminErr').textContent='';document.getElementById('adminPwInput').value=''};
+  function showSection(id){document.querySelectorAll('.section').forEach(function(sec){sec.classList.toggle('active',sec.id===id)});document.querySelectorAll('.nav-tab').forEach(function(tab){tab.classList.toggle('active',tab.dataset.section===id)})}
+  document.querySelectorAll('.nav-tab').forEach(function(tab){tab.addEventListener('click',function(){showSection(tab.dataset.section)})});
+  document.getElementById('editBtn').addEventListener('click',function(){if(!isAdmin){toggleAdminLogin();return}setEditMode(!document.body.classList.contains('admin-mode'))});
+  document.getElementById('saveBtn').addEventListener('click',saveNow);
+  document.addEventListener('keydown',function(e){if(e.key==='Enter'&&document.getElementById('adminModal').classList.contains('visible'))attemptLogin();if(e.key==='Escape')closeModal()});
+  document.addEventListener('input',function(e){
+    var el=e.target;
+    if(!isAdmin||!editMode)return;
+    if(el.dataset.action==='edit-cell'){
+      var table=findTable(el.dataset.table);
+      var row=table.rows.find(function(item){return item.id===el.dataset.row});
+      if(row){row.cells[el.dataset.col]=el.innerHTML;saveDraft()}
+    }
+    if(el.dataset.action==='edit-col'){
+      var t=findTable(el.dataset.table);
+      var col=t.columns.find(function(item){return item.id===el.dataset.col});
+      if(col){col.label=el.value;saveDraft()}
+    }
+    if(el.dataset.noteKey){
+      state.notes[el.dataset.noteKey]=el.innerHTML;
+      saveDraft();
+    }
+  });
+  document.addEventListener('click',function(e){
+    var colorBtn=e.target.closest('button[data-color-choice]');
+    if(colorBtn){
+      state.notes.selected_color=colorBtn.dataset.colorChoice;
+      saveDraft();
+      renderSimulation();
+      return;
+    }
+    var btn=e.target.closest('button[data-action]');
+    if(!btn||!isAdmin||!editMode)return;
+    var table=findTable(btn.dataset.table);
+    if(!table)return;
+    if(btn.dataset.action==='add-row')addRow(table);
+    if(btn.dataset.action==='add-col')addColumn(table,'text');
+    if(btn.dataset.action==='add-img-col')addColumn(table,'image');
+    if(btn.dataset.action==='delete-row')table.rows=table.rows.filter(function(row){return row.id!==btn.dataset.row});
+    if(btn.dataset.action==='delete-col'&&table.columns.length>1){
+      table.columns=table.columns.filter(function(col){return col.id!==btn.dataset.col});
+      table.rows.forEach(function(row){delete row.cells[btn.dataset.col]});
+    }
+    saveDraft();
+    renderAll();
+  });
+  document.addEventListener('change',function(e){
+    var input=e.target;
+    if(!isAdmin||!editMode||input.dataset.action!=='upload-image'||!input.files||!input.files[0])return;
+    var reader=new FileReader();
+    reader.onload=function(){
+      var table=findTable(input.dataset.table);
+      var row=table.rows.find(function(item){return item.id===input.dataset.row});
+      if(row){row.cells[input.dataset.col]=reader.result;saveDraft();renderAll()}
+    };
+    reader.readAsDataURL(input.files[0]);
+  });
+  function tablePrintHtml(id){
+    var table=state.tables[id];
+    if(!table)return '';
+    var head='<tr>'+table.columns.map(function(col){return '<th>'+escapeHtml(col.label||'')+'</th>'}).join('')+'</tr>';
+    var body=table.rows.map(function(row){
+      return '<tr>'+table.columns.map(function(col){
+        var value=row.cells&&row.cells[col.id]?row.cells[col.id]:'';
+        if(col.type==='image')return '<td>'+(value?'<img src="'+escapeHtml(value)+'" alt="uploaded image"/>':'')+'</td>';
+        return '<td>'+escapeHtml(value)+'</td>';
+      }).join('')+'</tr>';
+    }).join('');
+    return '<div class="print-card"><h2>'+escapeHtml(table.title)+'</h2><table><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div>';
+  }
+  function printSection(title,ids){
+    return '<div class="print-page"><h1 class="print-section-title">'+escapeHtml(title)+'</h1>'+ids.map(tablePrintHtml).join('')+'</div>';
+  }
+  function simulationPrintHtml(){
+    var current=urineColors.find(function(item){return item.id===state.notes.selected_color})||urineColors[1];
+    return '<div class="print-page"><h1 class="print-section-title">Simulation</h1><div class="print-card"><h2>Urine Color</h2><table><thead><tr><th>Selected Color</th></tr></thead><tbody><tr><td>'+escapeHtml(current.label)+'</td></tr></tbody></table></div></div>';
+  }
+  window.printPdf=function(){
+    saveLocal();
+    if(isAdmin)sbUpsert(UA_ROW_ID,state).catch(function(e){console.warn(e)});
+    var html=printSection('Urinalysis Hub',['overview_core','overview_specimen'])+
+      printSection('Screening',['physical','chemical'])+
+      printSection('Microscope',['cells','casts','crystals','stains','microscopes'])+
+      printSection('Resources',['resources'])+
+      simulationPrintHtml();
+    var area=document.getElementById('printArea');
+    area.innerHTML=html;
+    document.body.classList.add('printing');
+    showToast('Opening PDF export');
+    window.print();
+    setTimeout(function(){document.body.classList.remove('printing');area.innerHTML=''},1200);
+  };
+  window.addEventListener('afterprint',function(){document.body.classList.remove('printing');document.getElementById('printArea').innerHTML=''});
+  window.addEventListener('beforeunload',saveLocal);
+  loadRemote();
+})();
+</script>
+</body>
+</html>
