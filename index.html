@@ -240,6 +240,26 @@
       cursor: pointer;
     }
 
+    .home-link {
+      margin: 18px 8px 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 34px;
+      border: 1.5px solid var(--rose);
+      border-radius: 999px;
+      background: var(--wine);
+      color: #fffaf7;
+      padding: 8px 15px;
+      font: 800 13px Georgia, "Times New Roman", serif;
+      text-decoration: none;
+      box-shadow: 0 8px 18px rgba(90,14,32,.14);
+    }
+
+    .home-link:hover {
+      filter: brightness(1.05);
+    }
+
     .admin-badge {
       display: none;
       margin: 12px auto 0;
@@ -359,6 +379,7 @@
       <div class="eyebrow">Medical Laboratory Science</div>
       <h1>Welcome to the Hubs</h1>
       <p class="intro">Click on any hub to study more in depth. Each one opens as its own focused learning space.</p>
+      <a class="home-link" href="https://legoretro.github.io/MLS/">Back to MLS Home</a>
       <button class="admin-toggle" id="adminBtn" onclick="toggleAdminLogin()">Admin</button>
       <div class="admin-badge" id="adminBadge">Admin editing is unlocked</div>
     </header>
@@ -378,7 +399,6 @@
       <div class="admin-actions">
         <button class="small-btn primary" onclick="saveHubUrls()">Save URLs</button>
         <button class="small-btn" onclick="clearHubUrls()">Clear URLs</button>
-        <button class="small-btn" onclick="downloadIndex()">Download Edited Index</button>
       </div>
     </section>
 
@@ -408,7 +428,7 @@
         <div class="hub-icon">U</div>
         <h2>Urinalysis</h2>
         <p>Physical, chemical, and microscopic urine findings with crystals, casts, cells, and disease correlations.</p>
-        <a class="hub-link disabled" data-hub-link="urinalysis" href="urinalysis_hub.html" aria-disabled="true">Coming Soon</a>
+        <a class="hub-link" data-hub-link="urinalysis" href="Urinalysis_hub.html">Open Urinalysis Hub</a>
       </section>
     </main>
 
@@ -437,7 +457,7 @@
       bloodbank: 'Bloodbank_hub.html',
       hematology: '',
       microbiology: '',
-      urinalysis: ''
+      urinalysis: 'Urinalysis_hub.html'
     };
     let isAdmin = false;
 
@@ -504,7 +524,7 @@
         const url = (urls[key] || '').trim();
         if (url) {
           link.href = url;
-          link.textContent = key === 'bloodbank' ? 'Open Blood Bank Hub' : 'Open Hub';
+          link.textContent = key === 'bloodbank' ? 'Open Blood Bank Hub' : key === 'urinalysis' ? 'Open Urinalysis Hub' : 'Open Hub';
           link.classList.remove('disabled');
           link.removeAttribute('aria-disabled');
         } else {
@@ -533,51 +553,6 @@
       if (!requireAdmin()) return;
       localStorage.removeItem('mlsHubUrls');
       applyHubUrls();
-    }
-
-    function downloadIndex() {
-      if (!requireAdmin()) return;
-      const editedUrls = {};
-      document.querySelectorAll('[data-hub-input]').forEach(input => {
-        editedUrls[input.getAttribute('data-hub-input')] = input.value.trim();
-      });
-      localStorage.setItem('mlsHubUrls', JSON.stringify(editedUrls));
-      applyHubUrls();
-      const urls = loadHubUrls();
-      const clone = document.documentElement.cloneNode(true);
-      clone.querySelector('body').classList.remove('admin-open');
-      clone.querySelectorAll('[data-hub-link]').forEach(link => {
-        const key = link.getAttribute('data-hub-link');
-        const url = (urls[key] || '').trim();
-        if (url) {
-          link.setAttribute('href', url);
-          link.textContent = key === 'bloodbank' ? 'Open Blood Bank Hub' : 'Open Hub';
-          link.classList.remove('disabled');
-          link.removeAttribute('aria-disabled');
-        } else {
-          link.setAttribute('href', '#');
-          link.textContent = 'Coming Soon';
-          link.classList.add('disabled');
-          link.setAttribute('aria-disabled', 'true');
-        }
-      });
-      const script = Array.from(clone.querySelectorAll('script')).find(item => item.textContent.includes('const defaultHubUrls'));
-      if (script) {
-        script.textContent = script.textContent.replace(
-          /const defaultHubUrls = \{[\s\S]*?\};/,
-          'const defaultHubUrls = ' + JSON.stringify(urls, null, 6) + ';'
-        );
-      }
-      const html = '<!DOCTYPE html>\n' + clone.outerHTML;
-      const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'index.html';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
     }
 
     applyHubUrls();
