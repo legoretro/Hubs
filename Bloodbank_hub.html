@@ -46,6 +46,8 @@ button{cursor:pointer;font-family:inherit}
 .site-logo{font-size:26px}
 .site-title{font-size:clamp(15px,2.5vw,20px);color:var(--ivory);font-weight:700;flex:1;letter-spacing:.3px}
 .site-title em{color:var(--rose);font-style:normal}
+.mls-home-link{display:inline-flex;align-items:center;justify-content:center;border:1.5px solid rgba(255,255,255,.3);background:rgba(255,255,255,.12);color:var(--ivory);border-radius:999px;padding:7px 13px;font-size:12px;font-weight:700;text-decoration:none;transition:all .18s;white-space:nowrap}
+.mls-home-link:hover{background:rgba(255,255,255,.22);color:#fff}
 .nav-tabs{display:flex;gap:6px;flex-wrap:wrap}
 .nav-tab{padding:7px 14px;border:1.5px solid rgba(255,255,255,.25);background:rgba(255,255,255,.1);color:var(--rose);border-radius:999px;font-size:12px;font-weight:600;transition:all .18s;letter-spacing:.2px}
 .nav-tab:hover{background:rgba(255,255,255,.2);color:#fff}
@@ -54,6 +56,8 @@ button{cursor:pointer;font-family:inherit}
 /* ADMIN BADGE */
 .admin-badge{background:#e8a832;color:#3d1f00;font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px;letter-spacing:.5px;display:none}
 .admin-badge.visible{display:inline-flex;align-items:center;gap:4px}
+.admin-mode #adminBtn{display:none}
+.admin-exit-btn{display:none}.admin-mode .admin-exit-btn{display:inline-flex}
 .admin-lock-btn{background:transparent;border:1.5px solid rgba(255,255,255,.3);color:var(--rose);border-radius:999px;padding:5px 12px;font-size:12px;font-weight:600;transition:all .18s}
 .admin-lock-btn:hover{background:rgba(255,255,255,.15)}
 .admin-save-btn{display:none;background:#1a8c5c;border:1.5px solid #1a8c5c;color:#fff;border-radius:999px;padding:5px 12px;font-size:12px;font-weight:700;transition:all .18s}
@@ -483,6 +487,7 @@ button{cursor:pointer;font-family:inherit}
   <header class="site-header">
     <div class="site-logo">🩸</div>
     <div class="site-title">Bloody Brilliant <em>Blood Bank Hub</em></div>
+    <a class="mls-home-link" href="https://legoretro.github.io/MLS/">Back to MLS Home</a>
     <nav class="nav-tabs">
       <button class="nav-tab active" onclick="showSection('encyclopedia',this)">🩸 Encyclopedia</button>
       <button class="nav-tab" onclick="showSection('rbc-diagram',this)">🔬 RBC Antigens</button>
@@ -490,11 +495,10 @@ button{cursor:pointer;font-family:inherit}
       <button class="nav-tab" onclick="showSection('crossmatch',this)">🧪 Crossmatch Lab</button>
       <button class="nav-tab" onclick="showSection('resources',this)">📖 Resources</button>
       <button class="nav-tab" onclick="openExportModal()" style="background:rgba(232,168,50,.2);border-color:rgba(232,168,50,.4);color:#e8c870">⬇ Export PDF</button>
-      <button class="nav-tab" onclick="downloadThisHtml()" style="background:rgba(26,140,92,.18);border-color:rgba(26,140,92,.45);color:#b9f4d6">⬇ Download HTML</button>
     </nav>
-    <span class="admin-badge" id="adminBadge">🔓 Admin</span>
-    <button class="admin-save-btn" onclick="saveAllNow()">Save to Supabase</button>
-    <button class="admin-lock-btn" onclick="toggleAdminLogin()" id="adminBtn">🔒 Admin</button>
+    <span class="admin-badge" id="adminBadge">Admin</span>
+    <button class="admin-lock-btn" onclick="toggleAdminLogin()" id="adminBtn">Admin</button>
+    <button class="admin-lock-btn admin-exit-btn" onclick="logoutAdmin()" id="adminExitBtn">Exit Admin</button>
   </header>
 
   <!-- ===== ENCYCLOPEDIA ===== -->
@@ -767,20 +771,6 @@ async function saveAllNow() {
   if (notesOk && xmOk) showToast('Saved all to Supabase');
 }
 
-function downloadThisHtml() {
-  var html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
-  var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement('a');
-  a.href = url;
-  a.download = 'bloody-brilliant-blood-bank-hub.html';
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
-  showToast('Download ready');
-}
-
 function showToast(msg, isError = false) {
   const t = document.getElementById('saveToast');
   t.textContent = msg;
@@ -817,7 +807,6 @@ async function attemptLogin() {
     isAdmin = true;
     document.body.classList.add('admin-mode');
     document.getElementById('adminBadge').classList.add('visible');
-    document.getElementById('adminBtn').textContent = '🔒 Lock';
     closeModal();
     showToast('Admin unlocked');
     // Re-render current system to enable fields
@@ -838,11 +827,11 @@ document.addEventListener('keydown', e => {
   }
 });
 
-function logoutAdmin() {
+async function logoutAdmin() {
+  await saveAllNow();
   isAdmin = false;
   document.body.classList.remove('admin-mode');
   document.getElementById('adminBadge').classList.remove('visible');
-  document.getElementById('adminBtn').textContent = '🔒 Admin';
   if (document.getElementById('sec-rbc-diagram').classList.contains('active')) renderRbcDiagram();
   showToast('Admin locked');
 }
