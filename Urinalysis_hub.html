@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Urinalysis Hub</title>
+<title>Urinalysis Lab Hub</title>
 <style>
 :root{
   --wine:#7a3d00;--orange:#d4860a;--gold:#f2c782;--cream:#fff8ef;--ivory:#fffdf8;
@@ -12,7 +12,9 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Georgia,"Times New Roman",serif;background:var(--cream);color:var(--ink);min-height:100vh}
+body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro-active) .site-header,body:not(.intro-active) .wrap{opacity:1;transition:opacity .55s ease}
 button,input{font-family:inherit}button{cursor:pointer}
+#intro{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:#1c0d02;overflow:hidden}.door-frame{position:absolute;inset:0;display:flex}.door{flex:1;background:linear-gradient(135deg,#2b1303,#170a02);position:relative;border:2px solid rgba(242,199,130,.16);overflow:hidden;transition:transform 1.1s cubic-bezier(.77,0,.175,1)}.door.left{transform-origin:left center}.door.right{transform-origin:right center}.door-handle{position:absolute;width:12px;height:70px;background:linear-gradient(180deg,#d4860a,#8a4a08);border-radius:7px;box-shadow:0 2px 10px rgba(0,0,0,.55);top:67%}.door.left .door-handle{right:10px}.door.right .door-handle{left:10px}.intro-center{position:relative;z-index:10;text-align:center;animation:introPulse 1.6s ease-in-out infinite}@keyframes introPulse{0%,100%{opacity:.88;transform:scale(1)}50%{opacity:1;transform:scale(1.03)}}.intro-drops{font-size:clamp(24px,5vw,52px);margin-bottom:14px;animation:introBounce 1s ease-in-out infinite alternate}@keyframes introBounce{from{transform:translateY(0)}to{transform:translateY(-8px)}}.intro-title{font-size:clamp(30px,6vw,70px);color:#fff8ef;font-weight:900;letter-spacing:1px;text-shadow:0 0 40px rgba(212,134,10,.72)}.intro-sub{font-size:clamp(12px,2.2vw,19px);color:#f2c782;letter-spacing:5px;text-transform:uppercase;opacity:.9;margin-top:8px}.door.left.open{transform:translateX(-100%)}.door.right.open{transform:translateX(100%)}
 .site-header{position:sticky;top:0;z-index:30;background:linear-gradient(135deg,var(--wine),var(--orange));box-shadow:0 4px 18px rgba(122,61,0,.32);padding:14px 22px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .site-logo{width:36px;height:36px;border-radius:50%;background:#fff;color:var(--wine);display:grid;place-items:center;font-weight:900;font-size:16px}
 .site-title{flex:1;color:var(--ivory);font-size:clamp(16px,2.5vw,21px);font-weight:800;letter-spacing:.2px}.site-title em{color:#ffe7bd;font-style:normal}
@@ -22,6 +24,7 @@ button,input{font-family:inherit}button{cursor:pointer}
 .admin-pill{display:none;background:var(--gold);color:#3d1f00;border-radius:999px;padding:7px 18px;font-size:14px;font-weight:900}.admin-mode .admin-pill{display:inline-flex}.admin-mode #adminBtn{display:none}.admin-exit-btn{display:none}.admin-mode .admin-exit-btn{display:inline-flex}
 .wrap{max-width:1180px;margin:0 auto;padding:24px 18px 60px}.section{display:none}.section.active{display:block}.hero{text-align:center;margin:6px auto 18px;max-width:780px}.hero h1{color:var(--wine);font-size:clamp(26px,5vw,44px);line-height:1.05;margin-bottom:8px}.hero p{color:var(--muted);font-size:14px;line-height:1.55}
 .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}.card{grid-column:span 12;background:var(--ivory);border:1px solid var(--gold);border-top:4px solid var(--orange);border-radius:14px;padding:16px;box-shadow:var(--shadow)}.half{grid-column:span 6}@media(max-width:760px){.half{grid-column:span 12}.site-header{align-items:flex-start}.nav-tabs{width:100%}}
+.section-hero{text-align:center;margin:0 auto 20px}.section-hero h2{font-size:clamp(22px,3.5vw,32px);color:var(--wine);display:flex;align-items:center;justify-content:center;gap:8px}.hero-mark{font-size:clamp(24px,4vw,38px)}.lab-layout{display:grid;grid-template-columns:190px 1fr;gap:18px;align-items:start}.lab-menu{background:var(--ivory);border:1px solid var(--gold);border-radius:14px;padding:10px;box-shadow:var(--shadow);position:sticky;top:76px}.lab-menu h3{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:6px;padding:0 6px}.lab-btn{display:flex;align-items:center;gap:8px;width:100%;padding:8px 10px;border:none;background:transparent;border-radius:8px;font-size:12px;font-weight:800;color:var(--ink);text-align:left;transition:.15s;margin-bottom:2px}.lab-btn:hover{background:var(--soft);color:var(--wine)}.lab-btn.active{background:var(--wine);color:#fff}.lab-dot{width:8px;height:8px;border-radius:50%;background:var(--orange);flex:0 0 auto}.lab-content{display:flex;flex-direction:column;gap:14px}.lab-card{background:var(--ivory);border:1px solid var(--gold);border-radius:16px;padding:22px;box-shadow:var(--shadow);position:relative}.lab-card-accent{border-top:4px solid var(--orange)}.lab-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}.lab-icon{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--soft);color:var(--wine);font-size:22px;font-weight:900}.lab-name{font-size:24px;color:var(--wine);font-weight:900;line-height:1.05}.lab-sub{font-size:12px;color:var(--muted);margin-top:3px;letter-spacing:1px;text-transform:uppercase;font-weight:800}.lab-copy{font-size:14px;line-height:1.6;color:var(--ink);margin-top:8px}.lab-quick-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:12px}.lab-quick{border:1px solid var(--gold);background:#fffdf8;border-radius:10px;padding:12px;color:var(--ink)}.lab-quick strong{display:block;color:var(--wine);font-size:14px;margin-bottom:4px}.lab-quick span{font-size:12px;color:var(--muted);line-height:1.4}.lab-table-card{padding:16px}@media(max-width:760px){.lab-layout{grid-template-columns:1fr}.lab-menu{position:static}.lab-header{flex-wrap:wrap}}
 .card-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.card-title h2{font-size:18px;color:var(--wine)}.tag{font-size:10px;font-weight:900;letter-spacing:1.2px;text-transform:uppercase;color:var(--wine);background:var(--soft);border:1px solid var(--gold);border-radius:999px;padding:4px 9px;white-space:nowrap}
 .table-tools{display:none;gap:7px;flex-wrap:wrap;margin:0 0 10px}.admin-mode .table-tools{display:flex}.mini-btn{background:#fff;color:var(--wine);border-color:var(--gold);padding:6px 10px}.mini-btn:hover{background:var(--soft)}.mini-btn.danger{color:var(--danger)}
 .table-wrap{width:100%;overflow:auto;border:1px solid var(--line);border-radius:8px;background:#fff}table{width:100%;border-collapse:collapse;font-size:13px}th{background:var(--wine);color:#fff;text-align:left;padding:8px 9px;font-size:10px;text-transform:uppercase;letter-spacing:.7px;white-space:nowrap;min-width:120px}td{border-top:1px solid var(--line);border-right:1px solid rgba(122,61,0,.13);padding:7px 9px;vertical-align:top;min-width:120px}td:last-child{border-right:none}tr:nth-child(even) td{background:#fff8ef}
@@ -32,7 +35,7 @@ button,input{font-family:inherit}button{cursor:pointer}
 .export-options{display:grid;gap:8px;margin:14px 0;text-align:left}.export-options label{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink);cursor:pointer}.export-options input{accent-color:var(--orange)}
 .urine-sim{grid-template-columns:240px 1fr}.tube{width:170px;height:230px;border:3px solid rgba(122,61,0,.34);border-top:8px solid rgba(122,61,0,.24);border-radius:10px 10px 38px 38px;background:linear-gradient(90deg,rgba(255,255,255,.88),rgba(255,255,255,.4));position:relative;display:block;overflow:hidden}.tube:before{content:"";position:absolute;left:14px;top:36px;bottom:22px;border-left:1px solid rgba(122,61,0,.18);box-shadow:0 26px 0 rgba(122,61,0,.18),0 52px 0 rgba(122,61,0,.18),0 78px 0 rgba(122,61,0,.18),0 104px 0 rgba(122,61,0,.18);z-index:4}.tube:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(255,255,255,.5),transparent 28%,rgba(255,255,255,.26) 75%,transparent);pointer-events:none;z-index:5}.urine-fill{position:absolute;left:0;right:0;bottom:0;height:70%;background:var(--urine,#e8c23a);transition:.2s}.urine-sediment{position:absolute;left:0;right:0;bottom:0;height:12%;background:var(--sediment,rgba(255,255,255,.65));z-index:2;opacity:.9}.urine-foam{position:absolute;left:0;right:0;bottom:68%;height:10%;background:var(--foam,rgba(255,248,190,.82));z-index:3;border-radius:50% 50% 0 0;filter:blur(.2px)}.sample-choice .swatch{display:none}.sample-choice{justify-content:center}.micro-visual{display:block}.scope-shape{display:none}.micro-stage{max-width:620px;margin:auto}.micro-item{touch-action:none}.admin-mode .micro-item{outline:1px dashed rgba(122,61,0,.45)}.micro-resize-handle{display:none;position:absolute;right:-5px;bottom:-5px;width:12px;height:12px;border-radius:50%;background:#fff;border:2px solid var(--wine);box-shadow:0 1px 4px rgba(0,0,0,.2)}.admin-mode .micro-resize-handle{display:block}.micro-field.polarizing .micro-item.nonpolar{filter:grayscale(.45) brightness(.78);opacity:.38;box-shadow:inset 0 0 8px rgba(255,255,255,.18)}.case-object-row{grid-template-columns:1fr 86px 86px 86px 58px 1.4fr 136px auto}.case-object-row label{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--wine);font-weight:900}.case-fluid-editor{grid-column:1/-1;border:1px solid var(--gold);border-radius:10px;padding:10px;background:#fff8ef}.case-fluid-editor h4{color:var(--wine);font-size:13px;margin-bottom:8px}.case-fluid-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}.case-fluid-grid label{font-size:11px;font-weight:900;text-transform:uppercase;color:var(--wine);display:grid;gap:4px}.refractometer{grid-template-columns:minmax(220px,330px) 160px;gap:10px}.refract-device{height:112px;transform:rotate(-18deg);margin:4px}.refract-prism{top:58px;width:94px;height:32px}.refract-body{left:78px;top:31px;width:176px;height:48px}.refract-grip{left:124px;top:33px;width:92px;height:44px}.refract-eye{right:2px;top:23px;width:48px;height:62px}.refract-readout{width:154px;height:154px;border-width:10px}.refract-scale{inset:18px 52px 16px}.sg-readout strong{font-size:19px}@media(max-width:900px){.urine-sim{grid-template-columns:1fr}.case-object-row{grid-template-columns:1fr}.refractometer{grid-template-columns:1fr}.refract-device{margin:8px auto;width:300px}}
 .tube{width:210px;height:245px;border:4px solid rgba(120,105,75,.32);border-top:none;border-radius:18px 18px 36px 36px;background:rgba(255,255,255,.52);overflow:visible;box-shadow:inset 0 0 18px rgba(80,65,40,.14),0 10px 22px rgba(122,61,0,.11)}.tube:before{content:"";position:absolute;left:-18px;right:-18px;top:-28px;height:54px;border-radius:50% 50% 20% 20%;background:repeating-linear-gradient(90deg,#76c74f 0 8px,#8bda65 8px 14px);border:3px solid #60ad3d;box-shadow:inset 0 8px 0 rgba(255,255,255,.22);z-index:6}.tube:after{content:"";position:absolute;left:18px;right:18px;top:-14px;height:25px;border-radius:50%;background:rgba(112,190,75,.62);z-index:7}.cup-bg{position:absolute;inset:42px 26px 26px;display:grid;place-items:center;text-align:center;font:900 20px/1.35 Arial,sans-serif;letter-spacing:1px;color:rgba(38,22,4,.24);background:repeating-linear-gradient(0deg,rgba(38,22,4,.08) 0 2px,transparent 2px 17px);z-index:1}.urine-fill{height:68%;border-radius:42% 42% 14px 14px / 9% 9% 14px 14px;opacity:var(--urine-opacity,.72);z-index:2}.urine-fill.clear{filter:none}.urine-fill.slightly-cloudy{filter:blur(.45px) saturate(.9)}.urine-fill.cloudy{filter:blur(1.1px) saturate(.8);opacity:calc(var(--urine-opacity,.72) + .1)}.urine-fill.turbid,.urine-fill.milky{filter:blur(1.8px) saturate(.55);opacity:.92}.urine-fill.bloody{filter:saturate(1.2)}.urine-sediment{height:10%;z-index:3}.urine-foam{bottom:66%;height:8%;z-index:4}.refractometer{background:#4d4f51;border:1px solid #2f3133;border-radius:12px;padding:12px;color:#fff}.refract-device{filter:drop-shadow(0 8px 12px rgba(0,0,0,.3))}.refract-body{background:linear-gradient(90deg,#d7d9dc 0 18%,#1b1d20 19% 78%,#050505 79% 100%)}.refract-readout{box-shadow:0 10px 22px rgba(0,0,0,.3)}.strip-admin-grid{display:grid;gap:9px}.strip-admin-row{display:grid;grid-template-columns:150px 1fr 54px;gap:8px;align-items:center}.strip-admin-row strong{color:var(--wine);font-size:12px}.strip-color-swatch{width:44px;height:30px;border:1px solid rgba(38,22,4,.24);border-radius:5px;background:var(--strip-color)}.print-case-grid{display:grid;grid-template-columns:220px 1fr;gap:12px;align-items:start}.print-cup{width:130px;height:150px;border:2px solid #b7a98c;border-top:14px solid #75c84e;border-radius:10px 10px 24px 24px;position:relative;background:#fff;margin:auto;overflow:hidden}.print-liquid{position:absolute;left:0;right:0;bottom:0;height:68%;background:var(--urine);opacity:var(--opacity)}.print-sediment{position:absolute;left:0;right:0;bottom:0;height:10%;background:var(--sediment)}.print-foam{position:absolute;left:0;right:0;bottom:66%;height:8%;background:var(--foam)}.print-strip{display:flex;gap:5px;align-items:end;overflow:hidden;border:1px solid #999;padding:6px;background:#eee}.print-strip-pad{display:grid;gap:3px;text-align:center;font-size:7px}.print-strip-pad span:first-child{display:block;width:28px;height:22px;border:1px solid #555;background:var(--pad)}.print-micro-field{width:220px;height:220px;border:10px solid #05070c;border-radius:50%;position:relative;background:#f8f6ea;overflow:hidden;margin:8px auto}.print-micro-item{position:absolute;left:var(--x);top:var(--y);width:var(--w);height:var(--h);transform:translate(-50%,-50%) rotate(var(--rot));background:var(--item);border:1px solid #6b604f;font-size:7px;display:grid;place-items:center;text-align:center}.print-micro-item.cell{border-radius:50%}.print-micro-item.cast{border-radius:999px}.print-micro-item.crystal{clip-path:polygon(50% 0,100% 28%,82% 100%,18% 100%,0 28%)}.report-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #222;margin-top:8px}.report-cell{min-height:38px;border:1px solid #222;padding:6px;font-size:10px}.report-label{background:#ddd;font-weight:900}.report-wide{grid-column:1/-1;min-height:44px}
-.dip-pad{background:var(--pad-bg,var(--pad))}.print-strip-pad span:first-child{background:var(--pad-bg,var(--pad))}.case-export-box{border:1px solid var(--gold);border-radius:12px;background:#fff8ef;padding:10px;margin:0 0 14px;text-align:left;max-height:160px;overflow:auto}.case-export-box strong{display:block;color:var(--wine);font-size:12px;text-transform:uppercase;letter-spacing:.7px;margin-bottom:7px}.case-export-box label{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink);padding:4px 0}.sediment-choice-row{grid-column:1/-1;display:flex;align-items:center;gap:8px;flex-wrap:wrap;border:1px solid var(--gold);border-radius:9px;background:#fffdf8;padding:8px}.sediment-choice-row span{font-size:11px;font-weight:900;text-transform:uppercase;color:var(--wine)}.sediment-choice{border:1.5px solid var(--gold);border-radius:999px;background:#fff;color:var(--wine);font-size:12px;font-weight:900;padding:7px 14px}.sediment-choice.active{background:var(--gold);color:#3d1f00}.tube{width:92px;height:118px;margin:26px auto 10px;border-width:2px;overflow:hidden}.tube:before{left:-7px;right:-7px;top:-14px;height:27px;border-width:2px}.tube:after{left:11px;right:11px;top:-7px;height:12px}.cup-bg{inset:25px 12px 14px;font-size:9px;letter-spacing:.5px}.urine-fill{border-radius:34% 34% 10px 10px / 7% 7% 10px 10px}.urine-sim{grid-template-columns:112px 1fr;gap:12px}.case-object-row{grid-template-columns:minmax(130px,1fr) 96px 70px 58px 118px minmax(150px,1.2fr) 126px auto}.case-object-row .mini-btn{padding:6px 9px;white-space:nowrap}@media(max-width:900px){.case-object-row{grid-template-columns:1fr}.urine-sim{grid-template-columns:1fr}.tube{width:92px;height:118px}}
+.dip-pad{background:var(--pad-bg,var(--pad))}.print-strip-pad span:first-child{background:var(--pad-bg,var(--pad))}.case-export-box{border:1px solid var(--gold);border-radius:12px;background:#fff8ef;padding:10px;margin:0 0 14px;text-align:left;max-height:160px;overflow:auto}.case-export-box strong{display:block;color:var(--wine);font-size:12px;text-transform:uppercase;letter-spacing:.7px;margin-bottom:7px}.case-export-box label{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink);padding:4px 0}.sediment-choice-row{grid-column:1/-1;display:flex;align-items:center;gap:8px;flex-wrap:wrap;border:1px solid var(--gold);border-radius:9px;background:#fffdf8;padding:8px}.sediment-choice-row span{font-size:11px;font-weight:900;text-transform:uppercase;color:var(--wine)}.sediment-choice{border:1.5px solid var(--gold);border-radius:999px;background:#fff;color:var(--wine);font-size:12px;font-weight:900;padding:7px 14px}.sediment-choice.active{background:var(--gold);color:#3d1f00}.sample-stage{position:relative;width:150px;min-height:170px;margin:0 auto;display:grid;place-items:center}.sample-stage:before{content:"";position:absolute;width:112px;height:148px;left:50%;top:18px;transform:translateX(-50%);background:#fff;border:1px solid rgba(122,61,0,.14);border-radius:6px;box-shadow:0 8px 22px rgba(122,61,0,.12);background-image:repeating-linear-gradient(0deg,transparent 0 15px,rgba(38,22,4,.08) 15px 17px)}.sample-stage:after{content:"CLARITY";position:absolute;left:50%;top:70px;transform:translateX(-50%) rotate(-90deg);font:900 10px/1 Arial,sans-serif;letter-spacing:2px;color:rgba(122,61,0,.18)}.tube{width:104px;height:132px;margin:22px auto 10px;border:2px solid rgba(120,105,75,.32);border-top:none;border-radius:8px 8px 24px 24px;background:linear-gradient(90deg,rgba(255,255,255,.78),rgba(255,255,255,.35) 48%,rgba(255,255,255,.68));overflow:visible;z-index:1}.tube:before{left:-9px;right:-9px;top:-15px;height:29px;border-width:2px;border-radius:50% 50% 18% 18%;background:repeating-linear-gradient(90deg,#78c957 0 6px,#93dc70 6px 11px)}.tube:after{left:13px;right:13px;top:-8px;height:13px;background:rgba(104,183,65,.48)}.cup-bg{inset:23px 12px 13px;font-size:0;background:repeating-linear-gradient(0deg,rgba(38,22,4,.11) 0 1px,transparent 1px 13px);opacity:.38}.cup-bg:before{content:"";position:absolute;left:18px;right:18px;top:10px;height:2px;background:rgba(38,22,4,.12);box-shadow:0 20px 0 rgba(38,22,4,.1),0 40px 0 rgba(38,22,4,.1),0 60px 0 rgba(38,22,4,.1)}.urine-fill{height:66%;border-radius:40% 40% 10px 10px / 7% 7% 10px 10px;z-index:2}.urine-sediment{height:7%;opacity:.72}.urine-foam{height:6%;bottom:64%;opacity:.84}.urine-sim{grid-template-columns:170px 1fr;gap:12px}.refractometer{background:#fffdf8;color:var(--ink);border:1px solid var(--gold);box-shadow:0 8px 20px rgba(122,61,0,.08);grid-template-columns:minmax(180px,280px) 150px}.refract-device{height:104px;transform:rotate(-16deg);margin:6px auto;width:270px}.refract-prism{top:57px;width:88px;height:30px;background:linear-gradient(135deg,rgba(123,184,239,.86),rgba(255,255,255,.66));border-color:#b8b8b8}.refract-body{left:72px;top:31px;width:168px;height:44px;background:linear-gradient(90deg,#cfd3d7 0 19%,#101214 20% 78%,#030303 79% 100%)}.refract-grip{left:116px;top:33px;width:86px;height:40px;background:repeating-linear-gradient(45deg,#111 0 3px,#303336 3px 6px)}.refract-eye{right:5px;top:24px;width:44px;height:56px}.refract-readout{width:142px;height:142px;border-width:9px;box-shadow:0 8px 18px rgba(38,22,4,.16)}.refract-scale{inset:17px 48px 15px}.micro-stage{max-width:390px}.micro-field{width:min(100%,330px);border-width:16px;background:radial-gradient(circle at 45% 42%,#fffef7 0 42%,#eee9d8 72%,#c9c3ae 100%);box-shadow:0 0 0 3px rgba(3,5,10,.9),0 0 0 5px rgba(38,22,4,.1),inset 0 0 38px rgba(78,68,52,.2)}.micro-field:before{background:radial-gradient(circle at 35% 28%,rgba(255,255,255,.34),transparent 34%),radial-gradient(circle,transparent 54%,rgba(0,0,0,.16));}.case-object-row{grid-template-columns:minmax(130px,1fr) 96px 70px 58px 118px minmax(150px,1.2fr) 126px auto}.case-object-row .mini-btn{padding:6px 9px;white-space:nowrap}@media(max-width:900px){.case-object-row{grid-template-columns:1fr}.urine-sim{grid-template-columns:1fr}.sample-stage{width:150px}.tube{width:104px;height:132px}.refractometer{grid-template-columns:1fr}.refract-device{width:270px}}
 .save-indicator{position:fixed;right:18px;bottom:18px;background:var(--green);color:#fff;border-radius:999px;padding:9px 15px;font-size:13px;font-weight:800;opacity:0;pointer-events:none;transition:.2s;z-index:50}.save-indicator.show{opacity:1}
 .modal-overlay{position:fixed;inset:0;background:rgba(38,22,4,.72);z-index:1000;display:none;align-items:center;justify-content:center}.modal-overlay.visible{display:flex}.modal-box{background:var(--ivory);border-radius:18px;padding:30px;max-width:380px;width:90%;box-shadow:0 20px 60px rgba(122,61,0,.32);text-align:center;border:1px solid var(--gold)}.modal-box h3{font-size:20px;color:var(--wine);margin-bottom:6px}.modal-box p{font-size:13px;color:var(--muted);margin-bottom:18px}.modal-input{width:100%;border:1.5px solid var(--gold);border-radius:10px;padding:10px 14px;font-size:15px;text-align:center;background:#fff;margin-bottom:12px;letter-spacing:3px}.modal-input:focus{outline:none;border-color:var(--orange)}.modal-error{color:var(--danger);font-size:12px;margin-bottom:10px;min-height:16px}.btn{border:none;border-radius:999px;background:var(--orange);color:#fff;padding:8px 16px;font-size:12px;font-weight:900}.btn.ghost{background:transparent;color:var(--muted);border:1.5px solid var(--gold)}
 #printArea{display:none}
@@ -52,16 +55,27 @@ button,input{font-family:inherit}button{cursor:pointer}
 }
 </style>
 </head>
-<body>
+<body class="intro-active">
+<div id="intro">
+  <div class="door-frame">
+    <div class="door left" id="doorLeft"><div class="door-handle"></div></div>
+    <div class="door right" id="doorRight"><div class="door-handle"></div></div>
+  </div>
+  <div class="intro-center">
+    <div class="intro-drops">🧪😊🧫</div>
+    <div class="intro-title">Urinalysis Lab</div>
+    <div class="intro-sub">UA Hub</div>
+  </div>
+</div>
 <header class="site-header">
   <div class="site-logo">UA</div>
-  <div class="site-title">Urinalysis <em>Hub</em></div>
+  <div class="site-title">Urinalysis <em>Lab Hub</em></div>
   <a class="mls-home-link" href="https://legoretro.github.io/MLS/">Back to MLS Home</a>
   <span class="admin-pill" id="adminBadge">Admin</span>
   <nav class="nav-tabs" aria-label="Urinalysis sections">
     <button type="button" class="nav-tab active" data-section="overview" onclick="event.stopPropagation();showSection('overview')">Overview</button>
-    <button type="button" class="nav-tab" data-section="screening" onclick="event.stopPropagation();showSection('screening')">Screening</button>
-    <button type="button" class="nav-tab" data-section="microscope" onclick="event.stopPropagation();showSection('microscope')">Microscope</button>
+    <button type="button" class="nav-tab" data-section="screening" onclick="event.stopPropagation();showSection('screening')">Macroscopic</button>
+    <button type="button" class="nav-tab" data-section="microscope" onclick="event.stopPropagation();showSection('microscope')">Microscopic</button>
     <button type="button" class="nav-tab" data-section="resources" onclick="event.stopPropagation();showSection('resources')">Resources</button>
     <button type="button" class="nav-tab" data-section="simulation" onclick="event.stopPropagation();showSection('simulation')">Simulation</button>
   </nav>
@@ -89,8 +103,8 @@ button,input{font-family:inherit}button{cursor:pointer}
     <p>Choose sections and the exact cases to include.</p>
     <div class="export-options">
       <label><input type="checkbox" class="export-check" value="overview" checked> Overview</label>
-      <label><input type="checkbox" class="export-check" value="screening" checked> Screening</label>
-      <label><input type="checkbox" class="export-check" value="microscope" checked> Microscope</label>
+      <label><input type="checkbox" class="export-check" value="screening" checked> Macroscopic</label>
+      <label><input type="checkbox" class="export-check" value="microscope" checked> Microscopic</label>
       <label><input type="checkbox" class="export-check" value="resources" checked> Resources</label>
       <label><input type="checkbox" class="export-check" value="cases" checked> Simulation Case Reports</label>
     </div>
@@ -118,31 +132,56 @@ button,input{font-family:inherit}button{cursor:pointer}
 
 <main class="wrap">
   <section class="section active" id="overview">
-    <div class="hero"><h1>Urinalysis Hub</h1><p>A clean student-to-student reference for screening and microscopic sediment.</p></div>
-    <div class="grid">
-      <article class="card half">
-        <div class="card-title"><h2>Big Picture</h2><span class="tag">Core</span></div>
-        <div class="table-tools" data-tools-for="overview_core"></div>
-        <div class="table-slot" data-table-id="overview_core"></div>
-      </article>
-      <article class="card half">
-        <div class="card-title"><h2>Specimen Handling</h2><span class="tag">Pre-Analytical</span></div>
-        <div class="table-tools" data-tools-for="overview_specimen"></div>
-        <div class="table-slot" data-table-id="overview_specimen"></div>
-      </article>
+    <div class="section-hero"><h2><span class="hero-mark">UA</span> Urinalysis Lab Hub</h2></div>
+    <div class="lab-layout">
+      <div class="lab-menu">
+        <h3>Lab Bench</h3>
+        <button type="button" class="lab-btn active"><span class="lab-dot"></span>Overview</button>
+        <button type="button" class="lab-btn" onclick="showSection('screening')"><span class="lab-dot"></span>Macroscopic</button>
+        <button type="button" class="lab-btn" onclick="showSection('microscope')"><span class="lab-dot"></span>Microscopic</button>
+        <button type="button" class="lab-btn" onclick="showSection('simulation')"><span class="lab-dot"></span>Simulation Lab</button>
+        <button type="button" class="lab-btn" onclick="showSection('resources')"><span class="lab-dot"></span>Resources</button>
+      </div>
+      <div class="lab-content">
+        <article class="lab-card lab-card-accent">
+          <div class="lab-header">
+            <div class="lab-icon">U</div>
+            <div>
+              <div class="lab-name">Urinalysis Workflow</div>
+              <div class="lab-sub">Specimen to sediment</div>
+            </div>
+          </div>
+          <p class="lab-copy">A practical student lab hub for specimen handling, physical appearance, chemical screening, microscopic findings, and case practice.</p>
+          <div class="lab-quick-grid">
+            <button type="button" class="lab-quick" onclick="showSection('screening')"><strong>Macroscopic</strong><span>Color, clarity, specific gravity, and reagent strip chemistry.</span></button>
+            <button type="button" class="lab-quick" onclick="showSection('microscope')"><strong>Microscopic</strong><span>Cells, casts, crystals, organisms, stains, and microscope methods.</span></button>
+            <button type="button" class="lab-quick" onclick="showSection('simulation')"><strong>Simulation Lab</strong><span>Move through sample selection, dipstick, refractometer, microscopy, and reveal.</span></button>
+          </div>
+        </article>
+        <article class="lab-card lab-table-card">
+          <div class="card-title"><h2>Big Picture</h2><span class="tag">Core</span></div>
+          <div class="table-tools" data-tools-for="overview_core"></div>
+          <div class="table-slot" data-table-id="overview_core"></div>
+        </article>
+        <article class="lab-card lab-table-card">
+          <div class="card-title"><h2>Specimen Handling</h2><span class="tag">Pre-Analytical</span></div>
+          <div class="table-tools" data-tools-for="overview_specimen"></div>
+          <div class="table-slot" data-table-id="overview_specimen"></div>
+        </article>
+      </div>
     </div>
   </section>
 
   <section class="section" id="screening">
-    <div class="hero"><h1>Screening</h1><p>Physical and chemical screening tables, ready for your own rows and columns.</p></div>
+    <div class="hero"><h1>Macroscopic</h1><p>Physical appearance and reagent-strip chemistry tables, ready for your own rows and columns.</p></div>
     <div class="grid">
       <article class="card">
-        <div class="card-title"><h2>Physical</h2><span class="tag">Screening</span></div>
+        <div class="card-title"><h2>Physical</h2><span class="tag">Macroscopic</span></div>
         <div class="table-tools" data-tools-for="physical"></div>
         <div class="table-slot" data-table-id="physical"></div>
       </article>
       <article class="card">
-        <div class="card-title"><h2>Chemical</h2><span class="tag">Screening</span></div>
+        <div class="card-title"><h2>Chemical</h2><span class="tag">Chemistry</span></div>
         <div class="table-tools" data-tools-for="chemical"></div>
         <div class="table-slot" data-table-id="chemical"></div>
       </article>
@@ -150,7 +189,7 @@ button,input{font-family:inherit}button{cursor:pointer}
   </section>
 
   <section class="section" id="microscope">
-    <div class="hero"><h1>Microscope</h1><p>Build your own tables for cells, casts, crystals, stains, and microscope methods.</p></div>
+    <div class="hero"><h1>Microscopic</h1><p>Build your own tables for cells, casts, crystals, stains, and microscope methods.</p></div>
     <div class="grid">
       <article class="card"><div class="card-title"><h2>Cells</h2><span class="tag">Sediment</span></div><div class="table-tools" data-tools-for="cells"></div><div class="table-slot" data-table-id="cells"></div></article>
       <article class="card"><div class="card-title"><h2>Casts</h2><span class="tag">Sediment</span></div><div class="table-tools" data-tools-for="casts"></div><div class="table-slot" data-table-id="casts"></div></article>
@@ -165,7 +204,7 @@ button,input{font-family:inherit}button{cursor:pointer}
     <div class="resource-shell">
       <article class="card">
         <div class="card-title"><h2>Resources</h2><span class="tag">List</span></div>
-        <div class="resource-note">Information filled in by student.</div>
+        <div class="resource-note">Core references for this student-built urinalysis hub.</div>
         <div class="table-tools" data-tools-for="resources"></div>
         <div class="table-slot" data-table-id="resources"></div>
       </article>
@@ -176,7 +215,7 @@ button,input{font-family:inherit}button{cursor:pointer}
     <article class="card">
       <div class="card-title"><h2>Urinalysis Lab Simulation</h2><span class="tag">Practice</span></div>
       <div class="urine-sim">
-        <div class="tube" aria-hidden="true" id="urineCup"><div class="cup-bg">UA CLARITY<br>TEXT CHECK</div><div class="urine-fill" id="urineFill"></div><div class="urine-sediment" id="urineSediment"></div><div class="urine-foam" id="urineFoam"></div></div>
+        <div class="sample-stage" aria-hidden="true"><div class="tube" id="urineCup"><div class="cup-bg">UA CLARITY<br>TEXT CHECK</div><div class="urine-fill" id="urineFill"></div><div class="urine-sediment" id="urineSediment"></div><div class="urine-foam" id="urineFoam"></div></div></div>
         <div>
           <h2 class="sim-label" id="simCaseLabel">Sample 1</h2>
           <p class="sim-note">Pick urine sample -> macroscopic check -> dipstick test -> refractometer specific gravity -> microscopy -> final interpretation -> reveal results.</p>
@@ -200,7 +239,7 @@ const TABLE_NAME='mls_blood_bank';
 const UA_ROW_ID='ua_hub';
 const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c675';
 (function(){
-  var STORAGE_KEY='urinalysis-hub-edits-v9';
+  var STORAGE_KEY='urinalysis-hub-edits-v10';
   var isAdmin=false;
   var editMode=false;
   var saveTimer=null;
@@ -256,7 +295,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function defaultSimCases(){
     return [
-      {name:'Case 1',urineColor:'#e8c23a',sedimentColor:'#f7efe4',foamColor:'#fff2a8',urineOpacity:.72,clarity:'clear',macro:'Clear yellow urine. Record color and clarity first.',dipstick:'Run the reagent strip horizontally and compare each pad to the chart.',specificGravity:'1.015',microscopy:'Scan the sediment in brightfield, then switch to polarizing when crystals need confirmation.',interpretation:'Normal example or possible related condition summary goes here.',reveal:'Final reveal: connect macroscopic, chemistry, SG, and microscopic findings into a report-style interpretation.',chemistry:{LEU:'negative',NIT:'negative',URO:'normal (0.2 mg/dL)',PRO:'negative',pH:'6.0',BLO:'negative',SG:'1.015',KET:'negative',BIL:'negative',GLU:'negative'},results:[
+      {name:'Case 1',urineColor:'#e8c23a',hasSediment:false,sedimentColor:'transparent',foamColor:'transparent',urineOpacity:.72,clarity:'clear',macro:'Clear yellow urine. Record color and clarity first.',dipstick:'Run the reagent strip horizontally and compare each pad to the chart.',specificGravity:'1.015',microscopy:'Scan the sediment in brightfield, then switch to polarizing when crystals need confirmation.',interpretation:'Normal example or possible related condition summary goes here.',reveal:'Final reveal: connect macroscopic, chemistry, SG, and microscopic findings into a report-style interpretation.',chemistry:{LEU:'negative',NIT:'negative',URO:'normal (0.2 mg/dL)',PRO:'negative',pH:'6.0',BLO:'negative',SG:'1.015',KET:'negative',BIL:'negative',GLU:'negative'},results:[
         {test:'Color',result:'Yellow',note:'Editable example'},
         {test:'Clarity',result:'Clear',note:'Editable example'},
         {test:'Specific gravity',result:'1.015',note:'Refractometer readout'}
@@ -269,7 +308,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function defaultState(){
     return {
-      version:9,
+      version:10,
       notes:{simulation_note:'',selected_color:'yellow',sim_case_index:0,sim_step:0,micro_mode:'brightfield'},
       simCases:defaultSimCases(),
       tables:{
@@ -294,9 +333,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         stains:makeTable('Stains',false),
         microscopes:makeTable('Microscopes',false),
         resources:makeTableFrom('Resources',['Type','Title','Notes'],[
-          ['Primary Reference','',''],
-          ['Textbook','',''],
-          ['Additional Resource','','']
+          ['Textbook','Urinalysis and Body Fluids, 7th ed.','Susan King Strasinger and Marjorie Schaub Di Lorenzo. Primary textbook reference for urinalysis and body fluid principles used in this hub.'],
+          ['Course Lectures','OIT MLS Program UA Lectures','Oregon Institute of Technology Medical Laboratory Science Program urinalysis lecture materials used as course reference for student study notes.']
         ])
       }
     };
@@ -351,8 +389,10 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     out.dipstickPads=chemistryPads(out.chemistry);
     if(!Array.isArray(out.microObjects))out.microObjects=defaultObjects();
     if(!out.urineColor)out.urineColor=out.colorId?(urineColors.find(function(c){return c.id===out.colorId})||urineColors[1]).color:'#e8c23a';
-    if(!out.sedimentColor)out.sedimentColor='#f7efe4';
-    if(!out.foamColor)out.foamColor='#fff2a8';
+    if(typeof out.hasSediment==='undefined')out.hasSediment=false;
+    if(!out.hasSediment)out.sedimentColor='transparent';
+    if(!out.sedimentColor)out.sedimentColor='transparent';
+    if(!out.foamColor)out.foamColor='transparent';
     if(typeof out.urineOpacity==='undefined')out.urineOpacity=.72;
     if(!out.clarity)out.clarity='clear';
     out.microObjects=out.microObjects.map(function(obj){if(!obj.type)obj.type=obj.shape||'cell';obj.shape=obj.type;if(typeof obj.polarizes==='undefined')obj.polarizes=(obj.type==='crystal');return obj});
@@ -370,8 +410,15 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(Array.isArray(incoming.simCases)&&incoming.simCases.length)base.simCases=incoming.simCases.map(normalizeCase);
     else base.simCases=base.simCases.map(normalizeCase);
     if(Number(incoming.version)<7)base.tables.resources=defaultState().tables.resources;
-    base.version=9;
+    if(resourcesBlank(base.tables.resources))base.tables.resources=defaultState().tables.resources;
+    base.version=10;
     return base;
+  }
+  function resourcesBlank(table){
+    if(!table||!Array.isArray(table.rows))return true;
+    return table.rows.every(function(row){
+      return !row.cells||Object.keys(row.cells).every(function(key){return !String(row.cells[key]||'').trim()||/Primary Reference|Textbook|Additional Resource/.test(String(row.cells[key]||''))});
+    });
   }
   function saveLocal(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
   function collectVisibleState(){
@@ -607,7 +654,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
           '<label>Urine Color<input type="color" data-case-field="urineColor" data-case-index="'+i+'" value="'+escapeHtml(item.urineColor||'#e8c23a')+'"></label>'+
           '<label>Transparency<input type="range" min="0.18" max="1" step="0.02" data-case-field="urineOpacity" data-case-index="'+i+'" value="'+escapeHtml(item.urineOpacity||.72)+'"></label>'+
           '<label>Clarity<select data-case-field="clarity" data-case-index="'+i+'">'+CLARITY_OPTIONS.map(function(opt){return '<option value="'+opt+'" '+(item.clarity===opt?'selected':'')+'>'+escapeHtml(opt)+'</option>'}).join('')+'</select></label>'+
-          '<div class="sediment-choice-row"><span>Sediment</span><button type="button" class="sediment-choice '+((item.sedimentColor||'')==='#f3b6c8'?'active':'')+'" data-action="set-sediment" data-case-index="'+i+'" data-color="#f3b6c8">Pink</button><button type="button" class="sediment-choice '+((item.sedimentColor||'')==='#f7efe4'?'active':'')+'" data-action="set-sediment" data-case-index="'+i+'" data-color="#f7efe4">White</button></div>'+
+          '<div class="sediment-choice-row"><span>Sediment</span><button type="button" class="sediment-choice '+(!item.hasSediment?'active':'')+'" data-action="set-sediment" data-case-index="'+i+'" data-color="transparent">None</button><button type="button" class="sediment-choice '+(item.hasSediment&&(item.sedimentColor||'')==='#f3b6c8'?'active':'')+'" data-action="set-sediment" data-case-index="'+i+'" data-color="#f3b6c8">Pink</button><button type="button" class="sediment-choice '+(item.hasSediment&&(item.sedimentColor||'')==='#f7efe4'?'active':'')+'" data-action="set-sediment" data-case-index="'+i+'" data-color="#f7efe4">White</button></div>'+
           '<label>Foam<select data-case-field="foamColor" data-case-index="'+i+'"><option value="transparent" '+(item.foamColor==='transparent'?'selected':'')+'>none</option><option value="#ffffff" '+(item.foamColor==='#ffffff'?'selected':'')+'>white</option><option value="#fff2a8" '+((item.foamColor||'#fff2a8')==='#fff2a8'?'selected':'')+'>yellow</option></select></label>'+
           '</div></div>';
         return '<div class="case-edit-card" data-case-edit="'+i+'"><div class="case-edit-grid">'+
@@ -890,14 +937,15 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(btn.dataset.action==='set-sediment'){
       var sci=Number(btn.dataset.caseIndex);
       if(state.simCases[sci]){
-        state.simCases[sci].sedimentColor=btn.dataset.color||'#f7efe4';
+        state.simCases[sci].hasSediment=btn.dataset.color!=='transparent';
+        state.simCases[sci].sedimentColor=state.simCases[sci].hasSediment?(btn.dataset.color||'#f7efe4'):'transparent';
         saveDraft();
         renderSimulation();
       }
       return;
     }
     if(btn.dataset.action==='add-case'){
-      state.simCases.push({name:'Case '+(state.simCases.length+1),urineColor:'#e8c23a',sedimentColor:'#f7efe4',foamColor:'#fff2a8',urineOpacity:.72,clarity:'clear',macro:'',dipstick:'',specificGravity:'1.015',microscopy:'',interpretation:'',reveal:'',chemistry:defaultChemistry(),dipstickPads:defaultPads(),results:[{test:'',result:'',note:''}],microObjects:[]});
+      state.simCases.push({name:'Case '+(state.simCases.length+1),urineColor:'#e8c23a',hasSediment:false,sedimentColor:'transparent',foamColor:'transparent',urineOpacity:.72,clarity:'clear',macro:'',dipstick:'',specificGravity:'1.015',microscopy:'',interpretation:'',reveal:'',chemistry:defaultChemistry(),dipstickPads:defaultPads(),results:[{test:'',result:'',note:''}],microObjects:[]});
       saveDraft();
       renderSimulation();
       return;
@@ -1065,8 +1113,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     closeExportModal();
     var html='';
     if(selected.indexOf('overview')>-1)html+=printSection('Urinalysis Hub',['overview_core','overview_specimen']);
-    if(selected.indexOf('screening')>-1)html+=printSection('Screening',['physical','chemical']);
-    if(selected.indexOf('microscope')>-1)html+=printSection('Microscope',['cells','casts','crystals','stains','microscopes']);
+    if(selected.indexOf('screening')>-1)html+=printSection('Macroscopic',['physical','chemical']);
+    if(selected.indexOf('microscope')>-1)html+=printSection('Microscopic',['cells','casts','crystals','stains','microscopes']);
     if(selected.indexOf('resources')>-1)html+=printSection('Resources',['resources']);
     if(selected.indexOf('cases')>-1){
       var caseHtml=printCases();
@@ -1082,6 +1130,23 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   };
   window.addEventListener('afterprint',function(){document.body.classList.remove('printing');document.getElementById('printArea').innerHTML=''});
   window.addEventListener('beforeunload',function(){collectVisibleState();saveLocal()});
+  window.addEventListener('load',function(){
+    setTimeout(function(){
+      var left=document.getElementById('doorLeft');
+      var right=document.getElementById('doorRight');
+      if(left)left.classList.add('open');
+      if(right)right.classList.add('open');
+      setTimeout(function(){
+        var intro=document.getElementById('intro');
+        document.body.classList.remove('intro-active');
+        if(intro){
+          intro.style.opacity='0';
+          intro.style.transition='opacity .5s';
+          setTimeout(function(){intro.style.display='none'},500);
+        }
+      },1100);
+    },1500);
+  });
   loadRemote();
 })();
 </script>
