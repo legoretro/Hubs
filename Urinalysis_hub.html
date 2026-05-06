@@ -53,6 +53,21 @@ button,input{font-family:inherit}button{cursor:pointer}
   #printArea td{padding:5px 6px;border:1px solid #d8b374;vertical-align:top;font-size:10px}
   #printArea img{display:block;max-width:105px;max-height:80px;border:1px solid #d8b374}
 }
+/* Final cup clipping fix: keep sediment inside the urine cup. */
+.sample-stage .tube{overflow:hidden}
+.sample-stage .tube:before{left:0;right:0;top:0;height:24px;border-width:0 0 2px;border-radius:0 0 50% 50%;box-shadow:inset 0 5px 0 rgba(255,255,255,.22)}
+.sample-stage .tube:after{left:16px;right:16px;top:5px;height:10px;border-radius:50%}
+.sample-stage .urine-sediment{left:0;right:0;bottom:0;border-radius:0 0 22px 22px;z-index:3}
+.step-pill{cursor:pointer;box-shadow:0 2px 0 rgba(122,61,0,.22),0 5px 12px rgba(122,61,0,.08);transition:transform .15s ease,box-shadow .15s ease}.step-pill:hover{transform:translateY(-1px);box-shadow:0 4px 0 rgba(122,61,0,.2),0 8px 18px rgba(122,61,0,.12)}.step-pill.active{box-shadow:inset 0 0 0 2px rgba(255,255,255,.16),0 5px 12px rgba(122,61,0,.16)}
+.micro-item.needle{width:var(--w);height:4px;border-radius:999px;clip-path:none;background:linear-gradient(90deg,transparent,var(--item),rgba(255,255,255,.78),var(--item),transparent)}
+.micro-item.thorny-apple{border-radius:50%;clip-path:none;background:radial-gradient(circle,var(--item) 0 42%,transparent 43%),conic-gradient(from 10deg,var(--item) 0 8deg,transparent 8deg 22deg,var(--item) 22deg 30deg,transparent 30deg 48deg,var(--item) 48deg 58deg,transparent 58deg 76deg,var(--item) 76deg 86deg,transparent 86deg 100deg,var(--item) 100deg 112deg,transparent 112deg 130deg,var(--item) 130deg 142deg,transparent 142deg 160deg,var(--item) 160deg 172deg,transparent 172deg 190deg,var(--item) 190deg 202deg,transparent 202deg 220deg,var(--item) 220deg 232deg,transparent 232deg 250deg,var(--item) 250deg 262deg,transparent 262deg 280deg,var(--item) 280deg 292deg,transparent 292deg 310deg,var(--item) 310deg 322deg,transparent 322deg)}
+.micro-item.stump{border-radius:50%;clip-path:none;background:repeating-radial-gradient(circle,rgba(255,255,255,.58) 0 4px,var(--item) 5px 8px,rgba(92,65,30,.28) 9px 10px)}
+.micro-upload-input{display:none}.micro-upload-label{display:inline-flex;align-items:center;justify-content:center;border:1.5px solid var(--gold);border-radius:999px;background:#fff;color:var(--wine);font-size:12px;font-weight:900;padding:8px 12px;cursor:pointer}
+.case-result-row{grid-template-columns:1fr 1fr 1fr 1fr auto}
+.micro-field{cursor:default}
+.print-micro-item.needle{height:3px!important;border-radius:999px}
+.print-micro-item.thorny-apple{border-radius:50%;clip-path:none;background:radial-gradient(circle,var(--item) 0 42%,transparent 43%),conic-gradient(var(--item) 0 8deg,transparent 8deg 22deg,var(--item) 22deg 30deg,transparent 30deg 48deg,var(--item) 48deg 58deg,transparent 58deg 76deg,var(--item) 76deg 86deg,transparent 86deg 100deg,var(--item) 100deg 112deg,transparent 112deg 130deg,var(--item) 130deg 142deg,transparent 142deg 160deg,var(--item) 160deg 172deg,transparent 172deg 190deg,var(--item) 190deg 202deg,transparent 202deg 220deg,var(--item) 220deg 232deg,transparent 232deg)}
+.print-micro-item.stump{border-radius:50%;clip-path:none;background:repeating-radial-gradient(circle,rgba(255,255,255,.58) 0 4px,var(--item) 5px 8px,rgba(92,65,30,.28) 9px 10px)}
 </style>
 </head>
 <body class="intro-active">
@@ -168,6 +183,16 @@ button,input{font-family:inherit}button{cursor:pointer}
           <div class="table-tools" data-tools-for="overview_specimen"></div>
           <div class="table-slot" data-table-id="overview_specimen"></div>
         </article>
+        <article class="lab-card lab-table-card">
+          <div class="card-title"><h2>Macroscopic vs Microscopic</h2><span class="tag">Correlation</span></div>
+          <div class="table-tools" data-tools-for="overview_macro_micro"></div>
+          <div class="table-slot" data-table-id="overview_macro_micro"></div>
+        </article>
+        <article class="lab-card lab-table-card">
+          <div class="card-title"><h2>Microscopic Miscellaneous</h2><span class="tag">Chart</span></div>
+          <div class="table-tools" data-tools-for="overview_misc"></div>
+          <div class="table-slot" data-table-id="overview_misc"></div>
+        </article>
       </div>
     </div>
   </section>
@@ -253,7 +278,6 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     {key:'dipstick',title:'Dipstick test'},
     {key:'sg',title:'Refractometer specific gravity'},
     {key:'micro',title:'Microscopy'},
-    {key:'interpretation',title:'Final interpretation'},
     {key:'reveal',title:'Reveal results'}
   ];
   var urineColors=[
@@ -295,10 +319,10 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function defaultSimCases(){
     return [
-      {name:'Case 1',urineColor:'#e8c23a',hasSediment:false,sedimentColor:'transparent',foamColor:'transparent',urineOpacity:.72,clarity:'clear',macro:'Clear yellow urine. Record color and clarity first.',dipstick:'Run the reagent strip horizontally and compare each pad to the chart.',specificGravity:'1.015',microscopy:'Scan the sediment in brightfield, then switch to polarizing when crystals need confirmation.',interpretation:'Normal example or possible related condition summary goes here.',reveal:'Final reveal: connect macroscopic, chemistry, SG, and microscopic findings into a report-style interpretation.',chemistry:{LEU:'negative',NIT:'negative',URO:'normal (0.2 mg/dL)',PRO:'negative',pH:'6.0',BLO:'negative',SG:'1.015',KET:'negative',BIL:'negative',GLU:'negative'},results:[
-        {test:'Color',result:'Yellow',note:'Editable example'},
-        {test:'Clarity',result:'Clear',note:'Editable example'},
-        {test:'Specific gravity',result:'1.015',note:'Refractometer readout'}
+      {name:'Case 1',urineColor:'#e8c23a',hasSediment:false,sedimentColor:'transparent',foamColor:'transparent',urineOpacity:.72,clarity:'clear',macro:'Clear yellow urine. Record color and clarity first.',dipstick:'Run the reagent strip horizontally and compare each pad to the chart.',specificGravity:'1.015',microscopy:'Scan the sediment in brightfield, then switch to polarizing when crystals need confirmation.',interpretation:'Normal example or possible related condition summary goes here. Green urine may be associated with some medications, dyes, or Pseudomonas depending on clinical context.',reveal:'Final reveal: connect macroscopic, chemistry, SG, and microscopic findings into a report-style interpretation.',chemistry:{LEU:'negative',NIT:'negative',URO:'normal (0.2 mg/dL)',PRO:'negative',pH:'6.0',BLO:'negative',SG:'1.015',KET:'negative',BIL:'negative',GLU:'negative'},results:[
+        {test:'Color',result:'Yellow',note:'Editable example',condition:'Usually compatible with normal concentration when other findings are normal.'},
+        {test:'Clarity',result:'Clear',note:'Editable example',condition:'No visible turbidity to explain with sediment.'},
+        {test:'Specific gravity',result:'1.015',note:'Refractometer readout',condition:'Concentration status depends on hydration and clinical context.'}
       ],microObjects:[
         {label:'RBC',type:'cell',shape:'cell',x:28,y:32,w:30,h:30,rotation:0,color:'#e3a7a0',polarizes:false,note:'Example round cell. Click to view details.',image:''},
         {label:'Calcium oxalate',type:'crystal',shape:'crystal',x:58,y:42,w:46,h:34,rotation:26,color:'#dce9c2',polarizes:true,note:'Example crystal shape. Admin can resize, move, recolor, and add image.',image:''},
@@ -308,7 +332,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function defaultState(){
     return {
-      version:10,
+      version:11,
       notes:{simulation_note:'',selected_color:'yellow',sim_case_index:0,sim_step:0,micro_mode:'brightfield'},
       simCases:defaultSimCases(),
       tables:{
@@ -324,6 +348,22 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
           ['Collection','First morning, random, timed, catheterized, clean-catch, suprapubic, or chain-of-custody as needed.','Collection type changes interpretation.'],
           ['Delay','Room temperature delay can alter sediment and chemistry.','Bacteria increase; cells/casts degrade.'],
           ['Preservation','Refrigeration or preservatives may be used when testing is delayed.','Refrigeration may form amorphous crystals.']
+        ]),
+        overview_macro_micro:makeTableFrom('Macroscopic vs Microscopic',['Macroscopic Screening','Microscopic Significance'],[
+          ['Color: red','Blood; RBCs or RBC casts'],
+          ['Clarity: turbid','Cause of turbidity; cells, casts, bacteria, crystals, mucus, or yeast'],
+          ['Blood positive','RBCs, RBC casts, hemoglobin, or myoglobin correlation'],
+          ['Protein positive','Casts or renal cellular findings may support significance'],
+          ['Nitrite positive','Bacteria correlation'],
+          ['Leukocyte esterase positive','WBCs, WBC casts, or inflammation correlation'],
+          ['Glucose positive','Clinical correlation with serum glucose and ketones']
+        ]),
+        overview_misc:makeTableFrom('Microscopic Miscellaneous',['Topic','Use / Note','Microscopic Connection'],[
+          ['Strip test correlations','Possible positives versus what you expect to see on microscope','Use as a quick correlation chart.'],
+          ['Acetic acid','Can help differentiate RBCs versus yeast and can be used with crystal solubility notes.','Confirm uncertain microscopic objects.'],
+          ['Parasites','Where they are from and what they are.','Record in miscellaneous sediment findings.'],
+          ['Artifacts','What they are and why they appear.','Separate from true urinary sediment.'],
+          ['Sperm','Normal versus abnormal context.','Record when present.']
         ]),
         physical:makeTable('Physical',false),
         chemical:makeTable('Chemical',false),
@@ -376,9 +416,9 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var out=Object.assign({},fallback,item||{});
     if(!Array.isArray(out.results)||!out.results.length){
       out.results=[
-        {test:'Color',result:out.name||fallback.name,note:out.macro||''},
-        {test:'Specific gravity',result:out.specificGravity||'',note:'Refractometer readout'},
-        {test:'Microscopy',result:out.sedimentItems||out.microscopy||'',note:'Sediment findings'}
+        {test:'Color',result:out.name||fallback.name,note:out.macro||'',condition:''},
+        {test:'Specific gravity',result:out.specificGravity||'',note:'Refractometer readout',condition:''},
+        {test:'Microscopy',result:out.sedimentItems||out.microscopy||'',note:'Sediment findings',condition:''}
       ];
     }
     if(!out.chemistry){
@@ -387,7 +427,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     }
     out.chemistry=Object.assign(defaultChemistry(),out.chemistry||{});
     out.dipstickPads=chemistryPads(out.chemistry);
-    if(!Array.isArray(out.microObjects))out.microObjects=defaultObjects();
+    if(!Array.isArray(out.microObjects))out.microObjects=(item&&Object.prototype.hasOwnProperty.call(item,'microObjects'))?[]:defaultObjects();
     if(!out.urineColor)out.urineColor=out.colorId?(urineColors.find(function(c){return c.id===out.colorId})||urineColors[1]).color:'#e8c23a';
     if(typeof out.hasSediment==='undefined')out.hasSediment=false;
     if(!out.hasSediment)out.sedimentColor='transparent';
@@ -395,7 +435,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(!out.foamColor)out.foamColor='transparent';
     if(typeof out.urineOpacity==='undefined')out.urineOpacity=.72;
     if(!out.clarity)out.clarity='clear';
-    out.microObjects=out.microObjects.map(function(obj){if(!obj.type)obj.type=obj.shape||'cell';obj.shape=obj.type;if(typeof obj.polarizes==='undefined')obj.polarizes=(obj.type==='crystal');return obj});
+    out.microObjects=out.microObjects.map(function(obj){if(!obj.type)obj.type='cell';if(!obj.shape)obj.shape=obj.type;if(typeof obj.polarizes==='undefined')obj.polarizes=(obj.type==='crystal'||obj.shape==='crystal'||obj.shape==='needle'||obj.shape==='thorny-apple');return obj});
     return out;
   }
   function mergeState(incoming){
@@ -411,7 +451,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     else base.simCases=base.simCases.map(normalizeCase);
     if(Number(incoming.version)<7)base.tables.resources=defaultState().tables.resources;
     if(resourcesBlank(base.tables.resources))base.tables.resources=defaultState().tables.resources;
-    base.version=10;
+    base.version=11;
     return base;
   }
   function resourcesBlank(table){
@@ -446,7 +486,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       var ri=Number(el.dataset.resultIndex);
       if(state.simCases&&state.simCases[ci]){
         if(!Array.isArray(state.simCases[ci].results))state.simCases[ci].results=[];
-        if(!state.simCases[ci].results[ri])state.simCases[ci].results[ri]={test:'',result:'',note:''};
+        if(!state.simCases[ci].results[ri])state.simCases[ci].results[ri]={test:'',result:'',note:'',condition:''};
         state.simCases[ci].results[ri][el.dataset.resultField]=el.value;
       }
     });
@@ -468,7 +508,6 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         var key=el.dataset.objectField;
         var value=key==='polarizes'?el.checked:(['x','y','w','h','rotation'].indexOf(key)>-1?Number(el.value):el.value);
         state.simCases[ci].microObjects[oi][key]=value;
-        if(key==='type')state.simCases[ci].microObjects[oi].shape=value;
       }
     });
   }
@@ -532,8 +571,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   function caseResultsRows(activeCase){
     var rows=Array.isArray(activeCase.results)?activeCase.results:[];
     if(!rows.length)return '<div class="result-mini"><table><tbody><tr><td>Blank results table. Add rows as admin.</td></tr></tbody></table></div>';
-    return '<div class="result-mini"><table><thead><tr><th>Test</th><th>Result</th><th>Note</th></tr></thead><tbody>'+
-      rows.map(function(row){return '<tr><td>'+escapeHtml(row.test||'')+'</td><td>'+escapeHtml(row.result||'')+'</td><td>'+escapeHtml(row.note||'')+'</td></tr>'}).join('')+
+    return '<div class="result-mini"><table><thead><tr><th>Test</th><th>Result</th><th>Note</th><th>Related Conditions / Clinical Significance</th></tr></thead><tbody>'+
+      rows.map(function(row){return '<tr><td>'+escapeHtml(row.test||'')+'</td><td>'+escapeHtml(row.result||'')+'</td><td>'+escapeHtml(row.note||'')+'</td><td>'+escapeHtml(row.condition||'')+'</td></tr>'}).join('')+
       '</tbody></table></div>';
   }
   function buildDipstick(activeCase){
@@ -564,7 +603,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     return '<div class="scope-modes"><button type="button" class="mini-btn '+(mode==='brightfield'?'active':'')+'" data-micro-mode="brightfield" onclick="event.stopPropagation();setMicroMode(\'brightfield\')">Brightfield</button><button type="button" class="mini-btn '+(mode==='polarizing'?'active':'')+'" data-micro-mode="polarizing" onclick="event.stopPropagation();setMicroMode(\'polarizing\')">Polarizing</button></div>'+
       '<div class="micro-visual"><div class="micro-stage"><div class="micro-field '+(mode==='polarizing'?'polarizing':'')+'" data-micro-add-area="1">'+
       objects.map(function(obj,i){return '<button type="button" class="micro-item '+escapeHtml(obj.shape||obj.type||'cell')+' '+(obj.polarizes===false?'nonpolar':'')+'" style="'+microStyle(obj)+'" data-micro-object="'+i+'" onclick="event.stopPropagation();showMicroItem('+i+')"><span>'+escapeHtml(obj.label||'')+'</span>'+(editMode?'<span class="micro-resize-handle" data-micro-resize="'+i+'"></span>':'')+'</button>'}).join('')+
-      '</div><div class="micro-help">Admin: click inside the circle to add a new object, then edit its type, size, color, and details below.</div></div></div><p>'+escapeHtml(activeCase.microscopy||'')+'</p>';
+      '</div></div></div><p>'+escapeHtml(activeCase.microscopy||'')+'</p>';
   }
   function renderSimulation(){
     var cases=state.simCases&&state.simCases.length?state.simCases:defaultSimCases();
@@ -597,7 +636,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       }).join('');
     }
     if(stepStrip){
-      stepStrip.innerHTML=simSteps.map(function(item,i){return '<span class="step-pill '+(i===step?'active':'')+'">'+escapeHtml(item.title)+'</span>'}).join('');
+      stepStrip.innerHTML=simSteps.map(function(item,i){return '<button type="button" class="step-pill '+(i===step?'active':'')+'" data-sim-go="'+i+'">'+escapeHtml(item.title)+'</button>'}).join('');
     }
     if(panel){
       var content='';
@@ -606,8 +645,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       if(step===2)content=buildDipstick(activeCase);
       if(step===3)content=buildRefractometer(activeCase);
       if(step===4)content=buildMicroscope(activeCase);
-      if(step===5)content=escapeHtml(activeCase.interpretation||'');
-      if(step===6)content='<strong>Results:</strong><br>'+escapeHtml(activeCase.reveal||'')+caseResultsRows(activeCase)+'<br><strong>Macro:</strong> '+escapeHtml(activeCase.macro||'')+'<br><strong>Dipstick:</strong> '+escapeHtml(activeCase.dipstick||'')+'<br><strong>Specific gravity:</strong> '+escapeHtml(activeCase.specificGravity||'')+'<br><strong>Microscopy:</strong> '+escapeHtml(activeCase.microscopy||'')+'<br><strong>Interpretation:</strong> '+escapeHtml(activeCase.interpretation||'');
+      if(step===5)content='<strong>Results:</strong><br>'+escapeHtml(activeCase.reveal||'')+caseResultsRows(activeCase)+'<br><strong>Macro:</strong> '+escapeHtml(activeCase.macro||'')+'<br><strong>Dipstick:</strong> '+escapeHtml(activeCase.dipstick||'')+'<br><strong>Specific gravity:</strong> '+escapeHtml(activeCase.specificGravity||'')+'<br><strong>Microscopy:</strong> '+escapeHtml(activeCase.microscopy||'')+'<br><strong>Clinical significance:</strong> '+escapeHtml(activeCase.interpretation||'');
       panel.innerHTML='<h3>'+escapeHtml(simSteps[step].title)+'</h3><div class="sim-content">'+content+'</div><div class="sim-actions"><button type="button" class="mini-btn" data-sim-step="-1" onclick="event.stopPropagation();moveSimStep(-1)">Back</button><button type="button" class="mini-btn" data-sim-step="1" onclick="event.stopPropagation();moveSimStep(1)">'+(step>=simSteps.length-2?'Reveal Results':'Next')+'</button><button type="button" class="mini-btn" data-sim-reset="1" onclick="event.stopPropagation();restartSim()">Restart</button></div>';
     }
     renderCaseEditor();
@@ -624,6 +662,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
               '<input placeholder="Test" data-result-field="test" data-case-index="'+i+'" data-result-index="'+ri+'" value="'+escapeHtml(row.test||'')+'">'+
               '<input placeholder="Result" data-result-field="result" data-case-index="'+i+'" data-result-index="'+ri+'" value="'+escapeHtml(row.result||'')+'">'+
               '<input placeholder="Note" data-result-field="note" data-case-index="'+i+'" data-result-index="'+ri+'" value="'+escapeHtml(row.note||'')+'">'+
+              '<input placeholder="Related condition / clinical significance" data-result-field="condition" data-case-index="'+i+'" data-result-index="'+ri+'" value="'+escapeHtml(row.condition||'')+'">'+
               '<button type="button" class="mini-btn danger" data-action="delete-result" data-case-index="'+i+'" data-result-index="'+ri+'">Delete</button>'+
             '</div>';
           }).join('')+
@@ -640,12 +679,13 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
           objects.map(function(obj,oi){
             return '<div class="case-object-row">'+
               '<input placeholder="Label" data-object-field="label" data-case-index="'+i+'" data-object-index="'+oi+'" value="'+escapeHtml(obj.label||'')+'">'+
-              '<select data-object-field="type" data-case-index="'+i+'" data-object-index="'+oi+'">'+['cell','crystal','cast','bacteria'].map(function(type){return '<option value="'+type+'" '+(obj.type===type?'selected':'')+'>'+type+'</option>'}).join('')+'</select>'+
+              '<select data-object-field="type" data-case-index="'+i+'" data-object-index="'+oi+'">'+['cell','crystal','cast','bacteria','artifact','other'].map(function(type){return '<option value="'+type+'" '+(obj.type===type?'selected':'')+'>'+type+'</option>'}).join('')+'</select>'+
+              '<select data-object-field="shape" data-case-index="'+i+'" data-object-index="'+oi+'">'+['cell','crystal','cast','bacteria','needle','thorny-apple','stump'].map(function(shape){return '<option value="'+shape+'" '+((obj.shape||obj.type)===shape?'selected':'')+'>'+shape+'</option>'}).join('')+'</select>'+
               '<input type="number" min="-180" max="180" placeholder="Rot" data-object-field="rotation" data-case-index="'+i+'" data-object-index="'+oi+'" value="'+escapeHtml(obj.rotation||0)+'">'+
               '<input type="color" data-object-field="color" data-case-index="'+i+'" data-object-index="'+oi+'" value="'+escapeHtml(obj.color||'#e3a7a0')+'">'+
               '<label><input type="checkbox" data-object-field="polarizes" data-case-index="'+i+'" data-object-index="'+oi+'" '+(obj.polarizes===false?'':'checked')+'> Polarizes</label>'+
               '<textarea placeholder="Click popup note" data-object-field="note" data-case-index="'+i+'" data-object-index="'+oi+'">'+escapeHtml(obj.note||'')+'</textarea>'+
-              '<input type="file" accept="image/*" data-action="upload-micro-image" data-case-index="'+i+'" data-object-index="'+oi+'">'+
+              '<label class="micro-upload-label">Add Image<input class="micro-upload-input" type="file" accept="image/*" data-action="upload-micro-image" data-case-index="'+i+'" data-object-index="'+oi+'"></label>'+
               '<button type="button" class="mini-btn danger" data-action="delete-object" data-case-index="'+i+'" data-object-index="'+oi+'">Delete</button>'+
             '</div>';
           }).join('')+
@@ -654,7 +694,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
           '<label>Urine Color<input type="color" data-case-field="urineColor" data-case-index="'+i+'" value="'+escapeHtml(item.urineColor||'#e8c23a')+'"></label>'+
           '<label>Transparency<input type="range" min="0.18" max="1" step="0.02" data-case-field="urineOpacity" data-case-index="'+i+'" value="'+escapeHtml(item.urineOpacity||.72)+'"></label>'+
           '<label>Clarity<select data-case-field="clarity" data-case-index="'+i+'">'+CLARITY_OPTIONS.map(function(opt){return '<option value="'+opt+'" '+(item.clarity===opt?'selected':'')+'>'+escapeHtml(opt)+'</option>'}).join('')+'</select></label>'+
-          '<div class="sediment-choice-row"><span>Sediment</span><button type="button" class="sediment-choice '+(!item.hasSediment?'active':'')+'" data-action="set-sediment" data-case-index="'+i+'" data-color="transparent">None</button><button type="button" class="sediment-choice '+(item.hasSediment&&(item.sedimentColor||'')==='#f3b6c8'?'active':'')+'" data-action="set-sediment" data-case-index="'+i+'" data-color="#f3b6c8">Pink</button><button type="button" class="sediment-choice '+(item.hasSediment&&(item.sedimentColor||'')==='#f7efe4'?'active':'')+'" data-action="set-sediment" data-case-index="'+i+'" data-color="#f7efe4">White</button></div>'+
+          '<div class="sediment-choice-row"><span>Sediment</span><button type="button" class="sediment-choice '+(!item.hasSediment?'active':'')+'" data-action="set-sediment" data-case-index="'+i+'" data-color="transparent">None</button><button type="button" class="sediment-choice '+(item.hasSediment&&(item.sedimentColor||'')==='#f3b6c8'?'active':'')+'" data-action="set-sediment" data-case-index="'+i+'" data-color="#f3b6c8">Pink</button><button type="button" class="sediment-choice '+(item.hasSediment&&(item.sedimentColor||'')==='#c83232'?'active':'')+'" data-action="set-sediment" data-case-index="'+i+'" data-color="#c83232">Red</button><button type="button" class="sediment-choice '+(item.hasSediment&&(item.sedimentColor||'')==='#f7efe4'?'active':'')+'" data-action="set-sediment" data-case-index="'+i+'" data-color="#f7efe4">White</button></div>'+
           '<label>Foam<select data-case-field="foamColor" data-case-index="'+i+'"><option value="transparent" '+(item.foamColor==='transparent'?'selected':'')+'>none</option><option value="#ffffff" '+(item.foamColor==='#ffffff'?'selected':'')+'>white</option><option value="#fff2a8" '+((item.foamColor||'#fff2a8')==='#fff2a8'?'selected':'')+'>yellow</option></select></label>'+
           '</div></div>';
         return '<div class="case-edit-card" data-case-edit="'+i+'"><div class="case-edit-grid">'+
@@ -663,7 +703,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
           '<label>Dipstick test<textarea data-case-field="dipstick" data-case-index="'+i+'">'+escapeHtml(item.dipstick||'')+'</textarea></label>'+
           '<label>Specific gravity<textarea data-case-field="specificGravity" data-case-index="'+i+'">'+escapeHtml(item.specificGravity||'')+'</textarea></label>'+
           '<label>Microscopy<textarea data-case-field="microscopy" data-case-index="'+i+'">'+escapeHtml(item.microscopy||'')+'</textarea></label>'+
-          '<label>Final interpretation<textarea data-case-field="interpretation" data-case-index="'+i+'">'+escapeHtml(item.interpretation||'')+'</textarea></label>'+
+          '<label>Related conditions / clinical significance<textarea data-case-field="interpretation" data-case-index="'+i+'">'+escapeHtml(item.interpretation||'')+'</textarea></label>'+
           '<label>Reveal results<textarea data-case-field="reveal" data-case-index="'+i+'">'+escapeHtml(item.reveal||'')+'</textarea></label>'+
           fluidEditor+resultEditor+padEditor+objectEditor+
           '</div><button class="mini-btn danger" data-action="delete-case" data-case-index="'+i+'">Delete Case</button></div>';
@@ -732,6 +772,11 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     saveLocal();
     renderSimulation();
   };
+  window.goSimStep=function(index){
+    state.notes.sim_step=Math.max(0,Math.min(simSteps.length-1,Number(index)||0));
+    saveLocal();
+    renderSimulation();
+  };
   window.restartSim=function(){
     state.notes.sim_step=0;
     saveLocal();
@@ -761,9 +806,9 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(state.simCases[ci]&&Array.isArray(state.simCases[ci].microObjects)){
       state.simCases[ci].microObjects.splice(activeMicroIndex,1);
       activeMicroIndex=null;
-      saveDraft();
       closeMicroItemModal();
       renderSimulation();
+      saveDraft();
       showToast('Deleted');
     }
   };
@@ -863,7 +908,6 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         var key=el.dataset.objectField;
         var value=key==='polarizes'?el.checked:(['x','y','w','h','rotation'].indexOf(key)>-1?Number(el.value):el.value);
         state.simCases[oci].microObjects[ooi][key]=value;
-        if(key==='type')state.simCases[oci].microObjects[ooi].shape=value;
         saveDraft();
       }
     }
@@ -908,6 +952,11 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       moveSimStep(stepBtn.dataset.simStep);
       return;
     }
+    var goStepBtn=e.target.closest('[data-sim-go]');
+    if(goStepBtn){
+      goSimStep(goStepBtn.dataset.simGo);
+      return;
+    }
     var resetBtn=e.target.closest('[data-sim-reset]');
     if(resetBtn){
       restartSim();
@@ -916,20 +965,6 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var microBtn=e.target.closest('[data-micro-mode]');
     if(microBtn){
       setMicroMode(microBtn.dataset.microMode);
-      return;
-    }
-    var addArea=e.target.closest('[data-micro-add-area]');
-    if(addArea&&isAdmin&&editMode&&e.target===addArea){
-      var rect=addArea.getBoundingClientRect();
-      var x=((e.clientX-rect.left)/rect.width*100).toFixed(1);
-      var y=((e.clientY-rect.top)/rect.height*100).toFixed(1);
-      var ci=Number(state.notes.sim_case_index)||0;
-      if(state.simCases[ci]){
-        if(!Array.isArray(state.simCases[ci].microObjects))state.simCases[ci].microObjects=[];
-        state.simCases[ci].microObjects.push({label:'New item',type:'cell',shape:'cell',x:Number(x),y:Number(y),w:28,h:28,rotation:0,color:'#e3a7a0',polarizes:false,note:'',image:''});
-        saveDraft();
-        renderSimulation();
-      }
       return;
     }
     var btn=e.target.closest('button[data-action]');
@@ -945,7 +980,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       return;
     }
     if(btn.dataset.action==='add-case'){
-      state.simCases.push({name:'Case '+(state.simCases.length+1),urineColor:'#e8c23a',hasSediment:false,sedimentColor:'transparent',foamColor:'transparent',urineOpacity:.72,clarity:'clear',macro:'',dipstick:'',specificGravity:'1.015',microscopy:'',interpretation:'',reveal:'',chemistry:defaultChemistry(),dipstickPads:defaultPads(),results:[{test:'',result:'',note:''}],microObjects:[]});
+      state.simCases.push({name:'Case '+(state.simCases.length+1),urineColor:'#e8c23a',hasSediment:false,sedimentColor:'transparent',foamColor:'transparent',urineOpacity:.72,clarity:'clear',macro:'',dipstick:'',specificGravity:'1.015',microscopy:'',interpretation:'',reveal:'',chemistry:defaultChemistry(),dipstickPads:defaultPads(),results:[{test:'',result:'',note:'',condition:''}],microObjects:[]});
       saveDraft();
       renderSimulation();
       return;
@@ -954,15 +989,15 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       if(state.simCases.length>1)state.simCases.splice(Number(btn.dataset.caseIndex),1);
       state.notes.sim_case_index=0;
       state.notes.sim_step=0;
-      saveDraft();
       renderSimulation();
+      saveDraft();
       return;
     }
     if(btn.dataset.action==='add-result'){
       var aci=Number(btn.dataset.caseIndex);
       if(state.simCases[aci]){
         if(!Array.isArray(state.simCases[aci].results))state.simCases[aci].results=[];
-        state.simCases[aci].results.push({test:'',result:'',note:''});
+        state.simCases[aci].results.push({test:'',result:'',note:'',condition:''});
         saveDraft();
         renderSimulation();
       }
@@ -973,8 +1008,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       var dri=Number(btn.dataset.resultIndex);
       if(state.simCases[dci]&&Array.isArray(state.simCases[dci].results)){
         state.simCases[dci].results.splice(dri,1);
-        saveDraft();
         renderSimulation();
+        saveDraft();
       }
       return;
     }
@@ -1013,8 +1048,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       var doi=Number(btn.dataset.objectIndex);
       if(state.simCases[doci]&&Array.isArray(state.simCases[doci].microObjects)){
         state.simCases[doci].microObjects.splice(doi,1);
-        saveDraft();
         renderSimulation();
+        saveDraft();
       }
       return;
     }
@@ -1084,7 +1119,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       '<div class="print-card"><h2>Chemistry Strip</h2><div class="print-strip">'+pads.map(function(p){return '<div class="print-strip-pad"><span style="--pad-bg:'+escapeHtml(stripBackground(p.label,p.value))+'"></span><b>'+escapeHtml(p.label)+'</b><em>'+escapeHtml(p.value)+'</em></div>'}).join('')+'</div><p>'+escapeHtml(item.dipstick||'')+'</p></div>'+
       '<div class="print-card"><h2>Specific Gravity</h2><p>'+escapeHtml(item.specificGravity||'')+'</p></div>'+
       '<div class="print-card"><h2>Microscopic</h2>'+micro+'<table><thead><tr><th>Item</th><th>Type</th><th>Polarizes</th><th>Note</th><th>Image</th></tr></thead><tbody>'+objectRows+'</tbody></table><div class="report-grid"><div class="report-cell report-label">Ep. Cells</div><div class="report-cell report-label">Yeast</div><div class="report-cell report-label">WBC</div><div class="report-cell report-label">Amorph</div><div class="report-cell report-label">RBC</div><div class="report-cell report-label">Mucus</div><div class="report-cell report-label">Bacteria</div><div class="report-cell report-label">Other</div><div class="report-cell report-wide report-label">Crystals: Type/#</div><div class="report-cell report-wide report-label">Casts: Type/#</div><div class="report-cell report-wide report-label">Additional notes:</div></div><p>'+escapeHtml(item.microscopy||'')+'</p></div>'+
-      '<div class="print-card"><h2>Final Interpretation / Reveal</h2><p><strong>Interpretation:</strong> '+escapeHtml(item.interpretation||'')+'</p><p><strong>Reveal:</strong> '+escapeHtml(item.reveal||'')+'</p>'+caseResultsRows(item)+'</div></div>';
+      '<div class="print-card"><h2>Reveal Results</h2><p><strong>Clinical significance:</strong> '+escapeHtml(item.interpretation||'')+'</p><p><strong>Reveal:</strong> '+escapeHtml(item.reveal||'')+'</p>'+caseResultsRows(item)+'</div></div>';
   }
   function selectedCaseIndexes(){
     return Array.from(document.querySelectorAll('#caseExportOptions .case-export-check:checked')).map(function(box){return Number(box.value)}).filter(function(i){return state.simCases[i]});
@@ -1112,7 +1147,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(!selected.length){showToast('Choose at least one section',true);return}
     closeExportModal();
     var html='';
-    if(selected.indexOf('overview')>-1)html+=printSection('Urinalysis Hub',['overview_core','overview_specimen']);
+    if(selected.indexOf('overview')>-1)html+=printSection('Urinalysis Hub',['overview_core','overview_specimen','overview_macro_micro','overview_misc']);
     if(selected.indexOf('screening')>-1)html+=printSection('Macroscopic',['physical','chemical']);
     if(selected.indexOf('microscope')>-1)html+=printSection('Microscopic',['cells','casts','crystals','stains','microscopes']);
     if(selected.indexOf('resources')>-1)html+=printSection('Resources',['resources']);
