@@ -414,7 +414,7 @@
         <div class="hub-icon">H</div>
         <h2>Hematology</h2>
         <p>Cells, morphology, anemias, leukemias, hemostasis, coagulation, and case-based review.</p>
-        <a class="hub-link disabled" data-hub-link="hematology" href="hematology_hub.html" aria-disabled="true">Coming Soon</a>
+        <a class="hub-link" data-hub-link="hematology" href="https://legoretro.github.io/Hubs/Hematology_hub.html">Open Hematology Hub</a>
       </section>
 
       <section class="hub-card" style="--accent: var(--green)">
@@ -460,7 +460,7 @@
     const PASS_HASH = 'd936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c675';
     const defaultHubUrls = {
       bloodbank: HUB_BASE + 'Bloodbank_hub.html',
-      hematology: '',
+      hematology: HUB_BASE + 'Hematology_hub.html',
       microbiology: HUB_BASE + 'Microbiology_hub.html',
       urinalysis: HUB_BASE + 'UA_hub.html'
     };
@@ -588,7 +588,7 @@
         const url = (urls[key] || '').trim();
         if (url) {
           link.href = url;
-          link.textContent = key === 'bloodbank' ? 'Open Blood Bank Hub' : key === 'urinalysis' ? 'Open Urinalysis Hub' : 'Open Hub';
+          link.textContent = key === 'bloodbank' ? 'Open Blood Bank Hub' : key === 'hematology' ? 'Open Hematology Hub' : key === 'urinalysis' ? 'Open Urinalysis Hub' : 'Open Hub';
           link.classList.remove('disabled');
           link.removeAttribute('aria-disabled');
         } else {
