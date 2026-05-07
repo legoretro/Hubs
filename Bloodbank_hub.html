@@ -437,60 +437,11 @@ button{cursor:pointer;font-family:inherit}
   <div class="modal-box" style="max-width:500px;max-height:90vh;overflow-y:auto">
     <div style="font-size:28px;margin-bottom:8px">⬇</div>
     <h3>Export to PDF</h3>
-    <p style="margin-bottom:16px">Choose what to include. Crossmatch simulation is always excluded.</p>
+    <p style="margin-bottom:16px">Choose map pages to include. Encyclopedia exports live inside the Encyclopedia tab.</p>
     <div style="text-align:left;margin-bottom:16px">
       <div style="font-size:11px;font-weight:700;color:var(--wine);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Pages</div>
       <label style="display:flex;align-items:center;gap:8px;margin-bottom:7px;font-size:13px;cursor:pointer"><input type="checkbox" id="expRbc" checked> RBC Antigen Map</label>
       <label style="display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:13px;cursor:pointer"><input type="checkbox" id="expChrom" checked> Chromosome Map</label>
-      <div style="font-size:11px;font-weight:700;color:var(--wine);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Full System Page</div>
-      <p style="font-size:12px;color:var(--warm-grey);margin:-3px 0 8px">Exports the whole system in the same order as the page: history, membrane, study reference, frequencies, and notes.</p>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:12px">
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-full-system" data-sys="abo"> ABO</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-full-system" data-sys="rh"> Rh</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-full-system" data-sys="kell"> Kell</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-full-system" data-sys="duffy"> Duffy</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-full-system" data-sys="kidd"> Kidd</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-full-system" data-sys="mns"> MNS</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-full-system" data-sys="p1pk"> P1PK/Glob</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-full-system" data-sys="lewis"> Lewis</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-full-system" data-sys="lutheran"> Lutheran</label>
-      </div>
-      <div style="font-size:11px;font-weight:700;color:var(--wine);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">History (by system)</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:12px">
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-hist" data-sys="abo"> ABO</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-hist" data-sys="rh"> Rh</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-hist" data-sys="kell"> Kell</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-hist" data-sys="duffy"> Duffy</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-hist" data-sys="kidd"> Kidd</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-hist" data-sys="mns"> MNS</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-hist" data-sys="p1pk"> P1PK/Glob</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-hist" data-sys="lewis"> Lewis</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-hist" data-sys="lutheran"> Lutheran</label>
-      </div>
-      <div style="font-size:11px;font-weight:700;color:var(--wine);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Study Reference (by system)</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:12px">
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-ws" data-sys="abo"> ABO</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-ws" data-sys="rh"> Rh</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-ws" data-sys="kell"> Kell</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-ws" data-sys="duffy"> Duffy</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-ws" data-sys="kidd"> Kidd</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-ws" data-sys="mns"> MNS</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-ws" data-sys="p1pk"> P1PK/Glob</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-ws" data-sys="lewis"> Lewis</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-ws" data-sys="lutheran"> Lutheran</label>
-      </div>
-      <div style="font-size:11px;font-weight:700;color:var(--wine);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Antigen Frequencies (by system)</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:12px">
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-freq" data-sys="abo"> ABO</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-freq" data-sys="rh"> Rh</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-freq" data-sys="kell"> Kell</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-freq" data-sys="duffy"> Duffy</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-freq" data-sys="kidd"> Kidd</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-freq" data-sys="mns"> MNS</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-freq" data-sys="p1pk"> P1PK/Glob</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-freq" data-sys="lewis"> Lewis</label>
-        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-freq" data-sys="lutheran"> Lutheran</label>
-      </div>
       <div style="display:flex;gap:8px">
         <button onclick="selectAllExport(true)" class="btn btn-ghost btn-sm">Select All</button>
         <button onclick="selectAllExport(false)" class="btn btn-ghost btn-sm">Clear All</button>
@@ -528,6 +479,16 @@ button{cursor:pointer;font-family:inherit}
   <div id="sec-encyclopedia" class="section active">
     <div class="section-hero">
       <h2><span class="hero-emoji">🩸</span> Blood Group System Encyclopedia</h2>
+    </div>
+    <div class="sys-card" style="border-top:3px solid var(--crimson);margin-bottom:16px">
+      <div class="sec-label" style="margin-bottom:10px">Encyclopedia Export</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-primary btn-sm" onclick="exportCurrentSystemPage()">Export Current System Page</button>
+        <button class="btn btn-ghost btn-sm" onclick="exportEncyclopediaSet('histories')">All Histories</button>
+        <button class="btn btn-ghost btn-sm" onclick="exportEncyclopediaSet('study')">All Study References</button>
+        <button class="btn btn-ghost btn-sm" onclick="exportEncyclopediaSet('frequencies')">All Frequencies</button>
+        <button class="btn btn-ghost btn-sm" onclick="exportLesserSystemsPage()">Lesser Systems</button>
+      </div>
     </div>
     <div class="enc-layout">
       <div class="system-menu">
@@ -2275,50 +2236,94 @@ function buildFullSystemExportPage(key) {
   '</section>';
 }
 
+function buildLesserSystemsExportPage() {
+  var systems = ['Gerbich','Diego','Colton','Dombrock','Cartwright','Chido/Rodgers','Cromer','Knops','Indian','LW','Scianna','Sda','Xga','RAPH','OK','JMH','HLA'];
+  var cols = [
+    {key:'antigens', label:'Antigens in System'},
+    {key:'carrier',  label:'Carrier Molecule'},
+    {key:'why_not',  label:'Why Not on Antigram'},
+    {key:'hdn_htr',  label:'HDN / HTR'},
+    {key:'notable',  label:'Notable'}
+  ];
+  var rows = systems.map(function(sys) {
+    var sk = 'lesser_' + sys.toLowerCase().replace(/[^a-z0-9]/g,'');
+    return '<tr><td><strong>' + exportText(sys) + '</strong></td>' + cols.map(function(col) {
+      var val = notesData[sk] && notesData[sk][col.key] ? notesData[sk][col.key] : '';
+      return '<td>' + (val ? exportText(val) : '<span class="muted">blank</span>') + '</td>';
+    }).join('') + '</tr>';
+  }).join('');
+  return '<section class="page"><h1>Lesser-Known Blood Group Systems</h1>' +
+    '<table class="freq-export"><thead><tr><th>System</th>' + cols.map(function(c){ return '<th>' + exportText(c.label) + '</th>'; }).join('') + '</tr></thead><tbody>' + rows + '</tbody></table>' +
+  '</section>';
+}
+
+function buildHistoryExportPage() {
+  var keys = ['abo','rh','kell','duffy','kidd','mns','p1pk','lewis','lutheran'];
+  return keys.map(function(key) {
+    var sys = SYSTEMS[key];
+    var history = sys.history.map(function(h) {
+      return '<div class="tl-item"><span class="yr">' + exportText(h.year) + '</span><span>' + exportText(h.text) + '</span></div>';
+    }).join('');
+    return '<section class="page"><div class="system-card" style="border-top-color:' + sys.color + '"><h1 style="color:' + sys.color + '">' + exportText(sys.name) + '</h1><div class="card-label">History</div><div class="tl">' + history + '</div></div></section>';
+  }).join('');
+}
+
+function buildStudyExportPage() {
+  var keys = ['abo','rh','kell','duffy','kidd','mns','p1pk','lewis','lutheran'];
+  return keys.map(function(key) {
+    var sys = SYSTEMS[key];
+    var skey = sys.notes_key;
+    return '<section class="page"><div class="system-card" style="border-top-color:' + sys.color + '"><h1 style="color:' + sys.color + '">' + exportText(sys.name) + '</h1><div class="card-label">Study Reference</div><table class="study-table"><tbody>' + buildExportWsRows(sys, skey) + '</tbody></table></div></section>';
+  }).join('');
+}
+
+function buildExportHtml(content, title) {
+  return '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>' + exportText(title || 'Bloody Brilliant Export') + '</title>' +
+    '<style>@page{size:letter;margin:.5in}*{box-sizing:border-box;margin:0;padding:0}body{font-family:Georgia,serif;font-size:12px;color:#1e0d10;background:#fff}' +
+    'h1{font-size:18px;color:#5a0e20;text-align:center;margin-bottom:6px;padding:12px 0 0}' +
+    'h2{font-size:13px;color:#8b0a26;margin:14px 0 6px;border-bottom:2px solid #f7c5d0;padding-bottom:3px}' +
+    '.page{padding:0;page-break-after:always;max-width:7.5in;margin:0 auto}.page:last-child{page-break-after:avoid}' +
+    'table{width:100%;border-collapse:collapse;margin-bottom:8px}th{background:#5a0e20;color:#fff;padding:5px 8px;text-align:left;font-size:10px;letter-spacing:.5px}td{padding:5px 8px;border-bottom:1px solid #f7c5d0;vertical-align:top;font-size:11px}td.lbl{font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#7a6468;width:220px}tr:nth-child(even) td{background:#fef4f0}' +
+    '.tl{padding-left:12px;border-left:2px solid #f7c5d0}.tl-item{margin-bottom:7px;font-size:11px}.yr{font-weight:700;color:#c0173d;font-size:10px;display:block}' +
+    '.system-page{padding:0;font-size:10px}.system-card{border-top:2.5px solid #5a0e20;border-left:1px solid #f7c5d0;border-right:1px solid #f7c5d0;border-bottom:1px solid #f7c5d0;border-radius:16px;padding:12px 15px;margin:0 0 10px;background:#fffaf7;break-inside:avoid;page-break-inside:avoid}.hero-card{padding-bottom:10px}.system-head{display:flex;gap:10px;align-items:flex-start;margin-bottom:8px}.system-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px;line-height:1;box-shadow:inset 0 2px 5px rgba(0,0,0,.22)}.system-head h1{text-align:left;font-size:25px;line-height:1;margin:0 0 2px;padding:0}.isbt{font-size:10px;letter-spacing:3px;color:#7a6468;text-transform:uppercase}.pun{font-size:12px;color:#c0173d;font-style:italic;font-weight:700;margin-top:4px}.card-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#7a6468;font-weight:700;margin:0 0 7px}.system-page .tl{padding-left:10px}.system-page .tl-item{font-size:10.5px;line-height:1.22;margin-bottom:5px}.system-page .yr{font-size:10px;display:inline-block;width:58px}' +
+    '.membrane-card{padding-bottom:8px}.membrane-print{height:2.15in;overflow:visible;margin:-4px 0 4px}.membrane-print div{overflow:visible!important}.membrane-print svg{width:100%!important;min-width:0!important;height:2.15in!important}.membrane-print text{font-size:16px!important}.mini-table td{font-size:9px;padding:3px 6px}.study-table{font-size:8.4px;line-height:1.15}.study-table td{font-size:8.4px;padding:3px 5px}.study-table td.lbl{width:1.55in;font-size:7.8px}.freq-export{font-size:7.5px;line-height:1.08;table-layout:fixed}.freq-export th{font-size:7.4px;padding:3px 4px}.freq-export td{font-size:7.4px;padding:3px 4px}.freq-export th:nth-child(1){width:.72in}.freq-export th:nth-child(2),.freq-export th:nth-child(3),.freq-export th:nth-child(4),.freq-export th:nth-child(5),.freq-export th:nth-child(6){width:.28in}.freq-export th:nth-child(7){width:.6in}.freq-export .center{text-align:center}.freq-export .memo{background:#dce6f4}.note-box{font-size:9px;line-height:1.22;padding:7px;background:#fff;border-left:3px solid #f7c5d0}.muted{color:#9a8588}svg{max-width:100%;height:auto}' +
+    '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style></head><body>' + content + '</body></html>';
+}
+
+function printExportHtml(content, title) {
+  var win = window.open('', '_blank');
+  win.document.write(buildExportHtml(content, title));
+  win.document.close();
+  setTimeout(function(){ win.print(); }, 600);
+}
+
+function exportCurrentSystemPage() {
+  if (currentSystemKey === 'lesser') {
+    printExportHtml(buildLesserSystemsExportPage(), 'Lesser Systems Export');
+  } else {
+    printExportHtml(buildFullSystemExportPage(currentSystemKey), 'Blood Bank ' + currentSystemKey + ' Export');
+  }
+}
+
+function exportLesserSystemsPage() {
+  printExportHtml(buildLesserSystemsExportPage(), 'Lesser Systems Export');
+}
+
+function exportEncyclopediaSet(kind) {
+  if (kind === 'histories') {
+    printExportHtml(buildHistoryExportPage(), 'Blood Bank Histories');
+  } else if (kind === 'study') {
+    printExportHtml(buildStudyExportPage(), 'Blood Bank Study References');
+  } else if (kind === 'frequencies') {
+    printExportHtml(buildAllFrequenciesExportPage(['abo','rh','kell','duffy','kidd','mns','p1pk','lewis','lutheran']), 'Blood Bank Frequencies');
+  }
+}
+
 function doExport() {
   document.getElementById('exportModal').classList.remove('visible');
   var inclRbc   = document.getElementById('expRbc').checked;
   var inclChrom = document.getElementById('expChrom').checked;
-  var fullSys = [], histSys = [], wsSys = [], freqSys = [];
-  var fullBoxes = document.querySelectorAll('.exp-full-system:checked');
-  for (var i = 0; i < fullBoxes.length; i++) { fullSys.push(fullBoxes[i].getAttribute('data-sys')); }
-  var hboxes = document.querySelectorAll('.exp-hist:checked');
-  for (var i = 0; i < hboxes.length; i++) { histSys.push(hboxes[i].getAttribute('data-sys')); }
-  var wboxes = document.querySelectorAll('.exp-ws:checked');
-  for (var i = 0; i < wboxes.length; i++) { wsSys.push(wboxes[i].getAttribute('data-sys')); }
-  var fboxes = document.querySelectorAll('.exp-freq:checked');
-  for (var i = 0; i < fboxes.length; i++) { freqSys.push(fboxes[i].getAttribute('data-sys')); }
-
-  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Bloody Brilliant Export</title>' +
-    '<style>@page{size:letter;margin:.5in}*{box-sizing:border-box;margin:0;padding:0}body{font-family:Georgia,serif;font-size:12px;color:#1e0d10;background:#fff}' +
-    'h1{font-size:18px;color:#5a0e20;text-align:center;margin-bottom:6px;padding:12px 0 0}' +
-    'h2{font-size:13px;color:#8b0a26;margin:14px 0 6px;border-bottom:2px solid #f7c5d0;padding-bottom:3px}' +
-    '.page{padding:0;page-break-after:always;max-width:7.5in;margin:0 auto}' +
-    '.page:last-child{page-break-after:avoid}' +
-    'table{width:100%;border-collapse:collapse;margin-bottom:8px}' +
-    'th{background:#5a0e20;color:#fff;padding:5px 8px;text-align:left;font-size:10px;letter-spacing:.5px}' +
-    'td{padding:5px 8px;border-bottom:1px solid #f7c5d0;vertical-align:top;font-size:11px}' +
-    'td.lbl{font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#7a6468;width:220px}' +
-    'tr:nth-child(even) td{background:#fef4f0}' +
-    '.tl{padding-left:12px;border-left:2px solid #f7c5d0}' +
-    '.tl-item{margin-bottom:7px;font-size:11px}' +
-    '.yr{font-weight:700;color:#c0173d;font-size:10px;display:block}' +
-    '.system-page{padding:0;font-size:10px}' +
-    '.system-card{border-top:2.5px solid #5a0e20;border-left:1px solid #f7c5d0;border-right:1px solid #f7c5d0;border-bottom:1px solid #f7c5d0;border-radius:16px;padding:12px 15px;margin:0 0 10px;background:#fffaf7;break-inside:avoid;page-break-inside:avoid}' +
-    '.hero-card{padding-bottom:10px}.system-head{display:flex;gap:10px;align-items:flex-start;margin-bottom:8px}.system-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px;line-height:1;box-shadow:inset 0 2px 5px rgba(0,0,0,.22)}' +
-    '.system-head h1{text-align:left;font-size:25px;line-height:1;margin:0 0 2px;padding:0}.isbt{font-size:10px;letter-spacing:3px;color:#7a6468;text-transform:uppercase}.pun{font-size:12px;color:#c0173d;font-style:italic;font-weight:700;margin-top:4px}.card-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#7a6468;font-weight:700;margin:0 0 7px}.system-page .tl{padding-left:10px}.system-page .tl-item{font-size:10.5px;line-height:1.22;margin-bottom:5px}.system-page .yr{font-size:10px;display:inline-block;width:58px}' +
-    '.membrane-card{padding-bottom:8px}.membrane-print{height:1.45in;overflow:hidden;margin:-4px 0 4px}.membrane-print div{overflow:visible!important}.membrane-print svg{width:100%!important;min-width:0!important;height:1.45in!important}.membrane-print text{font-size:16px!important}.mini-table td{font-size:9px;padding:3px 6px}.study-table{font-size:8.4px;line-height:1.15}.study-table td{font-size:8.4px;padding:3px 5px}.study-table td.lbl{width:1.55in;font-size:7.8px}.freq-export{font-size:7.5px;line-height:1.08;table-layout:fixed}.freq-export th{font-size:7.4px;padding:3px 4px}.freq-export td{font-size:7.4px;padding:3px 4px}.freq-export th:nth-child(1){width:.72in}.freq-export th:nth-child(2),.freq-export th:nth-child(3),.freq-export th:nth-child(4),.freq-export th:nth-child(5),.freq-export th:nth-child(6){width:.28in}.freq-export th:nth-child(7){width:.6in}.freq-export .center{text-align:center}.freq-export .memo{background:#dce6f4}.note-box{font-size:9px;line-height:1.22;padding:7px;background:#fff;border-left:3px solid #f7c5d0}.muted{color:#9a8588}' +
-    'svg{max-width:100%;height:auto}' +
-    '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}' +
-    '</style></head><body>';
-
-  fullSys.forEach(function(key) {
-    html += buildFullSystemExportPage(key);
-  });
-
-  if (freqSys.length) {
-    html += buildAllFrequenciesExportPage(freqSys);
-  }
+  var html = '';
 
   if (inclRbc) {
     var tmp1 = document.createElement('div');
@@ -2343,49 +2348,7 @@ function doExport() {
     html += '<div class="page"><h1>Blood Group Chromosome Map</h1>' + chromHTML + '</div>';
   }
 
-  histSys.forEach(function(key) {
-    var sys = SYSTEMS[key];
-    if (!sys) return;
-    var histHTML = sys.history.map(function(h) {
-      return '<div class="tl-item"><span class="yr">' + h.year + '</span>' + h.text + '</div>';
-    }).join('');
-    html += '<div class="page"><h1>' + sys.icon + ' ' + sys.name + '</h1>' +
-      '<h2>History</h2><div class="tl">' + histHTML + '</div>' +
-      '<h2>RBC Membrane</h2><table>' +
-      '<tr><td class="lbl">Antigen Type</td><td>' + sys.membrane.type + '</td></tr>' +
-      '<tr><td class="lbl">Location</td><td>' + sys.membrane.location + '</td></tr>' +
-      '</table></div>';
-  });
-
-  wsSys.forEach(function(key) {
-    var sys = SYSTEMS[key];
-    if (!sys) return;
-    var skey = sys.notes_key;
-    var data = notesData[skey] || {};
-    var wsFields = sys.mns_split
-      ? (sys.fields_mn || []).concat(sys.fields_ss || [])
-      : (sys.fields || []);
-    var wsRows = wsFields.map(function(f) {
-      return '<tr><td class="lbl">' + (FIELD_LABELS[f]||f) + '</td><td>' + (data[f]||'') + '</td></tr>';
-    }).join('');
-    var freqs = getFreqRows(skey);
-    var freqRows = freqs.length ? freqs.map(function(r) {
-      return '<tr><td>' + (r.ag||'') + '</td><td>' + (r.c||'') + '</td><td>' + (r.b||'') + '</td><td>' + (r.a||'') + '</td><td>' + (r.i||'') + '</td><td>' + (r.h||'') + '</td><td>' + (r.pop||'') + '</td><td>' + (r.hiLo||'') + '</td></tr>';
-    }).join('') : '<tr><td colspan="8" style="color:#999">No data added yet</td></tr>';
-    html += '<div class="page"><h1>' + sys.icon + ' ' + sys.name + '</h1>' +
-      '<h2>Study Reference</h2><table>' + wsRows + '</table>' +
-      '<h2>Antigen Frequencies</h2><table>' +
-      '<thead><tr><th>Antigen</th><th>C</th><th>B</th><th>A</th><th>I</th><th>H</th><th>Population Diff.</th><th>Higher/Lower</th></tr></thead>' +
-      '<tbody>' + freqRows + '</tbody></table>' +
-      (data.lab_notes ? '<h2>Notes</h2><div style="font-size:11px;padding:8px;background:#fef4f0;border-left:3px solid #f7c5d0">' + data.lab_notes + '</div>' : '') +
-      '</div>';
-  });
-
-  html += '</body></html>';
-  var win = window.open('', '_blank');
-  win.document.write(html);
-  win.document.close();
-  setTimeout(function(){ win.print(); }, 600);
+  printExportHtml(html, 'Blood Bank Map Export');
 }
 
 // ── CHROMOSOME MAP (wider haplotype pairs) ────────────────────
