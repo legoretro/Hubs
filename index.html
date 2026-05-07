@@ -392,9 +392,9 @@
         <label for="url-hematology">Hematology</label>
         <input id="url-hematology" data-hub-input="hematology" placeholder="hematology_hub.html or https://...">
         <label for="url-microbiology">Microbiology</label>
-        <input id="url-microbiology" data-hub-input="microbiology" placeholder="microbiology_hub.html or https://...">
+        <input id="url-microbiology" data-hub-input="microbiology" placeholder="Microbiology_hub.html or https://...">
         <label for="url-urinalysis">Urinalysis</label>
-        <input id="url-urinalysis" data-hub-input="urinalysis" placeholder="urinalysis_hub.html or https://...">
+        <input id="url-urinalysis" data-hub-input="urinalysis" placeholder="UA_hub.html or https://...">
       </div>
       <div class="admin-actions">
         <button class="small-btn primary" onclick="saveHubUrls()">Save URLs</button>
@@ -407,7 +407,7 @@
         <div class="hub-icon">BB</div>
         <h2>Blood Bank</h2>
         <p>Blood groups, RBC antigens, chromosome mapping, crossmatch practice, frequencies, and study references.</p>
-        <a class="hub-link" data-hub-link="bloodbank" href="Bloodbank_hub.html">Open Blood Bank Hub</a>
+        <a class="hub-link" data-hub-link="bloodbank" href="https://legoretro.github.io/Hubs/Bloodbank_hub.html">Open Blood Bank Hub</a>
       </section>
 
       <section class="hub-card" style="--accent: var(--purple)">
@@ -421,14 +421,14 @@
         <div class="hub-icon">M</div>
         <h2>Microbiology</h2>
         <p>Organisms, media, biochemical reactions, ID workflows, antimicrobials, and bench algorithms.</p>
-        <a class="hub-link disabled" data-hub-link="microbiology" href="microbiology_hub.html" aria-disabled="true">Coming Soon</a>
+        <a class="hub-link" data-hub-link="microbiology" href="https://legoretro.github.io/Hubs/Microbiology_hub.html">Open Microbiology Hub</a>
       </section>
 
       <section class="hub-card" style="--accent: var(--gold)">
         <div class="hub-icon">U</div>
         <h2>Urinalysis</h2>
         <p>Physical, chemical, and microscopic urine findings with crystals, casts, cells, and disease correlations.</p>
-        <a class="hub-link" data-hub-link="urinalysis" href="Urinalysis_hub.html">Open Urinalysis Hub</a>
+        <a class="hub-link" data-hub-link="urinalysis" href="https://legoretro.github.io/Hubs/UA_hub.html">Open Urinalysis Hub</a>
       </section>
     </main>
 
@@ -452,13 +452,19 @@
   </div>
 
   <script>
+    const SUPABASE_URL = 'https://fjrdlasmdhqjqqlvuxwj.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_UnXRXK6It0PKVmZmixYZeg_WDx9frO2';
+    const TABLE_NAME = 'mls_blood_bank';
+    const INDEX_ROW_ID = 'mls_index';
+    const HUB_BASE = 'https://legoretro.github.io/Hubs/';
     const PASS_HASH = 'd936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c675';
     const defaultHubUrls = {
-      bloodbank: 'Bloodbank_hub.html',
+      bloodbank: HUB_BASE + 'Bloodbank_hub.html',
       hematology: '',
-      microbiology: '',
-      urinalysis: 'Urinalysis_hub.html'
+      microbiology: HUB_BASE + 'Microbiology_hub.html',
+      urinalysis: HUB_BASE + 'UA_hub.html'
     };
+    let hubUrls = Object.assign({}, defaultHubUrls);
     let isAdmin = false;
 
     async function hashText(text) {
@@ -509,16 +515,74 @@
       return false;
     }
 
-    function loadHubUrls() {
+    async function supabaseError(response) {
+      let details = '';
       try {
-        return Object.assign({}, defaultHubUrls, JSON.parse(localStorage.getItem('mlsHubUrls') || '{}'));
+        const body = await response.json();
+        details = body.message || body.details || body.hint || JSON.stringify(body);
       } catch (err) {
-        return Object.assign({}, defaultHubUrls);
+        details = await response.text();
+      }
+      return new Error(details || `HTTP ${response.status}`);
+    }
+
+    async function sbGet(id) {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE_NAME}?id=eq.${encodeURIComponent(id)}&select=data`, {
+        headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
+      });
+      if (!response.ok) throw await supabaseError(response);
+      const data = await response.json();
+      return data && data[0] ? data[0].data : null;
+    }
+
+    async function sbUpsert(id, data) {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE_NAME}?on_conflict=id`, {
+        method: 'POST',
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization: `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+          Prefer: 'resolution=merge-duplicates'
+        },
+        body: JSON.stringify({ id, data })
+      });
+      if (!response.ok) throw await supabaseError(response);
+      return true;
+    }
+
+    function cleanHubUrl(key, value) {
+      const url = String(value || '').trim();
+      if (!url) return '';
+      if (/^(file:|\/Users\/|[A-Za-z]:\\)/i.test(url)) return defaultHubUrls[key] || '';
+      if (/\bUrinalysis_hub\.html\b/i.test(url)) return HUB_BASE + 'UA_hub.html';
+      if (/^[A-Za-z0-9_.-]+\.html(?:[?#].*)?$/.test(url)) return HUB_BASE + url;
+      if (/^\/Hubs\//i.test(url)) return 'https://legoretro.github.io' + url;
+      return url;
+    }
+
+    function normalizeHubUrls(data) {
+      const raw = data && data.urls ? data.urls : data;
+      const urls = Object.assign({}, defaultHubUrls, raw || {});
+      Object.keys(urls).forEach(key => {
+        urls[key] = cleanHubUrl(key, urls[key]);
+      });
+      return urls;
+    }
+
+    async function loadHubUrls() {
+      try {
+        const remote = await sbGet(INDEX_ROW_ID);
+        hubUrls = normalizeHubUrls(remote);
+        applyHubUrls();
+      } catch (err) {
+        console.warn('Index URL load failed:', err);
+        hubUrls = normalizeHubUrls(defaultHubUrls);
+        applyHubUrls();
       }
     }
 
     function applyHubUrls() {
-      const urls = loadHubUrls();
+      const urls = hubUrls;
       document.querySelectorAll('[data-hub-link]').forEach(link => {
         const key = link.getAttribute('data-hub-link');
         const url = (urls[key] || '').trim();
@@ -539,23 +603,35 @@
       });
     }
 
-    function saveHubUrls() {
+    async function saveHubUrls() {
       if (!requireAdmin()) return;
       const urls = {};
       document.querySelectorAll('[data-hub-input]').forEach(input => {
-        urls[input.getAttribute('data-hub-input')] = input.value.trim();
+        const key = input.getAttribute('data-hub-input');
+        urls[key] = cleanHubUrl(key, input.value);
       });
-      localStorage.setItem('mlsHubUrls', JSON.stringify(urls));
+      hubUrls = normalizeHubUrls(urls);
       applyHubUrls();
+      try {
+        await sbUpsert(INDEX_ROW_ID, { urls: hubUrls, updatedAt: Date.now() });
+      } catch (err) {
+        alert('Supabase save failed: ' + err.message);
+      }
     }
 
-    function clearHubUrls() {
+    async function clearHubUrls() {
       if (!requireAdmin()) return;
-      localStorage.removeItem('mlsHubUrls');
+      hubUrls = normalizeHubUrls(defaultHubUrls);
       applyHubUrls();
+      try {
+        await sbUpsert(INDEX_ROW_ID, { urls: hubUrls, updatedAt: Date.now() });
+      } catch (err) {
+        alert('Supabase save failed: ' + err.message);
+      }
     }
 
     applyHubUrls();
+    loadHubUrls();
   </script>
 </body>
 </html>
