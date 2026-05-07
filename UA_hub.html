@@ -282,6 +282,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   var isAdmin=false;
   var editMode=false;
   var saveTimer=null;
+  var saveInFlight=null;
   var microDrag=null;
   var suppressMicroClick=false;
   var activeMicroIndex=null;
@@ -347,6 +348,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   function defaultState(){
     return {
       version:11,
+      updatedAt:Date.now(),
       notes:{simulation_note:'',selected_color:'yellow',sim_case_index:0,sim_step:0,micro_mode:'brightfield'},
       simCases:defaultSimCases(),
       tables:{
@@ -486,6 +488,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(Number(incoming.version)<7)base.tables.resources=defaultState().tables.resources;
     if(resourcesBlank(base.tables.resources))base.tables.resources=defaultState().tables.resources;
     base.version=11;
+    base.updatedAt=Number(incoming.updatedAt||0)||base.updatedAt;
     return base;
   }
   function resourcesBlank(table){
@@ -494,7 +497,10 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       return !row.cells||Object.keys(row.cells).every(function(key){return !String(row.cells[key]||'').trim()||/Primary Reference|Textbook|Additional Resource/.test(String(row.cells[key]||''))});
     });
   }
-  function saveLocal(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
+  function saveLocal(){
+    return true;
+  }
+  function touchState(){state.updatedAt=Date.now()}
   function collectVisibleState(){
     document.querySelectorAll('[data-action="edit-cell"]').forEach(function(el){
       var table=findTable(el.dataset.table);
@@ -547,26 +553,34 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function saveDraft(){
     collectVisibleState();
+    touchState();
     saveLocal();
     if(isAdmin) scheduleSave();
   }
   async function loadRemote(){
-    try{state=mergeState(JSON.parse(localStorage.getItem(STORAGE_KEY)||'null'))}catch(e){state=defaultState()}
+    state=defaultState();
     renderAll();
     renderSimulation();
     try{
       var remote=await sbGet(UA_ROW_ID);
-      if(remote&&remote.tables){state=mergeState(remote);saveLocal();renderAll()}
+      if(remote&&remote.tables){
+        state=mergeState(remote);
+        renderAll();
+      }
     }catch(e){console.warn('remote load failed',e)}
   }
   function scheduleSave(){clearTimeout(saveTimer);saveTimer=setTimeout(saveNow,650)}
   async function saveNow(){
     if(!isAdmin){showToast('Unlock admin first',true);return false}
+    clearTimeout(saveTimer);
     collectVisibleState();
-    saveLocal();
-    try{await sbUpsert(UA_ROW_ID,state);showToast('Saved');return true}
-    catch(e){console.error(e);showToast('Local saved only. Online save blocked.',true);return false}
+    touchState();
+    await compressStateImages();
+    if(saveInFlight)await saveInFlight;
+    saveInFlight=sbUpsert(UA_ROW_ID,state).then(function(){showToast('Saved');return true}).catch(function(e){console.error(e);showToast('Local saved only. Online save blocked.',true);return false}).finally(function(){saveInFlight=null});
+    return saveInFlight;
   }
+  async function flushSave(){clearTimeout(saveTimer);return saveNow()}
   function tableTools(id){
     return '<button class="mini-btn" data-action="add-row" data-table="'+id+'">Add Row</button>'+
       '<button class="mini-btn" data-action="add-col" data-table="'+id+'">Add Column</button>'+
@@ -755,6 +769,67 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     table.columns.forEach(function(col){cells[col.id]=''});
     table.rows.push({id:uid('row'),cells:cells});
   }
+  function resizeImageFile(file,maxSide,quality){
+    return new Promise(function(resolve,reject){
+      var reader=new FileReader();
+      reader.onerror=reject;
+      reader.onload=function(){
+        var img=new Image();
+        img.onerror=reject;
+        img.onload=function(){
+          var scale=Math.min(1,(maxSide||900)/Math.max(img.width,img.height));
+          var canvas=document.createElement('canvas');
+          canvas.width=Math.max(1,Math.round(img.width*scale));
+          canvas.height=Math.max(1,Math.round(img.height*scale));
+          var ctx=canvas.getContext('2d');
+          ctx.drawImage(img,0,0,canvas.width,canvas.height);
+          resolve(canvas.toDataURL('image/jpeg',quality||0.78));
+        };
+        img.src=reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+  function resizeDataUrl(dataUrl,maxSide,quality){
+    return new Promise(function(resolve){
+      if(!/^data:image\//.test(String(dataUrl||''))||String(dataUrl).length<450000){resolve(dataUrl);return}
+      var img=new Image();
+      img.onerror=function(){resolve(dataUrl)};
+      img.onload=function(){
+        var scale=Math.min(1,(maxSide||900)/Math.max(img.width,img.height));
+        var canvas=document.createElement('canvas');
+        canvas.width=Math.max(1,Math.round(img.width*scale));
+        canvas.height=Math.max(1,Math.round(img.height*scale));
+        var ctx=canvas.getContext('2d');
+        ctx.drawImage(img,0,0,canvas.width,canvas.height);
+        resolve(canvas.toDataURL('image/jpeg',quality||0.78));
+      };
+      img.src=dataUrl;
+    });
+  }
+  async function compressStateImages(){
+    var tasks=[];
+    Object.keys(state.tables||{}).forEach(function(tableId){
+      var table=state.tables[tableId];
+      (table.rows||[]).forEach(function(row){
+        Object.keys(row.cells||{}).forEach(function(cellId){
+          var value=row.cells[cellId];
+          if(/^data:image\//.test(String(value||''))&&String(value).length>450000){
+            tasks.push(resizeDataUrl(value,900,.78).then(function(next){row.cells[cellId]=next}));
+          }
+        });
+      });
+    });
+    (state.simCases||[]).forEach(function(item){
+      (item.microObjects||[]).forEach(function(obj){
+        var value=obj.image;
+        if(/^data:image\//.test(String(value||''))&&String(value).length>450000){
+          tasks.push(resizeDataUrl(value,900,.78).then(function(next){obj.image=next}));
+        }
+      });
+    });
+    if(tasks.length){showToast('Compressing images...');await Promise.all(tasks);touchState()}
+  }
   function setEditMode(on){
     if(on&&!isAdmin){toggleAdminLogin();return}
     if(!on)collectVisibleState();
@@ -763,16 +838,15 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     renderAll();
   }
   window.exitAdmin=async function(){
-    if(isAdmin){
-      collectVisibleState();
-      saveLocal();
-      await saveNow().catch(function(e){console.warn(e);return false});
-      isAdmin=false;
-      editMode=false;
-      document.getElementById('adminBadge').classList.remove('visible');
-      setEditMode(false);
-      showToast('Exited Admin');
-    }
+    if(!isAdmin)return;
+    showToast('Saving...');
+    var saved=await flushSave().catch(function(e){console.warn(e);return false});
+    if(!saved){showToast('Online save failed. Still in Admin.',true);return}
+    isAdmin=false;
+    editMode=false;
+    document.getElementById('adminBadge').classList.remove('visible');
+    setEditMode(false);
+    showToast('Exited Admin');
   };
   window.toggleAdminLogin=function(){
     if(isAdmin){exitAdmin();return}
@@ -1104,27 +1178,25 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var input=e.target;
     if(!isAdmin||!editMode||!input.files||!input.files[0])return;
     if(input.dataset.action==='upload-micro-image'){
-      var microReader=new FileReader();
-      microReader.onload=function(){
+      showToast('Preparing image...');
+      resizeImageFile(input.files[0],900,.78).then(function(dataUrl){
         var ci=Number(input.dataset.caseIndex);
         var oi=Number(input.dataset.objectIndex);
         if(state.simCases[ci]&&state.simCases[ci].microObjects&&state.simCases[ci].microObjects[oi]){
-          state.simCases[ci].microObjects[oi].image=microReader.result;
+          state.simCases[ci].microObjects[oi].image=dataUrl;
           saveDraft();
           renderSimulation();
         }
-      };
-      microReader.readAsDataURL(input.files[0]);
+      }).catch(function(e){console.warn(e);showToast('Image upload failed',true)});
       return;
     }
     if(input.dataset.action!=='upload-image')return;
-    var reader=new FileReader();
-    reader.onload=function(){
+    showToast('Preparing image...');
+    resizeImageFile(input.files[0],900,.78).then(function(dataUrl){
       var table=findTable(input.dataset.table);
       var row=table.rows.find(function(item){return item.id===input.dataset.row});
-      if(row){row.cells[input.dataset.col]=reader.result;saveDraft();renderAll()}
-    };
-    reader.readAsDataURL(input.files[0]);
+      if(row){row.cells[input.dataset.col]=dataUrl;saveDraft();renderAll()}
+    }).catch(function(e){console.warn(e);showToast('Image upload failed',true)});
   });
   function tablePrintHtml(id){
     var table=state.tables[id];
