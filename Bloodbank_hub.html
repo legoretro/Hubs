@@ -442,6 +442,19 @@ button{cursor:pointer;font-family:inherit}
       <div style="font-size:11px;font-weight:700;color:var(--wine);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Pages</div>
       <label style="display:flex;align-items:center;gap:8px;margin-bottom:7px;font-size:13px;cursor:pointer"><input type="checkbox" id="expRbc" checked> RBC Antigen Map</label>
       <label style="display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:13px;cursor:pointer"><input type="checkbox" id="expChrom" checked> Chromosome Map</label>
+      <div style="font-size:11px;font-weight:700;color:var(--wine);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Full System Page</div>
+      <p style="font-size:12px;color:var(--warm-grey);margin:-3px 0 8px">Exports the whole system in the same order as the page: history, membrane, study reference, frequencies, and notes.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:12px">
+        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-full-system" data-sys="abo"> ABO</label>
+        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-full-system" data-sys="rh"> Rh</label>
+        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-full-system" data-sys="kell"> Kell</label>
+        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-full-system" data-sys="duffy"> Duffy</label>
+        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-full-system" data-sys="kidd"> Kidd</label>
+        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-full-system" data-sys="mns"> MNS</label>
+        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-full-system" data-sys="p1pk"> P1PK/Glob</label>
+        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-full-system" data-sys="lewis"> Lewis</label>
+        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-full-system" data-sys="lutheran"> Lutheran</label>
+      </div>
       <div style="font-size:11px;font-weight:700;color:var(--wine);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">History (by system)</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:12px">
         <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" class="exp-hist" data-sys="abo"> ABO</label>
@@ -2184,11 +2197,91 @@ function buildAllFrequenciesExportPage(keys) {
   '</div>';
 }
 
+function exportText(value) {
+  return escText(value).replace(/\n/g, '<br>');
+}
+
+function buildExportWsRows(sys, skey) {
+  var data = notesData[skey] || {};
+  var fields = sys.mns_split
+    ? (sys.fields_mn || []).concat(sys.fields_ss || [])
+    : (sys.fields || []);
+  if (!fields.length) return '<tr><td colspan="2">No study reference fields yet.</td></tr>';
+  return fields.map(function(f) {
+    var val = data[f] || '';
+    return '<tr><td class="lbl">' + exportText(FIELD_LABELS[f] || f) + '</td><td>' + (val ? exportText(val) : '<span class="muted">blank</span>') + '</td></tr>';
+  }).join('');
+}
+
+function buildExportFrequencyRows(skey) {
+  var rows = getFreqRows(skey);
+  if (!rows.length) return '<tr><td colspan="9" class="muted">No frequency rows yet.</td></tr>';
+  return rows.map(function(r) {
+    return '<tr>' +
+      '<td>' + exportText(r.ag || '') + '</td>' +
+      '<td class="center">' + exportText(r.c || '') + '</td>' +
+      '<td class="center">' + exportText(r.b || '') + '</td>' +
+      '<td class="center">' + exportText(r.a || '') + '</td>' +
+      '<td class="center">' + exportText(r.i || '') + '</td>' +
+      '<td class="center">' + exportText(r.h || '') + '</td>' +
+      '<td class="center memo">' + exportText(r.memo || '') + '</td>' +
+      '<td>' + exportText(r.pop || '') + '</td>' +
+      '<td>' + exportText(r.hiLo || '') + '</td>' +
+    '</tr>';
+  }).join('');
+}
+
+function buildFullSystemExportPage(key) {
+  var sys = SYSTEMS[key];
+  if (!sys) return '';
+  var skey = sys.notes_key;
+  var data = notesData[skey] || {};
+  var history = (sys.history || []).map(function(h) {
+    return '<div class="tl-item"><span class="yr">' + exportText(h.year) + '</span><span>' + exportText(h.text) + '</span></div>';
+  }).join('');
+  var membrane = buildSystemRbcSVG(skey, sys.color)
+    .replace(/id="rbcMembraneSvg"/g, '')
+    .replace(/touch-action:none/g, '');
+  var notes = data.lab_notes
+    ? '<div class="system-card notes-card"><div class="card-label">Transfusion Notes</div><div class="note-box">' + exportText(data.lab_notes) + '</div></div>'
+    : '';
+  return '<section class="page system-page">' +
+    '<div class="system-card hero-card" style="border-top-color:' + sys.color + '">' +
+      '<div class="system-head">' +
+        '<div class="system-dot" style="background:' + sys.color + '">' + exportText(sys.icon || '') + '</div>' +
+        '<div><h1 style="color:' + sys.color + '">' + exportText(sys.name) + '</h1>' +
+        '<div class="isbt">' + exportText(sys.isbt || '') + '</div>' +
+        '<div class="pun">' + exportText(sys.pun || '') + '</div></div>' +
+      '</div>' +
+      '<div class="card-label">History</div><div class="tl">' + history + '</div>' +
+    '</div>' +
+    '<div class="system-card membrane-card" style="border-top-color:' + sys.color + '">' +
+      '<div class="card-label">RBC Membrane Location</div>' +
+      '<div class="membrane-print">' + membrane + '</div>' +
+      '<table class="mini-table"><tbody>' +
+        '<tr><td class="lbl">Antigen Type</td><td>' + exportText((sys.membrane || {}).type || '') + '</td></tr>' +
+        '<tr><td class="lbl">Location</td><td>' + exportText((sys.membrane || {}).location || '') + '</td></tr>' +
+      '</tbody></table>' +
+    '</div>' +
+    '<div class="system-card" style="border-top-color:' + sys.color + '">' +
+      '<div class="card-label">Study Reference</div>' +
+      '<table class="study-table"><tbody>' + buildExportWsRows(sys, skey) + '</tbody></table>' +
+    '</div>' +
+    '<div class="system-card freq-card" style="border-top-color:' + sys.color + '">' +
+      '<div class="card-label">Antigen Frequencies</div>' +
+      '<table class="freq-export"><thead><tr><th>Antigen</th><th>C</th><th>B</th><th>A</th><th>I</th><th>H</th><th>Memo</th><th>Population Different In</th><th>Higher or Lower?</th></tr></thead><tbody>' + buildExportFrequencyRows(skey) + '</tbody></table>' +
+    '</div>' +
+    notes +
+  '</section>';
+}
+
 function doExport() {
   document.getElementById('exportModal').classList.remove('visible');
   var inclRbc   = document.getElementById('expRbc').checked;
   var inclChrom = document.getElementById('expChrom').checked;
-  var histSys = [], wsSys = [], freqSys = [];
+  var fullSys = [], histSys = [], wsSys = [], freqSys = [];
+  var fullBoxes = document.querySelectorAll('.exp-full-system:checked');
+  for (var i = 0; i < fullBoxes.length; i++) { fullSys.push(fullBoxes[i].getAttribute('data-sys')); }
   var hboxes = document.querySelectorAll('.exp-hist:checked');
   for (var i = 0; i < hboxes.length; i++) { histSys.push(hboxes[i].getAttribute('data-sys')); }
   var wboxes = document.querySelectorAll('.exp-ws:checked');
@@ -2197,10 +2290,10 @@ function doExport() {
   for (var i = 0; i < fboxes.length; i++) { freqSys.push(fboxes[i].getAttribute('data-sys')); }
 
   var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Bloody Brilliant Export</title>' +
-    '<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:Georgia,serif;font-size:12px;color:#1e0d10}' +
+    '<style>@page{size:letter;margin:.5in}*{box-sizing:border-box;margin:0;padding:0}body{font-family:Georgia,serif;font-size:12px;color:#1e0d10;background:#fff}' +
     'h1{font-size:18px;color:#5a0e20;text-align:center;margin-bottom:6px;padding:12px 0 0}' +
     'h2{font-size:13px;color:#8b0a26;margin:14px 0 6px;border-bottom:2px solid #f7c5d0;padding-bottom:3px}' +
-    '.page{padding:18px 24px;page-break-after:always;max-width:700px;margin:0 auto}' +
+    '.page{padding:0;page-break-after:always;max-width:7.5in;margin:0 auto}' +
     '.page:last-child{page-break-after:avoid}' +
     'table{width:100%;border-collapse:collapse;margin-bottom:8px}' +
     'th{background:#5a0e20;color:#fff;padding:5px 8px;text-align:left;font-size:10px;letter-spacing:.5px}' +
@@ -2210,9 +2303,18 @@ function doExport() {
     '.tl{padding-left:12px;border-left:2px solid #f7c5d0}' +
     '.tl-item{margin-bottom:7px;font-size:11px}' +
     '.yr{font-weight:700;color:#c0173d;font-size:10px;display:block}' +
+    '.system-page{padding:0;font-size:10px}' +
+    '.system-card{border-top:2.5px solid #5a0e20;border-left:1px solid #f7c5d0;border-right:1px solid #f7c5d0;border-bottom:1px solid #f7c5d0;border-radius:16px;padding:12px 15px;margin:0 0 10px;background:#fffaf7;break-inside:avoid;page-break-inside:avoid}' +
+    '.hero-card{padding-bottom:10px}.system-head{display:flex;gap:10px;align-items:flex-start;margin-bottom:8px}.system-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px;line-height:1;box-shadow:inset 0 2px 5px rgba(0,0,0,.22)}' +
+    '.system-head h1{text-align:left;font-size:25px;line-height:1;margin:0 0 2px;padding:0}.isbt{font-size:10px;letter-spacing:3px;color:#7a6468;text-transform:uppercase}.pun{font-size:12px;color:#c0173d;font-style:italic;font-weight:700;margin-top:4px}.card-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#7a6468;font-weight:700;margin:0 0 7px}.system-page .tl{padding-left:10px}.system-page .tl-item{font-size:10.5px;line-height:1.22;margin-bottom:5px}.system-page .yr{font-size:10px;display:inline-block;width:58px}' +
+    '.membrane-card{padding-bottom:8px}.membrane-print{height:1.45in;overflow:hidden;margin:-4px 0 4px}.membrane-print div{overflow:visible!important}.membrane-print svg{width:100%!important;min-width:0!important;height:1.45in!important}.membrane-print text{font-size:16px!important}.mini-table td{font-size:9px;padding:3px 6px}.study-table{font-size:8.4px;line-height:1.15}.study-table td{font-size:8.4px;padding:3px 5px}.study-table td.lbl{width:1.55in;font-size:7.8px}.freq-export{font-size:7.5px;line-height:1.08;table-layout:fixed}.freq-export th{font-size:7.4px;padding:3px 4px}.freq-export td{font-size:7.4px;padding:3px 4px}.freq-export th:nth-child(1){width:.72in}.freq-export th:nth-child(2),.freq-export th:nth-child(3),.freq-export th:nth-child(4),.freq-export th:nth-child(5),.freq-export th:nth-child(6){width:.28in}.freq-export th:nth-child(7){width:.6in}.freq-export .center{text-align:center}.freq-export .memo{background:#dce6f4}.note-box{font-size:9px;line-height:1.22;padding:7px;background:#fff;border-left:3px solid #f7c5d0}.muted{color:#9a8588}' +
     'svg{max-width:100%;height:auto}' +
     '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}' +
     '</style></head><body>';
+
+  fullSys.forEach(function(key) {
+    html += buildFullSystemExportPage(key);
+  });
 
   if (freqSys.length) {
     html += buildAllFrequenciesExportPage(freqSys);
