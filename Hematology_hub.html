@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hematology Hub</title>
+<style>
+:root{--deep:#321047;--purple:#7b3fa0;--wine:#5a0e52;--plum:#9b5fc0;--rose:#f0c7eb;--soft:#fff7fd;--pale:#fbf2ff;--ink:#241322;--muted:#786575;--line:#e7d2e8;--gold:#d4860a;--green:#1a8c5c;--danger:#8b0a26}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Georgia,"Times New Roman",serif;background:linear-gradient(180deg,#fff7fd 0%,#fbf2ff 42%,#fff 100%);color:var(--ink);min-height:100vh}
+.splash{min-height:72vh;background:linear-gradient(rgba(32,10,44,.74),rgba(32,10,44,.76)),radial-gradient(circle at 35% 70%,rgba(210,158,238,.22),transparent 34%),linear-gradient(135deg,#1d1024,#432050);display:grid;place-items:end center;padding:80px 24px 28px;position:relative;overflow:hidden}
+.splash:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(255,255,255,.08) 0 1px,transparent 1px 140px),linear-gradient(0deg,rgba(255,255,255,.05),transparent 42%);filter:blur(.2px)}
+.splash:after{content:"";position:absolute;left:8%;right:8%;bottom:18%;height:30%;border-radius:32px;background:linear-gradient(90deg,rgba(255,255,255,.10),rgba(255,255,255,.02));box-shadow:0 0 80px rgba(240,199,235,.22);filter:blur(8px)}
+.splash-inner{position:relative;text-align:center;color:#fff;z-index:1}.splash-icon{font-size:44px;margin-bottom:18px}.splash h1{font-size:clamp(52px,8vw,104px);line-height:.95;color:#fff7fd;text-shadow:0 8px 24px rgba(0,0,0,.28)}.splash p{font-size:clamp(16px,2.5vw,26px);letter-spacing:9px;text-transform:uppercase;color:#e9c4ee;font-weight:900;margin-top:18px}
+.site-header{position:sticky;top:0;z-index:50;background:linear-gradient(135deg,var(--deep),var(--purple));box-shadow:0 4px 18px rgba(50,16,71,.34);padding:14px 22px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}.site-logo{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:#fff;color:var(--purple);font-weight:900}.site-title{flex:1;color:#fff;font-size:clamp(16px,2.5vw,22px);font-weight:900}.site-title em{font-style:normal;color:#f2d0f6}.mls-home-link,.nav-tab,.tool-btn{display:inline-flex;align-items:center;justify-content:center;border:1.5px solid rgba(255,255,255,.32);background:rgba(255,255,255,.12);color:#fff0fb;border-radius:999px;padding:7px 13px;font-size:12px;font-weight:900;text-decoration:none}.nav-tabs{display:flex;gap:6px;flex-wrap:wrap}.nav-tab.active{background:#fff;color:var(--purple);border-color:#fff}.admin-pill{display:none;background:#f2d0f6;color:var(--deep);border-radius:999px;padding:7px 16px;font-size:13px;font-weight:900}.admin-mode .admin-pill{display:inline-flex}.admin-mode #adminBtn{display:none}.admin-exit-btn{display:none}.admin-mode .admin-exit-btn{display:inline-flex}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 22px 60px}.section{display:none}.section.active{display:block}.section-hero{text-align:center;margin-bottom:22px}.section-hero h2{font-size:clamp(38px,6vw,72px);color:var(--wine);line-height:.96}.section-hero p{font-size:17px;color:var(--muted);font-weight:800;margin-top:8px}.panel{background:rgba(255,255,255,.86);border:1px solid var(--line);border-top:5px solid var(--purple);border-radius:16px;padding:18px;margin-bottom:18px;box-shadow:0 12px 28px rgba(50,16,71,.08)}.panel h3{font-size:28px;color:var(--wine);margin-bottom:8px}.panel p{font-size:15px;line-height:1.55;color:var(--muted)}
+.grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.mini-card{border:1px solid var(--line);border-radius:12px;background:#fff;padding:14px}.mini-card h4{font-size:20px;color:var(--wine);margin-bottom:6px}.mini-card ul{padding-left:18px;color:var(--ink);line-height:1.5}.mini-card li{margin-bottom:4px}
+.table-tools{display:none;gap:7px;flex-wrap:wrap;margin:0 0 10px}.admin-mode .table-tools{display:flex}.admin-only{display:none}.admin-mode .admin-only{display:inline-flex}.mini-btn{border:1.5px solid rgba(123,63,160,.36);background:#fff;color:var(--deep);border-radius:999px;padding:6px 10px;font-size:12px;font-weight:900}.mini-btn:hover{background:var(--pale)}.mini-btn.danger{color:var(--danger);border-color:rgba(139,10,38,.35)}.table-wrap{width:100%;overflow:auto;border:1px solid var(--line);border-radius:8px;background:#fff}table{width:100%;border-collapse:collapse;font-size:13px}th{background:var(--deep);color:#fff;text-align:left;padding:8px 9px;font-size:10px;text-transform:uppercase;letter-spacing:.7px;white-space:nowrap;min-width:130px}td{border-top:1px solid var(--line);border-right:1px solid rgba(123,63,160,.13);padding:7px 9px;vertical-align:top;min-width:130px}td:last-child{border-right:none}tr:nth-child(even) td{background:#fff7fd}.cell-text{min-height:24px;border-radius:4px;padding:2px 4px;outline:none}.col-label{color:#fff;display:block}.col-input{display:none;width:100%;border:1px solid rgba(255,255,255,.45);border-radius:5px;background:#fff7fd;color:var(--ink);padding:5px 6px;font-size:12px;font-weight:900}.admin-mode .cell-text{background:rgba(123,63,160,.08);box-shadow:0 0 0 1px rgba(123,63,160,.30) inset}.admin-mode .col-label{display:none}.admin-mode .col-input{display:block}.image-cell{display:grid;gap:7px}.image-preview{display:none;max-width:150px;max-height:110px;border:1px solid rgba(123,63,160,.35);border-radius:6px;background:#fff}.image-preview[src]{display:block}.file-input{display:none;font-size:11px;max-width:190px}.admin-mode .file-input{display:block}.empty-image{font-size:12px;color:var(--muted);font-style:italic}.admin-mode .empty-image{display:none}
+.sim-card{min-height:330px;display:grid;place-items:center;text-align:center;background:linear-gradient(135deg,#fff,#fbf2ff);border-style:dashed}.sim-card h3{font-size:42px}.sim-card .badge{display:inline-flex;margin-bottom:12px;border-radius:999px;background:#f2d0f6;color:var(--deep);padding:7px 18px;font-weight:900;letter-spacing:1px;text-transform:uppercase;font-size:12px}.resource-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}.resource-card{border:1px solid var(--line);border-radius:14px;background:#fff;padding:15px}.resource-card .tag{display:inline-flex;background:#f8e9fb;color:var(--wine);border-radius:6px;padding:4px 9px;font-size:11px;font-weight:900;letter-spacing:1px;text-transform:uppercase;margin-bottom:9px}.resource-card h4{font-size:20px;color:var(--wine);margin-bottom:7px}.resource-card p{font-size:14px;color:var(--muted);line-height:1.55}
+.save-indicator{position:fixed;right:18px;bottom:18px;background:var(--green);color:#fff;border-radius:999px;padding:9px 15px;font-size:13px;font-weight:900;opacity:0;pointer-events:none;transition:.2s;z-index:70}.save-indicator.show{opacity:1}.modal-overlay{position:fixed;inset:0;background:rgba(32,10,44,.72);z-index:1000;display:none;align-items:center;justify-content:center}.modal-overlay.visible{display:flex}.modal-box{background:#fff;border-radius:18px;padding:30px;max-width:430px;width:90%;box-shadow:0 20px 60px rgba(32,10,44,.32);text-align:center;border:1px solid rgba(123,63,160,.35)}.modal-box h3{font-size:22px;color:var(--deep);margin-bottom:6px}.modal-box p{font-size:13px;color:var(--muted);margin-bottom:18px}.modal-input{width:100%;border:1.5px solid rgba(123,63,160,.35);border-radius:10px;padding:10px 14px;font-size:15px;text-align:center;background:#fff;margin-bottom:12px;letter-spacing:3px}.modal-error{color:var(--danger);font-size:12px;margin-bottom:10px;min-height:16px}.btn{border:none;border-radius:999px;background:var(--purple);color:#fff;padding:8px 16px;font-size:12px;font-weight:900}.btn.ghost{background:transparent;color:var(--muted);border:1.5px solid rgba(123,63,160,.35)}.export-options{display:grid;gap:8px;margin:14px 0;text-align:left}.export-options label{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink);cursor:pointer}.export-options input{accent-color:var(--purple)}
+#printArea{display:none}@media print{body{background:#fff;color:#000;-webkit-print-color-adjust:exact;print-color-adjust:exact}body.printing .splash,body.printing .site-header,body.printing .wrap,body.printing .save-indicator,body.printing .modal-overlay{display:none!important}body.printing #printArea{display:block!important}#printArea{font-family:Georgia,"Times New Roman",serif;color:#241322;padding:18px 24px}.print-page{break-after:page}.print-page:last-child{break-after:auto}.print-section-title{font-size:22px;color:#5a0e52;margin:0 0 12px}.print-card{border:1px solid #7b3fa0;border-top:4px solid #7b3fa0;margin-bottom:12px;padding:10px;break-inside:avoid;background:#fff}.print-card h2{font-size:15px;color:#5a0e52;margin-bottom:8px}#printArea table{width:100%;border-collapse:collapse}#printArea th{background:#321047!important;color:#fff;padding:5px 6px;text-align:left;font-size:9px;border:1px solid #321047}#printArea td{padding:5px 6px;border:1px solid #d8bde0;vertical-align:top;font-size:10px}#printArea img{display:block;max-width:105px;max-height:80px;border:1px solid #d8bde0}}
+@media(max-width:800px){.grid-2{grid-template-columns:1fr}.site-header{align-items:flex-start}.wrap{padding:22px 14px}.splash{min-height:58vh}.splash p{letter-spacing:5px}}
+</style>
+</head>
+<body>
+<section class="splash" aria-label="Hematology Hub opening">
+  <div class="splash-inner">
+    <div class="splash-icon">H</div>
+    <h1>Heme Focus</h1>
+    <p>Hematology Hub</p>
+  </div>
+</section>
+<header class="site-header">
+  <div class="site-logo">H</div>
+  <div class="site-title">Heme Focus <em>Hematology Hub</em></div>
+  <a class="mls-home-link" href="https://legoretro.github.io/MLS/">Back to MLS Home</a>
+  <nav class="nav-tabs">
+    <button type="button" class="nav-tab active" data-section="rbc">RBC</button>
+    <button type="button" class="nav-tab" data-section="wbc">WBC</button>
+    <button type="button" class="nav-tab" data-section="simulation">Simulation</button>
+    <button type="button" class="nav-tab" data-section="resources">Resources</button>
+  </nav>
+  <span class="admin-pill" id="adminBadge">Admin</span>
+  <button type="button" class="tool-btn" data-ui-action="open-export">Export PDF</button>
+  <button type="button" class="tool-btn" data-ui-action="admin-login" id="adminBtn">Admin</button>
+  <button type="button" class="tool-btn admin-exit-btn" data-ui-action="exit-admin">Exit Admin</button>
+</header>
+<div class="modal-overlay" id="adminModal">
+  <div class="modal-box">
+    <h3>Admin Login</h3>
+    <p>Unlock editing for tables and image slots.</p>
+    <input class="modal-input" type="password" id="adminPwInput" placeholder="password" autocomplete="off" maxlength="30">
+    <div class="modal-error" id="adminErr"></div>
+    <div style="display:flex;gap:8px;justify-content:center">
+      <button type="button" class="btn" data-ui-action="admin-unlock">Unlock</button>
+      <button type="button" class="btn ghost" data-ui-action="close-admin">Cancel</button>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="exportModal">
+  <div class="modal-box">
+    <h3>Export PDF</h3>
+    <p>Choose sections to include. Simulation is not included yet.</p>
+    <div class="export-options" id="exportOptions"></div>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+      <button type="button" class="btn ghost" data-ui-action="export-select-all">Select All</button>
+      <button type="button" class="btn ghost" data-ui-action="export-clear-all">Clear All</button>
+      <button type="button" class="btn" data-ui-action="do-export">Export PDF</button>
+      <button type="button" class="btn ghost" data-ui-action="close-export">Cancel</button>
+    </div>
+  </div>
+</div>
+<main class="wrap">
+  <section class="section active" id="sec-rbc">
+    <div class="section-hero">
+      <h2>RBC</h2>
+      <p>Start with size, color, shape, inclusions, and the reticulocyte response.</p>
+    </div>
+    <div class="grid-2">
+      <div class="panel mini-card">
+        <h4>First Pass</h4>
+        <ul>
+          <li>Size: microcytic, normocytic, or macrocytic.</li>
+          <li>Color: central pallor and hemoglobinization.</li>
+          <li>Shape: poikilocytosis points toward membrane, fragmentation, or marrow stress.</li>
+          <li>Response: reticulocytes help separate production problems from loss/destruction.</li>
+        </ul>
+      </div>
+      <div class="panel mini-card">
+        <h4>Simple BOC Mindset</h4>
+        <ul>
+          <li>Match CBC indices to smear findings.</li>
+          <li>Do not overcall one rare cell; look for a pattern.</li>
+          <li>Ask if the marrow is responding appropriately.</li>
+          <li>Use morphology as a clue, not the whole diagnosis.</li>
+        </ul>
+      </div>
+    </div>
+    <div id="table-rbc_morphology"></div>
+    <div id="table-rbc_indices"></div>
+  </section>
+  <section class="section" id="sec-wbc">
+    <div class="section-hero">
+      <h2>WBC</h2>
+      <p>Keep the differential clean: lineage, maturity, quantity, and reactive clues.</p>
+    </div>
+    <div class="grid-2">
+      <div class="panel mini-card">
+        <h4>First Pass</h4>
+        <ul>
+          <li>Neutrophils usually point toward bacterial inflammation or stress patterns.</li>
+          <li>Lymphocytes help with viral/reactive patterns and chronic lymphoid processes.</li>
+          <li>Eosinophils often connect to allergy, parasites, or drug reactions.</li>
+          <li>Blasts or very immature cells move the question toward marrow disease.</li>
+        </ul>
+      </div>
+      <div class="panel mini-card">
+        <h4>Smear Language</h4>
+        <ul>
+          <li>Report what is seen: left shift, toxic change, atypical lymphocytes, blasts.</li>
+          <li>Correlate with WBC count and differential percentage.</li>
+          <li>Use morphology to decide what needs confirmation.</li>
+        </ul>
+      </div>
+    </div>
+    <div id="table-wbc_differential"></div>
+    <div id="table-wbc_morphology"></div>
+  </section>
+  <section class="section" id="sec-simulation">
+    <div class="section-hero">
+      <h2>Simulation</h2>
+      <p>Practice mode will come after the core cell review is stable.</p>
+    </div>
+    <div class="panel sim-card">
+      <div>
+        <span class="badge">Coming Soon</span>
+        <h3>Smear Review Simulation</h3>
+        <p>Planned flow: CBC clue -> smear field -> identify cells -> choose interpretation -> reveal teaching notes.</p>
+      </div>
+    </div>
+  </section>
+  <section class="section" id="sec-resources">
+    <div class="section-hero">
+      <h2>Resources</h2>
+      <p>Information filled in by student.</p>
+    </div>
+    <div class="resource-grid">
+      <div class="resource-card"><span class="tag">Textbook</span><h4>Hematology: Clinical Principles and Applications, 6th ed.</h4><p>Primary hematology reference for cell morphology, CBC interpretation, and introductory hematology review.</p></div>
+      <div class="resource-card"><span class="tag">Student Notes</span><h4>ASCP / BOC Review Framing</h4><p>Used as a simple student-created study layout: start with morphology, then connect to common lab meaning.</p></div>
+      <div class="resource-card"><span class="tag">Image Slots</span><h4>Student-created visuals</h4><p>Images can be added later as admin for each row, including Canva cell art or smear examples.</p></div>
+    </div>
+  </section>
+</main>
+<div id="printArea"></div>
+<div class="save-indicator" id="saveIndicator">Saved</div>
+<script>
+const SUPABASE_URL='https://fjrdlasmdhqjqqlvuxwj.supabase.co';
+const SUPABASE_KEY='sb_publishable_UnXRXK6It0PKVmZmixYZeg_WDx9frO2';
+const TABLE_NAME='mls_blood_bank';
+const HEME_ROW_ID='hematology_hub';
+const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c675';
+(function(){
+  var isAdmin=false,editMode=false,saveTimer=null,saveInFlight=null,state=defaultState();
+  var EXPORT_ITEMS=[['rbc_morphology','RBC Morphology'],['rbc_indices','RBC Indices'],['wbc_differential','WBC Differential'],['wbc_morphology','WBC Morphology'],['resources','Resources']];
+  function uid(prefix){return prefix+'_'+Math.random().toString(36).slice(2,9)}
+  function escapeHtml(value){return String(value||'').replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]})}
+  function decodeEntities(value){var box=document.createElement('textarea');box.innerHTML=String(value||'');return box.value}
+  function normalizeCellText(value){var text=String(value||'').replace(/<div><br><\/div>/gi,'\n').replace(/<div>/gi,'\n').replace(/<\/div>/gi,'').replace(/<br\s*\/?>/gi,'\n').replace(/&amp;lt;br\s*\/?&amp;gt;/gi,'\n').replace(/&lt;br\s*\/?&gt;/gi,'\n').replace(/\u00a0|&nbsp;|&amp;nbsp;/g,' ');text=decodeEntities(decodeEntities(text));return text.replace(/\r\n?/g,'\n').replace(/\n{3,}/g,'\n\n')}
+  function cellDisplayHtml(value){return escapeHtml(normalizeCellText(value)).replace(/\n/g,'<br>')}
+  function defaultColumns(labels,includeImage){var cols=labels.map(function(label){return{id:uid('col'),label:label,type:'text'}});if(includeImage)cols.push({id:uid('col'),label:'Image',type:'image'});return cols}
+  function makeTable(title,labels,rows,includeImage){var columns=defaultColumns(labels,includeImage);return{title:title,columns:columns,rows:rows.map(function(items){var cells={};columns.forEach(function(col,i){cells[col.id]=items[i]||''});return{id:uid('row'),cells:cells}})}}
+  function defaultState(){return{version:1,updatedAt:Date.now(),tables:{
+    rbc_morphology:makeTable('RBC Morphology',['Finding','How it looks','What it can mean','Simple first thought'],[
+      ['Normal RBC','Pink-red disc with central pallor about one third of the cell.','Baseline comparison for size, color, and shape.','Use this as the visual anchor.'],
+      ['Microcytes','RBCs smaller than normal; often match low MCV.','Commonly connects to iron deficiency or thalassemia patterns.','Small cells. Check MCV and RDW.'],
+      ['Macrocytes','Large RBCs; may be oval in megaloblastic patterns.','Can connect to B12/folate patterns, liver disease, reticulocytosis, or medication effects.','Large cells. Check MCV and smear pattern.'],
+      ['Hypochromia','Increased central pallor.','Often reflects decreased hemoglobinization.','Pale cells. Think iron/hemoglobin synthesis.'],
+      ['Polychromasia','Bluish-gray larger RBCs.','Reticulocyte response; marrow is releasing young RBCs.','Marrow response clue.'],
+      ['Spherocytes','Small dense RBCs lacking central pallor.','Membrane loss or immune hemolysis pattern.','Round dense cells.'],
+      ['Schistocytes','RBC fragments with sharp or irregular edges.','Fragmentation hemolysis; clinically important when increased.','Fragments matter.'],
+      ['Target cells','Bullseye appearance with central staining.','Seen with liver disease, hemoglobinopathies, thalassemia patterns, or post-splenectomy.','Membrane-to-volume clue.'],
+      ['Sickle cells','Curved or crescent-shaped RBCs.','Sickle hemoglobin pattern.','Shape is the major clue.'],
+      ['Teardrop cells','RBCs shaped like drops.','Can point toward marrow fibrosis/infiltration or severe marrow stress.','Marrow architecture clue.'],
+      ['Nucleated RBCs','Immature RBCs with nucleus present.','Marrow stress, severe anemia, hypoxia, or newborn context.','RBC precursor in peripheral blood.']
+    ],true),
+    rbc_indices:makeTable('RBC Indices Quick Review',['Index','What it answers','Low / High pattern','Study cue'],[
+      ['MCV','Average RBC size.','Low = microcytic; high = macrocytic.','Size category first.'],
+      ['MCHC','Hemoglobin concentration in RBCs.','Low often matches hypochromia; high can be spherocyte/cold agglutinin type clue.','Color/hemoglobinization.'],
+      ['RDW','Variation in RBC size.','High means more anisocytosis.','Mixed sizes or evolving process.'],
+      ['Reticulocyte count','Marrow response.','High suggests response to loss/destruction; low suggests production issue.','Is marrow answering?'],
+      ['Hemoglobin / Hematocrit','Oxygen-carrying mass estimate.','Low supports anemia; high supports erythrocytosis/polycythemia context.','How much RBC mass?']
+    ],false),
+    wbc_differential:makeTable('WBC Differential Basics',['Cell','Normal role','When increased','Simple clue'],[
+      ['Neutrophil','First-line phagocyte for bacterial inflammation.','Bacterial infection, inflammation, stress, steroids, tissue injury.','Segmented nucleus; look for left shift/toxic change.'],
+      ['Band neutrophil','Immature neutrophil form.','Left shift from increased marrow demand.','Curved band nucleus without full segmentation.'],
+      ['Lymphocyte','Adaptive immunity.','Viral/reactive patterns or lymphoid proliferations.','Small mature lymphs vs reactive forms matter.'],
+      ['Monocyte','Phagocyte and antigen-presenting cell.','Chronic inflammation, recovery phase, some marrow disorders.','Large cell with folded nucleus.'],
+      ['Eosinophil','Allergy, parasite response, granule-mediated inflammation.','Allergy, parasites, drug reactions, some neoplasms.','Orange-red granules.'],
+      ['Basophil','Histamine-containing granulocyte.','Myeloproliferative patterns, allergy context.','Dark purple granules can obscure nucleus.'],
+      ['Blast','Very immature precursor.','Concerning when present/increased in peripheral blood.','High nuclear-to-cytoplasmic ratio; needs follow-up.']
+    ],true),
+    wbc_morphology:makeTable('WBC Morphology Flags',['Finding','Cell type','What it suggests','Simple first thought'],[
+      ['Toxic granulation','Neutrophils','Inflammation or infection-associated neutrophil activation.','Dark coarse granules.'],
+      ['Dohle bodies','Neutrophils','Reactive change often with inflammation, burns, pregnancy, or infection patterns.','Pale blue cytoplasmic inclusions.'],
+      ['Cytoplasmic vacuoles','Neutrophils / monocytes','Phagocytic activity or sample artifact depending context.','Correlate clinically and with specimen quality.'],
+      ['Hypersegmented neutrophils','Neutrophils','Megaloblastic pattern clue.','Too many nuclear lobes.'],
+      ['Hyposegmented neutrophils','Neutrophils','Pelger-Huet or pseudo-Pelger pattern.','Too few lobes.'],
+      ['Reactive lymphocyte','Lymphocytes','Reactive/viral immune stimulation pattern.','Larger lymph with abundant basophilic cytoplasm.'],
+      ['Smudge cells','Lymphocytes','Fragile lymphocytes; classic association with CLL but not exclusive.','Broken-looking lymph cells.'],
+      ['Auer rods','Myeloid blasts','Myeloid lineage clue in acute leukemia workup.','Needle-like azurophilic rods.']
+    ],true)
+  }}}
+  async function hashString(text){var bytes=new TextEncoder().encode(text);var digest=await crypto.subtle.digest('SHA-256',bytes);return Array.from(new Uint8Array(digest)).map(function(b){return b.toString(16).padStart(2,'0')}).join('')}
+  async function supabaseError(r){var d='';try{var b=await r.json();d=b.message||b.details||b.hint||JSON.stringify(b)}catch(e){d=await r.text()}return new Error(d||('HTTP '+r.status))}
+  async function sbGet(id){var r=await fetch(SUPABASE_URL+'/rest/v1/'+TABLE_NAME+'?id=eq.'+encodeURIComponent(id)+'&select=data',{headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY}});if(!r.ok)throw await supabaseError(r);var d=await r.json();return d&&d[0]?d[0].data:null}
+  async function sbUpsert(id,data){var r=await fetch(SUPABASE_URL+'/rest/v1/'+TABLE_NAME+'?on_conflict=id',{method:'POST',headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates'},body:JSON.stringify({id:id,data:data})});if(!r.ok)throw await supabaseError(r);return true}
+  function showToast(msg,isError){var t=document.getElementById('saveIndicator');t.textContent=msg||'Saved';t.style.background=isError?'#8b0a26':'#1a8c5c';t.classList.add('show');setTimeout(function(){t.classList.remove('show')},1600)}
+  function touchState(){state.updatedAt=Date.now()}
+  function saveLocal(){}
+  function collectVisibleState(){document.querySelectorAll('[data-action="edit-cell"]').forEach(function(el){var table=findTable(el.dataset.table);var row=table&&table.rows.find(function(item){return item.id===el.dataset.row});if(row)row.cells[el.dataset.col]=normalizeCellText(el.innerHTML)});document.querySelectorAll('[data-action="edit-col"]').forEach(function(el){var table=findTable(el.dataset.table);var col=table&&table.columns.find(function(item){return item.id===el.dataset.col});if(col)col.label=el.value})}
+  function saveDraft(){collectVisibleState();touchState();if(isAdmin)scheduleSave()}
+  function scheduleSave(){clearTimeout(saveTimer);saveTimer=setTimeout(saveNow,650)}
+  async function saveNow(){if(!isAdmin){showToast('Unlock admin first',true);return false}clearTimeout(saveTimer);collectVisibleState();touchState();if(saveInFlight)await saveInFlight;saveInFlight=sbUpsert(HEME_ROW_ID,state).then(function(){showToast('Saved');return true}).catch(function(e){console.error(e);showToast('Online save blocked.',true);return false}).finally(function(){saveInFlight=null});return saveInFlight}
+  async function flushSave(){clearTimeout(saveTimer);return saveNow()}
+  function mergeState(remote){if(!remote||!remote.tables)return;state=remote;Object.keys(defaultState().tables).forEach(function(id){if(!state.tables[id])state.tables[id]=defaultState().tables[id]})}
+  function findTable(id){return state.tables[id]}
+  function renderTable(id){var table=findTable(id);var mount=document.getElementById('table-'+id);if(!table||!mount)return;var tools='<div class="table-tools"><button class="mini-btn" data-action="add-row" data-table="'+id+'">Add Row</button><button class="mini-btn" data-action="add-col" data-table="'+id+'">Add Column</button></div>';var thead='<thead><tr>'+table.columns.map(function(col){return'<th><span class="col-label">'+escapeHtml(col.label)+'</span><input class="col-input" value="'+escapeHtml(col.label)+'" data-table="'+id+'" data-col="'+col.id+'" data-action="edit-col"><button class="mini-btn danger admin-only" data-action="delete-col" data-table="'+id+'" data-col="'+col.id+'">Delete</button></th>'}).join('')+'<th class="admin-only">Rows</th></tr></thead>';var rows=table.rows.map(function(row){var cells=table.columns.map(function(col){var value=row.cells[col.id]||'';if(col.type==='image'){return'<td><div class="image-cell">'+(value?'<img class="image-preview" src="'+escapeHtml(value)+'" alt="">':'<span class="empty-image">No image yet</span>')+'<input class="file-input" type="file" accept="image/*" data-action="image-upload" data-table="'+id+'" data-row="'+row.id+'" data-col="'+col.id+'"></div></td>'}return'<td><div class="cell-text" contenteditable="'+(isAdmin?'true':'false')+'" data-action="edit-cell" data-table="'+id+'" data-row="'+row.id+'" data-col="'+col.id+'">'+cellDisplayHtml(value)+'</div></td>'}).join('');return'<tr>'+cells+'<td class="admin-only"><button class="mini-btn danger" data-action="delete-row" data-table="'+id+'" data-row="'+row.id+'">Delete Row</button></td></tr>'}).join('');mount.innerHTML='<div class="panel"><h3>'+escapeHtml(table.title)+'</h3>'+tools+'<div class="table-wrap"><table>'+thead+'<tbody>'+rows+'</tbody></table></div></div>'}
+  function renderExportOptions(){var box=document.getElementById('exportOptions');box.innerHTML=EXPORT_ITEMS.map(function(item){return'<label><input type="checkbox" class="export-check" value="'+item[0]+'" checked> '+item[1]+'</label>'}).join('')}
+  function renderAll(){Object.keys(state.tables).forEach(renderTable);renderExportOptions();document.body.classList.toggle('admin-mode',editMode)}
+  function setEditMode(on){if(on&&!isAdmin){toggleAdminLogin();return}if(!on)collectVisibleState();editMode=!!on;document.body.classList.toggle('admin-mode',editMode);renderAll()}
+  async function exitAdmin(){var saved=await flushSave().catch(function(){return false});if(!saved){showToast('Online save failed. Still in Admin.',true);return}isAdmin=false;setEditMode(false);document.getElementById('adminBadge').classList.remove('visible');showToast('Saved')}
+  window.toggleAdminLogin=function(){if(isAdmin){exitAdmin();return}document.getElementById('adminModal').classList.add('visible');setTimeout(function(){document.getElementById('adminPwInput').focus()},80)}
+  window.attemptLogin=async function(){var h=await hashString(document.getElementById('adminPwInput').value);if(h===PASS_HASH){isAdmin=true;document.getElementById('adminBadge').classList.add('visible');closeAdminModal();setEditMode(true);showToast('Unlocked')}else{document.getElementById('adminErr').textContent='Incorrect password.';document.getElementById('adminPwInput').value=''}}
+  window.closeAdminModal=function(){document.getElementById('adminModal').classList.remove('visible');document.getElementById('adminErr').textContent='';document.getElementById('adminPwInput').value=''}
+  function openExportModal(){renderExportOptions();document.getElementById('exportModal').classList.add('visible')}
+  function closeExportModal(){document.getElementById('exportModal').classList.remove('visible')}
+  function selectAllExport(val){document.querySelectorAll('#exportModal .export-check').forEach(function(box){box.checked=val})}
+  document.addEventListener('click',function(e){var ui=e.target.closest('[data-ui-action]');if(ui){var a=ui.dataset.uiAction;if(a==='open-export')openExportModal();if(a==='close-export')closeExportModal();if(a==='export-select-all')selectAllExport(true);if(a==='export-clear-all')selectAllExport(false);if(a==='do-export')doExport();if(a==='admin-login')toggleAdminLogin();if(a==='exit-admin')exitAdmin();if(a==='admin-unlock')attemptLogin();if(a==='close-admin')closeAdminModal();return}var tab=e.target.closest('.nav-tab[data-section]');if(tab){document.querySelectorAll('.nav-tab[data-section]').forEach(function(t){t.classList.remove('active')});tab.classList.add('active');document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active')});document.getElementById('sec-'+tab.dataset.section).classList.add('active');return}var btn=e.target.closest('[data-action]');if(!btn)return;if(btn.dataset.action==='add-row'){var t=findTable(btn.dataset.table);if(t){var cells={};t.columns.forEach(function(c){cells[c.id]=''});t.rows.push({id:uid('row'),cells:cells});renderTable(btn.dataset.table);saveDraft()}return}if(btn.dataset.action==='add-col'){var t2=findTable(btn.dataset.table);if(t2){t2.columns.push({id:uid('col'),label:'New Column',type:'text'});t2.rows.forEach(function(r){r.cells[t2.columns[t2.columns.length-1].id]=''});renderTable(btn.dataset.table);saveDraft()}return}if(btn.dataset.action==='delete-row'){var t3=findTable(btn.dataset.table);if(t3){t3.rows=t3.rows.filter(function(r){return r.id!==btn.dataset.row});renderTable(btn.dataset.table);saveDraft()}return}if(btn.dataset.action==='delete-col'){var t4=findTable(btn.dataset.table);if(t4){t4.columns=t4.columns.filter(function(c){return c.id!==btn.dataset.col});t4.rows.forEach(function(r){delete r.cells[btn.dataset.col]});renderTable(btn.dataset.table);saveDraft()}return}})
+  document.addEventListener('input',function(e){var el=e.target;if(el.dataset.action==='edit-cell'){var t=findTable(el.dataset.table);var row=t&&t.rows.find(function(r){return r.id===el.dataset.row});if(row){row.cells[el.dataset.col]=normalizeCellText(el.innerHTML);saveDraft()}}if(el.dataset.action==='edit-col'){var t2=findTable(el.dataset.table);var col=t2&&t2.columns.find(function(c){return c.id===el.dataset.col});if(col){col.label=el.value;saveDraft()}}})
+  document.addEventListener('change',function(e){var input=e.target;if(input.dataset.action==='image-upload'&&input.files&&input.files[0]){var reader=new FileReader();reader.onload=function(){var t=findTable(input.dataset.table);var row=t&&t.rows.find(function(r){return r.id===input.dataset.row});if(row){row.cells[input.dataset.col]=reader.result;saveDraft();renderTable(input.dataset.table)}};reader.readAsDataURL(input.files[0])}})
+  document.addEventListener('keydown',function(e){if(e.key==='Enter'&&document.getElementById('adminModal').classList.contains('visible'))attemptLogin();if(e.key==='Escape'){closeAdminModal();closeExportModal()}})
+  function tablePrintHtml(id){var table=findTable(id);if(!table)return'';var head='<tr>'+table.columns.map(function(c){return'<th>'+escapeHtml(c.label)+'</th>'}).join('')+'</tr>';var rows=table.rows.map(function(r){return'<tr>'+table.columns.map(function(c){var v=r.cells[c.id]||'';if(c.type==='image')return'<td>'+(v?'<img src="'+escapeHtml(v)+'" alt="">':'')+'</td>';return'<td>'+cellDisplayHtml(v)+'</td>'}).join('')+'</tr>'}).join('');return'<div class="print-card"><h2>'+escapeHtml(table.title)+'</h2><table><thead>'+head+'</thead><tbody>'+rows+'</tbody></table></div>'}
+  window.doExport=function(){collectVisibleState();if(isAdmin)sbUpsert(HEME_ROW_ID,state).catch(function(e){console.warn(e)});var selected=Array.from(document.querySelectorAll('#exportModal .export-check:checked')).map(function(box){return box.value});if(!selected.length){showToast('Choose at least one section',true);return}closeExportModal();var html='';selected.forEach(function(id){if(state.tables[id])html+='<div class="print-page"><h1 class="print-section-title">'+escapeHtml(state.tables[id].title||id)+'</h1>'+tablePrintHtml(id)+'</div>';if(id==='resources')html+='<div class="print-page"><h1 class="print-section-title">Resources</h1><div class="print-card"><h2>Hematology: Clinical Principles and Applications, 6th ed.</h2><p>Primary reference for this student-created introductory hematology hub.</p></div></div>'});var area=document.getElementById('printArea');area.innerHTML=html;document.body.classList.add('printing');showToast('Opening PDF export');window.print();setTimeout(function(){document.body.classList.remove('printing');area.innerHTML=''},1200)}
+  async function init(){try{var remote=await sbGet(HEME_ROW_ID);mergeState(remote)}catch(e){console.warn('Hematology remote load failed:',e)}renderAll()}
+  window.addEventListener('beforeunload',function(){collectVisibleState()});
+  init();
+})();
+</script>
+</body>
+</html>
