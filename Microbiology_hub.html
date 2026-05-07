@@ -346,7 +346,9 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   async function supabaseError(r){var d='';try{var b=await r.json();d=b.message||b.details||b.hint||JSON.stringify(b)}catch(e){d=await r.text()}return new Error(d||('HTTP '+r.status))}
   async function sbGet(id){var r=await fetch(SUPABASE_URL+'/rest/v1/'+TABLE_NAME+'?id=eq.'+encodeURIComponent(id)+'&select=data',{headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY}});if(!r.ok)throw await supabaseError(r);var d=await r.json();return d&&d[0]?d[0].data:null}
   async function sbUpsert(id,data){var r=await fetch(SUPABASE_URL+'/rest/v1/'+TABLE_NAME+'?on_conflict=id',{method:'POST',headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates'},body:JSON.stringify({id:id,data:data})});if(!r.ok)throw await supabaseError(r);return true}
-  function saveLocal(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
+  function saveLocal(){
+    return true;
+  }
   function touchState(){state.updatedAt=Date.now()}
   function showToast(msg,isError){var t=document.getElementById('saveIndicator');t.textContent=msg||'Saved';t.style.background=isError?'#8b0a26':'#1a7a5e';t.classList.add('show');setTimeout(function(){t.classList.remove('show')},1600)}
   function findTable(id){return state.tables[id]}
@@ -376,28 +378,90 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   async function saveNow(){
     if(!isAdmin){showToast('Unlock admin first',true);return false}
     clearTimeout(saveTimer);
-    collectVisibleState();touchState();saveLocal();
+    collectVisibleState();touchState();
+    await compressStateImages();
     if(saveInFlight)await saveInFlight;
     saveInFlight=sbUpsert(MICRO_ROW_ID,state).then(function(){showToast('Saved');return true}).catch(function(e){console.error(e);showToast('Local saved only. Online save blocked.',true);return false}).finally(function(){saveInFlight=null});
     return saveInFlight;
   }
   async function flushSave(){clearTimeout(saveTimer);return saveNow()}
   async function loadRemote(){
-    var local=null;
-    try{local=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');state=mergeState(local)}catch(e){state=defaultState()}
+    state=defaultState();
     renderAll();
     try{
       var remote=await sbGet(MICRO_ROW_ID);
       if(remote&&remote.tables){
-        var localTime=Number(local&&local.updatedAt||0);
-        var remoteTime=Number(remote.updatedAt||0);
-        if(!localTime||remoteTime>=localTime){state=mergeState(remote);saveLocal();renderAll()}
+        state=mergeState(remote);
+        renderAll();
       }
     }catch(e){console.warn('remote load failed',e)}
   }
   function tableTools(id){return '<button class="mini-btn" data-action="add-row" data-table="'+id+'">Add Row</button><button class="mini-btn" data-action="add-col" data-table="'+id+'">Add Column</button><button class="mini-btn" data-action="add-img-col" data-table="'+id+'">Add Image Column</button>'}
   function addColumn(table,type){var col={id:uid('col'),label:type==='image'?'Image':'',type:type};table.columns.push(col);table.rows.forEach(function(row){if(!row.cells)row.cells={};row.cells[col.id]=''})}
   function addRow(table){var cells={};table.columns.forEach(function(col){cells[col.id]=''});table.rows.push({id:uid('row'),cells:cells})}
+  function resizeImageFile(file,maxSide,quality){
+    return new Promise(function(resolve,reject){
+      var reader=new FileReader();
+      reader.onerror=reject;
+      reader.onload=function(){
+        var img=new Image();
+        img.onerror=reject;
+        img.onload=function(){
+          var scale=Math.min(1,(maxSide||900)/Math.max(img.width,img.height));
+          var canvas=document.createElement('canvas');
+          canvas.width=Math.max(1,Math.round(img.width*scale));
+          canvas.height=Math.max(1,Math.round(img.height*scale));
+          var ctx=canvas.getContext('2d');
+          ctx.drawImage(img,0,0,canvas.width,canvas.height);
+          resolve(canvas.toDataURL('image/jpeg',quality||0.78));
+        };
+        img.src=reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+  function resizeDataUrl(dataUrl,maxSide,quality){
+    return new Promise(function(resolve){
+      if(!/^data:image\//.test(String(dataUrl||''))||String(dataUrl).length<450000){resolve(dataUrl);return}
+      var img=new Image();
+      img.onerror=function(){resolve(dataUrl)};
+      img.onload=function(){
+        var scale=Math.min(1,(maxSide||900)/Math.max(img.width,img.height));
+        var canvas=document.createElement('canvas');
+        canvas.width=Math.max(1,Math.round(img.width*scale));
+        canvas.height=Math.max(1,Math.round(img.height*scale));
+        var ctx=canvas.getContext('2d');
+        ctx.drawImage(img,0,0,canvas.width,canvas.height);
+        resolve(canvas.toDataURL('image/jpeg',quality||0.78));
+      };
+      img.src=dataUrl;
+    });
+  }
+  async function compressStateImages(){
+    var tasks=[];
+    Object.keys(state.tables||{}).forEach(function(tableId){
+      var table=state.tables[tableId];
+      (table.rows||[]).forEach(function(row){
+        Object.keys(row.cells||{}).forEach(function(cellId){
+          var value=row.cells[cellId];
+          if(/^data:image\//.test(String(value||''))&&String(value).length>450000){
+            tasks.push(resizeDataUrl(value,900,.78).then(function(next){row.cells[cellId]=next}));
+          }
+        });
+      });
+    });
+    (state.charts||[]).forEach(function(chart){
+      ensureChartSpecies(chart).species.forEach(function(sp){
+        ['image','gramImage'].forEach(function(field){
+          var value=sp[field];
+          if(/^data:image\//.test(String(value||''))&&String(value).length>450000){
+            tasks.push(resizeDataUrl(value,900,.78).then(function(next){sp[field]=next}));
+          }
+        });
+      });
+    });
+    if(tasks.length){showToast('Compressing images...');await Promise.all(tasks);touchState()}
+  }
   function renderTable(id){
     var table=state.tables[id];if(!table)return;
     var tools=document.querySelector('[data-tools-for="'+id+'"]');if(tools)tools.innerHTML=tableTools(id);
@@ -575,8 +639,23 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(btn.dataset.action==='clear-chart-endpoints'){var cc=state.charts.find(function(chart){return chart.id===btn.dataset.chart});if(cc){cc.selectedEndpoints=['__none__'];saveDraft();renderCharts()}return}
     if(btn.dataset.action==='export-chart'){var ec=state.charts.find(function(chart){return chart.id===btn.dataset.chart});if(ec)exportSingleChart(ec);return}
     if(!isAdmin||!editMode)return;
-    if(btn.dataset.action==='add-chart'){state.charts.push({id:uid('chart'),title:'New Species Flow',note:'',selectedEndpoints:[],species:[{id:uid('sp'),name:'New species',path:'Gram stain positive (+) > ',image:'',gramImage:''}]});renderCharts();saveDraft();return}
-    if(btn.dataset.action==='add-species'){var ac=state.charts.find(function(chart){return chart.id===btn.dataset.chart});if(ac){ensureChartSpecies(ac).species.push({id:uid('sp'),name:'New species',path:'Gram stain positive (+) > ',image:'',gramImage:''});renderCharts();saveDraft()}return}
+    if(btn.dataset.action==='add-chart'){
+      var firstSpecies={id:uid('sp'),name:'New species',path:'Gram stain positive (+) > New species',image:'',gramImage:''};
+      state.charts.push({id:uid('chart'),title:'New Species Flow',note:'',selectedEndpoints:[firstSpecies.id],species:[firstSpecies]});
+      renderCharts();saveDraft();return;
+    }
+    if(btn.dataset.action==='add-species'){
+      var ac=state.charts.find(function(chart){return chart.id===btn.dataset.chart});
+      if(ac){
+        ac=ensureChartSpecies(ac);
+        var newSpecies={id:uid('sp'),name:'New species',path:'Gram stain positive (+) > New species',image:'',gramImage:''};
+        ac.species.push(newSpecies);
+        if(ac.selectedEndpoints.indexOf('__none__')>-1)ac.selectedEndpoints=[];
+        if(ac.selectedEndpoints.length)ac.selectedEndpoints.push(newSpecies.id);
+        renderCharts();saveDraft();
+      }
+      return;
+    }
     if(btn.dataset.action==='delete-species'){var dc=state.charts.find(function(chart){return chart.id===btn.dataset.chart});if(dc){dc.species=ensureChartSpecies(dc).species.filter(function(sp){return sp.id!==btn.dataset.species});dc.selectedEndpoints=dc.selectedEndpoints.filter(function(id){return id!==btn.dataset.species});renderCharts();saveDraft()}return}
     if(btn.dataset.action==='delete-chart'){state.charts=state.charts.filter(function(chart){return chart.id!==btn.dataset.chart});renderCharts();saveDraft();return}
     var table=findTable(btn.dataset.table);if(!table)return;
@@ -605,10 +684,21 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(input.dataset.action==='upload-species-image'){
       var chart=state.charts.find(function(item){return item.id===input.dataset.chart});var species=chart&&ensureChartSpecies(chart).species.find(function(item){return item.id===input.dataset.species});if(!species)return;
       var field=input.dataset.imageField==='gramImage'?'gramImage':'image';
-      var cr=new FileReader();cr.onload=function(){species[field]=cr.result;saveDraft();renderCharts()};cr.readAsDataURL(input.files[0]);return;
+      showToast('Preparing image...');
+      resizeImageFile(input.files[0],900,.78).then(function(dataUrl){
+        species[field]=dataUrl;
+        if(chart.selectedEndpoints.indexOf('__none__')>-1)chart.selectedEndpoints=[];
+        if(chart.selectedEndpoints.length&&chart.selectedEndpoints.indexOf(species.id)===-1)chart.selectedEndpoints.push(species.id);
+        saveDraft();renderCharts();
+      }).catch(function(e){console.warn(e);showToast('Image upload failed',true)});
+      return;
     }
     if(input.dataset.action!=='upload-image')return;
-    var reader=new FileReader();reader.onload=function(){var table=findTable(input.dataset.table);var row=table&&table.rows.find(function(item){return item.id===input.dataset.row});if(row){row.cells[input.dataset.col]=reader.result;saveDraft();renderAll()}};reader.readAsDataURL(input.files[0]);
+    showToast('Preparing image...');
+    resizeImageFile(input.files[0],900,.78).then(function(dataUrl){
+      var table=findTable(input.dataset.table);var row=table&&table.rows.find(function(item){return item.id===input.dataset.row});
+      if(row){row.cells[input.dataset.col]=dataUrl;saveDraft();renderAll()}
+    }).catch(function(e){console.warn(e);showToast('Image upload failed',true)});
   });
   document.addEventListener('keydown',function(e){if(e.key==='Enter'&&document.getElementById('adminModal').classList.contains('visible'))attemptLogin();if(e.key==='Escape'){closeModal();closeExportModal();closeImageZoom()}});
   function tablePrintHtml(id){var table=state.tables[id];if(!table)return '';var head='<tr>'+table.columns.map(function(col){return '<th>'+escapeHtml(col.label||'')+'</th>'}).join('')+'</tr>';var body=table.rows.map(function(row){return '<tr>'+table.columns.map(function(col){var value=row.cells&&row.cells[col.id]?row.cells[col.id]:'';if(col.type==='image')return '<td>'+(value?'<img src="'+escapeHtml(value)+'" alt="uploaded image"/>':'')+'</td>';return '<td>'+cellDisplayHtml(value)+'</td>'}).join('')+'</tr>'}).join('');return '<div class="print-card"><h2>'+escapeHtml(table.title)+'</h2><table><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div>'}
