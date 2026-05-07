@@ -424,8 +424,8 @@ button{cursor:pointer;font-family:inherit}
       <button class="btn btn-primary" onclick="addCustomRbcItem()">Add Piece</button>
       <button class="btn btn-ghost" onclick="updateCustomRbcItem()">Update Selected</button>
       <button class="btn btn-ghost" onclick="clearRbcBuilderEdit()">New Blank</button>
-      <button class="btn btn-ghost" onclick="blankRbcSystem()">Start This System Blank</button>
-      <button class="btn btn-ghost" onclick="blankAllRbcSystems()">Start ALL Blank</button>
+      <button class="btn btn-ghost" onclick="blankRbcSystem()">Clear Current System Only</button>
+      <button class="btn btn-ghost" onclick="restoreRbcSystemDefaults()">Restore Current Defaults</button>
       <button class="btn btn-ghost" onclick="document.getElementById('rbcBuilderModal').classList.remove('visible')">Close</button>
     </div>
     <div class="custom-list" id="rbcCustomList"></div>
@@ -1471,7 +1471,7 @@ function renderLesser(area) {
 // ============================================================
 function renderRbcDiagram() {
   const container = document.getElementById('rbcDiagramContainer');
-  container.innerHTML = (isAdmin ? '<button class="btn btn-ghost btn-sm builder-btn" onclick="openRbcBuilder(\'abo\')">+ Add custom antigen / chain</button>' : '') + buildFullRbcSVG();
+  container.innerHTML = (isAdmin ? '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"><button class="btn btn-ghost btn-sm builder-btn" onclick="openRbcBuilder(\'abo\')">+ Add custom antigen / chain</button><span style="font-size:12px;color:var(--warm-grey);align-self:center">Drag pieces directly on this map. Hold Shift while dragging to rotate.</span></div>' : '') + buildFullRbcSVG();
   initRbcDrag();
 }
 
@@ -1858,6 +1858,7 @@ function deleteCustomRbcItem(id) {
 function blankRbcSystem() {
   if (!isAdmin) return;
   var system = document.getElementById('rbcToolSystem').value || rbcToolScope || 'abo';
+  if (!confirm('Clear only the RBC membrane pieces for ' + system.toUpperCase() + '? Other systems will stay unchanged.')) return;
   rbcToolScope = system;
   rbcCustomItems.filter(function(i){ return i.system === system; }).forEach(function(i){ delete rbcLayout[i.id]; });
   rbcCustomItems = rbcCustomItems.filter(function(i){ return i.system !== system; });
@@ -1872,6 +1873,7 @@ function blankRbcSystem() {
 
 function blankAllRbcSystems() {
   if (!isAdmin) return;
+  if (!confirm('This clears RBC membrane pieces for ALL systems. Use only if you truly want a full reset.')) return;
   rbcCustomItems.forEach(function(i){ delete rbcLayout[i.id]; });
   rbcCustomItems = [];
   rbcHiddenItems = RBC_ITEMS.map(function(i){ return i.id; });
@@ -2219,10 +2221,6 @@ function buildFullSystemExportPage(key) {
     '<div class="system-card membrane-card" style="border-top-color:' + sys.color + '">' +
       '<div class="card-label">RBC Membrane Location</div>' +
       '<div class="membrane-print">' + membrane + '</div>' +
-      '<table class="mini-table"><tbody>' +
-        '<tr><td class="lbl">Antigen Type</td><td>' + exportText((sys.membrane || {}).type || '') + '</td></tr>' +
-        '<tr><td class="lbl">Location</td><td>' + exportText((sys.membrane || {}).location || '') + '</td></tr>' +
-      '</tbody></table>' +
     '</div>' +
     '<div class="system-card" style="border-top-color:' + sys.color + '">' +
       '<div class="card-label">Study Reference</div>' +
@@ -2286,7 +2284,7 @@ function buildExportHtml(content, title) {
     'table{width:100%;border-collapse:collapse;margin-bottom:8px}th{background:#5a0e20;color:#fff;padding:5px 8px;text-align:left;font-size:10px;letter-spacing:.5px}td{padding:5px 8px;border-bottom:1px solid #f7c5d0;vertical-align:top;font-size:11px}td.lbl{font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#7a6468;width:220px}tr:nth-child(even) td{background:#fef4f0}' +
     '.tl{padding-left:12px;border-left:2px solid #f7c5d0}.tl-item{margin-bottom:7px;font-size:11px}.yr{font-weight:700;color:#c0173d;font-size:10px;display:block}' +
     '.system-page{padding:0;font-size:10px}.system-card{border-top:2.5px solid #5a0e20;border-left:1px solid #f7c5d0;border-right:1px solid #f7c5d0;border-bottom:1px solid #f7c5d0;border-radius:16px;padding:12px 15px;margin:0 0 10px;background:#fffaf7;break-inside:avoid;page-break-inside:avoid}.hero-card{padding-bottom:10px}.system-head{display:flex;gap:10px;align-items:flex-start;margin-bottom:8px}.system-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px;line-height:1;box-shadow:inset 0 2px 5px rgba(0,0,0,.22)}.system-head h1{text-align:left;font-size:25px;line-height:1;margin:0 0 2px;padding:0}.isbt{font-size:10px;letter-spacing:3px;color:#7a6468;text-transform:uppercase}.pun{font-size:12px;color:#c0173d;font-style:italic;font-weight:700;margin-top:4px}.card-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#7a6468;font-weight:700;margin:0 0 7px}.system-page .tl{padding-left:10px}.system-page .tl-item{font-size:10.5px;line-height:1.22;margin-bottom:5px}.system-page .yr{font-size:10px;display:inline-block;width:58px}' +
-    '.membrane-card{padding-bottom:8px}.membrane-print{height:2.15in;overflow:visible;margin:-4px 0 4px}.membrane-print div{overflow:visible!important}.membrane-print svg{width:100%!important;min-width:0!important;height:2.15in!important}.membrane-print text{font-size:16px!important}.mini-table td{font-size:9px;padding:3px 6px}.study-table{font-size:8.4px;line-height:1.15}.study-table td{font-size:8.4px;padding:3px 5px}.study-table td.lbl{width:1.55in;font-size:7.8px}.freq-export{font-size:7.5px;line-height:1.08;table-layout:fixed}.freq-export th{font-size:7.4px;padding:3px 4px}.freq-export td{font-size:7.4px;padding:3px 4px}.freq-export th:nth-child(1){width:.72in}.freq-export th:nth-child(2),.freq-export th:nth-child(3),.freq-export th:nth-child(4),.freq-export th:nth-child(5),.freq-export th:nth-child(6){width:.28in}.freq-export th:nth-child(7){width:.6in}.freq-export .center{text-align:center}.freq-export .memo{background:#dce6f4}.note-box{font-size:9px;line-height:1.22;padding:7px;background:#fff;border-left:3px solid #f7c5d0}.muted{color:#9a8588}svg{max-width:100%;height:auto}' +
+    '.membrane-card{padding-bottom:8px}.membrane-print{height:1.25in;overflow:hidden;margin:-6px 0 0}.membrane-print div{overflow:visible!important}.membrane-print svg{width:100%!important;min-width:0!important;height:1.25in!important}.membrane-print text{font-size:14px!important}.mini-table td{font-size:9px;padding:3px 6px}.study-table{font-size:8.4px;line-height:1.15}.study-table td{font-size:8.4px;padding:3px 5px}.study-table td.lbl{width:1.55in;font-size:7.8px}.freq-export{font-size:7.5px;line-height:1.08;table-layout:fixed}.freq-export th{font-size:7.4px;padding:3px 4px}.freq-export td{font-size:7.4px;padding:3px 4px}.freq-export th:nth-child(1){width:.72in}.freq-export th:nth-child(2),.freq-export th:nth-child(3),.freq-export th:nth-child(4),.freq-export th:nth-child(5),.freq-export th:nth-child(6){width:.28in}.freq-export th:nth-child(7){width:.6in}.freq-export .center{text-align:center}.freq-export .memo{background:#dce6f4}.note-box{font-size:9px;line-height:1.22;padding:7px;background:#fff;border-left:3px solid #f7c5d0}.muted{color:#9a8588}.map-page{max-width:10in}.map-print svg{width:100%!important;min-width:0!important;height:6.8in!important}.map-print div{overflow:visible!important}svg{max-width:100%;height:auto}' +
     '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style></head><body>' + content + '</body></html>';
 }
 
@@ -2327,8 +2325,11 @@ function doExport() {
 
   if (inclRbc) {
     var tmp1 = document.createElement('div');
+    var oldAdmin = isAdmin;
+    isAdmin = false;
     tmp1.innerHTML = buildFullRbcSVG();
-    html += '<div class="page"><h1>RBC Antigen Map</h1>' + tmp1.innerHTML + '</div>';
+    isAdmin = oldAdmin;
+    html += '<div class="page map-page"><h1>RBC Antigen Map</h1><div class="map-print">' + tmp1.innerHTML + '</div></div>';
   }
 
   if (inclChrom) {
