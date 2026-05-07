@@ -652,6 +652,8 @@ let xmCorrect = 0;
 let xmTotal   = 0;
 let saveTimer  = null;
 let xmSaveTimer = null;
+let notesSaveInFlight = null;
+let xmSaveInFlight = null;
 let xmMode = null;
 let rbcLayout = {};
 let rbcCustomItems = [];
@@ -754,7 +756,10 @@ function scheduleSave() {
 
 async function saveNotesNow() {
   clearTimeout(saveTimer);
-  const ok = await sbUpsert('bb_notes', notesData);
+  if (notesSaveInFlight) await notesSaveInFlight;
+  notesData.__updatedAt = Date.now();
+  notesSaveInFlight = sbUpsert('bb_notes', notesData).finally(() => { notesSaveInFlight = null; });
+  const ok = await notesSaveInFlight;
   if (ok) showToast('Saved to Supabase');
   return ok;
 }
@@ -766,7 +771,10 @@ function scheduleXmSave() {
 
 async function saveXmCasesNow() {
   clearTimeout(xmSaveTimer);
-  const ok = await sbUpsert('bb_xmatch', { cases: xmCases });
+  if (xmSaveInFlight) await xmSaveInFlight;
+  const payload = { cases: xmCases, updatedAt: Date.now() };
+  xmSaveInFlight = sbUpsert('bb_xmatch', payload).finally(() => { xmSaveInFlight = null; });
+  const ok = await xmSaveInFlight;
   if (ok) showToast('Saved to Supabase');
   return ok;
 }
@@ -774,11 +782,12 @@ async function saveXmCasesNow() {
 async function saveAllNow() {
   if (!isAdmin) {
     showToast('Unlock admin first', true);
-    return;
+    return false;
   }
   const notesOk = await saveNotesNow();
   const xmOk = await saveXmCasesNow();
   if (notesOk && xmOk) showToast('Saved all to Supabase');
+  return !!(notesOk && xmOk);
 }
 
 function showToast(msg, isError = false) {
@@ -838,7 +847,12 @@ document.addEventListener('keydown', e => {
 });
 
 async function logoutAdmin() {
-  await saveAllNow();
+  showToast('Saving...');
+  const saved = await saveAllNow();
+  if (!saved) {
+    showToast('Online save failed. Still in Admin.', true);
+    return;
+  }
   isAdmin = false;
   document.body.classList.remove('admin-mode');
   document.getElementById('adminBadge').classList.remove('visible');
