@@ -40,18 +40,22 @@ button,input{font-family:inherit}button{cursor:pointer}
 .modal-overlay{position:fixed;inset:0;background:rgba(38,22,4,.72);z-index:1000;display:none;align-items:center;justify-content:center}.modal-overlay.visible{display:flex}.modal-box{background:var(--ivory);border-radius:18px;padding:30px;max-width:380px;width:90%;box-shadow:0 20px 60px rgba(122,61,0,.32);text-align:center;border:1px solid var(--gold)}.modal-box h3{font-size:20px;color:var(--wine);margin-bottom:6px}.modal-box p{font-size:13px;color:var(--muted);margin-bottom:18px}.modal-input{width:100%;border:1.5px solid var(--gold);border-radius:10px;padding:10px 14px;font-size:15px;text-align:center;background:#fff;margin-bottom:12px;letter-spacing:3px}.modal-input:focus{outline:none;border-color:var(--orange)}.modal-error{color:var(--danger);font-size:12px;margin-bottom:10px;min-height:16px}.btn{border:none;border-radius:999px;background:var(--orange);color:#fff;padding:8px 16px;font-size:12px;font-weight:900}.btn.ghost{background:transparent;color:var(--muted);border:1.5px solid var(--gold)}
 #printArea{display:none}
 @media print{
+  @page{size:letter landscape;margin:.22in}
   body{background:#fff;color:#000;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   body.printing .site-header,body.printing .wrap,body.printing .save-indicator,body.printing .modal-overlay{display:none!important}
   body.printing #printArea{display:block!important}
-  #printArea{font-family:Georgia,"Times New Roman",serif;color:#261604;padding:18px 24px}
-  .print-page{break-after:page}.print-page:last-child{break-after:auto}
-  .print-section-title{font-size:22px;color:#7a3d00;margin:0 0 12px}
-  .print-card{border:1px solid #7a3d00;border-top:4px solid #d4860a;margin-bottom:12px;padding:10px;break-inside:avoid;background:#fffdf8}
-  .print-card h2{font-size:14px;color:#7a3d00;margin-bottom:8px}
-  #printArea table{width:100%;border-collapse:collapse}
-  #printArea th{background:#7a3d00!important;color:#fff;padding:5px 6px;text-align:left;font-size:9px;border:1px solid #7a3d00}
-  #printArea td{padding:5px 6px;border:1px solid #d8b374;vertical-align:top;font-size:10px}
-  #printArea img{display:block;max-width:105px;max-height:80px;border:1px solid #d8b374}
+  #printArea{font-family:Georgia,"Times New Roman",serif;color:#261604;padding:0;width:100%}
+  .print-page{break-after:page;width:100%;overflow:hidden}.print-page:last-child{break-after:auto}
+  .print-section-title{font-size:16px;color:#7a3d00;margin:0 0 5px;line-height:1.05}
+  .print-card{border:0;margin:0 0 8px;padding:0;break-inside:auto;background:#fff}
+  .print-card h2{font-size:12px;color:#7a3d00;margin:0 0 5px}
+  .print-table-card h2{display:none}
+  #printArea table{width:100%;border-collapse:collapse;table-layout:fixed}
+  #printArea th,#printArea td{min-width:0;overflow-wrap:anywhere;word-break:normal}
+  #printArea th{background:#7a3d00!important;color:#fff;padding:3px 4px;text-align:left;font-size:7px;line-height:1.05;border:1px solid #7a3d00;letter-spacing:.2px}
+  #printArea td{padding:3px 4px;border:1px solid #d8b374;vertical-align:top;font-size:8px;line-height:1.14}
+  #printArea .print-image-col,#printArea .print-image-cell{width:1.45in}
+  #printArea img{display:block;max-width:1.35in;max-height:1.08in;width:auto;height:auto;margin:0 auto;border:1px solid #d8b374}
 }
 /* Final cup clipping fix: keep sediment inside the urine cup. */
 .sample-stage .tube{overflow:hidden}
@@ -1201,18 +1205,19 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   function tablePrintHtml(id){
     var table=state.tables[id];
     if(!table)return '';
-    var head='<tr>'+table.columns.map(function(col){return '<th>'+escapeHtml(col.label||'')+'</th>'}).join('')+'</tr>';
+    var hasImages=table.columns.some(function(col){return col.type==='image'});
+    var head='<tr>'+table.columns.map(function(col){return '<th class="'+(col.type==='image'?'print-image-col':'')+'">'+escapeHtml(col.label||'')+'</th>'}).join('')+'</tr>';
     var body=table.rows.map(function(row){
       return '<tr>'+table.columns.map(function(col){
         var value=row.cells&&row.cells[col.id]?row.cells[col.id]:'';
-        if(col.type==='image')return '<td>'+(value?'<img src="'+escapeHtml(value)+'" alt="uploaded image"/>':'')+'</td>';
+        if(col.type==='image')return '<td class="print-image-cell">'+(value?'<img src="'+escapeHtml(value)+'" alt="uploaded image"/>':'')+'</td>';
         return '<td>'+cellDisplayHtml(value)+'</td>';
       }).join('')+'</tr>';
     }).join('');
-    return '<div class="print-card"><h2>'+escapeHtml(table.title)+'</h2><table><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div>';
+    return '<div class="print-card print-table-card"><table class="print-table '+(hasImages?'has-images':'')+'"><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div>';
   }
   function printSection(title,ids){
-    return '<div class="print-page"><h1 class="print-section-title">'+escapeHtml(title)+'</h1>'+ids.map(tablePrintHtml).join('')+'</div>';
+    return '<div class="print-page print-table-page"><h1 class="print-section-title">'+escapeHtml(title)+'</h1>'+ids.map(tablePrintHtml).join('')+'</div>';
   }
   function casePrintHtml(item,i){
     item=normalizeCase(item,i);
