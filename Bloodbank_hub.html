@@ -235,13 +235,14 @@ button{cursor:pointer;font-family:inherit}
 .xm-donor-row{display:grid;grid-template-columns:80px 1fr 1fr 1fr 60px;gap:6px;margin-bottom:6px;align-items:center}
 .xm-donor-row label{font-size:11px;color:var(--warm-grey);text-align:center}
 .sim-mode-strip{display:flex;gap:10px;justify-content:center;margin-bottom:20px;flex-wrap:wrap}
-.calc-panel{display:grid;gap:12px}.calc-case-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
-.calc-case-btn{border:1.5px solid var(--rose);background:#fff;color:var(--wine);border-radius:10px;padding:10px;text-align:left;font-weight:800;font-size:12px}
+.calc-panel{display:grid;gap:16px}.calc-case-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.calc-case-btn{border:1.5px solid var(--rose);background:#fff;color:var(--wine);border-radius:12px;padding:14px 16px;text-align:left;font-weight:800;font-size:18px;line-height:1.15}
+.calc-case-btn small{display:block;font-size:15px;line-height:1.25;margin-top:5px}
 .calc-case-btn.active{border-color:var(--crimson);background:var(--blush);box-shadow:0 0 0 2px rgba(192,23,61,.08)}
-.calc-equation{border:1px solid var(--rose);background:#fff;border-radius:12px;padding:14px;text-align:center;color:var(--wine)}
-.calc-frac{display:inline-grid;grid-template-rows:auto auto;align-items:center;min-width:260px;font-size:20px;font-weight:800}.calc-frac span:first-child{border-bottom:2px solid var(--wine);padding:0 10px 3px}.calc-frac span:last-child{padding:3px 10px 0;font-size:15px;color:var(--dark)}
-.calc-step-list{display:grid;gap:7px;margin-top:10px}.calc-step{border-left:3px solid var(--rose);background:#fff;padding:8px 10px;border-radius:8px;font-size:13px;color:var(--dark);line-height:1.5}
-.calc-answer{border:1px solid var(--good);background:var(--good-lt);color:#0a4a2a;border-radius:12px;padding:12px;font-weight:800;text-align:center}
+.calc-equation{border:1px solid var(--rose);background:#fff;border-radius:12px;padding:18px;text-align:center;color:var(--wine)}
+.calc-frac{display:inline-grid;grid-template-rows:auto auto;align-items:center;min-width:320px;font-size:28px;font-weight:800}.calc-frac span:first-child{border-bottom:3px solid var(--wine);padding:0 12px 5px}.calc-frac span:last-child{padding:5px 12px 0;font-size:22px;color:var(--dark)}
+.calc-step-list{display:grid;gap:10px;margin-top:12px}.calc-step{border-left:4px solid var(--rose);background:#fff;padding:12px 14px;border-radius:10px;font-size:17px;color:var(--dark);line-height:1.45}
+.calc-answer{border:1px solid var(--good);background:var(--good-lt);color:#0a4a2a;border-radius:12px;padding:15px;font-size:22px;font-weight:800;text-align:center}
 .calc-ref-card{padding:16px;position:relative}.calc-ref-title{position:sticky;top:82px;z-index:4;background:var(--card-bg);padding:0 0 8px}.calc-ref-scroll{overflow:auto;max-height:280px;border:1px solid var(--rose);border-radius:10px}.calc-ref-table{width:100%;border-collapse:collapse;font-size:11px}.calc-ref-table th{background:var(--wine);color:#fff;padding:5px;position:sticky;top:0;z-index:3}.calc-ref-table td{border:1px solid var(--rose);padding:4px 6px;text-align:center;background:#fff}.calc-ref-table td:first-child,.calc-ref-table td:nth-child(2){text-align:left;font-weight:800;color:var(--wine)}
 
 /* RBC DIAGRAM */
@@ -312,6 +313,7 @@ button{cursor:pointer;font-family:inherit}
 .tube-lbl{font-size:10px;font-weight:700;color:var(--warm-grey);text-align:center;max-width:60px;line-height:1.2}
 .tube-result{font-size:11px;font-weight:700;text-align:center;min-height:16px}
 .tube-result.pos{color:var(--crimson)}.tube-result.neg{color:var(--good)}
+.abo-rack-row{display:flex;gap:18px;align-items:flex-end;justify-content:flex-start;overflow-x:auto;padding:12px 6px 6px}.abo-rack-group{display:flex;gap:10px;align-items:flex-end;border-right:1px solid var(--rose);padding-right:18px}.abo-rack-group:last-child{border-right:0}.abo-rack-title{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--warm-grey);font-weight:800;text-align:center;margin-bottom:6px}.abo-tube-btn{border:0;background:transparent;padding:0;font-family:Georgia,serif}.abo-tube-svg{display:block}.abo-tube-svg.is-shaking{animation:aboShake .42s ease-in-out}.abo-clump{fill:#8b0a26;stroke:#c0173d;stroke-width:.8px}.abo-clump.light{fill:#c0173d;stroke:#8b0a26}.abo-click-hint{font-size:9px;color:var(--warm-grey);min-height:16px;text-align:center}.abo-result-pending{color:var(--warm-grey)}@keyframes aboShake{0%,100%{transform:translateX(0) rotate(0deg)}18%{transform:translateX(-3px) rotate(-2deg)}36%{transform:translateX(3px) rotate(2deg)}54%{transform:translateX(-2px) rotate(-1deg)}72%{transform:translateX(2px) rotate(1deg)}}
 
 /* Equipment icons */
 .equipment-wrap{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-bottom:14px}
@@ -2629,7 +2631,7 @@ function exportCurrentSystemPage() {
   if (currentSystemKey === 'lesser') {
     printExportHtml(buildLesserSystemsExportPage(), 'Lesser Systems Export');
   } else {
-    printExportHtml(buildFullSystemExportPage(currentSystemKey), 'Blood Bank ' + currentSystemKey + ' Export');
+    printExportHtml(buildFullSystemExportPage(currentSystemKey), 'Blood Bank ' + currentSystemKey + ' Export', 'landscape');
   }
 }
 
@@ -3013,10 +3015,10 @@ function renderCalcSim() {
     '<div class="calc-case-strip">' + caseBtns + '</div>' +
     '<div class="sys-card" style="padding:16px;border-top:3px solid var(--crimson)">' +
       '<div class="sec-label">Units to Screen Practice</div>' +
-      '<h3 style="color:var(--wine);margin-bottom:6px">' + escText(sc.name) + ': ' + escText(sc.patient) + ' patient</h3>' +
-      '<p style="font-size:13px;color:var(--warm-grey);margin-bottom:8px">Antibody screen: <strong>' + escText(sc.antibodies.join(', ')) + '</strong>. Needs <strong>' + sc.units + '</strong> ABO/D-compatible RBC unit' + (sc.units === 1 ? '' : 's') + '. Donor population column: <strong>' + escText(CALC_POP_LABELS[sc.pop]) + '</strong> (' + escText(CALC_POP_FULL[sc.pop]) + ').</p>' +
+      '<h3 style="color:var(--wine);font-size:28px;line-height:1.1;margin-bottom:12px">' + escText(sc.name) + ': ' + escText(sc.patient) + ' patient</h3>' +
+      '<p style="font-size:18px;line-height:1.4;color:var(--warm-grey);margin-bottom:12px">Antibody screen: <strong>' + escText(sc.antibodies.join(', ')) + '</strong>. Needs <strong>' + sc.units + '</strong> ABO/D-compatible RBC unit' + (sc.units === 1 ? '' : 's') + '. Donor population column: <strong>' + escText(CALC_POP_LABELS[sc.pop]) + '</strong> (' + escText(CALC_POP_FULL[sc.pop]) + ').</p>' +
       '<div class="phase-instr" style="margin-bottom:10px"><strong>Given:</strong> ABO and D are already handled by the blood bank pull. Do not include ABO or D in the denominator.</div>' +
-      '<div class="phase-instr" style="margin-bottom:10px">' + escText(sc.note) + '</div>' +
+      '<div class="phase-instr" style="font-size:17px;line-height:1.45;margin-bottom:10px">' + escText(sc.note) + '</div>' +
       '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px 0">' +
         '<button class="btn btn-ghost" onclick="revealCalc(1)">Show setup</button>' +
         '<button class="btn btn-primary" onclick="revealCalc(2)">Show answer</button>' +
@@ -3750,30 +3752,88 @@ function showChromDetail(n) {
 
 // ────────────────────────────────────────────────────────────────
 // ABO TYPING SIMULATION
-// IS only (cold antibodies). A, B, AB, O with Rh+/-
+// IS only (cold antibodies). A, B, AB, O, and A2B with Rh+/-
 // Forward: Anti-A | Anti-B | Anti-D
-// Reverse: A1 cells | B cells
+// Reverse/workup: A1 cells | B cells | A1 lectin | saline control
 // ────────────────────────────────────────────────────────────────
 var aboScore = 0;
 var aboCases = 0;
 var aboCorrect = 0;
 var currentABO = null;
+var aboShaken = {};
 
 var ABO_CASES = [
-  {type:'A+',  fwdAntiA:true,  fwdAntiB:false, fwdAntiD:true,  revA1:false, revB:true,  label:'A Rh+'},
-  {type:'A-',  fwdAntiA:true,  fwdAntiB:false, fwdAntiD:false, revA1:false, revB:true,  label:'A Rh-'},
-  {type:'B+',  fwdAntiA:false, fwdAntiB:true,  fwdAntiD:true,  revA1:true,  revB:false, label:'B Rh+'},
-  {type:'B-',  fwdAntiA:false, fwdAntiB:true,  fwdAntiD:false, revA1:true,  revB:false, label:'B Rh-'},
-  {type:'AB+', fwdAntiA:true,  fwdAntiB:true,  fwdAntiD:true,  revA1:false, revB:false, label:'AB Rh+'},
-  {type:'AB-', fwdAntiA:true,  fwdAntiB:true,  fwdAntiD:false, revA1:false, revB:false, label:'AB Rh-'},
-  {type:'O+',  fwdAntiA:false, fwdAntiB:false, fwdAntiD:true,  revA1:true,  revB:true,  label:'O Rh+'},
-  {type:'O-',  fwdAntiA:false, fwdAntiB:false, fwdAntiD:false, revA1:true,  revB:true,  label:'O Rh-'},
+  {type:'A+',  fwd:{antiA:'4+',antiB:'0',antiD:'4+'}, rev:{a1:'0',b:'3+'}, extra:[], label:'A Rh+'},
+  {type:'A-',  fwd:{antiA:'4+',antiB:'0',antiD:'0'},  rev:{a1:'0',b:'3+'}, extra:[], label:'A Rh-'},
+  {type:'B+',  fwd:{antiA:'0',antiB:'4+',antiD:'4+'}, rev:{a1:'3+',b:'0'}, extra:[], label:'B Rh+'},
+  {type:'B-',  fwd:{antiA:'0',antiB:'4+',antiD:'0'},  rev:{a1:'3+',b:'0'}, extra:[], label:'B Rh-'},
+  {type:'AB+', fwd:{antiA:'4+',antiB:'4+',antiD:'4+'}, rev:{a1:'0',b:'0'}, extra:[], label:'AB Rh+'},
+  {type:'AB-', fwd:{antiA:'4+',antiB:'4+',antiD:'0'},  rev:{a1:'0',b:'0'}, extra:[], label:'AB Rh-'},
+  {type:'O+',  fwd:{antiA:'0',antiB:'0',antiD:'4+'}, rev:{a1:'3+',b:'3+'}, extra:[], label:'O Rh+'},
+  {type:'O-',  fwd:{antiA:'0',antiB:'0',antiD:'0'},  rev:{a1:'3+',b:'3+'}, extra:[], label:'O Rh-'},
+  {type:'A2B+',fwd:{antiA:'4+',antiB:'4+',antiD:'4+'}, rev:{a1:'1+',b:'0'}, extra:[{id:'a1lectin',label:'A1 Lectin',result:'0',color:'#d4860a',bg:'rgba(252,240,220,.85)'},{id:'saline',label:'Saline Ctrl',result:'0',color:'#7a6468',bg:'rgba(238,238,238,.9)'}], label:'A2B Rh+'},
+  {type:'A2B-',fwd:{antiA:'4+',antiB:'4+',antiD:'0'},  rev:{a1:'1+',b:'0'}, extra:[{id:'a1lectin',label:'A1 Lectin',result:'0',color:'#d4860a',bg:'rgba(252,240,220,.85)'},{id:'saline',label:'Saline Ctrl',result:'0',color:'#7a6468',bg:'rgba(238,238,238,.9)'}], label:'A2B Rh-'},
 ];
 
 function nextABOCase() {
   aboCases++;
   currentABO = ABO_CASES[Math.floor(Math.random() * ABO_CASES.length)];
+  aboShaken = {};
   renderABOsim();
+}
+
+function aboStrength(result) {
+  var m = String(result || '0').match(/\d/);
+  return m ? Number(m[0]) : 0;
+}
+
+function aboTubeDots(strength) {
+  if (!strength) return '';
+  var points = [
+    [17,62,5],[30,60,5.5],[22,72,4.5],[36,70,4],[15,80,4],[29,78,5],[36,84,3.6],[20,88,3.8],[27,67,3.5]
+  ];
+  var count = strength === 1 ? 2 : strength === 2 ? 4 : strength === 3 ? 6 : 9;
+  return points.slice(0, count).map(function(p, i) {
+    return '<circle class="abo-clump ' + (i % 2 ? 'light' : '') + '" cx="' + p[0] + '" cy="' + p[1] + '" r="' + p[2] + '" opacity=".95"/>';
+  }).join('');
+}
+
+function aboTube(id, label, result, color, bg) {
+  var read = !!aboShaken[id];
+  var strength = read ? aboStrength(result) : 0;
+  var positive = strength > 0;
+  var fill = read
+    ? (positive
+      ? '<rect x="8" y="52" width="34" height="48" rx="0 0 3 3" fill="rgba(240,180,190,.52)"/>' + aboTubeDots(strength)
+      : '<rect x="10" y="82" width="30" height="18" rx="0 0 3 3" fill="rgba(192,23,61,.22)"/>')
+    : '<rect x="10" y="74" width="30" height="26" rx="0 0 3 3" fill="rgba(192,23,61,.18)"/>';
+  return '<button type="button" class="abo-tube-btn" onclick="shakeAboTube(\'' + id + '\')" title="Click to shake/read ' + escText(label) + '">' +
+    '<div class="tube-wrap">' +
+      '<svg class="abo-tube-svg ' + (read ? 'is-shaking' : '') + '" width="58" height="132" viewBox="0 0 50 120" xmlns="http://www.w3.org/2000/svg">' +
+        '<rect x="6" y="4" width="38" height="100" rx="4" fill="' + (bg || 'rgba(220,235,248,.85)') + '" stroke="rgba(150,180,210,.6)" stroke-width="2"/>' +
+        '<rect x="22" y="4" width="6" height="100" fill="rgba(255,255,255,.2)" rx="2"/>' +
+        fill +
+        '<rect x="8" y="6" width="8" height="55" rx="3" fill="rgba(255,255,255,.15)"/>' +
+      '</svg>' +
+      '<div class="tube-lbl" style="font-size:11px;font-weight:800;color:' + color + '">' + label + '</div>' +
+      '<div class="tube-result ' + (read ? (positive ? 'pos' : 'neg') : 'abo-result-pending') + '">' + (read ? result : 'shake') + '</div>' +
+    '</div>' +
+  '</button>';
+}
+
+function shakeAboTube(id) {
+  aboShaken[id] = true;
+  renderABOsim();
+}
+
+function revealAllAboTubes() {
+  getAboTubeIds(currentABO).forEach(function(id) { aboShaken[id] = true; });
+}
+
+function getAboTubeIds(cs) {
+  var ids = ['fwdA','fwdB','fwdD','revA1','revB'];
+  (cs.extra || []).forEach(function(t) { ids.push('extra_' + t.id); });
+  return ids;
 }
 
 function renderABOsim() {
@@ -3781,53 +3841,12 @@ function renderABOsim() {
   if (!currentABO) {
     currentABO = ABO_CASES[Math.floor(Math.random() * ABO_CASES.length)];
     aboCases++;
+    aboShaken = {};
   }
   var cs = currentABO;
 
-  // Forward typing tubes
-  function fwdTube(label, reactive, color) {
-    var fill = reactive
-      ? '<rect x="8" y="55" width="34" height="45" rx="0 0 3 3" fill="rgba(240,180,190,.5)"/>' +
-        '<circle cx="17" cy="65" r="5" fill="#8b0a26" opacity=".9"/>' +
-        '<circle cx="30" cy="63" r="5.5" fill="#c0173d" opacity=".9"/>' +
-        '<circle cx="22" cy="74" r="4.5" fill="#8b0a26" opacity=".85"/>' +
-        '<circle cx="34" cy="72" r="4" fill="#c0173d" opacity=".85"/>'
-      : '<rect x="10" y="82" width="30" height="18" rx="0 0 3 3" fill="rgba(192,23,61,.22)"/>';
-    var bg = reactive ? 'rgba(220,235,248,.85)' : 'rgba(220,235,248,.85)';
-    return '<div class="tube-wrap">' +
-      '<svg width="50" height="120" viewBox="0 0 50 120" xmlns="http://www.w3.org/2000/svg">' +
-      '<rect x="6" y="4" width="38" height="100" rx="4" fill="' + bg + '" stroke="rgba(150,180,210,.6)" stroke-width="2"/>' +
-      '<rect x="22" y="4" width="6" height="100" fill="rgba(255,255,255,.2)" rx="2"/>' +
-      fill +
-      '<rect x="8" y="6" width="8" height="55" rx="3" fill="rgba(255,255,255,.15)"/>' +
-      '</svg>' +
-      '<div class="tube-lbl" style="font-size:9px;font-weight:700;color:' + color + '">' + label + '</div>' +
-      '<div class="tube-result ' + (reactive?'pos':'neg') + '">' + (reactive?'4+':'0') + '</div>' +
-    '</div>';
-  }
-
-  // Reverse typing tubes (patient serum + known cells)
-  function revTube(label, reactive) {
-    var fill = reactive
-      ? '<rect x="8" y="62" width="34" height="38" rx="0 0 3 3" fill="rgba(240,180,190,.5)"/>' +
-        '<circle cx="18" cy="71" r="4" fill="#8b0a26" opacity=".85"/>' +
-        '<circle cx="30" cy="69" r="4.5" fill="#c0173d" opacity=".85"/>' +
-        '<circle cx="22" cy="79" r="3.5" fill="#c0173d" opacity=".8"/>'
-      : '<rect x="10" y="82" width="30" height="18" rx="0 0 3 3" fill="rgba(192,23,61,.2)"/>';
-    return '<div class="tube-wrap">' +
-      '<svg width="50" height="120" viewBox="0 0 50 120" xmlns="http://www.w3.org/2000/svg">' +
-      '<rect x="6" y="4" width="38" height="100" rx="4" fill="rgba(252,240,220,.85)" stroke="rgba(200,160,80,.5)" stroke-width="2"/>' +
-      '<rect x="22" y="4" width="6" height="100" fill="rgba(255,255,255,.2)" rx="2"/>' +
-      fill +
-      '<rect x="8" y="6" width="8" height="55" rx="3" fill="rgba(255,255,255,.15)"/>' +
-      '</svg>' +
-      '<div class="tube-lbl" style="font-size:9px;font-weight:700;color:#7a4e00">' + label + '</div>' +
-      '<div class="tube-result ' + (reactive?'pos':'neg') + '">' + (reactive?'3+':'0') + '</div>' +
-    '</div>';
-  }
-
   // Answer buttons
-  var answers = ['A+','A-','B+','B-','AB+','AB-','O+','O-'];
+  var answers = ['A+','A-','B+','B-','AB+','AB-','O+','O-','A2B+','A2B-'];
   var btnHTML = answers.map(function(a) {
     return '<button class="donor-btn" onclick="checkABOAnswer(\'' + a + '\')" style="min-width:80px">' +
       '<span class="donor-type">' + a + '</span>' +
@@ -3841,25 +3860,24 @@ function renderABOsim() {
     '<div class="stat-pill"><div class="stat-num">' + aboCases + '</div><div class="stat-lbl">Cases</div></div>' +
     '</div>' +
 
-    // Forward typing
+    // Typing rack
     '<div class="sys-card" style="padding:16px;margin-bottom:12px">' +
-    '<div class="sec-label" style="margin-bottom:10px">Forward Typing (Cell Typing) -- Patient RBCs + Known Antisera</div>' +
-    '<div style="display:flex;gap:10px;align-items:flex-end;justify-content:center;flex-wrap:wrap">' +
-    fwdTube('Anti-A', cs.fwdAntiA, '#c0173d') +
-    fwdTube('Anti-B', cs.fwdAntiB, '#1a5c8c') +
-    fwdTube('Anti-D', cs.fwdAntiD, '#5a2070') +
+    '<div class="sec-label" style="margin-bottom:10px">ABO / Rh Typing Rack -- click each tube to shake and read</div>' +
+    '<div class="abo-rack-row">' +
+      '<div><div class="abo-rack-title">Forward: patient RBCs + antisera</div><div class="abo-rack-group">' +
+        aboTube('fwdA','Anti-A', cs.fwd.antiA, '#c0173d') +
+        aboTube('fwdB','Anti-B', cs.fwd.antiB, '#1a5c8c') +
+        aboTube('fwdD','Anti-D', cs.fwd.antiD, '#5a2070') +
+      '</div></div>' +
+      '<div><div class="abo-rack-title">Reverse: patient serum + known cells</div><div class="abo-rack-group">' +
+        aboTube('revA1','A1 Cells', cs.rev.a1, '#7a4e00', 'rgba(252,240,220,.85)') +
+        aboTube('revB','B Cells', cs.rev.b, '#7a4e00', 'rgba(252,240,220,.85)') +
+      '</div></div>' +
+      (cs.extra && cs.extra.length ? '<div><div class="abo-rack-title">A2B workup</div><div class="abo-rack-group">' + cs.extra.map(function(t) {
+        return aboTube('extra_' + t.id, t.label, t.result, t.color, t.bg);
+      }).join('') + '</div></div>' : '') +
     '</div>' +
-    '<div class="phase-instr" style="margin-top:10px">Add patient RBCs to tubes containing Anti-A, Anti-B, and Anti-D reagents. Spin IS speed. Read agglutination.</div>' +
-    '</div>' +
-
-    // Reverse typing
-    '<div class="sys-card" style="padding:16px;margin-bottom:12px">' +
-    '<div class="sec-label" style="margin-bottom:10px">Reverse Typing (Serum Typing) -- Patient Serum + Known Cells</div>' +
-    '<div style="display:flex;gap:10px;align-items:flex-end;justify-content:center;flex-wrap:wrap">' +
-    revTube('A1 Cells', cs.revA1) +
-    revTube('B Cells',  cs.revB) +
-    '</div>' +
-    '<div class="phase-instr" style="margin-top:10px">Patient serum contains expected antibodies. A1 cells detect anti-A in serum. B cells detect anti-B. Results must match forward typing (Landsteiner\'s Law).</div>' +
+    '<div class="phase-instr" style="margin-top:10px">Shake each tube, then read agglutination. Red clumps show positive reactions graded 1+ to 4+. A2B cases add A1 lectin and saline control.</div>' +
     '</div>' +
 
     // Interpretation
@@ -3873,15 +3891,20 @@ function renderABOsim() {
 function checkABOAnswer(answer) {
   var cs = currentABO;
   var correct = answer === cs.type;
+  revealAllAboTubes();
+  renderABOsim();
   var fb = document.getElementById('aboFeedback');
+  var extra = (cs.extra || []).length
+    ? ' Extra workup: ' + cs.extra.map(function(t) { return t.label + '=' + t.result; }).join(', ') + '.'
+    : '';
   if (correct) {
     aboCorrect++;
     aboScore += 15;
     fb.className = 'xm-feedback good';
-    fb.innerHTML = '<strong>Correct!</strong> Patient is ' + cs.type + '. Forward: Anti-A=' + (cs.fwdAntiA?'4+':'0') + ', Anti-B=' + (cs.fwdAntiB?'4+':'0') + ', Anti-D=' + (cs.fwdAntiD?'4+':'0') + '. Reverse: A1 cells=' + (cs.revA1?'3+':'0') + ', B cells=' + (cs.revB?'3+':'0') + '. Results agree -- Landsteiner\'s Law confirmed.';
+    fb.innerHTML = '<strong>Correct!</strong> Patient is ' + cs.type + '. Forward: Anti-A=' + cs.fwd.antiA + ', Anti-B=' + cs.fwd.antiB + ', Anti-D=' + cs.fwd.antiD + '. Reverse: A1 cells=' + cs.rev.a1 + ', B cells=' + cs.rev.b + '.' + extra + ' Results agree -- Landsteiner\'s Law confirmed.';
   } else {
     fb.className = 'xm-feedback bad';
-    fb.innerHTML = '<strong>Not quite.</strong> You selected ' + answer + ' but patient is ' + cs.type + '. Check forward and reverse typing again -- forward defines what antigens are ON the cells, reverse confirms by showing what antibodies are IN the serum.';
+    fb.innerHTML = '<strong>Not quite.</strong> You selected ' + answer + ' but patient is ' + cs.type + '. Check forward and reverse typing again -- forward defines what antigens are ON the cells, reverse confirms by showing what antibodies are IN the serum.' + extra;
   }
   // Disable all buttons
   document.querySelectorAll('#aboContent .donor-btn').forEach(function(b){ b.disabled = true; });
