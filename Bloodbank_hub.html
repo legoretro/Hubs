@@ -3487,7 +3487,7 @@ function removeDonor2(ci,di){xmCases[ci].donors.splice(di,1);scheduleXmSave();re
 function addXmCase2(){xmCases.push({patient_type:'',patient_desc:'',patient_abs:[],donors:[{type:'',detail:'',compat:true,reason:''}],teach:''});scheduleXmSave();renderXmEditor2();}
 function removeXmCase2(ci){xmCases.splice(ci,1);scheduleXmSave();renderXmEditor2();}
 async function saveXmCases2(){
-  await saveXmCasesNow();
+  await saveXmCasesNow('manual');
 }
 
 // ────────────────────────────────────────────────────────────────
