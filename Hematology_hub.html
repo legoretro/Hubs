@@ -167,6 +167,8 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
 </main>
 <div id="printArea"></div>
 <div class="save-indicator" id="saveIndicator">Saved</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="safe-supabase-sync.js"></script>
 <script>
 const SUPABASE_URL='https://fjrdlasmdhqjqqlvuxwj.supabase.co';
 const SUPABASE_KEY='sb_publishable_UnXRXK6It0PKVmZmixYZeg_WDx9frO2';
@@ -174,7 +176,7 @@ const TABLE_NAME='mls_blood_bank';
 const HEME_ROW_ID='hematology_hub';
 const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c675';
 (function(){
-  var isAdmin=false,editMode=false,saveTimer=null,saveInFlight=null,state=defaultState();
+	  var isAdmin=false,editMode=false,saveTimer=null,saveInFlight=null,state=defaultState(),safeDoc=null;
   var EXPORT_ITEMS=[['rbc_morphology','RBC Morphology'],['rbc_indices','RBC Indices'],['wbc_differential','WBC Differential'],['wbc_morphology','WBC Morphology'],['resources','Resources']];
   function uid(prefix){return prefix+'_'+Math.random().toString(36).slice(2,9)}
   function escapeHtml(value){return String(value||'').replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]})}
@@ -226,15 +228,13 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }}}
   async function hashString(text){var bytes=new TextEncoder().encode(text);var digest=await crypto.subtle.digest('SHA-256',bytes);return Array.from(new Uint8Array(digest)).map(function(b){return b.toString(16).padStart(2,'0')}).join('')}
   async function supabaseError(r){var d='';try{var b=await r.json();d=b.message||b.details||b.hint||JSON.stringify(b)}catch(e){d=await r.text()}return new Error(d||('HTTP '+r.status))}
-  async function sbGet(id){var r=await fetch(SUPABASE_URL+'/rest/v1/'+TABLE_NAME+'?id=eq.'+encodeURIComponent(id)+'&select=data',{headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY}});if(!r.ok)throw await supabaseError(r);var d=await r.json();return d&&d[0]?d[0].data:null}
-  async function sbUpsert(id,data){var r=await fetch(SUPABASE_URL+'/rest/v1/'+TABLE_NAME+'?on_conflict=id',{method:'POST',headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates'},body:JSON.stringify({id:id,data:data})});if(!r.ok)throw await supabaseError(r);return true}
-  function showToast(msg,isError){var t=document.getElementById('saveIndicator');t.textContent=msg||'Saved';t.style.background=isError?'#8b0a26':'#1a8c5c';t.classList.add('show');setTimeout(function(){t.classList.remove('show')},1600)}
+	  function showToast(msg,isError){var t=document.getElementById('saveIndicator');t.textContent=msg||'Saved';t.style.background=isError?'#8b0a26':'#1a8c5c';t.classList.add('show');setTimeout(function(){t.classList.remove('show')},1600)}
   function touchState(){state.updatedAt=Date.now()}
   function saveLocal(){}
   function collectVisibleState(){document.querySelectorAll('[data-action="edit-cell"]').forEach(function(el){var table=findTable(el.dataset.table);var row=table&&table.rows.find(function(item){return item.id===el.dataset.row});if(row)row.cells[el.dataset.col]=normalizeCellText(el.innerHTML)});document.querySelectorAll('[data-action="edit-col"]').forEach(function(el){var table=findTable(el.dataset.table);var col=table&&table.columns.find(function(item){return item.id===el.dataset.col});if(col)col.label=el.value})}
   function saveDraft(){collectVisibleState();touchState();if(isAdmin)scheduleSave()}
   function scheduleSave(){clearTimeout(saveTimer);saveTimer=setTimeout(saveNow,650)}
-  async function saveNow(){if(!isAdmin){showToast('Unlock admin first',true);return false}clearTimeout(saveTimer);collectVisibleState();touchState();if(saveInFlight)await saveInFlight;saveInFlight=sbUpsert(HEME_ROW_ID,state).then(function(){showToast('Saved');return true}).catch(function(e){console.error(e);showToast('Online save blocked.',true);return false}).finally(function(){saveInFlight=null});return saveInFlight}
+	  async function saveNow(){if(!isAdmin){showToast('Unlock admin first',true);return false}clearTimeout(saveTimer);collectVisibleState();touchState();if(saveInFlight)await saveInFlight;saveInFlight=(safeDoc?safeDoc.saveNow():Promise.resolve(false)).finally(function(){saveInFlight=null});return saveInFlight}
   async function flushSave(){clearTimeout(saveTimer);return saveNow()}
   function mergeState(remote){if(!remote||!remote.tables)return;state=remote;Object.keys(defaultState().tables).forEach(function(id){if(!state.tables[id])state.tables[id]=defaultState().tables[id]})}
   function findTable(id){return state.tables[id]}
@@ -254,8 +254,9 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   document.addEventListener('change',function(e){var input=e.target;if(input.dataset.action==='image-upload'&&input.files&&input.files[0]){var reader=new FileReader();reader.onload=function(){var t=findTable(input.dataset.table);var row=t&&t.rows.find(function(r){return r.id===input.dataset.row});if(row){row.cells[input.dataset.col]=reader.result;saveDraft();renderTable(input.dataset.table)}};reader.readAsDataURL(input.files[0])}})
   document.addEventListener('keydown',function(e){if(e.key==='Enter'&&document.getElementById('adminModal').classList.contains('visible'))attemptLogin();if(e.key==='Escape'){closeAdminModal();closeExportModal()}})
   function tablePrintHtml(id){var table=findTable(id);if(!table)return'';var head='<tr>'+table.columns.map(function(c){return'<th>'+escapeHtml(c.label)+'</th>'}).join('')+'</tr>';var rows=table.rows.map(function(r){return'<tr>'+table.columns.map(function(c){var v=r.cells[c.id]||'';if(c.type==='image')return'<td>'+(v?'<img src="'+escapeHtml(v)+'" alt="">':'')+'</td>';return'<td>'+cellDisplayHtml(v)+'</td>'}).join('')+'</tr>'}).join('');return'<div class="print-card"><h2>'+escapeHtml(table.title)+'</h2><table><thead>'+head+'</thead><tbody>'+rows+'</tbody></table></div>'}
-  window.doExport=function(){collectVisibleState();if(isAdmin)sbUpsert(HEME_ROW_ID,state).catch(function(e){console.warn(e)});var selected=Array.from(document.querySelectorAll('#exportModal .export-check:checked')).map(function(box){return box.value});if(!selected.length){showToast('Choose at least one section',true);return}closeExportModal();var html='';selected.forEach(function(id){if(state.tables[id])html+='<div class="print-page"><h1 class="print-section-title">'+escapeHtml(state.tables[id].title||id)+'</h1>'+tablePrintHtml(id)+'</div>';if(id==='resources')html+='<div class="print-page"><h1 class="print-section-title">Resources</h1><div class="print-card"><h2>Hematology: Clinical Principles and Applications, 6th ed.</h2><p>Primary reference for this student-created introductory hematology hub.</p></div></div>'});var area=document.getElementById('printArea');area.innerHTML=html;document.body.classList.add('printing');showToast('Opening PDF export');window.print();setTimeout(function(){document.body.classList.remove('printing');area.innerHTML=''},1200)}
-  async function init(){try{var remote=await sbGet(HEME_ROW_ID);mergeState(remote)}catch(e){console.warn('Hematology remote load failed:',e)}renderAll()}
+	  window.doExport=function(){collectVisibleState();if(isAdmin&&safeDoc)safeDoc.saveNow().catch(function(e){console.warn(e)});var selected=Array.from(document.querySelectorAll('#exportModal .export-check:checked')).map(function(box){return box.value});if(!selected.length){showToast('Choose at least one section',true);return}closeExportModal();var html='';selected.forEach(function(id){if(state.tables[id])html+='<div class="print-page"><h1 class="print-section-title">'+escapeHtml(state.tables[id].title||id)+'</h1>'+tablePrintHtml(id)+'</div>';if(id==='resources')html+='<div class="print-page"><h1 class="print-section-title">Resources</h1><div class="print-card"><h2>Hematology: Clinical Principles and Applications, 6th ed.</h2><p>Primary reference for this student-created introductory hematology hub.</p></div></div>'});var area=document.getElementById('printArea');area.innerHTML=html;document.body.classList.add('printing');showToast('Opening PDF export');window.print();setTimeout(function(){document.body.classList.remove('printing');area.innerHTML=''},1200)}
+	  function normalizeRemoteState(remote){var old=state;state=defaultState();mergeState(remote);var out=state;state=old;return out}
+	  async function init(){safeDoc=createSafeSupabaseDoc({url:SUPABASE_URL,key:SUPABASE_KEY,table:TABLE_NAME,id:HEME_ROW_ID,defaultData:defaultState,normalize:normalizeRemoteState,getLocal:function(){return state},setLocal:function(data){state=data;renderAll()},toast:showToast,onConflict:function(info){console.warn('Hematology save conflict:',info.paths)}});try{await safeDoc.load();safeDoc.subscribe()}catch(e){console.warn('Hematology remote load failed:',e);renderAll()}}
   window.addEventListener('beforeunload',function(){collectVisibleState()});
   window.addEventListener('load',function(){setTimeout(function(){var left=document.getElementById('doorLeft');var right=document.getElementById('doorRight');if(left)left.classList.add('open');if(right)right.classList.add('open');setTimeout(function(){var intro=document.getElementById('intro');document.body.classList.remove('intro-active');if(intro){intro.style.opacity='0';intro.style.transition='opacity .5s';setTimeout(function(){intro.style.display='none'},500)}},1100)},1200)});
   init();

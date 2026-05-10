@@ -451,6 +451,8 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="safe-supabase-sync.js"></script>
   <script>
     const SUPABASE_URL = 'https://fjrdlasmdhqjqqlvuxwj.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_UnXRXK6It0PKVmZmixYZeg_WDx9frO2';
@@ -466,6 +468,7 @@
     };
     let hubUrls = Object.assign({}, defaultHubUrls);
     let isAdmin = false;
+    let hubDoc = null;
 
     async function hashText(text) {
       const bytes = new TextEncoder().encode(text);
@@ -526,30 +529,6 @@
       return new Error(details || `HTTP ${response.status}`);
     }
 
-    async function sbGet(id) {
-      const response = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE_NAME}?id=eq.${encodeURIComponent(id)}&select=data`, {
-        headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
-      });
-      if (!response.ok) throw await supabaseError(response);
-      const data = await response.json();
-      return data && data[0] ? data[0].data : null;
-    }
-
-    async function sbUpsert(id, data) {
-      const response = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE_NAME}?on_conflict=id`, {
-        method: 'POST',
-        headers: {
-          apikey: SUPABASE_KEY,
-          Authorization: `Bearer ${SUPABASE_KEY}`,
-          'Content-Type': 'application/json',
-          Prefer: 'resolution=merge-duplicates'
-        },
-        body: JSON.stringify({ id, data })
-      });
-      if (!response.ok) throw await supabaseError(response);
-      return true;
-    }
-
     function cleanHubUrl(key, value) {
       const url = String(value || '').trim();
       if (!url) return '';
@@ -570,10 +549,32 @@
     }
 
     async function loadHubUrls() {
+      hubDoc = createSafeSupabaseDoc({
+        url: SUPABASE_URL,
+        key: SUPABASE_KEY,
+        table: TABLE_NAME,
+        id: INDEX_ROW_ID,
+        defaultData: () => ({ urls: defaultHubUrls }),
+        normalize: data => ({ urls: normalizeHubUrls(data) }),
+        getLocal: () => ({ urls: hubUrls, updatedAt: Date.now() }),
+        setLocal: data => {
+          hubUrls = normalizeHubUrls(data);
+          applyHubUrls();
+        },
+        toast: (msg, isError) => {
+          if (isError) console.warn(msg);
+          else console.log(msg);
+        },
+        onConflict: info => {
+          alert('Conflict: another admin changed these hub URLs at the same time. Your save was blocked so nobody loses work.');
+          console.warn('Hub index save conflict:', info.paths);
+        }
+      });
       try {
-        const remote = await sbGet(INDEX_ROW_ID);
+        const remote = await hubDoc.load();
         hubUrls = normalizeHubUrls(remote);
         applyHubUrls();
+        hubDoc.subscribe();
       } catch (err) {
         console.warn('Index URL load failed:', err);
         hubUrls = normalizeHubUrls(defaultHubUrls);
@@ -613,7 +614,7 @@
       hubUrls = normalizeHubUrls(urls);
       applyHubUrls();
       try {
-        await sbUpsert(INDEX_ROW_ID, { urls: hubUrls, updatedAt: Date.now() });
+        if (hubDoc) await hubDoc.saveNow();
       } catch (err) {
         alert('Supabase save failed: ' + err.message);
       }
@@ -624,11 +625,22 @@
       hubUrls = normalizeHubUrls(defaultHubUrls);
       applyHubUrls();
       try {
-        await sbUpsert(INDEX_ROW_ID, { urls: hubUrls, updatedAt: Date.now() });
+        if (hubDoc) await hubDoc.saveNow();
       } catch (err) {
         alert('Supabase save failed: ' + err.message);
       }
     }
+
+    document.addEventListener('input', event => {
+      if (!isAdmin || !event.target.matches('[data-hub-input]')) return;
+      const urls = {};
+      document.querySelectorAll('[data-hub-input]').forEach(input => {
+        const key = input.getAttribute('data-hub-input');
+        urls[key] = cleanHubUrl(key, input.value);
+      });
+      hubUrls = normalizeHubUrls(urls);
+      if (hubDoc) hubDoc.scheduleSave(800);
+    });
 
     applyHubUrls();
     loadHubUrls();

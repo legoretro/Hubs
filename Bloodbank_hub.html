@@ -651,6 +651,8 @@ button{cursor:pointer;font-family:inherit}
   </div>
 </div><!-- #app -->
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="safe-supabase-sync.js"></script>
 <script>
 // ============================================================
 // CONFIG - SUPABASE + PASSWORD
@@ -676,6 +678,8 @@ let saveTimer  = null;
 let xmSaveTimer = null;
 let notesSaveInFlight = null;
 let xmSaveInFlight = null;
+let notesDoc = null;
+let xmDoc = null;
 let xmMode = null;
 let rbcLayout = {};
 let rbcCustomItems = [];
@@ -704,42 +708,6 @@ window.addEventListener('load', () => {
 // ============================================================
 // SUPABASE HELPERS
 // ============================================================
-async function sbGet(id) {
-  try {
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE_NAME}?id=eq.${id}&select=data`, {
-      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
-    });
-    if (!r.ok) throw await supabaseError(r);
-    const d = await r.json();
-    return d && d[0] ? d[0].data : null;
-  } catch(e) {
-    showToast(`Supabase load failed: ${e.message}`, true);
-    console.error('Supabase load failed:', e);
-    return null;
-  }
-}
-
-async function sbUpsert(id, data) {
-  try {
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE_NAME}?on_conflict=id`, {
-      method: 'POST',
-      headers: {
-        apikey: SUPABASE_KEY,
-        Authorization: `Bearer ${SUPABASE_KEY}`,
-        'Content-Type': 'application/json',
-        Prefer: 'resolution=merge-duplicates'
-      },
-      body: JSON.stringify({ id, data })
-    });
-    if (!r.ok) throw await supabaseError(r);
-    return true;
-  } catch(e) {
-    showToast(`Supabase save failed: ${e.message}`, true);
-    console.error('Supabase save failed:', e);
-    return false;
-  }
-}
-
 async function supabaseError(response) {
   let details = '';
   try {
@@ -751,23 +719,56 @@ async function supabaseError(response) {
   return new Error(details || `HTTP ${response.status}`);
 }
 
-async function initApp() {
-  // Load notes
-  const saved = await sbGet('bb_notes');
-  if (saved) notesData = saved;
+function hydrateNotesData(data) {
+  notesData = data || {};
   rbcLayout = notesData.__rbcLayoutVersion === 2 ? (notesData.__rbcLayout || {}) : {};
   rbcCustomItems = Array.isArray(notesData.__rbcCustomItems) ? notesData.__rbcCustomItems : [];
   rbcMapCopies = Array.isArray(notesData.__rbcMapCopies) ? notesData.__rbcMapCopies : [];
   rbcHiddenItems = Array.isArray(notesData.__rbcHiddenItems) ? notesData.__rbcHiddenItems : [];
   ensurePresetRbcItems();
   migrateLegacyRbcMapCopies();
-  // Load crossmatch cases
-  const savedXm = await sbGet('bb_xmatch');
-  if (savedXm && Array.isArray(savedXm.cases) && savedXm.cases.length > 0) {
-    xmCases = savedXm.cases;
-  } else {
-    xmCases = defaultXmCases();
-  }
+}
+
+function applyRemoteNotes(data) {
+  hydrateNotesData(data);
+  renderSystem(currentSystemKey);
+  renderRbcDiagram();
+  renderChromMap();
+}
+
+function applyRemoteXm(data) {
+  xmCases = data && Array.isArray(data.cases) && data.cases.length > 0 ? data.cases : defaultXmCases();
+  if (xmMode === 'xm') renderXm();
+  renderXmEditor2();
+}
+
+async function initApp() {
+  notesDoc = createSafeSupabaseDoc({
+    url: SUPABASE_URL,
+    key: SUPABASE_KEY,
+    table: TABLE_NAME,
+    id: 'bb_notes',
+    defaultData: () => ({}),
+    normalize: data => data || {},
+    getLocal: () => notesData,
+    setLocal: data => applyRemoteNotes(data),
+    toast: showToast,
+    onConflict: info => console.warn('Blood Bank notes save conflict:', info.paths)
+  });
+  xmDoc = createSafeSupabaseDoc({
+    url: SUPABASE_URL,
+    key: SUPABASE_KEY,
+    table: TABLE_NAME,
+    id: 'bb_xmatch',
+    defaultData: () => ({ cases: defaultXmCases(), updatedAt: Date.now() }),
+    normalize: data => ({ cases: data && Array.isArray(data.cases) && data.cases.length ? data.cases : defaultXmCases(), updatedAt: data && data.updatedAt || Date.now() }),
+    getLocal: () => ({ cases: xmCases, updatedAt: Date.now() }),
+    setLocal: data => applyRemoteXm(data),
+    toast: showToast,
+    onConflict: info => console.warn('Blood Bank crossmatch save conflict:', info.paths)
+  });
+  try { await notesDoc.load(); notesDoc.subscribe(); } catch(e) { showToast(`Supabase load failed: ${e.message}`, true); console.error(e); hydrateNotesData({}); }
+  try { await xmDoc.load(); xmDoc.subscribe(); } catch(e) { showToast(`Supabase load failed: ${e.message}`, true); console.error(e); xmCases = defaultXmCases(); }
   // Render initial system
   renderSystem('abo');
   renderRbcDiagram();
@@ -784,10 +785,8 @@ async function saveNotesNow() {
   clearTimeout(saveTimer);
   if (notesSaveInFlight) await notesSaveInFlight;
   notesData.__updatedAt = Date.now();
-  notesSaveInFlight = sbUpsert('bb_notes', notesData).finally(() => { notesSaveInFlight = null; });
-  const ok = await notesSaveInFlight;
-  if (ok) showToast('Saved to Supabase');
-  return ok;
+  notesSaveInFlight = (notesDoc ? notesDoc.saveNow() : Promise.resolve(false)).finally(() => { notesSaveInFlight = null; });
+  return await notesSaveInFlight;
 }
 
 function scheduleXmSave() {
@@ -798,11 +797,8 @@ function scheduleXmSave() {
 async function saveXmCasesNow() {
   clearTimeout(xmSaveTimer);
   if (xmSaveInFlight) await xmSaveInFlight;
-  const payload = { cases: xmCases, updatedAt: Date.now() };
-  xmSaveInFlight = sbUpsert('bb_xmatch', payload).finally(() => { xmSaveInFlight = null; });
-  const ok = await xmSaveInFlight;
-  if (ok) showToast('Saved to Supabase');
-  return ok;
+  xmSaveInFlight = (xmDoc ? xmDoc.saveNow() : Promise.resolve(false)).finally(() => { xmSaveInFlight = null; });
+  return await xmSaveInFlight;
 }
 
 async function saveAllNow() {
@@ -1306,6 +1302,7 @@ function addFreqRow(sysKey) {
   if (tbody) {
     tbody.insertAdjacentHTML('beforeend', makeFreqRow(sysKey, idx));
   }
+  scheduleSave();
 }
 
 function delFreqRow(sysKey, idx) {

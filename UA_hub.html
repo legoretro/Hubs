@@ -276,6 +276,8 @@ button,input{font-family:inherit}button{cursor:pointer}
 <div id="printArea" aria-hidden="true"></div>
 <div class="save-indicator" id="saveIndicator">Saved</div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="safe-supabase-sync.js"></script>
 <script>
 const SUPABASE_URL='https://fjrdlasmdhqjqqlvuxwj.supabase.co';
 const SUPABASE_KEY='sb_publishable_UnXRXK6It0PKVmZmixYZeg_WDx9frO2';
@@ -287,7 +289,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   var isAdmin=false;
   var editMode=false;
   var saveTimer=null;
-  var saveInFlight=null;
+	  var saveInFlight=null;
+	  var safeDoc=null;
   var microDrag=null;
   var suppressMicroClick=false;
   var activeMicroIndex=null;
@@ -424,9 +427,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   function showToast(msg,isError){var t=document.getElementById('saveIndicator');t.textContent=msg||'Saved';t.style.background=isError?'#8b0a26':'#1a8c5c';t.classList.add('show');setTimeout(function(){t.classList.remove('show')},1600)}
   async function hashString(str){var buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0')}).join('')}
   async function supabaseError(r){var d='';try{var b=await r.json();d=b.message||b.details||b.hint||JSON.stringify(b)}catch(e){d=await r.text()}return new Error(d||('HTTP '+r.status))}
-  async function sbGet(id){var r=await fetch(SUPABASE_URL+'/rest/v1/'+TABLE_NAME+'?id=eq.'+encodeURIComponent(id)+'&select=data',{headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY}});if(!r.ok)throw await supabaseError(r);var d=await r.json();return d&&d[0]?d[0].data:null}
-  async function sbUpsert(id,data){var r=await fetch(SUPABASE_URL+'/rest/v1/'+TABLE_NAME+'?on_conflict=id',{method:'POST',headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates'},body:JSON.stringify({id:id,data:data})});if(!r.ok)throw await supabaseError(r);return true}
-  function escapeHtml(value){return String(value||'').replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]})}
+	  function escapeHtml(value){return String(value||'').replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]})}
   function decodeEntities(value){
     var box=document.createElement('textarea');
     box.innerHTML=String(value||'');
@@ -590,18 +591,16 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     saveLocal();
     if(isAdmin) scheduleSave();
   }
-  async function loadRemote(){
-    state=defaultState();
-    renderAll();
-    renderSimulation();
-    try{
-      var remote=await sbGet(UA_ROW_ID);
-      if(remote&&remote.tables){
-        state=mergeState(remote);
-        renderAll();
-      }
-    }catch(e){console.warn('remote load failed',e)}
-  }
+	  async function loadRemote(){
+	    state=defaultState();
+	    renderAll();
+	    renderSimulation();
+	    try{
+	      safeDoc=createSafeSupabaseDoc({url:SUPABASE_URL,key:SUPABASE_KEY,table:TABLE_NAME,id:UA_ROW_ID,defaultData:defaultState,normalize:mergeState,getLocal:function(){return state},setLocal:function(data){state=data;renderAll();renderSimulation()},toast:showToast,onConflict:function(info){console.warn('UA save conflict:',info.paths)}});
+	      await safeDoc.load();
+	      safeDoc.subscribe();
+	    }catch(e){console.warn('remote load failed',e)}
+	  }
   function scheduleSave(){clearTimeout(saveTimer);saveTimer=setTimeout(saveNow,650)}
   async function saveNow(){
     if(!isAdmin){showToast('Unlock admin first',true);return false}
@@ -610,9 +609,9 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     touchState();
     await compressStateImages();
     if(saveInFlight)await saveInFlight;
-    saveInFlight=sbUpsert(UA_ROW_ID,state).then(function(){showToast('Saved');return true}).catch(function(e){console.error(e);showToast('Local saved only. Online save blocked.',true);return false}).finally(function(){saveInFlight=null});
-    return saveInFlight;
-  }
+	    saveInFlight=(safeDoc?safeDoc.saveNow():Promise.resolve(false)).finally(function(){saveInFlight=null});
+	    return saveInFlight;
+	  }
   async function flushSave(){clearTimeout(saveTimer);return saveNow()}
   function tableTools(id){
     return '<button class="mini-btn" data-action="add-row" data-table="'+id+'">Add Row</button>'+
@@ -1329,7 +1328,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   window.doExport=function(){
     collectVisibleState();
     saveLocal();
-    if(isAdmin)sbUpsert(UA_ROW_ID,state).catch(function(e){console.warn(e)});
+	    if(isAdmin&&safeDoc)safeDoc.saveNow().catch(function(e){console.warn(e)});
     var selected=Array.from(document.querySelectorAll('#exportModal .export-check:checked')).map(function(box){return box.value});
     if(!selected.length){showToast('Choose at least one section',true);return}
     closeExportModal();

@@ -177,6 +177,8 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
 <div id="printArea" aria-hidden="true"></div>
 <div class="save-indicator" id="saveIndicator">Saved</div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="safe-supabase-sync.js"></script>
 <script>
 const SUPABASE_URL='https://fjrdlasmdhqjqqlvuxwj.supabase.co';
 const SUPABASE_KEY='sb_publishable_UnXRXK6It0PKVmZmixYZeg_WDx9frO2';
@@ -188,7 +190,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   var isAdmin=false;
   var editMode=false;
   var saveTimer=null;
-  var saveInFlight=null;
+	  var saveInFlight=null;
+	  var safeDoc=null;
   var state=defaultState();
   var EXPORT_ITEMS=[
     ['overview_core','Big Picture'],
@@ -344,9 +347,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   async function hashString(str){var buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0')}).join('')}
   async function supabaseError(r){var d='';try{var b=await r.json();d=b.message||b.details||b.hint||JSON.stringify(b)}catch(e){d=await r.text()}return new Error(d||('HTTP '+r.status))}
-  async function sbGet(id){var r=await fetch(SUPABASE_URL+'/rest/v1/'+TABLE_NAME+'?id=eq.'+encodeURIComponent(id)+'&select=data',{headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY}});if(!r.ok)throw await supabaseError(r);var d=await r.json();return d&&d[0]?d[0].data:null}
-  async function sbUpsert(id,data){var r=await fetch(SUPABASE_URL+'/rest/v1/'+TABLE_NAME+'?on_conflict=id',{method:'POST',headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates'},body:JSON.stringify({id:id,data:data})});if(!r.ok)throw await supabaseError(r);return true}
-  function saveLocal(){
+	  function saveLocal(){
     return true;
   }
   function touchState(){state.updatedAt=Date.now()}
@@ -381,21 +382,19 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     collectVisibleState();touchState();
     await compressStateImages();
     if(saveInFlight)await saveInFlight;
-    saveInFlight=sbUpsert(MICRO_ROW_ID,state).then(function(){showToast('Saved');return true}).catch(function(e){console.error(e);showToast('Local saved only. Online save blocked.',true);return false}).finally(function(){saveInFlight=null});
-    return saveInFlight;
-  }
-  async function flushSave(){clearTimeout(saveTimer);return saveNow()}
-  async function loadRemote(){
-    state=defaultState();
-    renderAll();
-    try{
-      var remote=await sbGet(MICRO_ROW_ID);
-      if(remote&&remote.tables){
-        state=mergeState(remote);
-        renderAll();
-      }
-    }catch(e){console.warn('remote load failed',e)}
-  }
+	    saveInFlight=(safeDoc?safeDoc.saveNow():Promise.resolve(false)).finally(function(){saveInFlight=null});
+	    return saveInFlight;
+	  }
+	  async function flushSave(){clearTimeout(saveTimer);return saveNow()}
+	  async function loadRemote(){
+	    state=defaultState();
+	    renderAll();
+	    try{
+	      safeDoc=createSafeSupabaseDoc({url:SUPABASE_URL,key:SUPABASE_KEY,table:TABLE_NAME,id:MICRO_ROW_ID,defaultData:defaultState,normalize:mergeState,getLocal:function(){return state},setLocal:function(data){state=data;renderAll()},toast:showToast,onConflict:function(info){console.warn('Microbiology save conflict:',info.paths)}});
+	      await safeDoc.load();
+	      safeDoc.subscribe();
+	    }catch(e){console.warn('remote load failed',e)}
+	  }
   function tableTools(id){return '<button class="mini-btn" data-action="add-row" data-table="'+id+'">Add Row</button><button class="mini-btn" data-action="add-col" data-table="'+id+'">Add Column</button><button class="mini-btn" data-action="add-img-col" data-table="'+id+'">Add Image Column</button>'}
   function addColumn(table,type){var col={id:uid('col'),label:type==='image'?'Image':'',type:type};table.columns.push(col);table.rows.forEach(function(row){if(!row.cells)row.cells={};row.cells[col.id]=''})}
   function addRow(table){var cells={};table.columns.forEach(function(col){cells[col.id]=''});table.rows.push({id:uid('row'),cells:cells})}
@@ -706,11 +705,11 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   function findSpeciesById(id){var found=null;state.charts.some(function(chart){ensureChartSpecies(chart).species.some(function(sp){if(sp.id===id){found=sp;return true}return false});return !!found});return found}
   function openSpeciesZoom(speciesId,kind){var sp=findSpeciesById(speciesId);var src=sp&&sp[kind];if(!src)return;document.getElementById('imageZoomImg').src=src;document.getElementById('imageZoomCaption').textContent=(sp.name||'Species')+(kind==='gramImage'?' Gram stain':' plate');document.getElementById('imageZoomModal').classList.add('visible')}
   function closeImageZoom(){document.getElementById('imageZoomModal').classList.remove('visible');document.getElementById('imageZoomImg').removeAttribute('src')}
-  function exportSingleChart(chart){collectVisibleState();saveLocal();if(isAdmin)sbUpsert(MICRO_ROW_ID,state).catch(function(e){console.warn(e)});var picked=activeEndpointKeys(chart,speciesPaths(chart));if(!picked.length){showToast('Choose at least one species',true);return}var area=document.getElementById('printArea');area.innerHTML='<div class="print-page"><h1 class="print-section-title">'+escapeHtml(chart.title||'Species Flow')+'</h1>'+chartPrintHtml(chart)+'</div>';document.body.classList.add('printing');showToast('Opening selected flow export');window.print();setTimeout(function(){document.body.classList.remove('printing');area.innerHTML=''},1200)}
+  function exportSingleChart(chart){collectVisibleState();saveLocal();if(isAdmin&&safeDoc)safeDoc.saveNow().catch(function(e){console.warn(e)});var picked=activeEndpointKeys(chart,speciesPaths(chart));if(!picked.length){showToast('Choose at least one species',true);return}var area=document.getElementById('printArea');area.innerHTML='<div class="print-page"><h1 class="print-section-title">'+escapeHtml(chart.title||'Species Flow')+'</h1>'+chartPrintHtml(chart)+'</div>';document.body.classList.add('printing');showToast('Opening selected flow export');window.print();setTimeout(function(){document.body.classList.remove('printing');area.innerHTML=''},1200)}
   window.openExportModal=function(){renderExportOptions();document.getElementById('exportModal').classList.add('visible')};
   window.closeExportModal=function(){document.getElementById('exportModal').classList.remove('visible')};
   window.selectAllExport=function(on){document.querySelectorAll('#exportModal .export-check').forEach(function(box){box.checked=!!on})};
-  window.doExport=function(){collectVisibleState();saveLocal();if(isAdmin)sbUpsert(MICRO_ROW_ID,state).catch(function(e){console.warn(e)});var selected=Array.from(document.querySelectorAll('#exportModal .export-check:checked')).map(function(box){return box.value});if(!selected.length){showToast('Choose at least one section',true);return}closeExportModal();var html='';selected.forEach(function(id){if(state.tables[id])html+='<div class="print-page"><h1 class="print-section-title">'+escapeHtml(state.tables[id].title||id)+'</h1>'+tablePrintHtml(id)+'</div>'});var area=document.getElementById('printArea');area.innerHTML=html;document.body.classList.add('printing');showToast('Opening PDF export');window.print();setTimeout(function(){document.body.classList.remove('printing');area.innerHTML=''},1200)};
+  window.doExport=function(){collectVisibleState();saveLocal();if(isAdmin&&safeDoc)safeDoc.saveNow().catch(function(e){console.warn(e)});var selected=Array.from(document.querySelectorAll('#exportModal .export-check:checked')).map(function(box){return box.value});if(!selected.length){showToast('Choose at least one section',true);return}closeExportModal();var html='';selected.forEach(function(id){if(state.tables[id])html+='<div class="print-page"><h1 class="print-section-title">'+escapeHtml(state.tables[id].title||id)+'</h1>'+tablePrintHtml(id)+'</div>'});var area=document.getElementById('printArea');area.innerHTML=html;document.body.classList.add('printing');showToast('Opening PDF export');window.print();setTimeout(function(){document.body.classList.remove('printing');area.innerHTML=''},1200)};
   window.addEventListener('afterprint',function(){document.body.classList.remove('printing');document.getElementById('printArea').innerHTML=''});
   window.addEventListener('beforeunload',function(){collectVisibleState();saveLocal()});
   window.addEventListener('load',function(){setTimeout(function(){var left=document.getElementById('doorLeft');var right=document.getElementById('doorRight');if(left)left.classList.add('open');if(right)right.classList.add('open');setTimeout(function(){var intro=document.getElementById('intro');document.body.classList.remove('intro-active');if(intro){intro.style.opacity='0';intro.style.transition='opacity .5s';setTimeout(function(){intro.style.display='none'},500)}},1100)},1500)});
