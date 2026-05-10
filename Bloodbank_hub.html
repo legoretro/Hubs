@@ -85,6 +85,21 @@ button{cursor:pointer;font-family:inherit}
 .custom-actions{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
 .custom-list-row:last-child{border-bottom:none}
 .rbc-system-actions{display:none;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}.admin-mode .rbc-system-actions{display:flex}.rbc-map-link{border-color:var(--crimson);color:var(--crimson)}
+.rbc-maker{display:none;border:1px solid var(--rose);background:#fffdfb;border-radius:12px;padding:10px;margin-bottom:10px}
+.admin-mode .rbc-maker{display:block}
+.rbc-maker-top{display:grid;grid-template-columns:minmax(150px,1fr) 96px 80px auto;gap:8px;align-items:center;margin-bottom:8px}
+.rbc-mini-field{border:1px solid var(--rose);border-radius:8px;background:#fff;color:var(--dark);font-family:Georgia,serif;font-size:12px;padding:7px 9px;min-width:0}
+.rbc-mini-field[type="color"]{padding:2px;height:34px}
+.rbc-tool-strip{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.rbc-piece-btn{border:1.5px solid var(--rose);background:#fff;color:var(--wine);border-radius:999px;padding:6px 10px;font-size:11px;font-weight:800;display:inline-flex;align-items:center;gap:5px;min-height:30px}
+.rbc-piece-btn:hover{border-color:var(--crimson);color:var(--crimson);background:var(--blush)}
+.rbc-piece-dot{width:12px;height:12px;border-radius:50%;background:currentColor;display:inline-block}.rbc-piece-line{width:18px;height:3px;border-radius:999px;background:currentColor;display:inline-block}.rbc-piece-square{width:12px;height:12px;border-radius:3px;background:currentColor;display:inline-block}
+.rbc-piece-tray{display:flex;gap:6px;flex-wrap:wrap;border-top:1px solid var(--blush);padding-top:8px;margin-top:8px}
+.rbc-piece-chip{border:1px solid var(--rose);background:var(--blush);border-radius:999px;padding:4px 7px;font-size:11px;color:var(--warm-grey);display:inline-flex;align-items:center;gap:5px}
+.rbc-piece-chip strong{color:var(--wine)}.rbc-chip-x{border:none;background:transparent;color:var(--crimson);font-weight:900;padding:0 2px}
+.rbc-map-actions{display:none;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}.admin-mode .rbc-map-actions{display:flex}
+.rbc-help{font-size:12px;color:var(--warm-grey);line-height:1.35}
+.export-choice-list{display:grid;gap:8px;text-align:left;margin:14px 0}.export-choice-list label{display:flex;gap:8px;align-items:flex-start;border:1px solid var(--rose);background:#fff;border-radius:10px;padding:9px 10px;font-size:13px;color:var(--dark);cursor:pointer}.export-choice-list input{margin-top:2px;accent-color:var(--crimson)}
 
 /* SECTIONS */
 .section{display:none;padding:24px 20px 60px;max-width:1200px;margin:0 auto}
@@ -219,6 +234,15 @@ button{cursor:pointer;font-family:inherit}
 .xm-input:focus{outline:none;border-color:var(--crimson)}
 .xm-donor-row{display:grid;grid-template-columns:80px 1fr 1fr 1fr 60px;gap:6px;margin-bottom:6px;align-items:center}
 .xm-donor-row label{font-size:11px;color:var(--warm-grey);text-align:center}
+.sim-mode-strip{display:flex;gap:10px;justify-content:center;margin-bottom:20px;flex-wrap:wrap}
+.calc-panel{display:grid;gap:12px}.calc-case-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+.calc-case-btn{border:1.5px solid var(--rose);background:#fff;color:var(--wine);border-radius:10px;padding:10px;text-align:left;font-weight:800;font-size:12px}
+.calc-case-btn.active{border-color:var(--crimson);background:var(--blush);box-shadow:0 0 0 2px rgba(192,23,61,.08)}
+.calc-equation{border:1px solid var(--rose);background:#fff;border-radius:12px;padding:14px;text-align:center;color:var(--wine)}
+.calc-frac{display:inline-grid;grid-template-rows:auto auto;align-items:center;min-width:260px;font-size:20px;font-weight:800}.calc-frac span:first-child{border-bottom:2px solid var(--wine);padding:0 10px 3px}.calc-frac span:last-child{padding:3px 10px 0;font-size:15px;color:var(--dark)}
+.calc-step-list{display:grid;gap:7px;margin-top:10px}.calc-step{border-left:3px solid var(--rose);background:#fff;padding:8px 10px;border-radius:8px;font-size:13px;color:var(--dark);line-height:1.5}
+.calc-answer{border:1px solid var(--good);background:var(--good-lt);color:#0a4a2a;border-radius:12px;padding:12px;font-weight:800;text-align:center}
+.calc-ref-table{width:100%;border-collapse:collapse;font-size:11px}.calc-ref-table th{background:var(--wine);color:#fff;padding:5px}.calc-ref-table td{border:1px solid var(--rose);padding:4px 6px;text-align:center}.calc-ref-table td:first-child,.calc-ref-table td:nth-child(2){text-align:left;font-weight:800;color:var(--wine)}
 
 /* RBC DIAGRAM */
 .rbc-antigen-wrap{position:relative;width:100%;max-width:700px;margin:0 auto}
@@ -458,6 +482,25 @@ button{cursor:pointer;font-family:inherit}
   </div>
 </div>
 
+<div class="modal-overlay" id="encExportModal">
+  <div class="modal-box" style="max-width:560px;max-height:90vh;overflow-y:auto">
+    <div style="font-size:28px;margin-bottom:8px">📄</div>
+    <h3>Encyclopedia Export Options</h3>
+    <p style="margin-bottom:10px">Choose one export, then confirm. This prevents accidental print windows.</p>
+    <div class="export-choice-list">
+      <label><input type="radio" name="encExportKind" value="current" checked><span><strong>Current system, one page</strong><br><small>Compact binder page for the selected usual suspect.</small></span></label>
+      <label><input type="radio" name="encExportKind" value="histories"><span><strong>All histories</strong><br><small>Condensed history cards.</small></span></label>
+      <label><input type="radio" name="encExportKind" value="study"><span><strong>All study references</strong><br><small>Condensed worksheet fields.</small></span></label>
+      <label><input type="radio" name="encExportKind" value="frequencies"><span><strong>All frequencies</strong><br><small>C/B/A/I/H plus notes table.</small></span></label>
+      <label><input type="radio" name="encExportKind" value="lesser"><span><strong>Lesser systems</strong><br><small>The lesser-known system table.</small></span></label>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="runEncyclopediaExport()">Export Selected</button>
+      <button class="btn btn-ghost" onclick="document.getElementById('encExportModal').classList.remove('visible')">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <div class="save-indicator" id="saveToast">Saved to Supabase</div>
 
 <!-- MAIN APP -->
@@ -487,11 +530,8 @@ button{cursor:pointer;font-family:inherit}
     <div class="sys-card" style="border-top:3px solid var(--crimson);margin-bottom:16px">
       <div class="sec-label" style="margin-bottom:10px">Encyclopedia Export</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-primary btn-sm" onclick="exportCurrentSystemPage()">Export Current System Page</button>
-        <button class="btn btn-ghost btn-sm" onclick="exportEncyclopediaSet('histories')">All Histories</button>
-        <button class="btn btn-ghost btn-sm" onclick="exportEncyclopediaSet('study')">All Study References</button>
-        <button class="btn btn-ghost btn-sm" onclick="exportEncyclopediaSet('frequencies')">All Frequencies</button>
-        <button class="btn btn-ghost btn-sm" onclick="exportLesserSystemsPage()">Lesser Systems</button>
+        <button class="btn btn-primary btn-sm" onclick="openEncyclopediaExportModal()">Export Options</button>
+        <span style="font-size:12px;color:var(--warm-grey);align-self:center">Pick options first, then export.</span>
       </div>
     </div>
     <div class="enc-layout">
@@ -553,12 +593,14 @@ button{cursor:pointer;font-family:inherit}
       <h2><span class="hero-emoji">🧪</span> Simulation Lab</h2>
     </div>
     <div style="max-width:860px;margin:0 auto">
-      <div style="display:flex;gap:10px;justify-content:center;margin-bottom:20px">
+      <div class="sim-mode-strip">
         <button id="aboSimBtn" class="btn btn-primary" onclick="startABOsim()" style="font-size:15px;padding:12px 28px">🅰️ ABO Typing</button>
         <button id="xmSimBtn" class="btn btn-ghost" onclick="startXMsim()" style="font-size:15px;padding:12px 28px;border-width:2px">🩸 Crossmatch</button>
+        <button id="calcSimBtn" class="btn btn-ghost" onclick="startCalcSim()" style="font-size:15px;padding:12px 28px;border-width:2px">🧮 Calculations</button>
       </div>
       <div id="aboContent" style="display:block"></div>
       <div id="xmContent" style="display:none"></div>
+      <div id="calcContent" style="display:none"></div>
     </div>
   </div>
 
@@ -635,6 +677,7 @@ let xmSaveInFlight = null;
 let xmMode = null;
 let rbcLayout = {};
 let rbcCustomItems = [];
+let rbcMapCopies = [];
 let rbcHiddenItems = [];
 let rbcToolScope = 'abo';
 let rbcEditingItemId = null;
@@ -712,8 +755,10 @@ async function initApp() {
   if (saved) notesData = saved;
   rbcLayout = notesData.__rbcLayoutVersion === 2 ? (notesData.__rbcLayout || {}) : {};
   rbcCustomItems = Array.isArray(notesData.__rbcCustomItems) ? notesData.__rbcCustomItems : [];
+  rbcMapCopies = Array.isArray(notesData.__rbcMapCopies) ? notesData.__rbcMapCopies : [];
   rbcHiddenItems = Array.isArray(notesData.__rbcHiddenItems) ? notesData.__rbcHiddenItems : [];
   ensurePresetRbcItems();
+  migrateLegacyRbcMapCopies();
   // Load crossmatch cases
   const savedXm = await sbGet('bb_xmatch');
   if (savedXm && Array.isArray(savedXm.cases) && savedXm.cases.length > 0) {
@@ -1346,11 +1391,7 @@ function renderSystem(key) {
     <!-- MEMBRANE CARD -->
     <div class="sys-card" style="border-top:3px solid ${sys.color}">
       <div class="sec-label" style="margin-bottom:10px">RBC Membrane Location</div>
-      <div class="rbc-system-actions">
-        <button class="btn btn-ghost btn-sm builder-btn" onclick="openRbcBuilder('${skey}')">+ Build ${sys.name.replace(' System','')} membrane pieces</button>
-        <button class="btn btn-ghost btn-sm rbc-map-link" onclick="addSystemRbcToMap('${skey}', true)">Add this system to RBC map</button>
-        <button class="btn btn-ghost btn-sm" onclick="openRbcMapFromSystem('${skey}')">Open RBC map to place</button>
-      </div>
+      ${renderRbcMaker(skey, sys.color)}
       <div class="mem-wrap">${buildSystemRbcSVG(skey, sys.color)}</div>
 
     </div>
@@ -1389,7 +1430,7 @@ function renderSystem(key) {
         oninput="setNote('${skey}','lab_notes',this.value)"
         placeholder="${isAdmin ? 'Add transfusion notes, mnemonics, clinical pearls...' : 'Transfusion notes will appear here.'}">${labNoteVal}</textarea>
     </div>`;
-  setTimeout(initRbcDrag, 0);
+  setTimeout(function(){ initRbcDrag(area); }, 0);
 }
 
 function buildWsTable(skey, fields, label) {
@@ -1480,8 +1521,8 @@ function renderLesser(area) {
 // ============================================================
 function renderRbcDiagram() {
   const container = document.getElementById('rbcDiagramContainer');
-  container.innerHTML = (isAdmin ? '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"><button class="btn btn-ghost btn-sm builder-btn" onclick="openRbcBuilder(\'abo\')">+ Add custom antigen / chain</button><span style="font-size:12px;color:var(--warm-grey);align-self:center">Drag pieces directly on this map. Hold Shift while dragging to rotate.</span></div>' : '') + buildFullRbcSVG();
-  initRbcDrag();
+  container.innerHTML = (isAdmin ? '<div class="rbc-map-actions"><span class="rbc-help">This map uses placed copies. Drag/rotate copies for the print map without changing the encyclopedia originals.</span><button class="btn btn-ghost btn-sm" onclick="clearRbcMapCopies()">Clear placed copies</button></div>' : '') + buildFullRbcSVG();
+  initRbcDrag(container);
 }
 
 function buildFullRbcSVG() {
@@ -1560,13 +1601,50 @@ function ensurePresetRbcItems() {
   notesData.__rbcCustomItems = rbcCustomItems;
 }
 
+function makeRbcMapCopy(item, offsetIndex) {
+  var pos = rbcPos(item);
+  var offset = offsetIndex || 0;
+  var copy = Object.assign({}, item, {
+    id: 'copy_' + item.id + '_' + Date.now() + '_' + Math.floor(Math.random() * 10000),
+    sourceId: item.id,
+    mapCopy: true,
+    custom: true,
+    preset: false,
+    showOnFullMap: true,
+    x: Math.min(1320, Math.max(30, (pos.x || item.x || 640) + 34 + offset * 14)),
+    y: Math.min(380, Math.max(34, (pos.y || item.y || 130) + 16 + offset * 10)),
+    r: pos.r || item.r || 0
+  });
+  rbcLayout[copy.id] = { x:copy.x, y:copy.y, r:copy.r || 0 };
+  return copy;
+}
+
+function migrateLegacyRbcMapCopies() {
+  if (rbcMapCopies.length) return;
+  var legacy = rbcCustomItems.filter(function(item) {
+    return item.showOnFullMap === true && rbcHiddenItems.indexOf(item.id) === -1;
+  });
+  if (!legacy.length) return;
+  rbcMapCopies = legacy.map(function(item, index) { return makeRbcMapCopy(item, index); });
+  rbcCustomItems.forEach(function(item) { item.showOnFullMap = false; });
+  notesData.__rbcMapCopies = rbcMapCopies;
+  notesData.__rbcCustomItems = rbcCustomItems;
+  notesData.__rbcLayout = rbcLayout;
+  notesData.__rbcLayoutVersion = 2;
+}
+
 function getRbcItems(systemKey) {
-  var base = (systemKey ? RBC_ITEMS.filter(function(i){ return i.system === systemKey; }) : RBC_ITEMS.slice())
+  if (!systemKey) return getFullRbcMapItems();
+  var base = RBC_ITEMS.filter(function(i){ return i.system === systemKey; })
     .filter(function(i){ return rbcHiddenItems.indexOf(i.id) === -1; });
-  var custom = systemKey
-    ? rbcCustomItems.filter(function(i){ return i.system === systemKey && rbcHiddenItems.indexOf(i.id) === -1; })
-    : rbcCustomItems.filter(function(i){ return i.showOnFullMap !== false && rbcHiddenItems.indexOf(i.id) === -1; });
+  var custom = rbcCustomItems.filter(function(i){ return i.system === systemKey && rbcHiddenItems.indexOf(i.id) === -1; });
   return base.concat(custom);
+}
+
+function getFullRbcMapItems() {
+  var base = RBC_ITEMS.slice().filter(function(i){ return rbcHiddenItems.indexOf(i.id) === -1; });
+  var copies = rbcMapCopies.filter(function(i){ return rbcHiddenItems.indexOf(i.id) === -1; });
+  return base.concat(copies);
 }
 
 function rbcPos(item) {
@@ -1719,15 +1797,90 @@ function updateRbcShapePreview() {
   if (copy) copy.textContent = 'Preview uses your selected color, size, and text placement. Add it, then drag it exactly where you want.';
 }
 
+function renderRbcMaker(systemKey, color) {
+  if (!isAdmin) return '';
+  var tray = buildRbcPieceTray(systemKey);
+  return '<div class="rbc-maker">' +
+    '<div class="rbc-maker-top">' +
+      '<input class="rbc-mini-field" id="rbcQuickLabel" placeholder="Text, antigen, or note">' +
+      '<input class="rbc-mini-field" id="rbcQuickColor" type="color" value="' + escText(color || '#c0173d') + '">' +
+      '<input class="rbc-mini-field" id="rbcQuickSize" type="number" min="4" max="140" value="18" title="Size">' +
+      '<button class="btn btn-primary btn-sm" onclick="copySystemRbcToMap(\'' + systemKey + '\', true)">Copy to RBC map</button>' +
+    '</div>' +
+    '<div class="rbc-tool-strip">' +
+      '<button class="rbc-piece-btn" onclick="quickAddRbcPiece(\'' + systemKey + '\',\'surface-dot\')"><span class="rbc-piece-dot"></span>Dot</button>' +
+      '<button class="rbc-piece-btn" onclick="quickAddRbcPiece(\'' + systemKey + '\',\'bead\')"><span class="rbc-piece-dot"></span>Bead</button>' +
+      '<button class="rbc-piece-btn" onclick="quickAddRbcPiece(\'' + systemKey + '\',\'sugar-chain\')">Sugar</button>' +
+      '<button class="rbc-piece-btn" onclick="quickAddRbcPiece(\'' + systemKey + '\',\'multi-pass\')">Multi-pass</button>' +
+      '<button class="rbc-piece-btn" onclick="quickAddRbcPiece(\'' + systemKey + '\',\'single-pass\')">Single-pass</button>' +
+      '<button class="rbc-piece-btn" onclick="quickAddRbcPiece(\'' + systemKey + '\',\'connector\')"><span class="rbc-piece-line"></span>Line</button>' +
+      '<button class="rbc-piece-btn" onclick="quickAddRbcPiece(\'' + systemKey + '\',\'square\')"><span class="rbc-piece-square"></span>Square</button>' +
+      '<button class="rbc-piece-btn" onclick="quickAddRbcPiece(\'' + systemKey + '\',\'label\')">Text</button>' +
+      '<span class="rbc-help">Add pieces here, then drag them on this membrane. They stay separate from the RBC Antigens print map until copied.</span>' +
+    '</div>' +
+    tray +
+  '</div>';
+}
+
+function buildRbcPieceTray(systemKey) {
+  var items = rbcCustomItems.filter(function(i){ return i.system === systemKey && rbcHiddenItems.indexOf(i.id) === -1; });
+  if (!items.length) return '';
+  return '<div class="rbc-piece-tray">' + items.map(function(item) {
+    return '<span class="rbc-piece-chip"><strong style="color:' + escText(item.color || '#5a0e20') + '">' + escText(item.label || item.type || 'piece') + '</strong><button class="rbc-chip-x" title="Delete original piece" onclick="deleteSystemRbcPiece(\'' + item.id + '\')">x</button></span>';
+  }).join('') + '</div>';
+}
+
+function quickAddRbcPiece(systemKey, type) {
+  if (!isAdmin) return;
+  var labelEl = document.getElementById('rbcQuickLabel');
+  var colorEl = document.getElementById('rbcQuickColor');
+  var sizeEl = document.getElementById('rbcQuickSize');
+  var label = (labelEl && labelEl.value ? labelEl.value : '').trim();
+  if (type === 'label' && !label) label = 'Text';
+  var color = (colorEl && colorEl.value) || '#c0173d';
+  var size = Math.max(4, Math.min(140, parseFloat(sizeEl && sizeEl.value) || (type === 'connector' ? 54 : 18)));
+  var count = getRbcItems(systemKey).length;
+  var item = {
+    id: 'custom_' + systemKey + '_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
+    custom: true,
+    system: systemKey,
+    label: label,
+    type: type,
+    color: color,
+    size: size,
+    labelPos: type === 'label' ? 'top' : 'top',
+    showOnFullMap: false,
+    x: 520 + (count % 7) * 42,
+    y: type === 'label' ? 82 : 104 + (count % 3) * 24,
+    r: 0
+  };
+  rbcCustomItems.push(item);
+  rbcLayout[item.id] = { x:item.x, y:item.y, r:item.r || 0 };
+  persistRbcBuilder();
+  if (labelEl) labelEl.value = '';
+  renderSystem(currentSystemKey);
+  showToast('Piece added');
+}
+
+function deleteSystemRbcPiece(id) {
+  if (!isAdmin) return;
+  var item = rbcCustomItems.find(function(piece){ return piece.id === id; });
+  if (item && item.preset && rbcHiddenItems.indexOf(id) === -1) rbcHiddenItems.push(id);
+  rbcCustomItems = rbcCustomItems.filter(function(item){ return item.id !== id; });
+  delete rbcLayout[id];
+  persistRbcBuilder();
+  renderSystem(currentSystemKey);
+}
+
 function buildDraggableRbcSVG() {
   var editNote = isAdmin ? '<div style="font-size:12px;color:var(--warm-grey);margin-bottom:8px">Admin: drag antigens to reposition. Hold Shift while dragging to rotate. Positions save to Supabase.</div>' : '';
-  return editNote + '<div style="overflow-x:auto"><svg id="rbcMembraneSvg" viewBox="0 0 1380 430" xmlns="http://www.w3.org/2000/svg" style="min-width:960px;max-width:100%;font-family:Georgia,serif;touch-action:none">' +
+  return editNote + '<div style="overflow-x:auto"><svg id="rbcMembraneSvg" data-rbc-scope="full" viewBox="0 0 1380 430" xmlns="http://www.w3.org/2000/svg" style="min-width:960px;max-width:100%;font-family:Georgia,serif;touch-action:none">' +
     '<rect x="0" y="170" width="1380" height="74" fill="#fce8ed" opacity=".55"/>' +
     '<line x1="0" y1="170" x2="1380" y2="170" stroke="#c0173d" stroke-width="4" stroke-opacity=".25"/>' +
     '<line x1="0" y1="244" x2="1380" y2="244" stroke="#c0173d" stroke-width="4" stroke-opacity=".25"/>' +
     '<text x="18" y="48" fill="#d85070" font-size="22" font-weight="bold">Extracellular</text>' +
     '<text x="18" y="392" fill="#9a8588" font-size="22" font-weight="bold">Cytoplasm</text>' +
-    getRbcItems().map(rbcShape).join('') +
+    getFullRbcMapItems().map(rbcShape).join('') +
     '</svg></div>';
 }
 
@@ -1753,7 +1906,7 @@ function buildSystemRbcSVG(systemKey, color, options) {
   var items = getRbcItems(systemKey);
   var frame = rbcSystemFrame(items, options.minWidth || 860);
   var svgStyle = options.exportMode ? 'width:100%;max-width:100%;font-family:Georgia,serif;touch-action:none' : 'width:100%;height:260px;max-height:260px;font-family:Georgia,serif;touch-action:none';
-  return '<div style="overflow:hidden;width:100%"><svg id="rbcMembraneSvg" viewBox="' + frame.x + ' 0 ' + frame.width + ' 430" xmlns="http://www.w3.org/2000/svg" style="' + svgStyle + '">' +
+  return '<div style="overflow:hidden;width:100%"><svg id="rbcMembraneSvg" data-rbc-scope="' + escText(systemKey) + '" viewBox="' + frame.x + ' 0 ' + frame.width + ' 430" xmlns="http://www.w3.org/2000/svg" style="' + svgStyle + '">' +
     '<rect x="0" y="170" width="1380" height="74" fill="#fce8ed" opacity=".55"/>' +
     '<line x1="0" y1="170" x2="1380" y2="170" stroke="' + color + '" stroke-width="4" stroke-opacity=".25"/>' +
     '<line x1="0" y1="244" x2="1380" y2="244" stroke="' + color + '" stroke-width="4" stroke-opacity=".25"/>' +
@@ -1763,11 +1916,14 @@ function buildSystemRbcSVG(systemKey, color, options) {
     '</svg></div>';
 }
 
-function initRbcDrag() {
-  var svg = document.getElementById('rbcMembraneSvg');
+function initRbcDrag(root) {
+  var host = root || document.querySelector('.section.active') || document;
+  var svg = host.querySelector ? host.querySelector('#rbcMembraneSvg') : null;
+  if (!svg) svg = document.getElementById('rbcMembraneSvg');
   if (!svg || !isAdmin) return;
   var active = null;
-  var allItems = getRbcItems();
+  var scope = svg.getAttribute('data-rbc-scope') || 'full';
+  var allItems = scope === 'full' ? getFullRbcMapItems() : getRbcItems(scope);
   function pt(evt) {
     var p = svg.createSVGPoint();
     p.x = evt.clientX; p.y = evt.clientY;
@@ -1802,6 +1958,7 @@ function initRbcDrag() {
     notesData.__rbcLayout = rbcLayout;
     notesData.__rbcLayoutVersion = 2;
     notesData.__rbcCustomItems = rbcCustomItems;
+    notesData.__rbcMapCopies = rbcMapCopies;
     notesData.__rbcHiddenItems = rbcHiddenItems;
     scheduleSave();
     active = null;
@@ -1940,34 +2097,33 @@ function toggleCustomRbcMap(id) {
   if (!isAdmin) return;
   var item = rbcCustomItems.find(function(i){ return i.id === id; });
   if (!item) return;
-  item.showOnFullMap = item.showOnFullMap === false;
-  if (item.showOnFullMap && !rbcLayout[item.id]) {
-    rbcLayout[item.id] = { x:item.x || 640, y:item.y || 130, r:item.r || 0 };
-  }
+  rbcMapCopies.push(makeRbcMapCopy(item, rbcMapCopies.length % 5));
   persistRbcBuilder();
   populateRbcTargetOptions();
   renderRbcCustomList();
   refreshRbcViews();
-  showToast(item.showOnFullMap ? 'Added to RBC antigen map' : 'Kept in system export only');
+  showToast('Copy placed on RBC map');
 }
 
-function addSystemRbcToMap(systemKey, openMap) {
+function copySystemRbcToMap(systemKey, openMap) {
   if (!isAdmin) {
     showToast('Unlock admin first', true);
     return;
   }
-  var count = 0;
-  rbcCustomItems.forEach(function(item) {
-    if (item.system === systemKey && rbcHiddenItems.indexOf(item.id) === -1) {
-      item.showOnFullMap = true;
-      if (!rbcLayout[item.id]) rbcLayout[item.id] = { x:item.x || 640, y:item.y || 130, r:item.r || 0 };
-      count++;
-    }
+  var originals = rbcCustomItems.filter(function(item) {
+    return item.system === systemKey && rbcHiddenItems.indexOf(item.id) === -1;
+  });
+  originals.forEach(function(item, index) {
+    rbcMapCopies.push(makeRbcMapCopy(item, (rbcMapCopies.length + index) % 6));
   });
   persistRbcBuilder();
   refreshRbcViews();
-  showToast(count ? 'Added ' + count + ' pieces to RBC map' : 'No pieces to add yet');
+  showToast(originals.length ? 'Copied ' + originals.length + ' pieces to RBC map' : 'No system pieces to copy yet');
   if (openMap) openRbcMapFromSystem(systemKey);
+}
+
+function addSystemRbcToMap(systemKey, openMap) {
+  copySystemRbcToMap(systemKey, openMap);
 }
 
 function openRbcMapFromSystem(systemKey) {
@@ -1975,6 +2131,15 @@ function openRbcMapFromSystem(systemKey) {
     return String(btn.getAttribute('onclick') || '').indexOf('rbc-diagram') > -1;
   });
   showSection('rbc-diagram', tab || null);
+}
+
+function clearRbcMapCopies() {
+  if (!isAdmin) return;
+  if (!confirm('Clear placed copies from the RBC Antigens map? Encyclopedia originals stay unchanged.')) return;
+  rbcMapCopies.forEach(function(item){ delete rbcLayout[item.id]; });
+  rbcMapCopies = [];
+  persistRbcBuilder();
+  renderRbcDiagram();
 }
 
 function blankRbcSystem() {
@@ -2000,7 +2165,9 @@ function blankAllRbcSystems() {
   if (!isAdmin) return;
   if (!confirm('This clears RBC membrane pieces for ALL systems. Use only if you truly want a full reset.')) return;
   rbcCustomItems.forEach(function(i){ delete rbcLayout[i.id]; });
+  rbcMapCopies.forEach(function(i){ delete rbcLayout[i.id]; });
   rbcCustomItems = [];
+  rbcMapCopies = [];
   rbcHiddenItems = RBC_ITEMS.map(function(i){ return i.id; }).concat(RBC_PRESET_ANTIGENS.map(function(i){ return i.id; }));
   rbcEditingItemId = null;
   persistRbcBuilder();
@@ -2022,6 +2189,7 @@ function restoreRbcSystemDefaults() {
 
 function persistRbcBuilder() {
   notesData.__rbcCustomItems = rbcCustomItems;
+  notesData.__rbcMapCopies = rbcMapCopies;
   notesData.__rbcHiddenItems = rbcHiddenItems;
   notesData.__rbcLayout = rbcLayout;
   notesData.__rbcLayoutVersion = 2;
@@ -2039,9 +2207,7 @@ function renderRbcCustomList() {
   }
   box.innerHTML = list.map(function(i) {
     var active = i.id === rbcEditingItemId ? 'background:var(--blush);border-radius:6px;padding-left:6px;' : '';
-    var mapStatus = i.showOnFullMap === false ? 'system export only' : 'on RBC map';
-    var mapAction = i.showOnFullMap === false ? 'Add to RBC Map' : 'Hide from RBC Map';
-    return '<div class="custom-list-row" style="' + active + '"><div><strong style="color:' + i.color + '">' + escText(i.label || '(unlabeled part)') + '</strong><br><span style="color:var(--warm-grey)">' + escText(i.system) + ' &middot; ' + escText(i.type) + ' &middot; size ' + escText(i.size || '') + ' &middot; ' + mapStatus + '</span></div><div class="custom-actions"><button type="button" class="btn btn-ghost btn-sm" data-rbc-action="toggle-map" data-rbc-custom-id="' + i.id + '">' + mapAction + '</button><button type="button" class="btn btn-ghost btn-sm" data-rbc-action="edit" data-rbc-custom-id="' + i.id + '">Edit</button><button type="button" class="btn btn-ghost btn-sm" data-rbc-action="delete" data-rbc-custom-id="' + i.id + '">Delete</button></div></div>';
+    return '<div class="custom-list-row" style="' + active + '"><div><strong style="color:' + i.color + '">' + escText(i.label || '(unlabeled part)') + '</strong><br><span style="color:var(--warm-grey)">' + escText(i.system) + ' &middot; ' + escText(i.type) + ' &middot; size ' + escText(i.size || '') + ' &middot; encyclopedia original</span></div><div class="custom-actions"><button type="button" class="btn btn-ghost btn-sm" data-rbc-action="toggle-map" data-rbc-custom-id="' + i.id + '">Copy to RBC Map</button><button type="button" class="btn btn-ghost btn-sm" data-rbc-action="edit" data-rbc-custom-id="' + i.id + '">Edit</button><button type="button" class="btn btn-ghost btn-sm" data-rbc-action="delete" data-rbc-custom-id="' + i.id + '">Delete</button></div></div>';
   }).join('');
   box.querySelectorAll('[data-rbc-action]').forEach(function(btn) {
     btn.addEventListener('click', function(evt) {
@@ -2255,6 +2421,17 @@ function selectAllExport(val) {
   var boxes = document.querySelectorAll('#exportModal input[type="checkbox"]');
   for (var i = 0; i < boxes.length; i++) { boxes[i].checked = val; }
 }
+function openEncyclopediaExportModal() {
+  document.getElementById('encExportModal').classList.add('visible');
+}
+function runEncyclopediaExport() {
+  var picked = document.querySelector('input[name="encExportKind"]:checked');
+  var kind = picked ? picked.value : 'current';
+  document.getElementById('encExportModal').classList.remove('visible');
+  if (kind === 'current') exportCurrentSystemPage();
+  else if (kind === 'lesser') exportLesserSystemsPage();
+  else exportEncyclopediaSet(kind);
+}
 
 function buildAllFrequenciesExportPage(keys) {
   keys = keys && keys.length ? keys : ['abo','rh','kell','duffy','kidd','mns','p1pk','lewis','lutheran'];
@@ -2340,31 +2517,23 @@ function buildFullSystemExportPage(key) {
     .replace(/id="rbcMembraneSvg"/g, '')
     .replace(/touch-action:none/g, '');
   var notes = data.lab_notes
-    ? '<div class="system-card notes-card"><div class="card-label">Transfusion Notes</div><div class="note-box">' + exportText(data.lab_notes) + '</div></div>'
+    ? '<div class="note-box">' + exportText(data.lab_notes) + '</div>'
     : '';
-  return '<section class="page system-page">' +
-    '<div class="system-card hero-card" style="border-top-color:' + sys.color + '">' +
-      '<div class="system-head">' +
+  return '<section class="page system-page onepage-system">' +
+    '<div class="onepage-head" style="border-top-color:' + sys.color + '">' +
+      '<div class="system-head compact-head">' +
         '<div class="system-dot" style="background:' + sys.color + '">' + exportText(sys.icon || '') + '</div>' +
         '<div><h1 style="color:' + sys.color + '">' + exportText(sys.name) + '</h1>' +
         '<div class="isbt">' + exportText(sys.isbt || '') + '</div>' +
         '<div class="pun">' + exportText(sys.pun || '') + '</div></div>' +
       '</div>' +
-      '<div class="card-label">History</div><div class="tl">' + history + '</div>' +
-    '</div>' +
-    '<div class="system-card membrane-card" style="border-top-color:' + sys.color + '">' +
-      '<div class="card-label">RBC Membrane Location</div>' +
       '<div class="membrane-print">' + membrane + '</div>' +
     '</div>' +
-    '<div class="system-card" style="border-top-color:' + sys.color + '">' +
-      '<div class="card-label">Study Reference</div>' +
-      '<table class="study-table"><tbody>' + buildExportWsRows(sys, skey) + '</tbody></table>' +
+    '<div class="onepage-grid">' +
+      '<div class="system-card" style="border-top-color:' + sys.color + '"><div class="card-label">History</div><div class="tl">' + history + '</div></div>' +
+      '<div class="system-card" style="border-top-color:' + sys.color + '"><div class="card-label">Study Reference</div><table class="study-table"><tbody>' + buildExportWsRows(sys, skey) + '</tbody></table></div>' +
+      '<div class="system-card" style="border-top-color:' + sys.color + '"><div class="card-label">Antigen Frequencies</div><table class="freq-export"><thead><tr><th>Antigen</th><th>C</th><th>B</th><th>A</th><th>I</th><th>H</th><th>Memo</th><th>Population Different In</th><th>Higher or Lower?</th></tr></thead><tbody>' + buildExportFrequencyRows(skey) + '</tbody></table>' + (notes ? '<div class="card-label">Transfusion Notes</div>' + notes : '') + '</div>' +
     '</div>' +
-    '<div class="system-card freq-card" style="border-top-color:' + sys.color + '">' +
-      '<div class="card-label">Antigen Frequencies</div>' +
-      '<table class="freq-export"><thead><tr><th>Antigen</th><th>C</th><th>B</th><th>A</th><th>I</th><th>H</th><th>Memo</th><th>Population Different In</th><th>Higher or Lower?</th></tr></thead><tbody>' + buildExportFrequencyRows(skey) + '</tbody></table>' +
-    '</div>' +
-    notes +
   '</section>';
 }
 
@@ -2419,8 +2588,8 @@ function buildExportHtml(content, title) {
     '.page{padding:0;page-break-after:always;max-width:10.4in;margin:0 auto}.page:last-child{page-break-after:avoid}' +
     'table{width:100%;border-collapse:collapse;margin-bottom:8px}th{background:#5a0e20;color:#fff;padding:5px 8px;text-align:left;font-size:10px;letter-spacing:.5px}td{padding:5px 8px;border-bottom:1px solid #f7c5d0;vertical-align:top;font-size:11px}td.lbl{font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#7a6468;width:220px}tr:nth-child(even) td{background:#fef4f0}' +
     '.tl{padding-left:12px;border-left:2px solid #f7c5d0}.tl-item{margin-bottom:7px;font-size:11px}.yr{font-weight:700;color:#c0173d;font-size:10px;display:block}' +
-    '.system-page{padding:0;font-size:10px}.system-card{border-top:2.5px solid #5a0e20;border-left:1px solid #f7c5d0;border-right:1px solid #f7c5d0;border-bottom:1px solid #f7c5d0;border-radius:12px;padding:8px 10px;margin:0 0 7px;background:#fffaf7;break-inside:avoid;page-break-inside:avoid}.hero-card{padding-bottom:10px}.system-head{display:flex;gap:10px;align-items:flex-start;margin-bottom:8px}.system-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px;line-height:1;box-shadow:inset 0 2px 5px rgba(0,0,0,.22)}.system-head h1{text-align:left;font-size:25px;line-height:1;margin:0 0 2px;padding:0}.isbt{font-size:10px;letter-spacing:3px;color:#7a6468;text-transform:uppercase}.pun{font-size:12px;color:#c0173d;font-style:italic;font-weight:700;margin-top:4px}.card-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#7a6468;font-weight:700;margin:0 0 7px}.system-page .tl{padding-left:10px}.system-page .tl-item{font-size:10.5px;line-height:1.22;margin-bottom:5px}.system-page .yr{font-size:10px;display:inline-block;width:58px}.compact-export h1{padding:0;margin:0 0 7px}.compact-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.compact-card h1{font-size:13px;text-align:left;padding:0;margin:0 0 5px}.compact-card .tl-item{font-size:9px;line-height:1.16;margin-bottom:3px}.compact-card .yr{display:inline-block;width:45px;font-size:9px}.compact-card .card-label{font-size:8px;margin-bottom:4px}.compact-card .study-table td{font-size:6.8px!important;padding:2px 3px!important}.compact-card .study-table td.lbl{font-size:6.5px!important;width:1.15in!important}' +
-    '.membrane-card{padding-bottom:7px}.membrane-print{height:1.28in;overflow:hidden;margin:-6px 0 0}.membrane-print div{overflow:hidden!important}.membrane-print svg{width:100%!important;min-width:0!important;height:1.28in!important}.membrane-print text{font-size:14px!important}.mini-table td{font-size:9px;padding:3px 6px}.study-table{font-size:8.4px;line-height:1.15}.study-table td{font-size:8.4px;padding:3px 5px}.study-table td.lbl{width:1.55in;font-size:7.8px}.freq-export{font-size:7.5px;line-height:1.08;table-layout:fixed}.freq-export th{font-size:7.4px;padding:3px 4px}.freq-export td{font-size:7.4px;padding:3px 4px}.freq-export th:nth-child(1){width:.72in}.freq-export th:nth-child(2),.freq-export th:nth-child(3),.freq-export th:nth-child(4),.freq-export th:nth-child(5),.freq-export th:nth-child(6){width:.28in}.freq-export th:nth-child(7){width:.6in}.freq-export .center{text-align:center}.freq-export .memo{background:#dce6f4}.note-box{font-size:9px;line-height:1.22;padding:7px;background:#fff;border-left:3px solid #f7c5d0}.muted{color:#9a8588}.map-page{max-width:10.4in}.map-print{height:6.8in;overflow:hidden;display:flex;align-items:center;justify-content:center}.map-print svg{width:10.8in!important;max-width:none!important;min-width:0!important;height:auto!important}.map-print div{overflow:visible!important}svg{max-width:100%;height:auto}' +
+    '.system-page{padding:0;font-size:9px}.system-card{border-top:2.5px solid #5a0e20;border-left:1px solid #f7c5d0;border-right:1px solid #f7c5d0;border-bottom:1px solid #f7c5d0;border-radius:10px;padding:6px 8px;margin:0;background:#fffaf7;break-inside:avoid;page-break-inside:avoid}.hero-card{padding-bottom:10px}.system-head{display:flex;gap:8px;align-items:flex-start;margin-bottom:5px}.system-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;line-height:1;box-shadow:inset 0 2px 5px rgba(0,0,0,.22)}.system-head h1{text-align:left;font-size:20px;line-height:1;margin:0 0 2px;padding:0}.isbt{font-size:8px;letter-spacing:2px;color:#7a6468;text-transform:uppercase}.pun{font-size:9px;color:#c0173d;font-style:italic;font-weight:700;margin-top:2px}.card-label{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#7a6468;font-weight:700;margin:0 0 4px}.system-page .tl{padding-left:8px}.system-page .tl-item{font-size:8.4px;line-height:1.13;margin-bottom:3px}.system-page .yr{font-size:8px;display:inline-block;width:45px}.onepage-system{height:7.9in;overflow:hidden}.onepage-head{border-top:2.5px solid #5a0e20;border-left:1px solid #f7c5d0;border-right:1px solid #f7c5d0;border-bottom:1px solid #f7c5d0;border-radius:10px;background:#fffaf7;padding:5px 8px;margin-bottom:5px}.compact-head{align-items:center;margin-bottom:0}.onepage-grid{display:grid;grid-template-columns:1.05fr 1.45fr 1.5fr;gap:5px;align-items:start}.compact-export h1{padding:0;margin:0 0 7px}.compact-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.compact-card h1{font-size:13px;text-align:left;padding:0;margin:0 0 5px}.compact-card .tl-item{font-size:9px;line-height:1.16;margin-bottom:3px}.compact-card .yr{display:inline-block;width:45px;font-size:9px}.compact-card .card-label{font-size:8px;margin-bottom:4px}.compact-card .study-table td{font-size:6.8px!important;padding:2px 3px!important}.compact-card .study-table td.lbl{font-size:6.5px!important;width:1.15in!important}' +
+    '.membrane-card{padding-bottom:7px}.membrane-print{height:1.18in;overflow:hidden;margin:-4px 0 0}.membrane-print div{overflow:hidden!important}.membrane-print svg{width:100%!important;min-width:0!important;height:1.18in!important}.membrane-print text{font-size:14px!important}.mini-table td{font-size:8px;padding:2px 4px}.study-table{font-size:6.8px;line-height:1.08}.study-table td{font-size:6.8px;padding:2px 3px}.study-table td.lbl{width:1.15in;font-size:6.3px}.freq-export{font-size:6.2px;line-height:1.02;table-layout:fixed}.freq-export th{font-size:5.8px;padding:2px 2px}.freq-export td{font-size:5.8px;padding:2px 2px}.freq-export th:nth-child(1){width:.52in}.freq-export th:nth-child(2),.freq-export th:nth-child(3),.freq-export th:nth-child(4),.freq-export th:nth-child(5),.freq-export th:nth-child(6){width:.2in}.freq-export th:nth-child(7){width:.4in}.freq-export .center{text-align:center}.freq-export .memo{background:#dce6f4}.note-box{font-size:6.6px;line-height:1.1;padding:4px;background:#fff;border-left:3px solid #f7c5d0}.muted{color:#9a8588}.map-page{max-width:10.4in}.map-print{height:6.8in;overflow:hidden;display:flex;align-items:center;justify-content:center}.map-print svg{width:10.8in!important;max-width:none!important;min-width:0!important;height:auto!important}.map-print div{overflow:visible!important}svg{max-width:100%;height:auto}' +
     '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style></head><body>' + content + '</body></html>';
 }
 
@@ -2697,6 +2866,160 @@ function defaultXmCases() {
     },
   ];
 }
+
+var calcScenarioIndex = 0;
+var calcReveal = 0;
+const CALC_POP_LABELS = {c:'C', b:'B', a:'A', i:'I', h:'H'};
+const CALC_POP_FULL = {c:'Caucasian', b:'Black', a:'Asian', i:'Indian', h:'Hispanic'};
+const CALC_FREQ_FALLBACK = {
+  K:{c:9,b:2,a:0,i:2,h:2},
+  E:{c:29,b:22,a:39,i:30,h:30},
+  C:{c:68,b:27,a:93,i:86,h:70},
+  Fya:{c:66,b:10,a:99,i:87,h:55},
+  Fyb:{c:83,b:23,a:18,i:49,h:65},
+  Jka:{c:77,b:92,a:73,i:81,h:77},
+  Jkb:{c:74,b:49,a:76,i:67,h:72},
+  S:{c:55,b:31,a:12,i:32,h:45},
+  s:{c:89,b:93,a:99,i:92,h:90},
+  Lua:{c:8,b:2,a:1,i:2,h:5},
+  M:{c:78,b:74,a:88,i:78,h:78},
+  N:{c:72,b:75,a:60,i:72,h:72}
+};
+const CALC_SCENARIOS = [
+  {name:'Case 1', patient:'A+', antibodies:['anti-K'], units:2, pop:'c', aboRh:1, note:'Inventory already filtered to A/O Rh-compatible units.'},
+  {name:'Case 2', patient:'O-', antibodies:['anti-E'], units:1, pop:'b', aboRh:.07, note:'Pulling from mixed donor inventory; only a small fraction is O negative compatible.'},
+  {name:'Case 3', patient:'B+', antibodies:['anti-Jka','anti-Fya'], units:3, pop:'c', aboRh:.14, note:'Two antibodies. Multiply both antigen-negative decimals.'},
+  {name:'Case 4', patient:'A-', antibodies:['anti-C','anti-K'], units:2, pop:'a', aboRh:.06, note:'Asian donor population practice using C/B/A/I/H column A.'},
+  {name:'Case 5', patient:'O+', antibodies:['anti-S','anti-E','anti-K'], units:1, pop:'h', aboRh:.38, note:'Three antibodies. Keep the requested unit count on top.'}
+];
+
+function startCalcSim() {
+  document.getElementById('aboContent').style.display = 'none';
+  document.getElementById('xmContent').style.display  = 'none';
+  document.getElementById('calcContent').style.display = 'block';
+  document.getElementById('aboSimBtn').className = 'btn btn-ghost';
+  document.getElementById('xmSimBtn').className  = 'btn btn-ghost';
+  document.getElementById('calcSimBtn').className = 'btn btn-primary';
+  renderCalcSim();
+}
+
+function cleanCalcAg(value) {
+  return String(value || '').replace(/^anti[-\s]*/i,'').replace(/[^A-Za-z0-9]/g,'').toLowerCase();
+}
+
+function parsePct(value) {
+  var txt = String(value || '').trim();
+  if (!txt) return null;
+  if (/^</.test(txt)) return .5;
+  var m = txt.match(/-?\d+(\.\d+)?/);
+  return m ? Number(m[0]) : null;
+}
+
+function getCalcFreqRow(antigen) {
+  var target = cleanCalcAg(antigen);
+  var keys = ['abo','rh','kell','duffy','kidd','mns','p1pk','lewis','lutheran'];
+  for (var k = 0; k < keys.length; k++) {
+    var sys = SYSTEMS[keys[k]];
+    var rows = getFreqRows(sys.notes_key);
+    for (var i = 0; i < rows.length; i++) {
+      if (cleanCalcAg(rows[i].ag) === target) return rows[i];
+    }
+  }
+  return null;
+}
+
+function getCalcPositivePct(antigen, pop) {
+  var row = getCalcFreqRow(antigen);
+  var pct = row ? parsePct(row[pop]) : null;
+  if (pct === null && CALC_FREQ_FALLBACK[antigen]) pct = CALC_FREQ_FALLBACK[antigen][pop];
+  return pct === null || typeof pct === 'undefined' ? 0 : pct;
+}
+
+function calcScenarioMath(sc) {
+  var factors = [{label:'ABO/Rh compatible', decimal:sc.aboRh || 1, detail:'given in scenario'}];
+  sc.antibodies.forEach(function(ab) {
+    var antigen = ab.replace(/^anti[-\s]*/i,'');
+    var positive = getCalcPositivePct(antigen, sc.pop);
+    var negative = Math.max(0, Math.min(1, (100 - positive) / 100));
+    factors.push({label:antigen + ' negative', decimal:negative, detail:'1 - ' + (positive/100).toFixed(2) + ' = ' + negative.toFixed(2)});
+  });
+  var denom = factors.reduce(function(product, f){ return product * f.decimal; }, 1);
+  var raw = denom > 0 ? sc.units / denom : 0;
+  return {factors:factors, denom:denom, raw:raw, pull:Math.ceil(raw)};
+}
+
+function setCalcScenario(index) {
+  calcScenarioIndex = index;
+  calcReveal = 0;
+  renderCalcSim();
+}
+
+function revealCalc(level) {
+  calcReveal = level;
+  renderCalcSim();
+}
+
+function buildCalcReferenceRows() {
+  var keys = ['abo','rh','kell','duffy','kidd','mns','p1pk','lewis','lutheran'];
+  var html = '';
+  keys.forEach(function(key) {
+    var sys = SYSTEMS[key];
+    getFreqRows(sys.notes_key).forEach(function(row) {
+      var ag = row.ag || '';
+      var fallback = CALC_FREQ_FALLBACK[ag] || null;
+      var vals = ['c','b','a','i','h'].map(function(col) {
+        var pct = parsePct(row[col]);
+        if (pct === null && fallback) pct = fallback[col];
+        return pct === null || typeof pct === 'undefined' ? '' : pct;
+      });
+      if (!ag || vals.every(function(v){ return v === ''; })) return;
+      html += '<tr><td>' + escText(sys.name.replace(' System','')) + '</td><td>' + escText(ag) + '</td>' +
+        vals.map(function(v){ return '<td>' + escText(v) + '</td>'; }).join('') + '</tr>';
+    });
+  });
+  return html || '<tr><td colspan="7">Add C/B/A/I/H frequencies in the encyclopedia frequency tables.</td></tr>';
+}
+
+function renderCalcSim() {
+  var area = document.getElementById('calcContent');
+  if (!area) return;
+  var sc = CALC_SCENARIOS[calcScenarioIndex] || CALC_SCENARIOS[0];
+  var math = calcScenarioMath(sc);
+  var caseBtns = CALC_SCENARIOS.map(function(item, i) {
+    return '<button class="calc-case-btn ' + (i === calcScenarioIndex ? 'active' : '') + '" onclick="setCalcScenario(' + i + ')">' +
+      '<div>' + item.name + '</div><small>' + escText(item.patient) + ' - ' + escText(item.antibodies.join(', ')) + '</small></button>';
+  }).join('');
+  var setup = '';
+  if (calcReveal >= 1) {
+    setup = '<div class="calc-equation"><div class="calc-frac"><span>' + sc.units + ' unit' + (sc.units === 1 ? '' : 's') + ' required</span><span>' + math.factors.map(function(f){ return f.decimal.toFixed(2); }).join(' x ') + '</span></div></div>' +
+      '<div class="calc-step-list">' + math.factors.map(function(f) {
+        return '<div class="calc-step"><strong>' + escText(f.label) + ':</strong> ' + escText(f.detail) + ' (' + f.decimal.toFixed(2) + ')</div>';
+      }).join('') + '</div>';
+  }
+  var answer = calcReveal >= 2
+    ? '<div class="calc-answer">' + sc.units + ' / ' + math.denom.toFixed(3) + ' = ' + math.raw.toFixed(1) + '. Pull ' + math.pull + ' unit' + (math.pull === 1 ? '' : 's') + ' to screen.</div>'
+    : '';
+  area.innerHTML = '<div class="calc-panel">' +
+    '<div class="calc-case-strip">' + caseBtns + '</div>' +
+    '<div class="sys-card" style="padding:16px;border-top:3px solid var(--crimson)">' +
+      '<div class="sec-label">Units to Screen Practice</div>' +
+      '<h3 style="color:var(--wine);margin-bottom:6px">' + escText(sc.name) + ': ' + escText(sc.patient) + ' patient</h3>' +
+      '<p style="font-size:13px;color:var(--warm-grey);margin-bottom:8px">Antibody screen: <strong>' + escText(sc.antibodies.join(', ')) + '</strong>. Needs <strong>' + sc.units + '</strong> compatible RBC unit' + (sc.units === 1 ? '' : 's') + '. Donor population column: <strong>' + escText(CALC_POP_LABELS[sc.pop]) + '</strong> (' + escText(CALC_POP_FULL[sc.pop]) + ').</p>' +
+      '<div class="phase-instr" style="margin-bottom:10px">' + escText(sc.note) + '</div>' +
+      '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px 0">' +
+        '<button class="btn btn-ghost" onclick="revealCalc(1)">Show setup</button>' +
+        '<button class="btn btn-primary" onclick="revealCalc(2)">Show answer</button>' +
+        '<button class="btn btn-ghost" onclick="revealCalc(0)">Hide answer</button>' +
+      '</div>' +
+      setup + answer +
+    '</div>' +
+    '<div class="sys-card" style="padding:16px">' +
+      '<div class="sec-label">Reference Frequencies: C / B / A / I / H Only</div>' +
+      '<div style="overflow:auto;max-height:280px"><table class="calc-ref-table"><thead><tr><th>System</th><th>Antigen</th><th>C</th><th>B</th><th>A</th><th>I</th><th>H</th></tr></thead><tbody>' + buildCalcReferenceRows() + '</tbody></table></div>' +
+    '</div>' +
+  '</div>';
+}
+
 function initXmatch() {
   xmTotal = 0;
   startABOsim();  // Start with ABO typing
@@ -2704,15 +3027,19 @@ function initXmatch() {
 function startABOsim() {
   document.getElementById('aboContent').style.display = 'block';
   document.getElementById('xmContent').style.display  = 'none';
+  document.getElementById('calcContent').style.display = 'none';
   document.getElementById('aboSimBtn').className = 'btn btn-primary';
   document.getElementById('xmSimBtn').className  = 'btn btn-ghost';
+  document.getElementById('calcSimBtn').className = 'btn btn-ghost';
   renderABOsim();
 }
 function startXMsim() {
   document.getElementById('aboContent').style.display = 'none';
   document.getElementById('xmContent').style.display  = 'block';
+  document.getElementById('calcContent').style.display = 'none';
   document.getElementById('xmSimBtn').className  = 'btn btn-primary';
   document.getElementById('aboSimBtn').className = 'btn btn-ghost';
+  document.getElementById('calcSimBtn').className = 'btn btn-ghost';
   if (!xmCurrent) nextXm();
   else renderXm();
 }
