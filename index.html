@@ -469,6 +469,7 @@
     let hubUrls = Object.assign({}, defaultHubUrls);
     let isAdmin = false;
     let hubDoc = null;
+    let syncPresence = null;
 
     async function hashText(text) {
       const bytes = new TextEncoder().encode(text);
@@ -478,6 +479,7 @@
 
     function setAdmin(open) {
       isAdmin = open;
+      if (syncPresence) syncPresence.setAdminMode(open);
       document.body.classList.toggle('admin-open', open);
       document.getElementById('adminBtn').textContent = open ? 'Lock Admin' : 'Admin';
       document.getElementById('adminBadge').classList.toggle('visible', open);
@@ -575,6 +577,16 @@
         hubUrls = normalizeHubUrls(remote);
         applyHubUrls();
         hubDoc.subscribe();
+        if (window.createSafeSupabasePresence) {
+          syncPresence = createSafeSupabasePresence({
+            url: SUPABASE_URL,
+            key: SUPABASE_KEY,
+            hubId: 'index',
+            hubName: 'Hub Index',
+            getSection: () => 'hub URLs',
+            toast: (msg, isError) => { if (isError) console.warn(msg); }
+          });
+        }
       } catch (err) {
         console.warn('Index URL load failed:', err);
         hubUrls = normalizeHubUrls(defaultHubUrls);
@@ -614,7 +626,7 @@
       hubUrls = normalizeHubUrls(urls);
       applyHubUrls();
       try {
-        if (hubDoc) await hubDoc.saveNow();
+        if (hubDoc) await hubDoc.saveNow({ reason: 'manual' });
       } catch (err) {
         alert('Supabase save failed: ' + err.message);
       }
@@ -625,7 +637,7 @@
       hubUrls = normalizeHubUrls(defaultHubUrls);
       applyHubUrls();
       try {
-        if (hubDoc) await hubDoc.saveNow();
+        if (hubDoc) await hubDoc.saveNow({ reason: 'manual' });
       } catch (err) {
         alert('Supabase save failed: ' + err.message);
       }
@@ -639,7 +651,7 @@
         urls[key] = cleanHubUrl(key, input.value);
       });
       hubUrls = normalizeHubUrls(urls);
-      if (hubDoc) hubDoc.scheduleSave(800);
+      if (hubDoc) hubDoc.scheduleSave(1600, 'auto');
     });
 
     applyHubUrls();

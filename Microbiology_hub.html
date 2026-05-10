@@ -192,6 +192,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   var saveTimer=null;
 	  var saveInFlight=null;
 	  var safeDoc=null;
+  var syncPresence=null;
   var state=defaultState();
   var EXPORT_ITEMS=[
     ['overview_core','Big Picture'],
@@ -375,17 +376,16 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     });
   }
   function saveDraft(){collectVisibleState();touchState();saveLocal();if(isAdmin)scheduleSave()}
-  function scheduleSave(){clearTimeout(saveTimer);saveTimer=setTimeout(saveNow,650)}
-  async function saveNow(){
+  function scheduleSave(){clearTimeout(saveTimer);saveTimer=setTimeout(function(){saveNow('auto')},1600)}
+  async function saveNow(reason){
     if(!isAdmin){showToast('Unlock admin first',true);return false}
     clearTimeout(saveTimer);
     collectVisibleState();touchState();
-    await compressStateImages();
     if(saveInFlight)await saveInFlight;
-	    saveInFlight=(safeDoc?safeDoc.saveNow():Promise.resolve(false)).finally(function(){saveInFlight=null});
+	    saveInFlight=(safeDoc?safeDoc.saveNow({reason:reason||'auto'}):Promise.resolve(false)).finally(function(){saveInFlight=null});
 	    return saveInFlight;
 	  }
-	  async function flushSave(){clearTimeout(saveTimer);return saveNow()}
+	  async function flushSave(reason){clearTimeout(saveTimer);return saveNow(reason||'auto')}
 	  async function loadRemote(){
 	    state=defaultState();
 	    renderAll();
@@ -394,6 +394,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
 	      await safeDoc.load();
 	      safeDoc.subscribe();
 	    }catch(e){console.warn('remote load failed',e)}
+	    if(window.createSafeSupabasePresence)syncPresence=createSafeSupabasePresence({url:SUPABASE_URL,key:SUPABASE_KEY,hubId:'microbiology',hubName:'Microbiology',getSection:function(){var active=document.querySelector('.section.active');return active?active.id:'microbiology'},toast:showToast});
 	  }
   function tableTools(id){return '<button class="mini-btn" data-action="add-row" data-table="'+id+'">Add Row</button><button class="mini-btn" data-action="add-col" data-table="'+id+'">Add Column</button><button class="mini-btn" data-action="add-img-col" data-table="'+id+'">Add Image Column</button>'}
   function addColumn(table,type){var col={id:uid('col'),label:type==='image'?'Image':'',type:type};table.columns.push(col);table.rows.forEach(function(row){if(!row.cells)row.cells={};row.cells[col.id]=''})}
@@ -616,18 +617,19 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   window.exitAdmin=async function(){
     if(!isAdmin)return;
     showToast('Saving...');
-    var saved=await flushSave().catch(function(e){console.warn(e);return false});
+    var saved=await flushSave('admin_exit').catch(function(e){console.warn(e);return false});
     if(!saved){showToast('Online save failed. Still in Admin.',true);return}
     isAdmin=false;
+    if(syncPresence)syncPresence.setAdminMode(false);
     editMode=false;
     document.getElementById('adminBadge').classList.remove('visible');
     setEditMode(false);
     showToast('Exited Admin');
   };
   window.toggleAdminLogin=function(){if(isAdmin){exitAdmin();return}document.getElementById('adminModal').classList.add('visible');setTimeout(function(){document.getElementById('adminPwInput').focus()},80)};
-  window.attemptLogin=async function(){var h=await hashString(document.getElementById('adminPwInput').value);if(h===PASS_HASH){isAdmin=true;document.getElementById('adminBadge').classList.add('visible');closeModal();setEditMode(true);showToast('Unlocked')}else{document.getElementById('adminErr').textContent='Incorrect password.';document.getElementById('adminPwInput').value=''}};
+  window.attemptLogin=async function(){var h=await hashString(document.getElementById('adminPwInput').value);if(h===PASS_HASH){isAdmin=true;if(syncPresence)syncPresence.setAdminMode(true);document.getElementById('adminBadge').classList.add('visible');closeModal();setEditMode(true);showToast('Unlocked')}else{document.getElementById('adminErr').textContent='Incorrect password.';document.getElementById('adminPwInput').value=''}};
   window.closeModal=function(){document.getElementById('adminModal').classList.remove('visible');document.getElementById('adminErr').textContent='';document.getElementById('adminPwInput').value=''};
-  window.showSection=function(id){document.querySelectorAll('.section').forEach(function(sec){sec.classList.toggle('active',sec.id===id)});document.querySelectorAll('.nav-tab').forEach(function(tab){tab.classList.toggle('active',tab.dataset.section===id)})};
+  window.showSection=function(id){document.querySelectorAll('.section').forEach(function(sec){sec.classList.toggle('active',sec.id===id)});document.querySelectorAll('.nav-tab').forEach(function(tab){tab.classList.toggle('active',tab.dataset.section===id)});if(syncPresence)syncPresence.setSection(id)};
   document.addEventListener('click',function(e){
     var ui=e.target.closest('[data-ui-action]');
     if(ui){var a=ui.dataset.uiAction;if(a==='open-export')openExportModal();if(a==='close-export')closeExportModal();if(a==='close-zoom')closeImageZoom();if(a==='export-select-all')selectAllExport(true);if(a==='export-clear-all')selectAllExport(false);if(a==='do-export')doExport();if(a==='admin-login')toggleAdminLogin();if(a==='exit-admin')exitAdmin();if(a==='admin-unlock')attemptLogin();if(a==='close-admin')closeModal();return}
@@ -705,11 +707,11 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   function findSpeciesById(id){var found=null;state.charts.some(function(chart){ensureChartSpecies(chart).species.some(function(sp){if(sp.id===id){found=sp;return true}return false});return !!found});return found}
   function openSpeciesZoom(speciesId,kind){var sp=findSpeciesById(speciesId);var src=sp&&sp[kind];if(!src)return;document.getElementById('imageZoomImg').src=src;document.getElementById('imageZoomCaption').textContent=(sp.name||'Species')+(kind==='gramImage'?' Gram stain':' plate');document.getElementById('imageZoomModal').classList.add('visible')}
   function closeImageZoom(){document.getElementById('imageZoomModal').classList.remove('visible');document.getElementById('imageZoomImg').removeAttribute('src')}
-  function exportSingleChart(chart){collectVisibleState();saveLocal();if(isAdmin&&safeDoc)safeDoc.saveNow().catch(function(e){console.warn(e)});var picked=activeEndpointKeys(chart,speciesPaths(chart));if(!picked.length){showToast('Choose at least one species',true);return}var area=document.getElementById('printArea');area.innerHTML='<div class="print-page"><h1 class="print-section-title">'+escapeHtml(chart.title||'Species Flow')+'</h1>'+chartPrintHtml(chart)+'</div>';document.body.classList.add('printing');showToast('Opening selected flow export');window.print();setTimeout(function(){document.body.classList.remove('printing');area.innerHTML=''},1200)}
+  function exportSingleChart(chart){collectVisibleState();saveLocal();if(isAdmin&&safeDoc)safeDoc.saveNow({reason:'manual'}).catch(function(e){console.warn(e)});var picked=activeEndpointKeys(chart,speciesPaths(chart));if(!picked.length){showToast('Choose at least one species',true);return}var area=document.getElementById('printArea');area.innerHTML='<div class="print-page"><h1 class="print-section-title">'+escapeHtml(chart.title||'Species Flow')+'</h1>'+chartPrintHtml(chart)+'</div>';document.body.classList.add('printing');showToast('Opening selected flow export');window.print();setTimeout(function(){document.body.classList.remove('printing');area.innerHTML=''},1200)}
   window.openExportModal=function(){renderExportOptions();document.getElementById('exportModal').classList.add('visible')};
   window.closeExportModal=function(){document.getElementById('exportModal').classList.remove('visible')};
   window.selectAllExport=function(on){document.querySelectorAll('#exportModal .export-check').forEach(function(box){box.checked=!!on})};
-  window.doExport=function(){collectVisibleState();saveLocal();if(isAdmin&&safeDoc)safeDoc.saveNow().catch(function(e){console.warn(e)});var selected=Array.from(document.querySelectorAll('#exportModal .export-check:checked')).map(function(box){return box.value});if(!selected.length){showToast('Choose at least one section',true);return}closeExportModal();var html='';selected.forEach(function(id){if(state.tables[id])html+='<div class="print-page"><h1 class="print-section-title">'+escapeHtml(state.tables[id].title||id)+'</h1>'+tablePrintHtml(id)+'</div>'});var area=document.getElementById('printArea');area.innerHTML=html;document.body.classList.add('printing');showToast('Opening PDF export');window.print();setTimeout(function(){document.body.classList.remove('printing');area.innerHTML=''},1200)};
+  window.doExport=function(){collectVisibleState();saveLocal();if(isAdmin&&safeDoc)safeDoc.saveNow({reason:'manual'}).catch(function(e){console.warn(e)});var selected=Array.from(document.querySelectorAll('#exportModal .export-check:checked')).map(function(box){return box.value});if(!selected.length){showToast('Choose at least one section',true);return}closeExportModal();var html='';selected.forEach(function(id){if(state.tables[id])html+='<div class="print-page"><h1 class="print-section-title">'+escapeHtml(state.tables[id].title||id)+'</h1>'+tablePrintHtml(id)+'</div>'});var area=document.getElementById('printArea');area.innerHTML=html;document.body.classList.add('printing');showToast('Opening PDF export');window.print();setTimeout(function(){document.body.classList.remove('printing');area.innerHTML=''},1200)};
   window.addEventListener('afterprint',function(){document.body.classList.remove('printing');document.getElementById('printArea').innerHTML=''});
   window.addEventListener('beforeunload',function(){collectVisibleState();saveLocal()});
   window.addEventListener('load',function(){setTimeout(function(){var left=document.getElementById('doorLeft');var right=document.getElementById('doorRight');if(left)left.classList.add('open');if(right)right.classList.add('open');setTimeout(function(){var intro=document.getElementById('intro');document.body.classList.remove('intro-active');if(intro){intro.style.opacity='0';intro.style.transition='opacity .5s';setTimeout(function(){intro.style.display='none'},500)}},1100)},1500)});

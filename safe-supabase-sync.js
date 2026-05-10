@@ -149,7 +149,7 @@
       if (options.setLocal) options.setLocal(clone(data), { source:source, id:id, version:doc.version });
     }
 
-    function rpcSave(data, expectedVersion) {
+    function rpcSave(data, expectedVersion, reason) {
       return fetchJson(url + '/rest/v1/rpc/mls_safe_save_doc', {
         method:'POST',
         headers:headers,
@@ -157,7 +157,8 @@
           p_id:id,
           p_data:data,
           p_expected_version:expectedVersion,
-          p_client_id:window.MLS_SAFE_SYNC_CLIENT_ID
+          p_client_id:window.MLS_SAFE_SYNC_CLIENT_ID,
+          p_save_reason:reason || 'auto'
         })
       }).then(function(result) {
         return Array.isArray(result) ? result[0] : result;
@@ -178,8 +179,8 @@
       return diffPaths(doc.baseData, data).filter(function(path) { return !skipPath(path); });
     }
 
-    function saveAttempt(data, expectedVersion, applyAfterSave) {
-      return rpcSave(data, expectedVersion).then(function(result) {
+    function saveAttempt(data, expectedVersion, applyAfterSave, reason) {
+      return rpcSave(data, expectedVersion, reason).then(function(result) {
         if (!result) throw new Error('Empty save response');
         if (result.status === 'saved') return markSaved(data, result, applyAfterSave);
         if (result.status !== 'conflict') throw new Error(result.message || 'Unexpected save response');
@@ -194,7 +195,7 @@
         }
         doc.version = Number(result.version || doc.version || 0);
         doc.baseData = remote;
-        return saveAttempt(merged.data, doc.version, true);
+        return saveAttempt(merged.data, doc.version, true, reason);
       });
     }
 
@@ -230,17 +231,24 @@
       });
     };
 
-    doc.saveNow = function() {
+    function saveReason(options) {
+      if (typeof options === 'string') return options || 'auto';
+      if (options && typeof options === 'object' && options.reason) return options.reason;
+      return 'auto';
+    }
+
+    doc.saveNow = function(options) {
+      var reason = saveReason(options);
       clearTimeout(doc.saveTimer);
       if (doc.blocked) {
         toast('Conflict still needs review. Save blocked so no one loses work.', true);
         return Promise.resolve(false);
       }
-      if (doc.saveInFlight) return doc.saveInFlight.then(function(){ return doc.saveNow(); });
+      if (doc.saveInFlight) return doc.saveInFlight.then(function(){ return doc.saveNow(reason); });
       var data = localData();
       var dirty = dirtyAgainstBase(data);
       if (!dirty.length) return Promise.resolve(true);
-      doc.saveInFlight = saveAttempt(data, doc.version, false).catch(function(error) {
+      doc.saveInFlight = saveAttempt(data, doc.version, false, reason).catch(function(error) {
         console.error('Safe Supabase save failed for ' + id + ':', error);
         toast('Supabase save failed: ' + error.message, true);
         return false;
@@ -250,9 +258,9 @@
       return doc.saveInFlight;
     };
 
-    doc.scheduleSave = function(delay) {
+    doc.scheduleSave = function(delay, reason) {
       clearTimeout(doc.saveTimer);
-      doc.saveTimer = setTimeout(function(){ doc.saveNow(); }, delay || 700);
+      doc.saveTimer = setTimeout(function(){ doc.saveNow({ reason:reason || 'auto' }); }, delay || 1600);
     };
 
     doc.handleRemote = function(row) {
@@ -312,6 +320,226 @@
     return doc;
   }
 
+  function sharedClient(url, key) {
+    var cleanedUrl = url.replace(/\/$/, '');
+    if (!window.supabase || !window.supabase.createClient) return null;
+    window.MLS_SAFE_SYNC_SUPABASE = window.MLS_SAFE_SYNC_SUPABASE || window.supabase.createClient(cleanedUrl, key, {
+      auth:{ persistSession:false, autoRefreshToken:false, detectSessionInUrl:false }
+    });
+    return window.MLS_SAFE_SYNC_SUPABASE;
+  }
+
+  function makePresence(options) {
+    var url = options.url.replace(/\/$/, '');
+    var key = options.key;
+    var hubId = options.hubId || 'hub';
+    var hubName = options.hubName || hubId;
+    var state = {
+      clientId:window.MLS_SAFE_SYNC_CLIENT_ID,
+      hubId:hubId,
+      hubName:hubName,
+      joinedAt:Date.now(),
+      isAdmin:false,
+      section:'',
+      field:'',
+      at:Date.now()
+    };
+    var client = sharedClient(url, key);
+    var channel = null;
+    var indicator = null;
+    var trackTimer = null;
+    var subscribed = false;
+    var lastPayload = '';
+
+    function toast(message, isError) {
+      if (options.toast) options.toast(message, !!isError);
+    }
+
+    function currentSection() {
+      if (options.getSection) {
+        try { return options.getSection() || state.section || ''; } catch(e) {}
+      }
+      return state.section || '';
+    }
+
+    function describeElement(el) {
+      if (!el || !el.closest) return '';
+      var labeled = el.closest('[aria-label],[placeholder],[data-section],[data-table],[data-field],[data-action],[data-ui-action]');
+      var parts = [];
+      if (labeled) {
+        var ds = labeled.dataset || {};
+        if (ds.section) parts.push(ds.section);
+        if (ds.table) parts.push(ds.table);
+        if (ds.field) parts.push(ds.field);
+        if (ds.action) parts.push(ds.action);
+        if (ds.uiAction) parts.push(ds.uiAction);
+        if (labeled.getAttribute('aria-label')) parts.push(labeled.getAttribute('aria-label'));
+        if (labeled.getAttribute('placeholder')) parts.push(labeled.getAttribute('placeholder'));
+      }
+      if (!parts.length && el.name) parts.push(el.name);
+      if (!parts.length && el.id) parts.push(el.id);
+      return parts.join(' / ').slice(0, 90);
+    }
+
+    function ensureIndicator() {
+      if (indicator) return indicator;
+      indicator = document.createElement('div');
+      indicator.className = 'safe-sync-presence';
+      indicator.setAttribute('aria-live', 'polite');
+      indicator.style.cssText = [
+        'position:fixed',
+        'left:16px',
+        'bottom:16px',
+        'z-index:2147483000',
+        'max-width:360px',
+        'padding:10px 12px',
+        'border:1px solid rgba(192,23,61,.22)',
+        'border-radius:12px',
+        'background:rgba(255,255,255,.96)',
+        'box-shadow:0 12px 30px rgba(90,20,40,.14)',
+        'color:#6b1028',
+        'font:700 13px/1.35 Georgia,serif',
+        'display:none'
+      ].join(';');
+      document.body.appendChild(indicator);
+      return indicator;
+    }
+
+    function flattenPresence() {
+      if (!channel || !channel.presenceState) return [];
+      var raw = channel.presenceState() || {};
+      var byClient = {};
+      Object.keys(raw).forEach(function(keyName) {
+        (raw[keyName] || []).forEach(function(item) {
+          if (!item || item.hubId !== hubId || !item.clientId) return;
+          var existing = byClient[item.clientId];
+          if (!existing || Number(item.at || 0) >= Number(existing.at || 0)) byClient[item.clientId] = item;
+        });
+      });
+      return Object.keys(byClient).map(function(clientId){ return byClient[clientId]; }).sort(function(a, b) {
+        var aj = Number(a.joinedAt || 0);
+        var bj = Number(b.joinedAt || 0);
+        if (aj !== bj) return aj - bj;
+        return String(a.clientId).localeCompare(String(b.clientId));
+      }).map(function(item, index) {
+        var copy = clone(item);
+        copy.adminName = 'Admin ' + (index + 1);
+        return copy;
+      });
+    }
+
+    function render() {
+      var box = ensureIndicator();
+      var list = flattenPresence();
+      var mine = list.filter(function(item){ return item.clientId === state.clientId; })[0];
+      var others = list.filter(function(item){ return item.clientId !== state.clientId; });
+      var editing = others.filter(function(item){ return !!item.isAdmin; });
+      var online = others.filter(function(item){ return !item.isAdmin; });
+      if (!state.isAdmin && !editing.length) {
+        box.style.display = 'none';
+        return;
+      }
+      var title = editing.length === 1 ? (editing[0].adminName + ' is editing') : (editing.length > 1 ? (editing.length + ' admins are editing') : ('You are ' + ((mine && mine.adminName) || 'Admin 1')));
+      var lines = [];
+      editing.forEach(function(item) {
+        var where = item.section || item.hubName || '';
+        var field = item.field ? ' · ' + item.field : '';
+        lines.push(item.adminName + ': ' + where + field);
+      });
+      online.forEach(function(item) {
+        lines.push(item.adminName + ' online');
+      });
+      box.innerHTML = '<div style="font-size:14px;margin-bottom:3px">' + title + '</div>' +
+        (lines.length ? '<div style="font-weight:600;color:#8a6570">' + lines.map(function(line){ return line.replace(/[&<>"']/g, function(ch){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]; }); }).join('<br>') + '</div>' : '');
+      box.style.display = 'block';
+    }
+
+    function payload() {
+      state.section = currentSection();
+      state.at = Date.now();
+      return clone(state);
+    }
+
+    function trackNow() {
+      if (!channel || !subscribed) return;
+      var next = payload();
+      var packed = stable(next);
+      if (packed === lastPayload) {
+        render();
+        return;
+      }
+      lastPayload = packed;
+      channel.track(next).then(render).catch(function(error) {
+        console.warn('Presence update failed:', error);
+      });
+    }
+
+    function scheduleTrack(delay) {
+      clearTimeout(trackTimer);
+      trackTimer = setTimeout(trackNow, delay || 600);
+    }
+
+    function subscribe() {
+      if (!client) {
+        toast('Realtime presence unavailable: Supabase JS did not load.', true);
+        return null;
+      }
+      channel = client.channel('safe-presence-' + hubId, { config:{ presence:{ key:state.clientId } } })
+        .on('presence', { event:'sync' }, render)
+        .on('presence', { event:'join' }, render)
+        .on('presence', { event:'leave' }, render)
+        .subscribe(function(status) {
+          if (status === 'SUBSCRIBED') {
+            subscribed = true;
+            trackNow();
+          }
+          if (status === 'CHANNEL_ERROR') toast('Realtime admin presence connection failed.', true);
+        });
+      return channel;
+    }
+
+    document.addEventListener('focusin', function(event) {
+      if (!state.isAdmin) return;
+      state.field = describeElement(event.target);
+      scheduleTrack(250);
+    });
+    document.addEventListener('input', function(event) {
+      if (!state.isAdmin) return;
+      state.field = describeElement(event.target);
+      scheduleTrack(900);
+    }, true);
+    document.addEventListener('change', function(event) {
+      if (!state.isAdmin) return;
+      state.field = describeElement(event.target);
+      scheduleTrack(400);
+    }, true);
+
+    subscribe();
+
+    return {
+      setAdminMode:function(value) {
+        state.isAdmin = !!value;
+        if (!state.isAdmin) state.field = '';
+        trackNow();
+      },
+      setSection:function(section) {
+        state.section = section || '';
+        scheduleTrack(200);
+      },
+      setField:function(field) {
+        state.field = field || '';
+        scheduleTrack(200);
+      },
+      refresh:trackNow,
+      destroy:function() {
+        clearTimeout(trackTimer);
+        if (channel && client) client.removeChannel(channel);
+        if (indicator && indicator.parentNode) indicator.parentNode.removeChild(indicator);
+      }
+    };
+  }
+
   window.MLS_SAFE_SYNC_CLIENT_ID = window.MLS_SAFE_SYNC_CLIENT_ID || clientId();
   window.createSafeSupabaseDoc = makeDoc;
+  window.createSafeSupabasePresence = makePresence;
 })();

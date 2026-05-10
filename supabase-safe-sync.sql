@@ -5,7 +5,8 @@ alter table public.mls_blood_bank
   alter column data type jsonb using data::jsonb,
   add column if not exists version bigint not null default 0,
   add column if not exists updated_at timestamptz not null default now(),
-  add column if not exists last_client_id text;
+  add column if not exists last_client_id text,
+  add column if not exists last_snapshot_at timestamptz;
 
 create table if not exists public.mls_blood_bank_history (
   history_id bigserial primary key,
@@ -13,17 +14,24 @@ create table if not exists public.mls_blood_bank_history (
   version bigint not null,
   data jsonb not null,
   saved_at timestamptz not null default now(),
-  saved_by_client text
+  saved_by_client text,
+  save_reason text not null default 'auto'
 );
+
+alter table public.mls_blood_bank_history
+  add column if not exists save_reason text not null default 'auto';
 
 create index if not exists mls_blood_bank_history_id_version_idx
   on public.mls_blood_bank_history (id, version desc);
+
+drop function if exists public.mls_safe_save_doc(text, jsonb, bigint, text);
 
 create or replace function public.mls_safe_save_doc(
   p_id text,
   p_data jsonb,
   p_expected_version bigint,
-  p_client_id text default null
+  p_client_id text default null,
+  p_save_reason text default 'auto'
 )
 returns jsonb
 language plpgsql
@@ -33,6 +41,7 @@ as $$
 declare
   current_row public.mls_blood_bank%rowtype;
   next_version bigint;
+  should_snapshot boolean;
 begin
   select *
     into current_row
@@ -51,9 +60,12 @@ begin
       );
     end if;
 
-    insert into public.mls_blood_bank (id, data, version, updated_at, last_client_id)
-    values (p_id, p_data, 1, now(), p_client_id)
+    insert into public.mls_blood_bank (id, data, version, updated_at, last_client_id, last_snapshot_at)
+    values (p_id, p_data, 1, now(), p_client_id, now())
     returning * into current_row;
+
+    insert into public.mls_blood_bank_history (id, version, data, saved_at, saved_by_client, save_reason)
+    values (current_row.id, current_row.version, coalesce(current_row.data, '{}'::jsonb), current_row.updated_at, current_row.last_client_id, coalesce(p_save_reason, 'auto'));
 
     return jsonb_build_object(
       'status', 'saved',
@@ -70,13 +82,20 @@ begin
       'id', current_row.id,
       'version', current_row.version,
       'updated_at', current_row.updated_at,
-        'data', coalesce(current_row.data, '{}'::jsonb),
+      'data', coalesce(current_row.data, '{}'::jsonb),
       'message', 'Supabase has a newer version.'
     );
   end if;
 
-  insert into public.mls_blood_bank_history (id, version, data, saved_at, saved_by_client)
-  values (current_row.id, current_row.version, coalesce(current_row.data, '{}'::jsonb), current_row.updated_at, current_row.last_client_id);
+  should_snapshot :=
+    coalesce(p_save_reason, 'auto') in ('manual', 'admin_exit')
+    or current_row.last_snapshot_at is null
+    or current_row.last_snapshot_at < now() - interval '5 minutes';
+
+  if should_snapshot then
+    insert into public.mls_blood_bank_history (id, version, data, saved_at, saved_by_client, save_reason)
+    values (current_row.id, current_row.version, coalesce(current_row.data, '{}'::jsonb), current_row.updated_at, current_row.last_client_id, coalesce(p_save_reason, 'auto'));
+  end if;
 
   next_version := current_row.version + 1;
 
@@ -84,7 +103,8 @@ begin
      set data = p_data,
          version = next_version,
          updated_at = now(),
-         last_client_id = p_client_id
+         last_client_id = p_client_id,
+         last_snapshot_at = case when should_snapshot then now() else current_row.last_snapshot_at end
    where id = p_id
    returning * into current_row;
 
@@ -98,7 +118,7 @@ begin
 end;
 $$;
 
-grant execute on function public.mls_safe_save_doc(text, jsonb, bigint, text) to anon, authenticated;
+grant execute on function public.mls_safe_save_doc(text, jsonb, bigint, text, text) to anon, authenticated;
 grant select, insert, update on public.mls_blood_bank to anon, authenticated;
 grant select, insert on public.mls_blood_bank_history to anon, authenticated;
 grant usage, select on sequence public.mls_blood_bank_history_history_id_seq to anon, authenticated;
@@ -118,3 +138,5 @@ begin
   end if;
 end;
 $$;
+
+notify pgrst, 'reload schema';

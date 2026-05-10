@@ -291,6 +291,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   var saveTimer=null;
 	  var saveInFlight=null;
 	  var safeDoc=null;
+  var syncPresence=null;
   var microDrag=null;
   var suppressMicroClick=false;
   var activeMicroIndex=null;
@@ -600,19 +601,19 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
 	      await safeDoc.load();
 	      safeDoc.subscribe();
 	    }catch(e){console.warn('remote load failed',e)}
+	    if(window.createSafeSupabasePresence)syncPresence=createSafeSupabasePresence({url:SUPABASE_URL,key:SUPABASE_KEY,hubId:'urinalysis',hubName:'Urinalysis',getSection:function(){var active=document.querySelector('.section.active');return active?active.id:'urinalysis'},toast:showToast});
 	  }
-  function scheduleSave(){clearTimeout(saveTimer);saveTimer=setTimeout(saveNow,650)}
-  async function saveNow(){
+  function scheduleSave(){clearTimeout(saveTimer);saveTimer=setTimeout(function(){saveNow('auto')},1600)}
+  async function saveNow(reason){
     if(!isAdmin){showToast('Unlock admin first',true);return false}
     clearTimeout(saveTimer);
     collectVisibleState();
     touchState();
-    await compressStateImages();
     if(saveInFlight)await saveInFlight;
-	    saveInFlight=(safeDoc?safeDoc.saveNow():Promise.resolve(false)).finally(function(){saveInFlight=null});
+	    saveInFlight=(safeDoc?safeDoc.saveNow({reason:reason||'auto'}):Promise.resolve(false)).finally(function(){saveInFlight=null});
 	    return saveInFlight;
 	  }
-  async function flushSave(){clearTimeout(saveTimer);return saveNow()}
+  async function flushSave(reason){clearTimeout(saveTimer);return saveNow(reason||'auto')}
   function tableTools(id){
     return '<button class="mini-btn" data-action="add-row" data-table="'+id+'">Add Row</button>'+
       '<button class="mini-btn" data-action="add-col" data-table="'+id+'">Add Column</button>'+
@@ -894,9 +895,10 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   window.exitAdmin=async function(){
     if(!isAdmin)return;
     showToast('Saving...');
-    var saved=await flushSave().catch(function(e){console.warn(e);return false});
+    var saved=await flushSave('admin_exit').catch(function(e){console.warn(e);return false});
     if(!saved){showToast('Online save failed. Still in Admin.',true);return}
     isAdmin=false;
+    if(syncPresence)syncPresence.setAdminMode(false);
     editMode=false;
     document.getElementById('adminBadge').classList.remove('visible');
     setEditMode(false);
@@ -911,6 +913,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var h=await hashString(document.getElementById('adminPwInput').value);
     if(h===PASS_HASH){
       isAdmin=true;
+      if(syncPresence)syncPresence.setAdminMode(true);
       document.getElementById('adminBadge').classList.add('visible');
       closeModal();
       setEditMode(true);
@@ -921,7 +924,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     }
   };
   window.closeModal=function(){document.getElementById('adminModal').classList.remove('visible');document.getElementById('adminErr').textContent='';document.getElementById('adminPwInput').value=''};
-  window.showSection=function(id){document.querySelectorAll('.section').forEach(function(sec){sec.classList.toggle('active',sec.id===id)});document.querySelectorAll('.nav-tab').forEach(function(tab){tab.classList.toggle('active',tab.dataset.section===id)})};
+  window.showSection=function(id){document.querySelectorAll('.section').forEach(function(sec){sec.classList.toggle('active',sec.id===id)});document.querySelectorAll('.nav-tab').forEach(function(tab){tab.classList.toggle('active',tab.dataset.section===id)});if(syncPresence)syncPresence.setSection(id)};
   document.querySelectorAll('.nav-tab').forEach(function(tab){tab.addEventListener('click',function(){showSection(tab.dataset.section)})});
   window.selectSimCase=function(index){
     state.notes.sim_case_index=Number(index)||0;
@@ -1328,7 +1331,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   window.doExport=function(){
     collectVisibleState();
     saveLocal();
-	    if(isAdmin&&safeDoc)safeDoc.saveNow().catch(function(e){console.warn(e)});
+	    if(isAdmin&&safeDoc)safeDoc.saveNow({reason:'manual'}).catch(function(e){console.warn(e)});
     var selected=Array.from(document.querySelectorAll('#exportModal .export-check:checked')).map(function(box){return box.value});
     if(!selected.length){showToast('Choose at least one section',true);return}
     closeExportModal();

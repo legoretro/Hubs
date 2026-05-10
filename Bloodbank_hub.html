@@ -680,6 +680,7 @@ let notesSaveInFlight = null;
 let xmSaveInFlight = null;
 let notesDoc = null;
 let xmDoc = null;
+let syncPresence = null;
 let xmMode = null;
 let rbcLayout = {};
 let rbcCustomItems = [];
@@ -769,6 +770,18 @@ async function initApp() {
   });
   try { await notesDoc.load(); notesDoc.subscribe(); } catch(e) { showToast(`Supabase load failed: ${e.message}`, true); console.error(e); hydrateNotesData({}); }
   try { await xmDoc.load(); xmDoc.subscribe(); } catch(e) { showToast(`Supabase load failed: ${e.message}`, true); console.error(e); xmCases = defaultXmCases(); }
+  if (window.createSafeSupabasePresence) syncPresence = createSafeSupabasePresence({
+    url: SUPABASE_URL,
+    key: SUPABASE_KEY,
+    hubId: 'bloodbank',
+    hubName: 'Blood Bank',
+    getSection: () => {
+      const active = document.querySelector('.section.active');
+      const section = active ? active.id.replace(/^sec-/, '') : 'encyclopedia';
+      return section === 'encyclopedia' ? `encyclopedia / ${currentSystemKey}` : section;
+    },
+    toast: showToast
+  });
   // Render initial system
   renderSystem('abo');
   renderRbcDiagram();
@@ -778,36 +791,36 @@ async function initApp() {
 
 function scheduleSave() {
   clearTimeout(saveTimer);
-  saveTimer = setTimeout(saveNotesNow, 700);
+  saveTimer = setTimeout(() => saveNotesNow('auto'), 1600);
 }
 
-async function saveNotesNow() {
+async function saveNotesNow(reason = 'auto') {
   clearTimeout(saveTimer);
   if (notesSaveInFlight) await notesSaveInFlight;
   notesData.__updatedAt = Date.now();
-  notesSaveInFlight = (notesDoc ? notesDoc.saveNow() : Promise.resolve(false)).finally(() => { notesSaveInFlight = null; });
+  notesSaveInFlight = (notesDoc ? notesDoc.saveNow({ reason }) : Promise.resolve(false)).finally(() => { notesSaveInFlight = null; });
   return await notesSaveInFlight;
 }
 
 function scheduleXmSave() {
   clearTimeout(xmSaveTimer);
-  xmSaveTimer = setTimeout(saveXmCasesNow, 700);
+  xmSaveTimer = setTimeout(() => saveXmCasesNow('auto'), 1600);
 }
 
-async function saveXmCasesNow() {
+async function saveXmCasesNow(reason = 'auto') {
   clearTimeout(xmSaveTimer);
   if (xmSaveInFlight) await xmSaveInFlight;
-  xmSaveInFlight = (xmDoc ? xmDoc.saveNow() : Promise.resolve(false)).finally(() => { xmSaveInFlight = null; });
+  xmSaveInFlight = (xmDoc ? xmDoc.saveNow({ reason }) : Promise.resolve(false)).finally(() => { xmSaveInFlight = null; });
   return await xmSaveInFlight;
 }
 
-async function saveAllNow() {
+async function saveAllNow(reason = 'manual') {
   if (!isAdmin) {
     showToast('Unlock admin first', true);
     return false;
   }
-  const notesOk = await saveNotesNow();
-  const xmOk = await saveXmCasesNow();
+  const notesOk = await saveNotesNow(reason);
+  const xmOk = await saveXmCasesNow(reason);
   if (notesOk && xmOk) showToast('Saved all to Supabase');
   return !!(notesOk && xmOk);
 }
@@ -822,8 +835,8 @@ function showToast(msg, isError = false) {
 
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'hidden' && isAdmin) {
-    if (saveTimer) saveNotesNow();
-    if (xmSaveTimer) saveXmCasesNow();
+    if (saveTimer) saveNotesNow('admin_exit');
+    if (xmSaveTimer) saveXmCasesNow('admin_exit');
   }
 });
 
@@ -850,12 +863,11 @@ async function attemptLogin() {
     document.getElementById('adminBadge').classList.add('visible');
     closeModal();
     showToast('Admin unlocked');
+    if (syncPresence) syncPresence.setAdminMode(true);
     // Re-render current system to enable fields
     const active = document.querySelector('.sys-btn.active');
     if (active) active.click();
     if (document.getElementById('sec-rbc-diagram').classList.contains('active')) renderRbcDiagram();
-    await saveNotesNow();
-    await saveXmCasesNow();
   } else {
     document.getElementById('adminErr').textContent = 'Incorrect password.';
     document.getElementById('adminPwInput').value = '';
@@ -870,12 +882,13 @@ document.addEventListener('keydown', e => {
 
 async function logoutAdmin() {
   showToast('Saving...');
-  const saved = await saveAllNow();
+  const saved = await saveAllNow('admin_exit');
   if (!saved) {
     showToast('Online save failed. Still in Admin.', true);
     return;
   }
   isAdmin = false;
+  if (syncPresence) syncPresence.setAdminMode(false);
   document.body.classList.remove('admin-mode');
   document.getElementById('adminBadge').classList.remove('visible');
   if (document.getElementById('sec-rbc-diagram').classList.contains('active')) renderRbcDiagram();
@@ -898,6 +911,7 @@ function showSection(name, el) {
   if (name === 'rbc-diagram') { setTimeout(renderRbcDiagram, 50); }
   document.getElementById('sec-' + name).classList.add('active');
   if (el) el.classList.add('active');
+  if (syncPresence) syncPresence.setSection(name === 'encyclopedia' ? `encyclopedia / ${currentSystemKey}` : name);
 }
 
 // ============================================================
@@ -1349,6 +1363,7 @@ function getFreqRows(sysKey) {
 
 function renderSystem(key) {
   currentSystemKey = key;
+  if (syncPresence) syncPresence.setSection(`encyclopedia / ${currentSystemKey}`);
   const area = document.getElementById('sysContentArea');
   if (key === 'lesser') { renderLesser(area); return; }
   const sys = SYSTEMS[key];
