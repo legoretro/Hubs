@@ -242,7 +242,7 @@ button{cursor:pointer;font-family:inherit}
 .calc-frac{display:inline-grid;grid-template-rows:auto auto;align-items:center;min-width:260px;font-size:20px;font-weight:800}.calc-frac span:first-child{border-bottom:2px solid var(--wine);padding:0 10px 3px}.calc-frac span:last-child{padding:3px 10px 0;font-size:15px;color:var(--dark)}
 .calc-step-list{display:grid;gap:7px;margin-top:10px}.calc-step{border-left:3px solid var(--rose);background:#fff;padding:8px 10px;border-radius:8px;font-size:13px;color:var(--dark);line-height:1.5}
 .calc-answer{border:1px solid var(--good);background:var(--good-lt);color:#0a4a2a;border-radius:12px;padding:12px;font-weight:800;text-align:center}
-.calc-ref-table{width:100%;border-collapse:collapse;font-size:11px}.calc-ref-table th{background:var(--wine);color:#fff;padding:5px}.calc-ref-table td{border:1px solid var(--rose);padding:4px 6px;text-align:center}.calc-ref-table td:first-child,.calc-ref-table td:nth-child(2){text-align:left;font-weight:800;color:var(--wine)}
+.calc-ref-card{padding:16px;position:relative}.calc-ref-title{position:sticky;top:82px;z-index:4;background:var(--card-bg);padding:0 0 8px}.calc-ref-scroll{overflow:auto;max-height:280px;border:1px solid var(--rose);border-radius:10px}.calc-ref-table{width:100%;border-collapse:collapse;font-size:11px}.calc-ref-table th{background:var(--wine);color:#fff;padding:5px;position:sticky;top:0;z-index:3}.calc-ref-table td{border:1px solid var(--rose);padding:4px 6px;text-align:center;background:#fff}.calc-ref-table td:first-child,.calc-ref-table td:nth-child(2){text-align:left;font-weight:800;color:var(--wine)}
 
 /* RBC DIAGRAM */
 .rbc-antigen-wrap{position:relative;width:100%;max-width:700px;margin:0 auto}
@@ -2580,20 +2580,28 @@ function buildStudyExportPage() {
   return '<section class="page compact-export"><h1>Blood Group Study References</h1><div class="compact-grid">' + cards + '</div></section>';
 }
 
-function buildExportHtml(content, title) {
+function buildExportHtml(content, title, orientation) {
+  orientation = orientation || 'portrait';
+  var isLandscape = orientation === 'landscape';
+  var pageSize = isLandscape ? 'letter landscape' : 'letter portrait';
+  var pageMax = isLandscape ? '10.4in' : '7.45in';
+  var onePageHeight = isLandscape ? '7.9in' : '10.25in';
+  var onePageGrid = isLandscape ? 'grid-template-columns:1.05fr 1.45fr 1.5fr;' : 'grid-template-columns:1fr 1fr;';
+  var portraitTweaks = isLandscape ? '' : '.onepage-grid .system-card:last-child{grid-column:1/-1}.compact-grid{grid-template-columns:1fr}.system-page .tl-item{font-size:8px}.study-table td{font-size:6.4px;padding:1.8px 3px}.freq-export td,.freq-export th{font-size:5.6px;padding:1.8px 2px}';
   return '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>' + exportText(title || 'Bloody Brilliant Export') + '</title>' +
-    '<style>@page{size:letter landscape;margin:.28in}*{box-sizing:border-box;margin:0;padding:0}body{font-family:Georgia,serif;font-size:11px;color:#1e0d10;background:#fff}' +
+    '<style>@page{size:' + pageSize + ';margin:.28in}*{box-sizing:border-box;margin:0;padding:0}body{font-family:Georgia,serif;font-size:11px;color:#1e0d10;background:#fff}' +
     'h1{font-size:18px;color:#5a0e20;text-align:center;margin-bottom:6px;padding:12px 0 0}' +
     'h2{font-size:13px;color:#8b0a26;margin:14px 0 6px;border-bottom:2px solid #f7c5d0;padding-bottom:3px}' +
-    '.page{padding:0;page-break-after:always;max-width:10.4in;margin:0 auto}.page:last-child{page-break-after:avoid}' +
+    '.page{padding:0;page-break-after:always;max-width:' + pageMax + ';margin:0 auto}.page:last-child{page-break-after:avoid}' +
     'table{width:100%;border-collapse:collapse;margin-bottom:8px}th{background:#5a0e20;color:#fff;padding:5px 8px;text-align:left;font-size:10px;letter-spacing:.5px}td{padding:5px 8px;border-bottom:1px solid #f7c5d0;vertical-align:top;font-size:11px}td.lbl{font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#7a6468;width:220px}tr:nth-child(even) td{background:#fef4f0}' +
     '.tl{padding-left:12px;border-left:2px solid #f7c5d0}.tl-item{margin-bottom:7px;font-size:11px}.yr{font-weight:700;color:#c0173d;font-size:10px;display:block}' +
-    '.system-page{padding:0;font-size:9px}.system-card{border-top:2.5px solid #5a0e20;border-left:1px solid #f7c5d0;border-right:1px solid #f7c5d0;border-bottom:1px solid #f7c5d0;border-radius:10px;padding:6px 8px;margin:0;background:#fffaf7;break-inside:avoid;page-break-inside:avoid}.hero-card{padding-bottom:10px}.system-head{display:flex;gap:8px;align-items:flex-start;margin-bottom:5px}.system-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;line-height:1;box-shadow:inset 0 2px 5px rgba(0,0,0,.22)}.system-head h1{text-align:left;font-size:20px;line-height:1;margin:0 0 2px;padding:0}.isbt{font-size:8px;letter-spacing:2px;color:#7a6468;text-transform:uppercase}.pun{font-size:9px;color:#c0173d;font-style:italic;font-weight:700;margin-top:2px}.card-label{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#7a6468;font-weight:700;margin:0 0 4px}.system-page .tl{padding-left:8px}.system-page .tl-item{font-size:8.4px;line-height:1.13;margin-bottom:3px}.system-page .yr{font-size:8px;display:inline-block;width:45px}.onepage-system{height:7.9in;overflow:hidden}.onepage-head{border-top:2.5px solid #5a0e20;border-left:1px solid #f7c5d0;border-right:1px solid #f7c5d0;border-bottom:1px solid #f7c5d0;border-radius:10px;background:#fffaf7;padding:5px 8px;margin-bottom:5px}.compact-head{align-items:center;margin-bottom:0}.onepage-grid{display:grid;grid-template-columns:1.05fr 1.45fr 1.5fr;gap:5px;align-items:start}.compact-export h1{padding:0;margin:0 0 7px}.compact-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.compact-card h1{font-size:13px;text-align:left;padding:0;margin:0 0 5px}.compact-card .tl-item{font-size:9px;line-height:1.16;margin-bottom:3px}.compact-card .yr{display:inline-block;width:45px;font-size:9px}.compact-card .card-label{font-size:8px;margin-bottom:4px}.compact-card .study-table td{font-size:6.8px!important;padding:2px 3px!important}.compact-card .study-table td.lbl{font-size:6.5px!important;width:1.15in!important}' +
+    '.system-page{padding:0;font-size:9px}.system-card{border-top:2.5px solid #5a0e20;border-left:1px solid #f7c5d0;border-right:1px solid #f7c5d0;border-bottom:1px solid #f7c5d0;border-radius:10px;padding:6px 8px;margin:0;background:#fffaf7;break-inside:avoid;page-break-inside:avoid}.hero-card{padding-bottom:10px}.system-head{display:flex;gap:8px;align-items:flex-start;margin-bottom:5px}.system-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;line-height:1;box-shadow:inset 0 2px 5px rgba(0,0,0,.22)}.system-head h1{text-align:left;font-size:20px;line-height:1;margin:0 0 2px;padding:0}.isbt{font-size:8px;letter-spacing:2px;color:#7a6468;text-transform:uppercase}.pun{font-size:9px;color:#c0173d;font-style:italic;font-weight:700;margin-top:2px}.card-label{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#7a6468;font-weight:700;margin:0 0 4px}.system-page .tl{padding-left:8px}.system-page .tl-item{font-size:8.4px;line-height:1.13;margin-bottom:3px}.system-page .yr{font-size:8px;display:inline-block;width:45px}.onepage-system{height:' + onePageHeight + ';overflow:hidden}.onepage-head{border-top:2.5px solid #5a0e20;border-left:1px solid #f7c5d0;border-right:1px solid #f7c5d0;border-bottom:1px solid #f7c5d0;border-radius:10px;background:#fffaf7;padding:5px 8px;margin-bottom:5px}.compact-head{align-items:center;margin-bottom:0}.onepage-grid{display:grid;' + onePageGrid + 'gap:5px;align-items:start}.compact-export h1{padding:0;margin:0 0 7px}.compact-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.compact-card h1{font-size:13px;text-align:left;padding:0;margin:0 0 5px}.compact-card .tl-item{font-size:9px;line-height:1.16;margin-bottom:3px}.compact-card .yr{display:inline-block;width:45px;font-size:9px}.compact-card .card-label{font-size:8px;margin-bottom:4px}.compact-card .study-table td{font-size:6.8px!important;padding:2px 3px!important}.compact-card .study-table td.lbl{font-size:6.5px!important;width:1.15in!important}' +
     '.membrane-card{padding-bottom:7px}.membrane-print{height:1.18in;overflow:hidden;margin:-4px 0 0}.membrane-print div{overflow:hidden!important}.membrane-print svg{width:100%!important;min-width:0!important;height:1.18in!important}.membrane-print text{font-size:14px!important}.mini-table td{font-size:8px;padding:2px 4px}.study-table{font-size:6.8px;line-height:1.08}.study-table td{font-size:6.8px;padding:2px 3px}.study-table td.lbl{width:1.15in;font-size:6.3px}.freq-export{font-size:6.2px;line-height:1.02;table-layout:fixed}.freq-export th{font-size:5.8px;padding:2px 2px}.freq-export td{font-size:5.8px;padding:2px 2px}.freq-export th:nth-child(1){width:.52in}.freq-export th:nth-child(2),.freq-export th:nth-child(3),.freq-export th:nth-child(4),.freq-export th:nth-child(5),.freq-export th:nth-child(6){width:.2in}.freq-export th:nth-child(7){width:.4in}.freq-export .center{text-align:center}.freq-export .memo{background:#dce6f4}.note-box{font-size:6.6px;line-height:1.1;padding:4px;background:#fff;border-left:3px solid #f7c5d0}.muted{color:#9a8588}.map-page{max-width:10.4in}.map-print{height:6.8in;overflow:hidden;display:flex;align-items:center;justify-content:center}.map-print svg{width:10.8in!important;max-width:none!important;min-width:0!important;height:auto!important}.map-print div{overflow:visible!important}svg{max-width:100%;height:auto}' +
+    portraitTweaks +
     '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style></head><body>' + content + '</body></html>';
 }
 
-function printExportHtml(content, title) {
+function printExportHtml(content, title, orientation) {
   var frame = document.getElementById('bbPrintFrame');
   if (!frame) {
     frame = document.createElement('iframe');
@@ -2613,7 +2621,7 @@ function printExportHtml(content, title) {
     setTimeout(function(){ win.focus(); win.print(); }, 120);
   };
   doc.open();
-  doc.write(buildExportHtml(content, title));
+  doc.write(buildExportHtml(content, title, orientation));
   doc.close();
 }
 
@@ -2671,7 +2679,7 @@ function doExport() {
     html += '<div class="page"><h1>Blood Group Chromosome Map</h1>' + chromHTML + '</div>';
   }
 
-  printExportHtml(html, 'Blood Bank Map Export');
+  printExportHtml(html, 'Blood Bank Map Export', 'landscape');
 }
 
 // ── CHROMOSOME MAP (wider haplotype pairs) ────────────────────
@@ -2874,7 +2882,9 @@ const CALC_POP_FULL = {c:'Caucasian', b:'Black', a:'Asian', i:'Indian', h:'Hispa
 const CALC_FREQ_FALLBACK = {
   K:{c:9,b:2,a:0,i:2,h:2},
   E:{c:29,b:22,a:39,i:30,h:30},
+  e:{c:98,b:98,a:96,i:98,h:98},
   C:{c:68,b:27,a:93,i:86,h:70},
+  c:{c:80,b:96,a:47,i:58,h:80},
   Fya:{c:66,b:10,a:99,i:87,h:55},
   Fyb:{c:83,b:23,a:18,i:49,h:65},
   Jka:{c:77,b:92,a:73,i:81,h:77},
@@ -2886,11 +2896,11 @@ const CALC_FREQ_FALLBACK = {
   N:{c:72,b:75,a:60,i:72,h:72}
 };
 const CALC_SCENARIOS = [
-  {name:'Case 1', patient:'A+', antibodies:['anti-K'], units:2, pop:'c', aboRh:1, note:'Inventory already filtered to A/O Rh-compatible units.'},
-  {name:'Case 2', patient:'O-', antibodies:['anti-E'], units:1, pop:'b', aboRh:.07, note:'Pulling from mixed donor inventory; only a small fraction is O negative compatible.'},
-  {name:'Case 3', patient:'B+', antibodies:['anti-Jka','anti-Fya'], units:3, pop:'c', aboRh:.14, note:'Two antibodies. Multiply both antigen-negative decimals.'},
-  {name:'Case 4', patient:'A-', antibodies:['anti-C','anti-K'], units:2, pop:'a', aboRh:.06, note:'Asian donor population practice using C/B/A/I/H column A.'},
-  {name:'Case 5', patient:'O+', antibodies:['anti-S','anti-E','anti-K'], units:1, pop:'h', aboRh:.38, note:'Three antibodies. Keep the requested unit count on top.'}
+  {name:'Case 1', patient:'A+', antibodies:['anti-K'], units:2, pop:'c', note:'ABO and D-compatible bags are already selected. Only calculate K-negative availability.'},
+  {name:'Case 2', patient:'O-', antibodies:['anti-E','anti-c'], units:1, pop:'b', note:'All pulled units are already O negative. Now screen for E-negative and c-negative units.'},
+  {name:'Case 3', patient:'B+', antibodies:['anti-Jka','anti-Fya'], units:3, pop:'c', note:'Two antibodies. Multiply both antigen-negative decimals.'},
+  {name:'Case 4', patient:'A-', antibodies:['anti-C','anti-e','anti-K'], units:2, pop:'a', note:'All pulled units are already D negative. Use column A for C, e, and K.'},
+  {name:'Case 5', patient:'AB+', antibodies:['anti-S','anti-E','anti-c'], units:1, pop:'h', note:'AB positive can receive Rh positive or negative. Only the listed antigen negatives are in the math.'}
 ];
 
 function startCalcSim() {
@@ -2936,7 +2946,7 @@ function getCalcPositivePct(antigen, pop) {
 }
 
 function calcScenarioMath(sc) {
-  var factors = [{label:'ABO/Rh compatible', decimal:sc.aboRh || 1, detail:'given in scenario'}];
+  var factors = [];
   sc.antibodies.forEach(function(ab) {
     var antigen = ab.replace(/^anti[-\s]*/i,'');
     var positive = getCalcPositivePct(antigen, sc.pop);
@@ -3004,7 +3014,8 @@ function renderCalcSim() {
     '<div class="sys-card" style="padding:16px;border-top:3px solid var(--crimson)">' +
       '<div class="sec-label">Units to Screen Practice</div>' +
       '<h3 style="color:var(--wine);margin-bottom:6px">' + escText(sc.name) + ': ' + escText(sc.patient) + ' patient</h3>' +
-      '<p style="font-size:13px;color:var(--warm-grey);margin-bottom:8px">Antibody screen: <strong>' + escText(sc.antibodies.join(', ')) + '</strong>. Needs <strong>' + sc.units + '</strong> compatible RBC unit' + (sc.units === 1 ? '' : 's') + '. Donor population column: <strong>' + escText(CALC_POP_LABELS[sc.pop]) + '</strong> (' + escText(CALC_POP_FULL[sc.pop]) + ').</p>' +
+      '<p style="font-size:13px;color:var(--warm-grey);margin-bottom:8px">Antibody screen: <strong>' + escText(sc.antibodies.join(', ')) + '</strong>. Needs <strong>' + sc.units + '</strong> ABO/D-compatible RBC unit' + (sc.units === 1 ? '' : 's') + '. Donor population column: <strong>' + escText(CALC_POP_LABELS[sc.pop]) + '</strong> (' + escText(CALC_POP_FULL[sc.pop]) + ').</p>' +
+      '<div class="phase-instr" style="margin-bottom:10px"><strong>Given:</strong> ABO and D are already handled by the blood bank pull. Do not include ABO or D in the denominator.</div>' +
       '<div class="phase-instr" style="margin-bottom:10px">' + escText(sc.note) + '</div>' +
       '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px 0">' +
         '<button class="btn btn-ghost" onclick="revealCalc(1)">Show setup</button>' +
@@ -3013,9 +3024,9 @@ function renderCalcSim() {
       '</div>' +
       setup + answer +
     '</div>' +
-    '<div class="sys-card" style="padding:16px">' +
-      '<div class="sec-label">Reference Frequencies: C / B / A / I / H Only</div>' +
-      '<div style="overflow:auto;max-height:280px"><table class="calc-ref-table"><thead><tr><th>System</th><th>Antigen</th><th>C</th><th>B</th><th>A</th><th>I</th><th>H</th></tr></thead><tbody>' + buildCalcReferenceRows() + '</tbody></table></div>' +
+    '<div class="sys-card calc-ref-card">' +
+      '<div class="sec-label calc-ref-title">Reference Frequencies: C / B / A / I / H Only</div>' +
+      '<div class="calc-ref-scroll"><table class="calc-ref-table"><thead><tr><th>System</th><th>Antigen</th><th>C</th><th>B</th><th>A</th><th>I</th><th>H</th></tr></thead><tbody>' + buildCalcReferenceRows() + '</tbody></table></div>' +
     '</div>' +
   '</div>';
 }
