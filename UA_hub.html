@@ -292,6 +292,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
 	  var saveInFlight=null;
 	  var safeDoc=null;
   var syncPresence=null;
+  var adminExitInProgress=false;
   var microDrag=null;
   var suppressMicroClick=false;
   var activeMicroIndex=null;
@@ -892,17 +893,43 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     document.body.classList.toggle('admin-mode',editMode);
     renderAll();
   }
-  window.exitAdmin=async function(){
-    if(!isAdmin)return;
-    showToast('Saving...');
-    var saved=await flushSave('admin_exit').catch(function(e){console.warn(e);return false});
-    if(!saved){showToast('Online save failed. Still in Admin.',true);return}
+  function hasBlockedSave(){
+    return !!(safeDoc&&safeDoc.isBlocked&&safeDoc.isBlocked());
+  }
+  function exitAdminLocally(message,isError){
+    clearTimeout(saveTimer);
+    collectVisibleState();
+    saveLocal();
     isAdmin=false;
     if(syncPresence)syncPresence.setAdminMode(false);
     editMode=false;
     document.getElementById('adminBadge').classList.remove('visible');
     setEditMode(false);
-    showToast('Exited Admin');
+    showToast(message||'Exited Admin',!!isError);
+  }
+  window.exitAdmin=async function(){
+    if(!isAdmin)return;
+    if(adminExitInProgress){
+      exitAdminLocally('Exited Admin. Save is still blocked by a conflict; your edits stayed on this page.',true);
+      return;
+    }
+    if(hasBlockedSave()){
+      exitAdminLocally('Exited Admin. Conflict not overwritten; your edits stayed on this page.',true);
+      return;
+    }
+    adminExitInProgress=true;
+    showToast('Saving...');
+    var saved=await flushSave('admin_exit').catch(function(e){console.warn(e);return false});
+    adminExitInProgress=false;
+    if(!saved){
+      if(hasBlockedSave()){
+        exitAdminLocally('Exited Admin. Conflict not overwritten; your edits stayed on this page.',true);
+        return;
+      }
+      showToast('Online save failed. Still in Admin.',true);
+      return;
+    }
+    exitAdminLocally('Exited Admin');
   };
   window.toggleAdminLogin=function(){
     if(isAdmin){exitAdmin();return}

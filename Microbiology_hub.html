@@ -614,17 +614,15 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function renderAll(){Object.keys(state.tables).forEach(renderTable);renderCharts();renderExportOptions();document.body.classList.toggle('admin-mode',editMode)}
   function setEditMode(on){if(on&&!isAdmin){toggleAdminLogin();return}if(!on)collectVisibleState();editMode=!!on;document.body.classList.toggle('admin-mode',editMode);renderAll()}
+  function hasBlockedSave(){return !!(safeDoc&&safeDoc.isBlocked&&safeDoc.isBlocked())}
+  function exitAdminLocally(message,isError){clearTimeout(saveTimer);collectVisibleState();saveLocal();isAdmin=false;if(syncPresence)syncPresence.setAdminMode(false);editMode=false;document.getElementById('adminBadge').classList.remove('visible');setEditMode(false);showToast(message||'Exited Admin',!!isError)}
   window.exitAdmin=async function(){
     if(!isAdmin)return;
+    if(hasBlockedSave()){exitAdminLocally('Exited Admin. Conflict not overwritten; your edits stayed on this page.',true);return}
     showToast('Saving...');
     var saved=await flushSave('admin_exit').catch(function(e){console.warn(e);return false});
-    if(!saved){showToast('Online save failed. Still in Admin.',true);return}
-    isAdmin=false;
-    if(syncPresence)syncPresence.setAdminMode(false);
-    editMode=false;
-    document.getElementById('adminBadge').classList.remove('visible');
-    setEditMode(false);
-    showToast('Exited Admin');
+    if(!saved){if(hasBlockedSave()){exitAdminLocally('Exited Admin. Conflict not overwritten; your edits stayed on this page.',true);return}showToast('Online save failed. Still in Admin.',true);return}
+    exitAdminLocally('Exited Admin');
   };
   window.toggleAdminLogin=function(){if(isAdmin){exitAdmin();return}document.getElementById('adminModal').classList.add('visible');setTimeout(function(){document.getElementById('adminPwInput').focus()},80)};
   window.attemptLogin=async function(){var h=await hashString(document.getElementById('adminPwInput').value);if(h===PASS_HASH){isAdmin=true;if(syncPresence)syncPresence.setAdminMode(true);document.getElementById('adminBadge').classList.add('visible');closeModal();setEditMode(true);showToast('Unlocked')}else{document.getElementById('adminErr').textContent='Incorrect password.';document.getElementById('adminPwInput').value=''}};

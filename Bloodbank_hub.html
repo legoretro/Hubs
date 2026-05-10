@@ -880,19 +880,37 @@ document.addEventListener('keydown', e => {
   }
 });
 
-async function logoutAdmin() {
-  showToast('Saving...');
-  const saved = await saveAllNow('admin_exit');
-  if (!saved) {
-    showToast('Online save failed. Still in Admin.', true);
-    return;
-  }
+function hasBlockedSave() {
+  return !!((notesDoc && notesDoc.isBlocked && notesDoc.isBlocked()) || (xmDoc && xmDoc.isBlocked && xmDoc.isBlocked()));
+}
+
+function logoutAdminLocally(message, isError) {
+  clearTimeout(saveTimer);
+  clearTimeout(xmSaveTimer);
   isAdmin = false;
   if (syncPresence) syncPresence.setAdminMode(false);
   document.body.classList.remove('admin-mode');
   document.getElementById('adminBadge').classList.remove('visible');
   if (document.getElementById('sec-rbc-diagram').classList.contains('active')) renderRbcDiagram();
-  showToast('Admin locked');
+  showToast(message || 'Admin locked', !!isError);
+}
+
+async function logoutAdmin() {
+  if (hasBlockedSave()) {
+    logoutAdminLocally('Exited Admin. Conflict not overwritten; your edits stayed on this page.', true);
+    return;
+  }
+  showToast('Saving...');
+  const saved = await saveAllNow('admin_exit');
+  if (!saved) {
+    if (hasBlockedSave()) {
+      logoutAdminLocally('Exited Admin. Conflict not overwritten; your edits stayed on this page.', true);
+      return;
+    }
+    showToast('Online save failed. Still in Admin.', true);
+    return;
+  }
+  logoutAdminLocally('Admin locked');
 }
 
 function closeModal() {

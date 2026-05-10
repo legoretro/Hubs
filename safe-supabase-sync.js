@@ -129,6 +129,7 @@
       saveTimer:null,
       saveInFlight:null,
       blocked:false,
+      lastConflict:null,
       channel:null
     };
 
@@ -170,6 +171,7 @@
       doc.updatedAt = result.updated_at || null;
       doc.baseData = normalize(result.data || data);
       doc.blocked = false;
+      doc.lastConflict = null;
       if (apply) applyLocal(doc.baseData, 'save');
       toast('Saved to Supabase');
       return true;
@@ -189,8 +191,9 @@
         var merged = mergeLocalChanges(doc.baseData, remote, data, dirty);
         if (merged.conflicts.length) {
           doc.blocked = true;
+          doc.lastConflict = { id:id, paths:merged.conflicts, remote:remote, local:data };
           toast('Conflict: another admin changed the same content. Your edit was not overwritten. Reload or copy your edit before continuing.', true);
-          if (options.onConflict) options.onConflict({ id:id, paths:merged.conflicts, remote:remote, local:data });
+          if (options.onConflict) options.onConflict(doc.lastConflict);
           return false;
         }
         doc.version = Number(result.version || doc.version || 0);
@@ -208,6 +211,7 @@
         doc.updatedAt = null;
         doc.baseData = normalize(row ? row.data : null);
         doc.blocked = false;
+        doc.lastConflict = null;
         applyLocal(doc.baseData, 'load');
         toast('Safe sync SQL is not installed yet. Existing data loaded, but safe online saves need the SQL migration.', true);
         return clone(doc.baseData);
@@ -223,6 +227,7 @@
         doc.updatedAt = row && row.updated_at || null;
         doc.baseData = normalize(row ? row.data : null);
         doc.blocked = false;
+        doc.lastConflict = null;
         applyLocal(doc.baseData, 'load');
         return clone(doc.baseData);
       }).catch(function(error) {
@@ -271,6 +276,8 @@
         doc.version = remoteVersion;
         doc.updatedAt = row.updated_at || null;
         doc.baseData = normalize(row.data || {});
+        doc.blocked = false;
+        doc.lastConflict = null;
         return;
       }
       var remote = normalize(row.data || {});
@@ -280,6 +287,8 @@
         doc.version = remoteVersion;
         doc.updatedAt = row.updated_at || null;
         doc.baseData = remote;
+        doc.blocked = false;
+        doc.lastConflict = null;
         applyLocal(remote, 'remote');
         toast('Updated from another admin');
         return;
@@ -287,13 +296,16 @@
       var merged = mergeLocalChanges(doc.baseData, remote, local, dirty);
       if (merged.conflicts.length) {
         doc.blocked = true;
+        doc.lastConflict = { id:id, paths:merged.conflicts, remote:remote, local:local };
         toast('Realtime conflict: another admin edited the same content. Your local edit is still on screen but saving is blocked.', true);
-        if (options.onConflict) options.onConflict({ id:id, paths:merged.conflicts, remote:remote, local:local });
+        if (options.onConflict) options.onConflict(doc.lastConflict);
         return;
       }
       doc.version = remoteVersion;
       doc.updatedAt = row.updated_at || null;
       doc.baseData = remote;
+      doc.blocked = false;
+      doc.lastConflict = null;
       applyLocal(merged.data, 'remote-merge');
       toast('Synced another admin; your unsaved edits stayed');
     };
@@ -315,6 +327,14 @@
           if (status === 'CHANNEL_ERROR') toast('Realtime sync connection failed for ' + id, true);
         });
       return doc.channel;
+    };
+
+    doc.isBlocked = function() {
+      return !!doc.blocked;
+    };
+
+    doc.getConflict = function() {
+      return doc.lastConflict ? clone(doc.lastConflict) : null;
     };
 
     return doc;
@@ -342,6 +362,7 @@
       isAdmin:false,
       section:'',
       field:'',
+      typingUntil:0,
       at:Date.now()
     };
     var client = sharedClient(url, key);
@@ -364,15 +385,18 @@
 
     function describeElement(el) {
       if (!el || !el.closest) return '';
-      var labeled = el.closest('[aria-label],[placeholder],[data-section],[data-table],[data-field],[data-action],[data-ui-action]');
+      var labeled = el.closest('[aria-label],[placeholder],[data-section],[data-table],[data-field],[data-action],[data-ui-action],[data-note-key],[data-case-field],[data-result-field],[data-pad-field],[data-object-field],[data-chart-field],[data-species-field],[data-image-field]');
       var parts = [];
       if (labeled) {
         var ds = labeled.dataset || {};
-        if (ds.section) parts.push(ds.section);
-        if (ds.table) parts.push(ds.table);
-        if (ds.field) parts.push(ds.field);
-        if (ds.action) parts.push(ds.action);
-        if (ds.uiAction) parts.push(ds.uiAction);
+        ['section','table','field','noteKey','caseField','resultField','padField','objectField','chartField','speciesField','imageField','action','uiAction'].forEach(function(keyName) {
+          if (ds[keyName]) parts.push(ds[keyName]);
+        });
+        if (ds.caseIndex) parts.push('case ' + (Number(ds.caseIndex) + 1));
+        if (ds.resultIndex) parts.push('result ' + (Number(ds.resultIndex) + 1));
+        if (ds.objectIndex) parts.push('object ' + (Number(ds.objectIndex) + 1));
+        if (ds.row) parts.push('row ' + ds.row);
+        if (ds.col) parts.push('col ' + ds.col);
         if (labeled.getAttribute('aria-label')) parts.push(labeled.getAttribute('aria-label'));
         if (labeled.getAttribute('placeholder')) parts.push(labeled.getAttribute('placeholder'));
       }
@@ -434,17 +458,23 @@
       var mine = list.filter(function(item){ return item.clientId === state.clientId; })[0];
       var others = list.filter(function(item){ return item.clientId !== state.clientId; });
       var editing = others.filter(function(item){ return !!item.isAdmin; });
+      var typing = editing.filter(function(item){ return Number(item.typingUntil || 0) > Date.now(); });
       var online = others.filter(function(item){ return !item.isAdmin; });
       if (!state.isAdmin && !editing.length) {
         box.style.display = 'none';
         return;
       }
-      var title = editing.length === 1 ? (editing[0].adminName + ' is editing') : (editing.length > 1 ? (editing.length + ' admins are editing') : ('You are ' + ((mine && mine.adminName) || 'Admin 1')));
+      var title = 'You are ' + ((mine && mine.adminName) || 'Admin 1');
+      if (typing.length === 1) title = typing[0].adminName + ' is typing';
+      else if (typing.length > 1) title = typing.length + ' admins are typing';
+      else if (editing.length === 1) title = editing[0].adminName + ' is editing';
+      else if (editing.length > 1) title = editing.length + ' admins are editing';
       var lines = [];
       editing.forEach(function(item) {
         var where = item.section || item.hubName || '';
         var field = item.field ? ' · ' + item.field : '';
-        lines.push(item.adminName + ': ' + where + field);
+        var verb = Number(item.typingUntil || 0) > Date.now() ? 'typing in ' : '';
+        lines.push(item.adminName + ': ' + verb + where + field);
       });
       online.forEach(function(item) {
         lines.push(item.adminName + ' online');
@@ -456,6 +486,7 @@
 
     function payload() {
       state.section = currentSection();
+      if (state.typingUntil && state.typingUntil <= Date.now()) state.typingUntil = 0;
       state.at = Date.now();
       return clone(state);
     }
@@ -477,6 +508,15 @@
     function scheduleTrack(delay) {
       clearTimeout(trackTimer);
       trackTimer = setTimeout(trackNow, delay || 600);
+    }
+
+    function markTyping(el) {
+      state.field = describeElement(el);
+      state.typingUntil = Date.now() + 3600;
+      scheduleTrack(120);
+      setTimeout(function() {
+        if (state.typingUntil && state.typingUntil <= Date.now()) trackNow();
+      }, 3800);
     }
 
     function subscribe() {
@@ -505,13 +545,11 @@
     });
     document.addEventListener('input', function(event) {
       if (!state.isAdmin) return;
-      state.field = describeElement(event.target);
-      scheduleTrack(900);
+      markTyping(event.target);
     }, true);
     document.addEventListener('change', function(event) {
       if (!state.isAdmin) return;
-      state.field = describeElement(event.target);
-      scheduleTrack(400);
+      markTyping(event.target);
     }, true);
 
     subscribe();
@@ -519,7 +557,10 @@
     return {
       setAdminMode:function(value) {
         state.isAdmin = !!value;
-        if (!state.isAdmin) state.field = '';
+        if (!state.isAdmin) {
+          state.field = '';
+          state.typingUntil = 0;
+        }
         trackNow();
       },
       setSection:function(section) {
