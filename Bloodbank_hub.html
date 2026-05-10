@@ -515,7 +515,7 @@ button{cursor:pointer;font-family:inherit}
       <button class="nav-tab active" onclick="showSection('encyclopedia',this)">🩸 Encyclopedia</button>
       <button class="nav-tab" onclick="showSection('rbc-diagram',this)">🔬 RBC Antigens</button>
       <button class="nav-tab" onclick="showSection('chromosomes',this)">🧬 Chromosome Map</button>
-      <button class="nav-tab" onclick="showSection('crossmatch',this)">🧪 Crossmatch Lab</button>
+      <button class="nav-tab" onclick="showSection('crossmatch',this)">🧪 Simulation Lab</button>
       <button class="nav-tab" onclick="showSection('resources',this)">📖 Resources</button>
       <button class="nav-tab" onclick="openExportModal()" style="background:rgba(232,168,50,.2);border-color:rgba(232,168,50,.4);color:#e8c870">⬇ Export PDF</button>
     </nav>
@@ -737,10 +737,60 @@ function applyRemoteNotes(data) {
   renderChromMap();
 }
 
+function cleanRemoteAboCases(list) {
+  return Array.isArray(list) ? list.map(function(item, index) {
+    item = item || {};
+    var extra = Array.isArray(item.extra) ? item.extra.map(function(t, i) {
+      return {
+        id: t.id || ('extra' + i),
+        label: t.label || 'Extra',
+        result: String(t.result || '0'),
+        color: t.color || '#7a6468',
+        bg: t.bg || 'rgba(238,238,238,.9)'
+      };
+    }) : [];
+    return {
+      type: item.type || 'O+',
+      label: item.label || item.type || ('Custom ABO ' + (index + 1)),
+      fwd: {
+        antiA: String(item.fwd && item.fwd.antiA || '0'),
+        antiB: String(item.fwd && item.fwd.antiB || '0'),
+        antiD: String(item.fwd && item.fwd.antiD || '0')
+      },
+      rev: {
+        a1: String(item.rev && item.rev.a1 || '0'),
+        b: String(item.rev && item.rev.b || '0')
+      },
+      extra: extra
+    };
+  }) : [];
+}
+
+function cleanRemoteCalcScenarios(list) {
+  var popLabels = {c:true,b:true,a:true,i:true,h:true};
+  return Array.isArray(list) ? list.map(function(item, index) {
+    item = item || {};
+    var antibodies = Array.isArray(item.antibodies) ? item.antibodies : String(item.antibodies || '').split(',');
+    antibodies = antibodies.map(function(ab){ return String(ab || '').trim(); }).filter(Boolean);
+    return {
+      name: item.name || ('Custom Case ' + (index + 1)),
+      patient: item.patient || 'O+',
+      antibodies: antibodies.length ? antibodies : ['anti-K'],
+      units: Math.max(1, Number(item.units) || 1),
+      pop: popLabels[item.pop] ? item.pop : 'c',
+      note: item.note || 'ABO and D-compatible bags are already selected. Only calculate the listed antigen-negative availability.'
+    };
+  }) : [];
+}
+
 function applyRemoteXm(data) {
   xmCases = data && Array.isArray(data.cases) && data.cases.length > 0 ? data.cases : defaultXmCases();
+  aboCustomCases = cleanRemoteAboCases(data && data.aboCases);
+  calcCustomScenarios = cleanRemoteCalcScenarios(data && data.calcScenarios);
   if (xmMode === 'xm') renderXm();
   renderXmEditor2();
+  if (typeof renderABOsim === 'function' && document.getElementById('aboContent') && document.getElementById('aboContent').style.display !== 'none') renderABOsim();
+  if (typeof renderCalcSim === 'function' && document.getElementById('calcContent') && document.getElementById('calcContent').style.display !== 'none') renderCalcSim();
 }
 
 async function initApp() {
@@ -761,9 +811,14 @@ async function initApp() {
     key: SUPABASE_KEY,
     table: TABLE_NAME,
     id: 'bb_xmatch',
-    defaultData: () => ({ cases: defaultXmCases(), updatedAt: Date.now() }),
-    normalize: data => ({ cases: data && Array.isArray(data.cases) && data.cases.length ? data.cases : defaultXmCases(), updatedAt: data && data.updatedAt || Date.now() }),
-    getLocal: () => ({ cases: xmCases, updatedAt: Date.now() }),
+    defaultData: () => ({ cases: defaultXmCases(), aboCases: [], calcScenarios: [], updatedAt: Date.now() }),
+    normalize: data => ({
+      cases: data && Array.isArray(data.cases) && data.cases.length ? data.cases : defaultXmCases(),
+      aboCases: cleanRemoteAboCases(data && data.aboCases),
+      calcScenarios: cleanRemoteCalcScenarios(data && data.calcScenarios),
+      updatedAt: data && data.updatedAt || Date.now()
+    }),
+    getLocal: () => ({ cases: xmCases, aboCases: aboCustomCases, calcScenarios: calcCustomScenarios, updatedAt: Date.now() }),
     setLocal: data => applyRemoteXm(data),
     toast: showToast,
     onConflict: info => console.warn('Blood Bank crossmatch save conflict:', info.paths)
@@ -2629,7 +2684,7 @@ function buildExportHtml(content, title, orientation) {
     '.system-page{padding:0;font-size:9px}.system-card{border-top:2.5px solid #5a0e20;border-left:1px solid #f7c5d0;border-right:1px solid #f7c5d0;border-bottom:1px solid #f7c5d0;border-radius:10px;padding:6px 8px;margin:0;background:#fffaf7;break-inside:avoid;page-break-inside:avoid}.hero-card{padding-bottom:10px}.system-head{display:flex;gap:8px;align-items:flex-start;margin-bottom:5px}.system-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;line-height:1;box-shadow:inset 0 2px 5px rgba(0,0,0,.22)}.system-head h1{text-align:left;font-size:20px;line-height:1;margin:0 0 2px;padding:0}.isbt{font-size:8px;letter-spacing:2px;color:#7a6468;text-transform:uppercase}.pun{font-size:9px;color:#c0173d;font-style:italic;font-weight:700;margin-top:2px}.card-label{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#7a6468;font-weight:700;margin:0 0 4px}.system-page .tl{padding-left:8px}.system-page .tl-item{font-size:8.4px;line-height:1.13;margin-bottom:3px}.system-page .yr{font-size:8px;display:inline-block;width:45px}.onepage-system{height:' + onePageHeight + ';overflow:hidden}.onepage-head{border-top:2.5px solid #5a0e20;border-left:1px solid #f7c5d0;border-right:1px solid #f7c5d0;border-bottom:1px solid #f7c5d0;border-radius:10px;background:#fffaf7;padding:5px 8px;margin-bottom:5px}.compact-head{align-items:center;margin-bottom:0}.onepage-grid{display:grid;' + onePageGrid + 'gap:5px;align-items:start}.compact-export h1{padding:0;margin:0 0 7px}.compact-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.compact-card h1{font-size:13px;text-align:left;padding:0;margin:0 0 5px}.compact-card .tl-item{font-size:9px;line-height:1.16;margin-bottom:3px}.compact-card .yr{display:inline-block;width:45px;font-size:9px}.compact-card .card-label{font-size:8px;margin-bottom:4px}.compact-card .study-table td{font-size:6.8px!important;padding:2px 3px!important}.compact-card .study-table td.lbl{font-size:6.5px!important;width:1.15in!important}' +
     '.membrane-card{padding-bottom:7px}.membrane-print{height:1.18in;overflow:hidden;margin:-4px 0 0}.membrane-print div{overflow:hidden!important}.membrane-print svg{width:100%!important;min-width:0!important;height:1.18in!important}.membrane-print text{font-size:14px!important}.mini-table td{font-size:8px;padding:2px 4px}.study-table{font-size:6.8px;line-height:1.08}.study-table td{font-size:6.8px;padding:2px 3px}.study-table td.lbl{width:1.15in;font-size:6.3px}.freq-export{font-size:6.2px;line-height:1.02;table-layout:fixed}.freq-export th{font-size:5.8px;padding:2px 2px}.freq-export td{font-size:5.8px;padding:2px 2px}.freq-export th:nth-child(1){width:.52in}.freq-export th:nth-child(2),.freq-export th:nth-child(3),.freq-export th:nth-child(4),.freq-export th:nth-child(5),.freq-export th:nth-child(6){width:.2in}.freq-export th:nth-child(7){width:.4in}.freq-export .center{text-align:center}.freq-export .memo{background:#dce6f4}.note-box{font-size:6.6px;line-height:1.1;padding:4px;background:#fff;border-left:3px solid #f7c5d0}.muted{color:#9a8588}' +
     '.binder-system{height:10.25in;overflow:hidden;font-size:8px;padding-top:.18in}.binder-system table{margin-bottom:0}.binder-card{border-top:2.5px solid #5a0e20;border-left:1px solid #f7c5d0;border-right:1px solid #f7c5d0;border-bottom:1px solid #f7c5d0;border-radius:12px;background:#fffaf7;margin-bottom:.11in;break-inside:avoid;page-break-inside:avoid}.binder-hero{min-height:2.13in;padding:7px 12px 8px}.binder-head{gap:8px;align-items:flex-start;margin-bottom:5px}.binder-head .system-dot{width:31px;height:31px;font-size:15px}.binder-head h1{text-align:left;font-size:24px;line-height:.95;margin:0 0 3px;padding:0}.binder-head .isbt{font-size:7.8px;letter-spacing:2.4px}.binder-head .pun{font-size:11px;line-height:1.15;margin-top:4px}.binder-system .card-label{font-size:8.2px;letter-spacing:3px;text-transform:uppercase;color:#7a6468;font-weight:700;margin:0 0 5px}.binder-history .tl{padding-left:9px;border-left:2px solid #f7c5d0}.binder-history .tl-item{font-size:8.7px;line-height:1.18;margin-bottom:3px}.binder-history .yr{display:inline-block;width:.58in;font-size:8.8px;color:#c0173d;font-weight:700}.binder-membrane-card{height:1.58in;padding:8px 10px}.binder-membrane-print{height:1.19in;display:flex;align-items:center;justify-content:center;overflow:hidden}.binder-membrane-print>div{width:4.25in!important;overflow:hidden!important}.binder-membrane-print svg{width:4.25in!important;min-width:0!important;height:1.1in!important}.binder-membrane-print text{font-size:10px!important}.binder-study{height:3.68in;padding:8px 10px;overflow:hidden}.binder-system .study-table{font-size:7.3px;line-height:1.08}.binder-system .study-table td{font-size:7.2px;padding:2.65px 3px}.binder-system .study-table td.lbl{width:1.48in;font-size:6.9px;letter-spacing:.5px}.binder-freq{min-height:.82in;padding:8px 10px}.binder-system .freq-export{font-size:6px;line-height:1.02;table-layout:fixed}.binder-system .freq-export th{font-size:5.7px;padding:2px 2px}.binder-system .freq-export td{font-size:5.8px;padding:2px 2px}.binder-notes{min-height:1.12in;padding:8px 10px;margin-bottom:0}.binder-system .note-box{font-size:6.9px;line-height:1.15;padding:5px 6px;background:#fff;border-left:3px solid #f7c5d0}' +
-    '.map-page{max-width:10.4in}.map-print{height:6.8in;overflow:hidden;display:flex;align-items:center;justify-content:center}.map-print svg{width:10.8in!important;max-width:none!important;min-width:0!important;height:auto!important}.map-print div{overflow:visible!important}svg{max-width:100%;height:auto}' +
+    '.map-page{max-width:10.4in;height:7.15in;overflow:hidden}.map-page h1{font-size:16px;padding:0;margin:0 0 .06in}.map-print{height:6.86in;overflow:hidden;display:flex;align-items:center;justify-content:center}.map-print>div{width:100%!important;height:100%!important;overflow:hidden!important}.map-print svg{width:100%!important;max-width:100%!important;min-width:0!important;height:100%!important;max-height:6.78in!important}.map-rbc .map-print svg text{font-size:10px!important}.map-chrom .map-print{align-items:flex-start}.map-chrom .map-print svg text{font-size:8px!important}svg{max-width:100%;height:auto}' +
     portraitTweaks +
     '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style></head><body>' + content + '</body></html>';
 }
@@ -2692,12 +2747,13 @@ function doExport() {
     isAdmin = false;
     tmp1.innerHTML = buildFullRbcSVG();
     isAdmin = oldAdmin;
-    html += '<div class="page map-page"><h1>RBC Antigen Map</h1><div class="map-print">' + tmp1.innerHTML + '</div></div>';
+    html += '<div class="page map-page map-rbc"><h1>RBC Antigen Map</h1><div class="map-print">' + tmp1.innerHTML + '</div></div>';
   }
 
   if (inclChrom) {
     var tmp2 = document.createElement('div');
     tmp2.id = 'chromMapContainerExport';
+    tmp2.dataset.exportMode = '1';
     document.body.appendChild(tmp2);
     var origContainer = document.getElementById('chromMapContainer');
     var origId = origContainer.id;
@@ -2709,7 +2765,7 @@ function doExport() {
     origContainer.id = origId;
     document.body.removeChild(tmp2);
     renderChromMap();
-    html += '<div class="page"><h1>Blood Group Chromosome Map</h1>' + chromHTML + '</div>';
+    html += '<div class="page map-page map-chrom"><h1>Blood Group Chromosome Map</h1><div class="map-print">' + chromHTML + '</div></div>';
   }
 
   printExportHtml(html, 'Blood Bank Map Export', 'landscape');
@@ -2746,6 +2802,7 @@ const CHROM_H_DATA = [200,192,184,178,170,162,156,150,144,136,132,128,124,120,11
 function renderChromMap() {
   var container = document.getElementById('chromMapContainer');
   if (!container) return;
+  var exportMode = container.dataset && container.dataset.exportMode === '1';
 
   // Approximate learning map: no exact locus scale, just which chromosome carries the group.
   var GENES = {
@@ -2758,12 +2815,17 @@ function renderChromMap() {
     22: [{gene:'P1PK', h1:'P1', h2:'P2', color:'#555'}]
   };
   var NUMS = [1,4,7,9,18,19,22];
-  var HEIGHT_BY_CHR = {1:136,4:116,7:98,9:88,18:70,19:66,22:56};
+  var HEIGHT_BY_CHR = exportMode
+    ? {1:108,4:94,7:78,9:70,18:56,19:54,22:48}
+    : {1:122,4:104,7:88,9:78,18:62,19:60,22:52};
   var rows = [NUMS.slice(0,4), NUMS.slice(4)];
   var rowH = rows.map(function(row){return row.map(function(n){return HEIGHT_BY_CHR[n]||110})});
-  var CW = 18, GAP = 5, STEP = 104;
-  var html = '<div style="font-size:14px;font-weight:800;color:var(--warm-grey);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;line-height:1.25">Usual suspect chromosome map</div>';
-  html += '<div style="display:flex;flex-direction:column;gap:26px;max-width:760px;margin:0 auto">';
+  var CW = exportMode ? 13 : 15;
+  var GAP = exportMode ? 4 : 5;
+  var STEP = exportMode ? 82 : 90;
+  var rowGap = exportMode ? 12 : 18;
+  var html = exportMode ? '' : '<div style="font-size:14px;font-weight:800;color:var(--warm-grey);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;line-height:1.25">Usual suspect chromosome map</div>';
+  html += '<div style="display:flex;flex-direction:column;gap:' + rowGap + 'px;max-width:' + (exportMode ? '9.4in' : '640px') + ';margin:0 auto">';
 
   rows.forEach(function(rowNums, ri) {
     var rh = rowH[ri];
@@ -2795,30 +2857,38 @@ function renderChromMap() {
       svg += '<g class="cp" data-tip="' + tip + '" onclick="showChromDetail(' + (isNaN(n) ? '\'' + n + '\'' : n) + ')" style="cursor:pointer">';
       svg += '<rect x="' + x1 + '" y="' + yTop + '" width="' + CW + '" height="' + h + '" rx="' + (CW / 2) + '" fill="' + fillA + '" opacity="' + op + '"/>';
       svg += '<rect x="' + x2 + '" y="' + yTop + '" width="' + CW + '" height="' + h + '" rx="' + (CW / 2) + '" fill="' + fillB + '" opacity="' + op + '"/>';
-      svg += '<text x="' + midX + '" y="' + (yBot + 17) + '" fill="' + (hasG ? '#5a0e20' : '#bbb') + '" font-size="13" text-anchor="middle" font-weight="' + (hasG ? 'bold' : 'normal') + '">' + n + '</text>';
       genes.forEach(function(g, gi) {
-        svg += '<text x="' + midX + '" y="' + (yBot + 29 + gi * 11) + '" fill="' + g.color + '" font-size="8.4" text-anchor="middle" font-weight="700">' + g.gene + '</text>';
+        var gy = yTop + h * (genes.length === 1 ? .42 : (.3 + gi * .28));
+        var label = (g.h1 || g.gene) + (g.h2 ? ' | ' + g.h2 : '');
+        svg += '<line x1="' + (x1 - 8) + '" y1="' + gy + '" x2="' + (x2 + CW + 8) + '" y2="' + gy + '" stroke="' + g.color + '" stroke-width="1.6" stroke-linecap="round"/>';
+        svg += '<circle cx="' + x1 + '" cy="' + gy + '" r="2.4" fill="' + g.color + '"/><circle cx="' + (x2 + CW) + '" cy="' + gy + '" r="2.4" fill="' + g.color + '"/>';
+        svg += '<text x="' + midX + '" y="' + (gy - 5) + '" fill="' + g.color + '" font-size="' + (exportMode ? '5.8' : '6.6') + '" text-anchor="middle" font-weight="700">' + g.gene + '</text>';
+        svg += '<text x="' + midX + '" y="' + (gy + 9) + '" fill="#5a0e20" font-size="' + (exportMode ? '4.9' : '5.8') + '" text-anchor="middle">' + label + '</text>';
       });
+      svg += '<text x="' + midX + '" y="' + (yBot + 17) + '" fill="' + (hasG ? '#5a0e20' : '#bbb') + '" font-size="13" text-anchor="middle" font-weight="' + (hasG ? 'bold' : 'normal') + '">' + n + '</text>';
       svg += '</g>';
     });
 
     svg += '</svg>';
-    var extraH = 13 * Math.max.apply(null, rowNums.map(function(n){ return (GENES[n] || []).length; }));
+    var extraH = exportMode ? 2 : 8;
     html += '<div style="overflow:hidden;padding-bottom:' + (extraH + 10) + 'px">' + svg + '</div>';
   });
 
   html += '</div>';
 
-  html += '<div style="display:flex;gap:18px;flex-wrap:wrap;margin-top:10px;font-size:12px;align-items:center;color:var(--warm-grey)">' +
-    '<span>Only the usual suspect systems are shown.</span>' +
-    '<span>Each pair represents the two chromosome copies.</span>' +
-    '<span style="font-style:italic">Click any chromosome for gene and antigen details.</span>' +
-    '</div>';
+  if (!exportMode) {
+    html += '<div style="display:flex;gap:18px;flex-wrap:wrap;margin-top:10px;font-size:12px;align-items:center;color:var(--warm-grey)">' +
+      '<span>Only the usual suspect systems are shown.</span>' +
+      '<span>Each pair represents the two chromosome copies.</span>' +
+      '<span style="font-style:italic">Click any chromosome for gene and antigen details.</span>' +
+      '</div>';
+  }
 
   // Tooltip + events
-  html += '<div id="chromTooltip" style="display:none;position:fixed;background:#1e0d10;color:#fce8ed;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;z-index:9000;pointer-events:none;max-width:240px;line-height:1.5;box-shadow:0 4px 16px rgba(0,0,0,.4)"></div>';
+  if (!exportMode) html += '<div id="chromTooltip" style="display:none;position:fixed;background:#1e0d10;color:#fce8ed;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;z-index:9000;pointer-events:none;max-width:240px;line-height:1.5;box-shadow:0 4px 16px rgba(0,0,0,.4)"></div>';
 
   container.innerHTML = html;
+  if (exportMode) return;
 
   var tip = document.getElementById('chromTooltip');
   document.querySelectorAll('.cp').forEach(function(el) {
@@ -2910,6 +2980,7 @@ function defaultXmCases() {
 
 var calcScenarioIndex = 0;
 var calcReveal = 0;
+var calcCustomScenarios = [];
 const CALC_POP_LABELS = {c:'C', b:'B', a:'A', i:'I', h:'H'};
 const CALC_POP_FULL = {c:'Caucasian', b:'Black', a:'Asian', i:'Indian', h:'Hispanic'};
 const CALC_FREQ_FALLBACK = {
@@ -2935,6 +3006,26 @@ const CALC_SCENARIOS = [
   {name:'Case 4', patient:'A-', antibodies:['anti-C','anti-e','anti-K'], units:2, pop:'a', note:'All pulled units are already D negative. Use column A for C, e, and K.'},
   {name:'Case 5', patient:'AB+', antibodies:['anti-S','anti-E','anti-c'], units:1, pop:'h', note:'AB positive can receive Rh positive or negative. Only the listed antigen negatives are in the math.'}
 ];
+
+function normalizeCalcScenario(sc, index) {
+  if (!sc) return null;
+  var antibodies = Array.isArray(sc.antibodies)
+    ? sc.antibodies
+    : String(sc.antibodies || '').split(',');
+  antibodies = antibodies.map(function(item) { return String(item || '').trim(); }).filter(Boolean);
+  return {
+    name: sc.name || ('Custom Case ' + ((index || 0) + 1)),
+    patient: sc.patient || 'O+',
+    antibodies: antibodies.length ? antibodies : ['anti-K'],
+    units: Math.max(1, Number(sc.units) || 1),
+    pop: CALC_POP_LABELS[sc.pop] ? sc.pop : 'c',
+    note: sc.note || 'ABO and D-compatible bags are already selected. Only calculate the listed antigen-negative availability.'
+  };
+}
+
+function getCalcScenarios() {
+  return CALC_SCENARIOS.concat(calcCustomScenarios.map(normalizeCalcScenario).filter(Boolean));
+}
 
 function startCalcSim() {
   document.getElementById('aboContent').style.display = 'none';
@@ -2984,7 +3075,14 @@ function calcScenarioMath(sc) {
     var antigen = ab.replace(/^anti[-\s]*/i,'');
     var positive = getCalcPositivePct(antigen, sc.pop);
     var negative = Math.max(0, Math.min(1, (100 - positive) / 100));
-    factors.push({label:antigen + ' negative', decimal:negative, detail:'1 - ' + (positive/100).toFixed(2) + ' = ' + negative.toFixed(2)});
+    factors.push({
+      label: antigen + ' negative',
+      antigen: antigen,
+      positivePct: positive,
+      positiveDecimal: positive / 100,
+      decimal: negative,
+      detail: 'Freq turned ' + positive + '% into decimal ' + (positive/100).toFixed(2) + '; compatibility is the ' + antigen + '-negative chance, so 1 - ' + (positive/100).toFixed(2) + ' = ' + negative.toFixed(2)
+    });
   });
   var denom = factors.reduce(function(product, f){ return product * f.decimal; }, 1);
   var raw = denom > 0 ? sc.units / denom : 0;
@@ -2992,7 +3090,8 @@ function calcScenarioMath(sc) {
 }
 
 function setCalcScenario(index) {
-  calcScenarioIndex = index;
+  var scenarios = getCalcScenarios();
+  calcScenarioIndex = Math.max(0, Math.min(scenarios.length - 1, Number(index) || 0));
   calcReveal = 0;
   renderCalcSim();
 }
@@ -3023,12 +3122,67 @@ function buildCalcReferenceRows() {
   return html || '<tr><td colspan="7">Add C/B/A/I/H frequencies in the encyclopedia frequency tables.</td></tr>';
 }
 
+function addCalcScenario() {
+  if (!isAdmin) return;
+  calcCustomScenarios.push(normalizeCalcScenario({name:'Custom Case ' + (calcCustomScenarios.length + 1), patient:'O+', antibodies:['anti-K'], units:1, pop:'c', note:'ABO and D-compatible bags are already selected. Only calculate the listed antigen-negative availability.'}, calcCustomScenarios.length));
+  calcScenarioIndex = CALC_SCENARIOS.length + calcCustomScenarios.length - 1;
+  scheduleXmSave();
+  renderCalcSim();
+}
+
+function updateCalcScenario(index, field, value) {
+  if (!isAdmin) return;
+  var customIndex = Number(index) - CALC_SCENARIOS.length;
+  if (customIndex < 0 || !calcCustomScenarios[customIndex]) return;
+  if (field === 'antibodies') calcCustomScenarios[customIndex][field] = String(value || '').split(',').map(function(item){ return item.trim(); }).filter(Boolean);
+  else if (field === 'units') calcCustomScenarios[customIndex][field] = Math.max(1, Number(value) || 1);
+  else calcCustomScenarios[customIndex][field] = value;
+  calcCustomScenarios[customIndex] = normalizeCalcScenario(calcCustomScenarios[customIndex], customIndex);
+  scheduleXmSave();
+  renderCalcSim();
+}
+
+function removeCalcScenario(index) {
+  if (!isAdmin) return;
+  var customIndex = Number(index) - CALC_SCENARIOS.length;
+  if (customIndex < 0) return;
+  calcCustomScenarios.splice(customIndex, 1);
+  calcScenarioIndex = Math.max(0, Math.min(calcScenarioIndex, getCalcScenarios().length - 1));
+  scheduleXmSave();
+  renderCalcSim();
+}
+
+function buildCalcAdminPanel(scenarios) {
+  if (!isAdmin) return '';
+  var customRows = scenarios.map(function(sc, i) {
+    if (i < CALC_SCENARIOS.length) return '';
+    return '<div style="display:grid;grid-template-columns:110px 90px 1fr 70px 92px 1.2fr auto;gap:6px;align-items:start;margin-bottom:7px">' +
+      '<input class="xm-input" value="' + escText(sc.name) + '" placeholder="Case name" onchange="updateCalcScenario(' + i + ',\'name\',this.value)">' +
+      '<input class="xm-input" value="' + escText(sc.patient) + '" placeholder="Patient" onchange="updateCalcScenario(' + i + ',\'patient\',this.value)">' +
+      '<input class="xm-input" value="' + escText(sc.antibodies.join(', ')) + '" placeholder="anti-K, anti-E" onchange="updateCalcScenario(' + i + ',\'antibodies\',this.value)">' +
+      '<input class="xm-input" type="number" min="1" value="' + escText(sc.units) + '" onchange="updateCalcScenario(' + i + ',\'units\',this.value)">' +
+      '<select class="xm-input" onchange="updateCalcScenario(' + i + ',\'pop\',this.value)">' +
+        Object.keys(CALC_POP_LABELS).map(function(key){ return '<option value="' + key + '"' + (sc.pop === key ? ' selected' : '') + '>' + CALC_POP_LABELS[key] + '</option>'; }).join('') +
+      '</select>' +
+      '<textarea class="xm-input" rows="2" placeholder="Teaching note" onchange="updateCalcScenario(' + i + ',\'note\',this.value)">' + escText(sc.note) + '</textarea>' +
+      '<button class="del-btn" onclick="removeCalcScenario(' + i + ')" style="display:inline-block;color:var(--crimson);font-size:16px">x</button>' +
+    '</div>';
+  }).join('');
+  return '<div class="xm-admin-panel"><div class="sec-label" style="margin-bottom:10px">Admin: Add Calculation Cases</div>' +
+    '<div style="font-size:12px;color:var(--warm-grey);margin-bottom:8px">Built-in cases stay as examples. Add your own cases below; they autosave with Simulation Lab.</div>' +
+    (customRows || '<div class="phase-instr">No custom calculation cases yet.</div>') +
+    '<button class="btn btn-ghost btn-sm" onclick="addCalcScenario()" style="margin-top:8px">+ Add Calculation Case</button>' +
+  '</div>';
+}
+
 function renderCalcSim() {
   var area = document.getElementById('calcContent');
   if (!area) return;
-  var sc = CALC_SCENARIOS[calcScenarioIndex] || CALC_SCENARIOS[0];
+  var scenarios = getCalcScenarios();
+  if (calcScenarioIndex >= scenarios.length) calcScenarioIndex = 0;
+  var sc = scenarios[calcScenarioIndex] || scenarios[0];
   var math = calcScenarioMath(sc);
-  var caseBtns = CALC_SCENARIOS.map(function(item, i) {
+  var caseBtns = scenarios.map(function(item, i) {
     return '<button class="calc-case-btn ' + (i === calcScenarioIndex ? 'active' : '') + '" onclick="setCalcScenario(' + i + ')">' +
       '<div>' + item.name + '</div><small>' + escText(item.patient) + ' - ' + escText(item.antibodies.join(', ')) + '</small></button>';
   }).join('');
@@ -3036,7 +3190,7 @@ function renderCalcSim() {
   if (calcReveal >= 1) {
     setup = '<div class="calc-equation"><div class="calc-frac"><span>' + sc.units + ' unit' + (sc.units === 1 ? '' : 's') + ' required</span><span>' + math.factors.map(function(f){ return f.decimal.toFixed(2); }).join(' x ') + '</span></div></div>' +
       '<div class="calc-step-list">' + math.factors.map(function(f) {
-        return '<div class="calc-step"><strong>' + escText(f.label) + ':</strong> ' + escText(f.detail) + ' (' + f.decimal.toFixed(2) + ')</div>';
+        return '<div class="calc-step"><strong>' + escText(f.label) + ':</strong> ' + escText(f.detail) + '.</div>';
       }).join('') + '</div>';
   }
   var answer = calcReveal >= 2
@@ -3049,6 +3203,7 @@ function renderCalcSim() {
       '<h3 style="color:var(--wine);font-size:28px;line-height:1.1;margin-bottom:12px">' + escText(sc.name) + ': ' + escText(sc.patient) + ' patient</h3>' +
       '<p style="font-size:18px;line-height:1.4;color:var(--warm-grey);margin-bottom:12px">Antibody screen: <strong>' + escText(sc.antibodies.join(', ')) + '</strong>. Needs <strong>' + sc.units + '</strong> ABO/D-compatible RBC unit' + (sc.units === 1 ? '' : 's') + '. Donor population column: <strong>' + escText(CALC_POP_LABELS[sc.pop]) + '</strong> (' + escText(CALC_POP_FULL[sc.pop]) + ').</p>' +
       '<div class="phase-instr" style="margin-bottom:10px"><strong>Given:</strong> ABO and D are already handled by the blood bank pull. Do not include ABO or D in the denominator.</div>' +
+      '<div class="phase-instr" style="margin-bottom:10px"><strong>Freq vs compatibility:</strong> Frequency is how many donors are antigen-positive. Compatibility is the antigen-negative chance you can actually use. Turn the frequency percent into a decimal, then subtract from 1.</div>' +
       '<div class="phase-instr" style="font-size:17px;line-height:1.45;margin-bottom:10px">' + escText(sc.note) + '</div>' +
       '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px 0">' +
         '<button class="btn btn-ghost" onclick="revealCalc(1)">Show setup</button>' +
@@ -3061,6 +3216,7 @@ function renderCalcSim() {
       '<div class="sec-label calc-ref-title">Reference Frequencies: C / B / A / I / H Only</div>' +
       '<div class="calc-ref-scroll"><table class="calc-ref-table"><thead><tr><th>System</th><th>Antigen</th><th>C</th><th>B</th><th>A</th><th>I</th><th>H</th></tr></thead><tbody>' + buildCalcReferenceRows() + '</tbody></table></div>' +
     '</div>' +
+    buildCalcAdminPanel(scenarios) +
   '</div>';
 }
 
@@ -3792,6 +3948,7 @@ var aboCases = 0;
 var aboCorrect = 0;
 var currentABO = null;
 var aboShaken = {};
+var aboCustomCases = [];
 
 var ABO_CASES = [
   {type:'A+',  fwd:{antiA:'4+',antiB:'0',antiD:'4+'}, rev:{a1:'0',b:'3+'}, extra:[], label:'A Rh+'},
@@ -3806,9 +3963,42 @@ var ABO_CASES = [
   {type:'A2B-',fwd:{antiA:'4+',antiB:'4+',antiD:'0'},  rev:{a1:'1+',b:'0'}, extra:[{id:'a1lectin',label:'A1 Lectin',result:'0',color:'#d4860a',bg:'rgba(252,240,220,.85)'},{id:'saline',label:'Saline Ctrl',result:'0',color:'#7a6468',bg:'rgba(238,238,238,.9)'}], label:'A2B Rh-'},
 ];
 
+function normalizeAboCase(item) {
+  if (!item) return null;
+  var extra = Array.isArray(item.extra) ? item.extra : [];
+  extra = extra.map(function(t, i) {
+    return {
+      id: t.id || ('extra' + i),
+      label: t.label || 'Extra',
+      result: String(t.result || '0'),
+      color: t.color || '#7a6468',
+      bg: t.bg || 'rgba(238,238,238,.9)'
+    };
+  }).filter(function(t){ return t.label; });
+  return {
+    type: item.type || 'O+',
+    label: item.label || item.type || 'Custom ABO',
+    fwd: {
+      antiA: String((item.fwd && item.fwd.antiA) || '0'),
+      antiB: String((item.fwd && item.fwd.antiB) || '0'),
+      antiD: String((item.fwd && item.fwd.antiD) || '0')
+    },
+    rev: {
+      a1: String((item.rev && item.rev.a1) || '0'),
+      b: String((item.rev && item.rev.b) || '0')
+    },
+    extra: extra
+  };
+}
+
+function getAboCases() {
+  return ABO_CASES.concat(aboCustomCases.map(normalizeAboCase).filter(Boolean));
+}
+
 function nextABOCase() {
   aboCases++;
-  currentABO = ABO_CASES[Math.floor(Math.random() * ABO_CASES.length)];
+  var cases = getAboCases();
+  currentABO = cases[Math.floor(Math.random() * cases.length)];
   aboShaken = {};
   renderABOsim();
 }
@@ -3870,7 +4060,8 @@ function getAboTubeIds(cs) {
 function renderABOsim() {
   var area = document.getElementById('aboContent');
   if (!currentABO) {
-    currentABO = ABO_CASES[Math.floor(Math.random() * ABO_CASES.length)];
+    var cases = getAboCases();
+    currentABO = cases[Math.floor(Math.random() * cases.length)];
     aboCases++;
     aboShaken = {};
   }
@@ -3878,10 +4069,14 @@ function renderABOsim() {
 
   // Answer buttons
   var answers = ['A+','A-','B+','B-','AB+','AB-','O+','O-','A2B+','A2B-'];
+  getAboCases().forEach(function(item) {
+    if (answers.indexOf(item.type) === -1) answers.push(item.type);
+  });
   var btnHTML = answers.map(function(a) {
-    return '<button class="donor-btn" onclick="checkABOAnswer(\'' + a + '\')" style="min-width:80px">' +
-      '<span class="donor-type">' + a + '</span>' +
-    '</button>';
+    var answerArg = JSON.stringify(a).replace(/"/g, '&quot;');
+    return '<button class="donor-btn" onclick="checkABOAnswer(' + answerArg + ')" style="min-width:80px">' +
+      '<span class="donor-type">' + escText(a) + '</span>' +
+      '</button>';
   }).join('');
 
   area.innerHTML =
@@ -3916,7 +4111,80 @@ function renderABOsim() {
     '<div class="sec-label" style="margin-bottom:10px">Interpretation -- What is this patient\'s blood type?</div>' +
     '<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">' + btnHTML + '</div>' +
     '<div id="aboFeedback" class="xm-feedback" style="margin-top:12px">Review forward and reverse typing results, then select the blood type.</div>' +
+    '</div>' +
+    buildAboAdminPanel();
+}
+
+function addAboCase() {
+  if (!isAdmin) return;
+  aboCustomCases.push(normalizeAboCase({type:'A2B+', label:'Custom A2B Rh+', fwd:{antiA:'4+',antiB:'4+',antiD:'4+'}, rev:{a1:'1+',b:'0'}, extra:[{id:'a1lectin',label:'A1 Lectin',result:'0',color:'#d4860a',bg:'rgba(252,240,220,.85)'},{id:'saline',label:'Saline Ctrl',result:'0',color:'#7a6468',bg:'rgba(238,238,238,.9)'}]}));
+  currentABO = aboCustomCases[aboCustomCases.length - 1];
+  aboShaken = {};
+  scheduleXmSave();
+  renderABOsim();
+}
+
+function updateAboCase(index, field, value) {
+  if (!isAdmin) return;
+  var item = aboCustomCases[Number(index)];
+  if (!item) return;
+  item = normalizeAboCase(item);
+  if (field === 'type' || field === 'label') item[field] = value;
+  if (field === 'antiA') item.fwd.antiA = value;
+  if (field === 'antiB') item.fwd.antiB = value;
+  if (field === 'antiD') item.fwd.antiD = value;
+  if (field === 'a1') item.rev.a1 = value;
+  if (field === 'b') item.rev.b = value;
+  if (field === 'a1lectin') {
+    var lectin = item.extra.find(function(t){ return t.id === 'a1lectin'; });
+    if (!lectin) { lectin = {id:'a1lectin',label:'A1 Lectin',result:'0',color:'#d4860a',bg:'rgba(252,240,220,.85)'}; item.extra.push(lectin); }
+    lectin.result = value;
+  }
+  if (field === 'saline') {
+    var saline = item.extra.find(function(t){ return t.id === 'saline'; });
+    if (!saline) { saline = {id:'saline',label:'Saline Ctrl',result:'0',color:'#7a6468',bg:'rgba(238,238,238,.9)'}; item.extra.push(saline); }
+    saline.result = value;
+  }
+  aboCustomCases[Number(index)] = normalizeAboCase(item);
+  currentABO = aboCustomCases[Number(index)];
+  aboShaken = {};
+  scheduleXmSave();
+  renderABOsim();
+}
+
+function removeAboCase(index) {
+  if (!isAdmin) return;
+  aboCustomCases.splice(Number(index), 1);
+  currentABO = null;
+  scheduleXmSave();
+  renderABOsim();
+}
+
+function buildAboAdminPanel() {
+  if (!isAdmin) return '';
+  var rows = aboCustomCases.map(function(item, i) {
+    item = normalizeAboCase(item);
+    var lectin = (item.extra || []).find(function(t){ return t.id === 'a1lectin'; }) || {result:''};
+    var saline = (item.extra || []).find(function(t){ return t.id === 'saline'; }) || {result:''};
+    return '<div style="display:grid;grid-template-columns:90px 110px repeat(5,62px) repeat(2,76px) auto;gap:6px;align-items:center;margin-bottom:7px">' +
+      '<input class="xm-input" value="' + escText(item.type) + '" placeholder="Type" onchange="updateAboCase(' + i + ',\'type\',this.value)">' +
+      '<input class="xm-input" value="' + escText(item.label) + '" placeholder="Label" onchange="updateAboCase(' + i + ',\'label\',this.value)">' +
+      '<input class="xm-input" value="' + escText(item.fwd.antiA) + '" title="Anti-A" onchange="updateAboCase(' + i + ',\'antiA\',this.value)">' +
+      '<input class="xm-input" value="' + escText(item.fwd.antiB) + '" title="Anti-B" onchange="updateAboCase(' + i + ',\'antiB\',this.value)">' +
+      '<input class="xm-input" value="' + escText(item.fwd.antiD) + '" title="Anti-D" onchange="updateAboCase(' + i + ',\'antiD\',this.value)">' +
+      '<input class="xm-input" value="' + escText(item.rev.a1) + '" title="A1 cells" onchange="updateAboCase(' + i + ',\'a1\',this.value)">' +
+      '<input class="xm-input" value="' + escText(item.rev.b) + '" title="B cells" onchange="updateAboCase(' + i + ',\'b\',this.value)">' +
+      '<input class="xm-input" value="' + escText(lectin.result) + '" placeholder="A1 lectin" onchange="updateAboCase(' + i + ',\'a1lectin\',this.value)">' +
+      '<input class="xm-input" value="' + escText(saline.result) + '" placeholder="Saline" onchange="updateAboCase(' + i + ',\'saline\',this.value)">' +
+      '<button class="del-btn" onclick="removeAboCase(' + i + ')" style="display:inline-block;color:var(--crimson);font-size:16px">x</button>' +
     '</div>';
+  }).join('');
+  return '<div class="xm-admin-panel"><div class="sec-label" style="margin-bottom:10px">Admin: Add ABO Typing Cases</div>' +
+    '<div style="font-size:12px;color:var(--warm-grey);margin-bottom:8px">Use 0, 1+, 2+, 3+, or 4+. Custom cases autosave with Simulation Lab.</div>' +
+    '<div style="display:grid;grid-template-columns:90px 110px repeat(5,62px) repeat(2,76px) auto;gap:6px;font-size:10px;color:var(--warm-grey);font-weight:800;margin-bottom:4px"><span>Type</span><span>Label</span><span>Anti-A</span><span>Anti-B</span><span>Anti-D</span><span>A1</span><span>B</span><span>A1 lectin</span><span>Saline</span><span></span></div>' +
+    (rows || '<div class="phase-instr">No custom ABO cases yet.</div>') +
+    '<button class="btn btn-ghost btn-sm" onclick="addAboCase()" style="margin-top:8px">+ Add ABO Case</button>' +
+  '</div>';
 }
 
 function checkABOAnswer(answer) {
