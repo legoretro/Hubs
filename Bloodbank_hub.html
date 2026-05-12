@@ -344,6 +344,34 @@ button{cursor:pointer;font-family:inherit}
 .rxn-input:focus{outline:none;border-color:var(--crimson)}
 .rxn-pos{color:var(--crimson);font-weight:700}.rxn-neg{color:var(--good);font-weight:700}
 
+/* Antigram builder */
+.antigram-shell{display:grid;gap:14px}
+.antigram-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.antigram-status{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.antigram-status-card{border:1px solid var(--rose);background:#fff;border-radius:12px;padding:12px}
+.antigram-status-card strong{display:block;color:var(--wine);font-size:13px;margin-bottom:5px}
+.antigram-pill-list{display:flex;gap:6px;flex-wrap:wrap}
+.antigram-pill{display:inline-flex;align-items:center;border-radius:999px;border:1px solid var(--rose);background:var(--blush);color:var(--wine);padding:3px 8px;font-size:11px;font-weight:800}
+.antigram-pill.ruled{background:#e8fff3;color:#0a4a2a;border-color:#9bd4bc}
+.antigram-pill.left{background:#fff4dc;color:#6a3e00;border-color:#e6bf72}
+.antigram-panel-wrap{overflow:auto;border:1px solid var(--rose);border-radius:12px;background:#fff;box-shadow:var(--shadow-sm)}
+.antigram-table{border-collapse:collapse;min-width:1160px;width:100%;font-size:10.5px}
+.antigram-table th{position:sticky;top:0;z-index:2;background:var(--wine);color:#fff;padding:5px 3px;text-align:center;font-size:9.5px;white-space:nowrap}
+.antigram-table td{border:1px solid var(--rose);padding:3px;text-align:center;background:#fff;min-width:28px}
+.antigram-table td.cell-id{position:sticky;left:0;z-index:1;background:#fffaf7;font-weight:900;color:var(--wine);min-width:56px}
+.antigram-table td.ag-pos{color:#5a0e20;font-weight:900}.antigram-table td.ag-neg{color:#c9b8bd}
+.antigram-table td.ruled-out{background:#dff4eb!important;box-shadow:inset 0 0 0 2px rgba(26,122,94,.22)}
+.antigram-table td.suspect-hit{background:#fff1b8!important;box-shadow:inset 0 0 0 2px rgba(212,134,10,.35)}
+.antigram-table td.rxn-cell{min-width:48px;background:#fffaf7}
+.antigram-table select,.antigram-table input{width:44px;border:1px solid var(--rose);border-radius:5px;background:#fff;font-family:Georgia,serif;font-size:11px;text-align:center;padding:3px}
+.antigram-table input[type="text"]{width:54px}
+.antigram-table button.antigen-toggle{border:0;background:transparent;font-family:Georgia,serif;font-weight:900;color:inherit;width:100%;cursor:pointer}
+.antigram-steps{display:grid;gap:9px}
+.antigram-step{border-left:4px solid var(--rose);background:#fff;border-radius:10px;padding:11px 13px;color:var(--dark);font-size:14px;line-height:1.45}
+.antigram-step.active{border-left-color:var(--crimson);background:var(--blush)}
+.antigram-step strong{color:var(--wine)}
+.antigram-admin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;margin-top:10px}
+
 /* Phase instruction box */
 .phase-instr{background:#fff;border:1px solid var(--rose);border-radius:var(--r-sm);padding:10px 14px;font-size:12px;color:var(--warm-grey);margin-top:8px;line-height:1.5}
 .phase-instr strong{color:var(--wine)}
@@ -605,7 +633,7 @@ button{cursor:pointer;font-family:inherit}
     <div class="section-hero">
       <h2><span class="hero-emoji">🧪</span> Simulation Lab</h2>
     </div>
-    <div style="max-width:860px;margin:0 auto">
+    <div id="simulationShell" style="max-width:860px;margin:0 auto">
       <div class="sim-mode-strip">
         <button id="aboSimBtn" class="btn btn-primary" onclick="startABOsim()" style="font-size:15px;padding:12px 28px">🅰️ ABO Typing</button>
         <button id="xmSimBtn" class="btn btn-ghost" onclick="startXMsim()" style="font-size:15px;padding:12px 28px;border-width:2px">🩸 Crossmatch</button>
@@ -701,6 +729,9 @@ let rbcMapCopies = [];
 let rbcHiddenItems = [];
 let rbcToolScope = 'abo';
 let rbcEditingItemId = null;
+let antigramCase = null;
+let antigramShowAnswer = false;
+let antigramStep = 1;
 
 // ============================================================
 // INTRO ANIMATION
@@ -800,6 +831,7 @@ function applyRemoteXm(data) {
   xmCases = data && Array.isArray(data.cases) && data.cases.length > 0 ? data.cases : defaultXmCases();
   aboCustomCases = cleanRemoteAboCases(data && data.aboCases);
   calcCustomScenarios = cleanRemoteCalcScenarios(data && data.calcScenarios);
+  antigramCase = cleanRemoteAntigramCase(data && data.antigramCase);
   if (typeof renderXm === 'function' && document.getElementById('xmContent') && document.getElementById('xmContent').style.display !== 'none') renderXm();
   renderXmEditor2();
   if (typeof renderABOsim === 'function' && document.getElementById('aboContent') && document.getElementById('aboContent').style.display !== 'none') renderABOsim();
@@ -825,20 +857,21 @@ async function initApp() {
     key: SUPABASE_KEY,
     table: TABLE_NAME,
     id: 'bb_xmatch',
-    defaultData: () => ({ cases: defaultXmCases(), aboCases: [], calcScenarios: [], updatedAt: Date.now() }),
+    defaultData: () => ({ cases: defaultXmCases(), aboCases: [], calcScenarios: [], antigramCase: defaultAntigramCase(), updatedAt: Date.now() }),
     normalize: data => ({
       cases: data && Array.isArray(data.cases) && data.cases.length ? data.cases : defaultXmCases(),
       aboCases: cleanRemoteAboCases(data && data.aboCases),
       calcScenarios: cleanRemoteCalcScenarios(data && data.calcScenarios),
+      antigramCase: cleanRemoteAntigramCase(data && data.antigramCase),
       updatedAt: data && data.updatedAt || Date.now()
     }),
-    getLocal: () => ({ cases: xmCases, aboCases: aboCustomCases, calcScenarios: calcCustomScenarios, updatedAt: Date.now() }),
+    getLocal: () => ({ cases: xmCases, aboCases: aboCustomCases, calcScenarios: calcCustomScenarios, antigramCase: cleanRemoteAntigramCase(antigramCase), updatedAt: Date.now() }),
     setLocal: data => applyRemoteXm(data),
     toast: showToast,
     onConflict: info => console.warn('Blood Bank crossmatch save conflict:', info.paths)
   });
   try { await notesDoc.load(); notesDoc.subscribe(); } catch(e) { showToast(`Supabase load failed: ${e.message}`, true); console.error(e); hydrateNotesData({}); }
-  try { await xmDoc.load(); xmDoc.subscribe(); } catch(e) { showToast(`Supabase load failed: ${e.message}`, true); console.error(e); xmCases = defaultXmCases(); }
+  try { await xmDoc.load(); xmDoc.subscribe(); } catch(e) { showToast(`Supabase load failed: ${e.message}`, true); console.error(e); applyRemoteXm({ cases: defaultXmCases(), aboCases: [], calcScenarios: [], antigramCase: defaultAntigramCase() }); }
   if (window.createSafeSupabasePresence) syncPresence = createSafeSupabasePresence({
     url: SUPABASE_URL,
     key: SUPABASE_KEY,
@@ -2625,9 +2658,7 @@ function buildFullSystemExportPage(key) {
   membrane = membrane
     .replace(/id="rbcMembraneSvg"/g, '')
     .replace(/touch-action:none/g, '');
-  var notes = data.lab_notes
-    ? '<div class="note-box">' + exportText(data.lab_notes) + '</div>'
-    : '<div class="note-box"><span class="muted">blank</span></div>';
+  var notes = data.lab_notes ? '<div class="note-box">' + exportText(data.lab_notes) + '</div>' : '';
   return '<section class="page binder-system">' +
     '<div class="binder-card binder-hero" style="border-top-color:' + sys.color + '">' +
       '<div class="system-head binder-head">' +
@@ -2641,7 +2672,7 @@ function buildFullSystemExportPage(key) {
     '<div class="binder-card binder-membrane-card" style="border-top-color:' + sys.color + '"><div class="card-label">RBC Membrane Location</div><div class="binder-membrane-print">' + membrane + '</div></div>' +
     '<div class="binder-card binder-study" style="border-top-color:' + sys.color + '"><div class="card-label">Study Reference</div><table class="study-table"><tbody>' + buildExportWsRows(sys, skey) + '</tbody></table></div>' +
     '<div class="binder-card binder-freq" style="border-top-color:' + sys.color + '"><div class="card-label">Antigen Frequencies</div><table class="freq-export"><thead><tr><th>Antigen</th><th>C</th><th>B</th><th>A</th><th>I</th><th>H</th><th>Memo</th><th>Population Different In</th><th>Higher or Lower?</th></tr></thead><tbody>' + buildExportFrequencyRows(skey) + '</tbody></table></div>' +
-    '<div class="binder-card binder-notes" style="border-top-color:' + sys.color + '"><div class="card-label">Transfusion Notes</div>' + notes + '</div>' +
+    (notes ? '<div class="binder-card binder-notes" style="border-top-color:' + sys.color + '"><div class="card-label">Transfusion Notes</div>' + notes + '</div>' : '') +
   '</section>';
 }
 
@@ -2705,23 +2736,33 @@ function csvChoices(correct, pool) {
   return choices;
 }
 
-function addCsvQuestion(rows, question, correct, pool, explanation) {
+function shuffleCsvChoices(choices, correct) {
+  choices = choices.slice(0, 4);
+  for (var i = choices.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = choices[i]; choices[i] = choices[j]; choices[j] = tmp;
+  }
+  if (choices.indexOf(correct) === -1) choices[0] = correct;
+  return choices;
+}
+
+function addCsvQuestion(rows, question, correct, pool) {
   correct = csvPlain(correct);
   if (!question || !correct) return;
-  var choices = csvChoices(correct, pool);
+  var choices = shuffleCsvChoices(csvChoices(correct, pool), correct);
+  var correctLetter = ['a','b','c','d'][choices.indexOf(correct)] || 'a';
   rows.push([
     question,
     choices[0],
     choices[1],
     choices[2],
     choices[3],
-    'a',
-    explanation || 'Generated from the Blood Bank hub.'
+    correctLetter
   ]);
 }
 
 function downloadCsvFile(filename, rows) {
-  var header = ['question','a','b','c','d','correct','explanation'];
+  var header = ['question','a','b','c','d','correct'];
   var csv = [header].concat(rows).map(function(row){ return row.map(csvCell).join(','); }).join('\n');
   var blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
   var url = URL.createObjectURL(blob);
@@ -2846,8 +2887,9 @@ function buildExportHtml(content, title, orientation) {
     '.tl{padding-left:12px;border-left:2px solid #f7c5d0}.tl-item{margin-bottom:7px;font-size:11px}.yr{font-weight:700;color:#c0173d;font-size:10px;display:block}' +
     '.system-page{padding:0;font-size:9px}.system-card{border-top:2.5px solid #5a0e20;border-left:1px solid #f7c5d0;border-right:1px solid #f7c5d0;border-bottom:1px solid #f7c5d0;border-radius:10px;padding:6px 8px;margin:0;background:#fffaf7;break-inside:avoid;page-break-inside:avoid}.hero-card{padding-bottom:10px}.system-head{display:flex;gap:8px;align-items:flex-start;margin-bottom:5px}.system-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;line-height:1;box-shadow:inset 0 2px 5px rgba(0,0,0,.22)}.system-head h1{text-align:left;font-size:20px;line-height:1;margin:0 0 2px;padding:0}.isbt{font-size:8px;letter-spacing:2px;color:#7a6468;text-transform:uppercase}.pun{font-size:9px;color:#c0173d;font-style:italic;font-weight:700;margin-top:2px}.card-label{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#7a6468;font-weight:700;margin:0 0 4px}.system-page .tl{padding-left:8px}.system-page .tl-item{font-size:8.4px;line-height:1.13;margin-bottom:3px}.system-page .yr{font-size:8px;display:inline-block;width:45px}.onepage-system{height:' + onePageHeight + ';overflow:hidden}.onepage-head{border-top:2.5px solid #5a0e20;border-left:1px solid #f7c5d0;border-right:1px solid #f7c5d0;border-bottom:1px solid #f7c5d0;border-radius:10px;background:#fffaf7;padding:5px 8px;margin-bottom:5px}.compact-head{align-items:center;margin-bottom:0}.onepage-grid{display:grid;' + onePageGrid + 'gap:5px;align-items:start}.compact-export h1{padding:0;margin:0 0 7px}.compact-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.compact-card h1{font-size:13px;text-align:left;padding:0;margin:0 0 5px}.compact-card .tl-item{font-size:9px;line-height:1.16;margin-bottom:3px}.compact-card .yr{display:inline-block;width:45px;font-size:9px}.compact-card .card-label{font-size:8px;margin-bottom:4px}.compact-card .study-table td{font-size:6.8px!important;padding:2px 3px!important}.compact-card .study-table td.lbl{font-size:6.5px!important;width:1.15in!important}' +
     '.membrane-card{padding-bottom:7px}.membrane-print{height:1.18in;overflow:hidden;margin:-4px 0 0}.membrane-print div{overflow:hidden!important}.membrane-print svg{width:100%!important;min-width:0!important;height:1.18in!important}.membrane-print text{font-size:14px!important}.mini-table td{font-size:8px;padding:2px 4px}.study-table{font-size:6.8px;line-height:1.08}.study-table td{font-size:6.8px;padding:2px 3px}.study-table td.lbl{width:1.15in;font-size:6.3px}.freq-export{font-size:6.2px;line-height:1.02;table-layout:fixed}.freq-export th{font-size:5.8px;padding:2px 2px}.freq-export td{font-size:5.8px;padding:2px 2px}.freq-export th:nth-child(1){width:.52in}.freq-export th:nth-child(2),.freq-export th:nth-child(3),.freq-export th:nth-child(4),.freq-export th:nth-child(5),.freq-export th:nth-child(6){width:.2in}.freq-export th:nth-child(7){width:.4in}.freq-export .center{text-align:center}.freq-export .memo{background:#dce6f4}.note-box{font-size:6.6px;line-height:1.1;padding:4px;background:#fff;border-left:3px solid #f7c5d0}.muted{color:#9a8588}' +
-    '.binder-system{height:10.25in;overflow:hidden;font-size:8px;padding-top:.12in}.binder-system table{margin-bottom:0}.binder-card{border-top:2.5px solid #5a0e20;border-left:1px solid #f7c5d0;border-right:1px solid #f7c5d0;border-bottom:1px solid #f7c5d0;border-radius:12px;background:#fffaf7;margin-bottom:.08in;break-inside:avoid;page-break-inside:avoid}.binder-hero{min-height:1.55in;padding:5px 10px 6px}.binder-head{gap:8px;align-items:flex-start;margin-bottom:3px}.binder-head .system-dot{width:28px;height:28px;font-size:14px}.binder-head h1{text-align:left;font-size:22px;line-height:.95;margin:0 0 2px;padding:0}.binder-head .isbt{font-size:7px;letter-spacing:2.1px}.binder-head .pun{font-size:9.5px;line-height:1.08;margin-top:2px}.binder-system .card-label{font-size:8.2px;letter-spacing:3px;text-transform:uppercase;color:#7a6468;font-weight:700;margin:0 0 4px}.binder-history .tl{padding-left:8px;border-left:2px solid #f7c5d0}.binder-history .tl-item{font-size:6.8px;line-height:1.06;margin-bottom:2px}.binder-history .yr{display:inline-block;width:.5in;font-size:6.9px;color:#c0173d;font-weight:700}.binder-membrane-card{height:1.74in;padding:6px 8px}.binder-membrane-print{height:1.45in;display:flex;align-items:center;justify-content:center;overflow:hidden}.binder-membrane-print>div{width:5.55in!important;overflow:hidden!important}.binder-membrane-print svg{width:5.55in!important;min-width:0!important;height:1.42in!important}.binder-membrane-print text{font-size:10px!important}.binder-study{height:4.02in;padding:8px 10px;overflow:hidden}.binder-system .study-table{font-size:7.8px;line-height:1.12}.binder-system .study-table td{font-size:7.8px;padding:2.9px 3px}.binder-system .study-table td.lbl{width:1.5in;font-size:7.3px;letter-spacing:.5px}.binder-freq{min-height:.92in;padding:8px 10px}.binder-system .freq-export{font-size:6.4px;line-height:1.04;table-layout:fixed}.binder-system .freq-export th{font-size:6px;padding:2px 2px}.binder-system .freq-export td{font-size:6.2px;padding:2.1px 2px}.binder-notes{min-height:.92in;padding:7px 10px;margin-bottom:0}.binder-system .note-box{font-size:6.7px;line-height:1.12;padding:4px 6px;background:#fff;border-left:3px solid #f7c5d0}' +
-    '.map-page{max-width:10.4in;height:7.15in;overflow:hidden}.map-page h1{font-size:16px;padding:0;margin:0 0 .06in}.map-print{height:6.86in;overflow:hidden;display:flex;align-items:center;justify-content:center}.map-print>div{width:100%!important;height:100%!important;overflow:hidden!important}.map-print svg{width:100%!important;max-width:100%!important;min-width:0!important;height:100%!important;max-height:6.78in!important}.map-rbc .map-print svg text{font-size:10px!important}.map-chrom .map-print{align-items:flex-start}.map-chrom .map-print svg text{font-size:8px!important}svg{max-width:100%;height:auto}' +
+    '.binder-system{height:10.25in;overflow:hidden;font-size:8px;padding-top:.05in}.binder-system table{margin-bottom:0}.binder-card{border-top:2.5px solid #5a0e20;border-left:1px solid #f7c5d0;border-right:1px solid #f7c5d0;border-bottom:1px solid #f7c5d0;border-radius:12px;background:#fffaf7;margin-bottom:.055in;break-inside:avoid;page-break-inside:avoid}.binder-hero{min-height:1.28in;padding:5px 10px 6px}.binder-head{gap:8px;align-items:flex-start;margin-bottom:3px}.binder-head .system-dot{width:28px;height:28px;font-size:14px}.binder-head h1{text-align:left;font-size:22px;line-height:.95;margin:0 0 2px;padding:0}.binder-head .isbt{font-size:7px;letter-spacing:2.1px}.binder-head .pun{font-size:9.5px;line-height:1.08;margin-top:2px}.binder-system .card-label{font-size:8.2px;letter-spacing:3px;text-transform:uppercase;color:#7a6468;font-weight:700;margin:0 0 4px}.binder-history .tl{padding-left:8px;border-left:2px solid #f7c5d0}.binder-history .tl-item{font-size:6.4px;line-height:1.04;margin-bottom:1.5px}.binder-history .yr{display:inline-block;width:.5in;font-size:6.5px;color:#c0173d;font-weight:700}.binder-membrane-card{height:1.58in;padding:5px 8px}.binder-membrane-print{height:1.31in;display:flex;align-items:center;justify-content:center;overflow:hidden}.binder-membrane-print>div{width:5.55in!important;overflow:hidden!important}.binder-membrane-print svg{width:5.55in!important;min-width:0!important;height:1.28in!important}.binder-membrane-print text{font-size:10px!important}.binder-study{height:auto;max-height:3.62in;padding:6px 10px;overflow:hidden}.binder-system .study-table{font-size:7.6px;line-height:1.08}.binder-system .study-table td{font-size:7.6px;padding:2.4px 3px}.binder-system .study-table td.lbl{width:1.5in;font-size:7.1px;letter-spacing:.5px}.binder-freq{min-height:0;padding:6px 10px}.binder-system .freq-export{font-size:6.2px;line-height:1.02;table-layout:fixed}.binder-system .freq-export th{font-size:5.8px;padding:1.8px 2px}.binder-system .freq-export td{font-size:6px;padding:1.8px 2px}.binder-notes{min-height:0;padding:6px 10px;margin-bottom:0}.binder-system .note-box{font-size:6.6px;line-height:1.08;padding:4px 6px;background:#fff;border-left:3px solid #f7c5d0}' +
+    '.antigram-export-page{max-width:10.4in;height:7.1in;overflow:hidden}.antigram-export-page h1{font-size:15px;margin:0 0 .04in;padding:0}.antigram-export-note{font-size:8px;color:#7a6468;margin-bottom:.05in}.antigram-export-page .antigram-panel-wrap{overflow:hidden;border:1px solid #5a0e20;border-radius:4px;background:#fff}.antigram-export-page .antigram-table{width:100%;min-width:0;border-collapse:collapse;table-layout:fixed;font-size:5.4px}.antigram-export-page .antigram-table th{position:static;background:#5a0e20;color:#fff;font-size:5.2px;padding:2px 1px;text-align:center}.antigram-export-page .antigram-table td{border:1px solid #d9a9b4;padding:2px 1px;text-align:center;font-size:5.6px;min-width:0}.antigram-export-page .antigram-table td.cell-id{position:static;background:#fffaf7;font-weight:bold;color:#5a0e20;font-size:5.5px}.antigram-export-page .antigram-table td.ruled-out{background:#dff4eb!important}.antigram-export-page .antigram-table td.suspect-hit{background:#fff1b8!important}.antigram-answer-key,.antigram-practice-lines{font-size:8px;line-height:1.25;margin-top:.06in;border:1px solid #f7c5d0;border-radius:6px;padding:.06in;background:#fffaf7}' +
+    '.map-page{max-width:10.4in;height:7.15in;overflow:hidden}.map-page h1{font-size:16px;padding:0;margin:0 0 .06in}.map-print{height:6.86in;overflow:hidden;display:flex;align-items:center;justify-content:center}.map-print>div{width:100%!important;height:100%!important;overflow:hidden!important}.map-print svg{width:100%!important;max-width:100%!important;min-width:0!important;height:100%!important;max-height:6.78in!important}.map-rbc .map-print svg text{font-size:10px!important}.map-chrom .map-print{align-items:flex-start}svg{max-width:100%;height:auto}' +
     portraitTweaks +
     '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style></head><body>' + content + '</body></html>';
 }
@@ -2985,7 +3027,7 @@ function renderChromMap() {
   var rowH = rows.map(function(row){return row.map(function(n){return HEIGHT_BY_CHR[n]||110})});
   var CW = exportMode ? 13 : 15;
   var GAP = exportMode ? 4 : 5;
-  var STEP = exportMode ? 82 : 90;
+  var STEP = exportMode ? 118 : 126;
   var rowGap = exportMode ? 12 : 18;
   var html = exportMode ? '' : '<div style="font-size:14px;font-weight:800;color:var(--warm-grey);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;line-height:1.25">Usual suspect chromosome map</div>';
   html += '<div style="display:flex;flex-direction:column;gap:' + rowGap + 'px;max-width:' + (exportMode ? '9.4in' : '640px') + ';margin:0 auto">';
@@ -2993,20 +3035,21 @@ function renderChromMap() {
   rows.forEach(function(rowNums, ri) {
     var rh = rowH[ri];
     var maxH = Math.max.apply(null, rh);
-    var svgW = rowNums.length * STEP + 42;
+    var svgW = rowNums.length * STEP + 78;
     var svgH = maxH + 62;
     var svg = '<svg viewBox="0 0 ' + svgW + ' ' + svgH + '" xmlns="http://www.w3.org/2000/svg" style="width:100%;overflow:visible;font-family:Georgia,serif;">' +
       '<defs>' +
       '<linearGradient id="gA' + ri + '" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#e8b4c0"/><stop offset="50%" stop-color="#c0173d"/><stop offset="100%" stop-color="#e8b4c0"/></linearGradient>' +
       '<linearGradient id="gB' + ri + '" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#b8d4f0"/><stop offset="50%" stop-color="#1a5c8c"/><stop offset="100%" stop-color="#b8d4f0"/></linearGradient>' +
       '<linearGradient id="gN' + ri + '" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#eee"/><stop offset="50%" stop-color="#dedbdc"/><stop offset="100%" stop-color="#eee"/></linearGradient>' +
+      '<marker id="chromArrow' + ri + '" markerWidth="4" markerHeight="4" refX="3" refY="2" orient="auto"><path d="M0,0 L4,2 L0,4 Z" fill="#7a6468"/></marker>' +
       '</defs>';
 
     rowNums.forEach(function(n, i) {
       var genes = GENES[n] || [];
       var h = rh[i];
       var hasG = genes.length > 0;
-      var x1 = 18 + i * STEP;
+      var x1 = 28 + i * STEP;
       var x2 = x1 + CW + GAP;
       var midX = x1 + CW + GAP / 2;
       var yBot = maxH + 8;
@@ -3022,17 +3065,20 @@ function renderChromMap() {
       svg += '<rect x="' + x2 + '" y="' + yTop + '" width="' + CW + '" height="' + h + '" rx="' + (CW / 2) + '" fill="' + fillB + '" opacity="' + op + '"/>';
       genes.forEach(function(g, gi) {
         var gy = yTop + h * (genes.length === 1 ? .42 : (.3 + gi * .28));
-        var geneY = gy - (exportMode ? 8 : 9);
-        var hapY = gy + (exportMode ? 12 : 14);
-        var geneFs = exportMode ? '5.4' : '6.4';
-        var hapFs = exportMode ? '4.9' : '5.8';
+        var geneY = gy - (exportMode ? 7 : 8);
+        var hapY = gy + (exportMode ? 4 : 5);
+        var geneFs = exportMode ? '5.3' : '6.6';
+        var hapFs = exportMode ? '4.4' : '5.2';
+        var labelX = x2 + CW + (exportMode ? 11 : 13);
+        var labelW = exportMode ? 52 : 64;
+        var labelH = exportMode ? 15 : 18;
+        var labelText = (g.h1 || g.gene) + (g.h2 ? ' | ' + g.h2 : '');
         svg += '<line x1="' + (x1 - 8) + '" y1="' + gy + '" x2="' + (x2 + CW + 8) + '" y2="' + gy + '" stroke="' + g.color + '" stroke-width="1.6" stroke-linecap="round"/>';
         svg += '<circle cx="' + x1 + '" cy="' + gy + '" r="2.4" fill="' + g.color + '"/><circle cx="' + (x2 + CW) + '" cy="' + gy + '" r="2.4" fill="' + g.color + '"/>';
-        svg += '<line x1="' + midX + '" y1="' + (gy - 2) + '" x2="' + midX + '" y2="' + (geneY + 1) + '" stroke="' + g.color + '" stroke-width=".75" opacity=".7"/>';
-        svg += '<rect x="' + (midX - 17) + '" y="' + (geneY - 6) + '" width="34" height="8.5" rx="3" fill="#fffaf7" opacity=".88"/>';
-        svg += '<text x="' + midX + '" y="' + geneY + '" fill="' + g.color + '" font-size="' + geneFs + '" text-anchor="middle" font-weight="700">' + g.gene + '</text>';
-        svg += '<text x="' + (x1 + CW/2) + '" y="' + hapY + '" fill="#5a0e20" font-size="' + hapFs + '" text-anchor="middle">' + (g.h1 || g.gene) + '</text>';
-        if (g.h2) svg += '<text x="' + (x2 + CW/2) + '" y="' + hapY + '" fill="#5a0e20" font-size="' + hapFs + '" text-anchor="middle">' + g.h2 + '</text>';
+        svg += '<line x1="' + (x2 + CW + 5) + '" y1="' + gy + '" x2="' + (labelX - 3) + '" y2="' + gy + '" stroke="#7a6468" stroke-width=".8" marker-end="url(#chromArrow' + ri + ')" opacity=".75"/>';
+        svg += '<rect x="' + (labelX - 2) + '" y="' + (geneY - 6) + '" width="' + labelW + '" height="' + labelH + '" rx="4" fill="#fffaf7" stroke="' + g.color + '" stroke-width=".45" opacity=".96"/>';
+        svg += '<text x="' + (labelX + 3) + '" y="' + geneY + '" fill="' + g.color + '" font-size="' + geneFs + '" text-anchor="start" font-weight="700">' + g.gene + '</text>';
+        svg += '<text x="' + (labelX + 3) + '" y="' + hapY + '" fill="#5a0e20" font-size="' + hapFs + '" text-anchor="start">' + labelText + '</text>';
       });
       svg += '<text x="' + midX + '" y="' + (yBot + 17) + '" fill="' + (hasG ? '#5a0e20' : '#bbb') + '" font-size="13" text-anchor="middle" font-weight="' + (hasG ? 'bold' : 'normal') + '">' + n + '</text>';
       svg += '</g>';
@@ -3235,6 +3281,7 @@ function getCalcScenarios() {
 }
 
 function startCalcSim() {
+  setSimulationShellWidth('860px');
   document.getElementById('aboContent').style.display = 'none';
   document.getElementById('xmContent').style.display  = 'none';
   document.getElementById('calcContent').style.display = 'block';
@@ -3433,7 +3480,14 @@ function initXmatch() {
   xmTotal = 0;
   startABOsim();  // Start with ABO typing
 }
+
+function setSimulationShellWidth(width) {
+  var shell = document.getElementById('simulationShell');
+  if (shell) shell.style.maxWidth = width || '860px';
+}
+
 function startABOsim() {
+  setSimulationShellWidth('860px');
   document.getElementById('aboContent').style.display = 'block';
   document.getElementById('xmContent').style.display  = 'none';
   document.getElementById('calcContent').style.display = 'none';
@@ -3445,6 +3499,7 @@ function startABOsim() {
   renderABOsim();
 }
 function startXMsim() {
+  setSimulationShellWidth('860px');
   document.getElementById('aboContent').style.display = 'none';
   document.getElementById('xmContent').style.display  = 'block';
   document.getElementById('calcContent').style.display = 'none';
@@ -3458,6 +3513,7 @@ function startXMsim() {
 }
 
 function startAntigramSim() {
+  setSimulationShellWidth('1180px');
   document.getElementById('aboContent').style.display = 'none';
   document.getElementById('xmContent').style.display  = 'none';
   document.getElementById('calcContent').style.display = 'none';
@@ -3472,11 +3528,246 @@ function startAntigramSim() {
 function renderAntigramSim() {
   var area = document.getElementById('antigramContent');
   if (!area) return;
-  area.innerHTML = '<div class="sys-card" style="border-top:3px solid var(--crimson);padding:22px">' +
-    '<div class="sec-label" style="margin-bottom:10px">Antigram</div>' +
-    '<h3 style="color:var(--wine);font-size:30px;line-height:1.1;margin-bottom:10px">Coming Soon</h3>' +
-    '<p style="font-size:17px;line-height:1.45;color:var(--warm-grey);max-width:760px">This tab is reserved for panel interpretation practice, so Simulation Lab now has ABO Typing, Crossmatch, Calculations, and Antigram in one place.</p>' +
+  if (!antigramCase) antigramCase = defaultAntigramCase();
+  var analysis = analyzeAntigramCase(antigramCase);
+  var answerStyle = antigramShowAnswer ? '' : ' style="display:none"';
+  area.innerHTML = '<div class="antigram-shell">' +
+    '<div class="sys-card" style="border-top:3px solid var(--crimson);padding:18px">' +
+      '<div class="sec-label" style="margin-bottom:8px">Antigram Panel Builder</div>' +
+      '<h3 style="color:var(--wine);font-size:30px;line-height:1.08;margin-bottom:8px">' + escText(antigramCase.title || 'Antigram Practice Panel') + '</h3>' +
+      '<div class="phase-instr" style="margin-bottom:12px"><strong>Use:</strong> Pick or edit the patient reactions, then rule out antigen specificities on non-reactive cells first. Yellow marks antigens still possible on reactive cells.</div>' +
+      '<div class="antigram-toolbar">' +
+        '<button class="btn btn-primary" onclick="autoGenerateAntigram()">Auto Generate Panel</button>' +
+        '<button class="btn btn-ghost" onclick="setAntigramStep(1)">Panel Only</button>' +
+        '<button class="btn btn-ghost" onclick="setAntigramStep(2)">Rule Out First</button>' +
+        '<button class="btn btn-ghost" onclick="setAntigramStep(3)">Show Left</button>' +
+        '<button class="btn btn-ghost" onclick="toggleAntigramAnswer()">' + (antigramShowAnswer ? 'Hide Answer' : 'Show Answer') + '</button>' +
+        '<button class="btn btn-ghost" onclick="exportAntigramPractice(false)">Export Practice</button>' +
+        '<button class="btn btn-ghost admin-only-inline" onclick="exportAntigramPractice(true)">Export Answer Key</button>' +
+      '</div>' +
+      (isAdmin ? buildAntigramAdminTitle() : '') +
+    '</div>' +
+    buildAntigramTable(antigramCase, {editable:isAdmin, reveal:antigramShowAnswer ? antigramStep : 1}) +
+    '<div class="antigram-status"' + answerStyle + '>' +
+      '<div class="antigram-status-card"><strong>Ruled out first</strong><div class="antigram-pill-list">' + pillList(analysis.ruledOut, 'ruled') + '</div></div>' +
+      '<div class="antigram-status-card"><strong>Still left</strong><div class="antigram-pill-list">' + pillList(analysis.possible, 'left') + '</div></div>' +
+      '<div class="antigram-status-card"><strong>Patient reactions</strong><div style="font-size:13px;color:var(--warm-grey);line-height:1.45">' + escText(analysis.positiveRows.length ? ('Reactive cells: ' + analysis.positiveRows.join(', ')) : 'No reactive cells entered yet.') + '</div></div>' +
+    '</div>' +
+    '<div class="antigram-steps"' + answerStyle + '>' +
+      '<div class="antigram-step ' + (antigramStep === 2 ? 'active' : '') + '"><strong>1. Rule out first:</strong> Every non-reactive panel cell can rule out the antigens it carries.</div>' +
+      '<div class="antigram-step ' + (antigramStep === 3 ? 'active' : '') + '"><strong>2. Look at what is left:</strong> Antibodies left after rule-out are compared against the reactive cells.</div>' +
+      '<div class="antigram-step"><strong>3. Confirm:</strong> Use selected cells, dosage, enzyme behavior, and clinical context before calling specificity.</div>' +
+    '</div>' +
   '</div>';
+}
+
+const ANTIGRAM_ANTIGENS = [
+  'D','C','E','c','e','f','Cw','V',
+  'K','k','Kpa','Kpb','Jsa','Jsb',
+  'Fya','Fyb','Jka','Jkb','Xga',
+  'Lea','Leb','S','s','M','N','P1','Lua','Lub'
+];
+const ANTIGRAM_FREQ = {D:.85,C:.68,E:.29,c:.80,e:.98,f:.64,Cw:.02,V:.01,K:.09,k:.99,Kpa:.02,Kpb:.99,Jsa:.01,Jsb:.99,Fya:.66,Fyb:.83,Jka:.77,Jkb:.74,Lea:.22,Leb:.72,P1:.79,M:.78,N:.72,S:.55,s:.89,Lua:.08,Lub:.99,Xga:.78};
+const ANTIGRAM_TARGET_POOL = ['K','E','c','Fya','Fyb','Jka','Jkb','S','M','Lua'];
+const ANTIGRAM_RXN_OPTIONS = ['0','w+','1+','2+','3+','4+','NT'];
+
+function cleanRemoteAntigramCase(item) {
+  item = item || defaultAntigramCase();
+  var cells = Array.isArray(item.cells) ? item.cells : [];
+  cells = cells.slice(0, 10).map(function(cell, index) {
+    cell = cell || {};
+    var antigens = {};
+    ANTIGRAM_ANTIGENS.forEach(function(ag){ antigens[ag] = !!(cell.antigens && cell.antigens[ag]); });
+    var rxn = cell.rxn || {};
+    return {
+      id: cell.id || String(index + 1),
+      antigens: antigens,
+      rxn: {
+        is: String(rxn.is || '0'),
+        t37: String(rxn.t37 || '0'),
+        ahg: String(rxn.ahg || '0')
+      }
+    };
+  });
+  while (cells.length < 10) cells.push(blankAntigramCell(cells.length));
+  return {
+    title: item.title || 'Antigram Practice Panel',
+    targetAbs: Array.isArray(item.targetAbs) ? item.targetAbs.map(String).filter(Boolean) : [],
+    cells: cells
+  };
+}
+
+function blankAntigramCell(index) {
+  var antigens = {};
+  ANTIGRAM_ANTIGENS.forEach(function(ag){ antigens[ag] = false; });
+  return {id:String(index + 1), antigens:antigens, rxn:{is:'0', t37:'0', ahg:'0'}};
+}
+
+function defaultAntigramCase() {
+  return generateAntigramCase(['K','E']);
+}
+
+function randomChoice(list) {
+  return list[Math.floor(Math.random() * list.length)];
+}
+
+function generateAntigramCase(targets) {
+  targets = Array.isArray(targets) && targets.length ? targets.slice(0, 3) : [randomChoice(ANTIGRAM_TARGET_POOL)];
+  var cells = [];
+  for (var i = 0; i < 10; i++) {
+    var cell = blankAntigramCell(i);
+    ANTIGRAM_ANTIGENS.forEach(function(ag) {
+      cell.antigens[ag] = Math.random() < (ANTIGRAM_FREQ[ag] || .45);
+    });
+    targets.forEach(function(ag, ti) {
+      if (i === 0) cell.antigens[ag] = false;
+      else if (i === ti + 1 || Math.random() < .42) cell.antigens[ag] = true;
+      else if (Math.random() < .34) cell.antigens[ag] = false;
+    });
+    var reacts = targets.some(function(ag){ return cell.antigens[ag]; });
+    cell.rxn = reacts
+      ? {is:'0', t37:Math.random() < .28 ? '1+' : '0', ahg:randomChoice(['1+','2+','2+','3+'])}
+      : {is:'0', t37:'0', ahg:'0'};
+    cells.push(cell);
+  }
+  return {title:'Auto Panel - rule out practice', targetAbs:targets, cells:cells};
+}
+
+function isPositiveReaction(rxn) {
+  return ['is','t37','ahg'].some(function(phase) {
+    var v = String(rxn && rxn[phase] || '').trim();
+    return v && v !== '0' && v.toUpperCase() !== 'NT';
+  });
+}
+
+function analyzeAntigramCase(panel) {
+  panel = cleanRemoteAntigramCase(panel);
+  var ruled = {}, possible = {};
+  var positiveCells = panel.cells.filter(function(cell){ return isPositiveReaction(cell.rxn); });
+  var negativeCells = panel.cells.filter(function(cell){ return !isPositiveReaction(cell.rxn); });
+  ANTIGRAM_ANTIGENS.forEach(function(ag) {
+    ruled[ag] = negativeCells.some(function(cell){ return !!cell.antigens[ag]; });
+    possible[ag] = !ruled[ag] && positiveCells.some(function(cell){ return !!cell.antigens[ag]; });
+  });
+  return {
+    ruled: ruled,
+    possibleMap: possible,
+    ruledOut: ANTIGRAM_ANTIGENS.filter(function(ag){ return ruled[ag]; }),
+    possible: ANTIGRAM_ANTIGENS.filter(function(ag){ return possible[ag]; }),
+    positiveRows: positiveCells.map(function(cell){ return cell.id; })
+  };
+}
+
+function pillList(items, cls) {
+  return items.length ? items.map(function(item){ return '<span class="antigram-pill ' + cls + '">' + escText(item) + '</span>'; }).join('') : '<span style="font-size:12px;color:var(--warm-grey)">None yet</span>';
+}
+
+function buildAntigramAdminTitle() {
+  return '<div class="antigram-admin-grid">' +
+    '<input class="xm-input" value="' + escText(antigramCase.title || '') + '" placeholder="Panel title" oninput="updateAntigramTitle(this.value)">' +
+    '<input class="xm-input" value="' + escText((antigramCase.targetAbs || []).join(', ')) + '" placeholder="Optional hidden answer, ex: K, E" oninput="updateAntigramTargets(this.value)">' +
+  '</div>';
+}
+
+function buildReactionSelect(value, row, phase) {
+  var opts = ANTIGRAM_RXN_OPTIONS.map(function(opt){ return '<option value="' + opt + '"' + (String(value) === opt ? ' selected' : '') + '>' + opt + '</option>'; }).join('');
+  return '<select onchange="updateAntigramReaction(' + row + ',\'' + phase + '\',this.value)">' + opts + '</select>';
+}
+
+function buildAntigramTable(panel, opts) {
+  panel = cleanRemoteAntigramCase(panel);
+  opts = opts || {};
+  var analysis = analyzeAntigramCase(panel);
+  var reveal = Number(opts.reveal || 1);
+  var head = '<tr><th>Cell</th>' + ANTIGRAM_ANTIGENS.map(function(ag){ return '<th>' + escText(ag) + '</th>'; }).join('') + '<th>IS</th><th>37</th><th>AHG</th></tr>';
+  var body = panel.cells.map(function(cell, rowIndex) {
+    var posRow = isPositiveReaction(cell.rxn);
+    var cells = ANTIGRAM_ANTIGENS.map(function(ag) {
+      var on = !!cell.antigens[ag];
+      var cls = on ? 'ag-pos' : 'ag-neg';
+      if (reveal >= 2 && on && !posRow && analysis.ruled[ag]) cls += ' ruled-out';
+      if (reveal >= 3 && on && posRow && analysis.possibleMap[ag]) cls += ' suspect-hit';
+      var content = opts.editable ? '<button class="antigen-toggle" onclick="toggleAntigramAntigen(' + rowIndex + ',\'' + ag + '\')">' + (on ? '+' : '0') + '</button>' : (on ? '+' : '0');
+      return '<td class="' + cls + '">' + content + '</td>';
+    }).join('');
+    var rxn = cell.rxn || {};
+    return '<tr><td class="cell-id">' + (opts.editable ? '<input type="text" value="' + escText(cell.id) + '" oninput="updateAntigramCellId(' + rowIndex + ',this.value)">' : escText(cell.id)) + '</td>' +
+      cells +
+      '<td class="rxn-cell">' + (opts.editable ? buildReactionSelect(rxn.is, rowIndex, 'is') : escText(rxn.is || '0')) + '</td>' +
+      '<td class="rxn-cell">' + (opts.editable ? buildReactionSelect(rxn.t37, rowIndex, 't37') : escText(rxn.t37 || '0')) + '</td>' +
+      '<td class="rxn-cell">' + (opts.editable ? buildReactionSelect(rxn.ahg, rowIndex, 'ahg') : escText(rxn.ahg || '0')) + '</td></tr>';
+  }).join('');
+  return '<div class="antigram-panel-wrap"><table class="antigram-table"><thead>' + head + '</thead><tbody>' + body + '</tbody></table></div>';
+}
+
+function updateAntigramTitle(value) {
+  if (!isAdmin) return;
+  antigramCase = cleanRemoteAntigramCase(antigramCase);
+  antigramCase.title = value;
+  scheduleXmSave();
+}
+
+function updateAntigramTargets(value) {
+  if (!isAdmin) return;
+  antigramCase = cleanRemoteAntigramCase(antigramCase);
+  antigramCase.targetAbs = String(value || '').split(',').map(function(item){ return item.trim(); }).filter(Boolean);
+  scheduleXmSave();
+}
+
+function updateAntigramCellId(index, value) {
+  if (!isAdmin) return;
+  antigramCase = cleanRemoteAntigramCase(antigramCase);
+  antigramCase.cells[index].id = value || String(index + 1);
+  scheduleXmSave();
+}
+
+function updateAntigramReaction(index, phase, value) {
+  antigramCase = cleanRemoteAntigramCase(antigramCase);
+  if (!antigramCase.cells[index].rxn) antigramCase.cells[index].rxn = {is:'0',t37:'0',ahg:'0'};
+  antigramCase.cells[index].rxn[phase] = value;
+  if (isAdmin) scheduleXmSave();
+  renderAntigramSim();
+}
+
+function toggleAntigramAntigen(index, ag) {
+  if (!isAdmin) return;
+  antigramCase = cleanRemoteAntigramCase(antigramCase);
+  antigramCase.cells[index].antigens[ag] = !antigramCase.cells[index].antigens[ag];
+  scheduleXmSave();
+  renderAntigramSim();
+}
+
+function autoGenerateAntigram() {
+  var currentTargets = antigramCase && Array.isArray(antigramCase.targetAbs) && antigramCase.targetAbs.length ? antigramCase.targetAbs : [randomChoice(ANTIGRAM_TARGET_POOL), randomChoice(ANTIGRAM_TARGET_POOL)];
+  currentTargets = currentTargets.filter(function(item, index, arr){ return item && arr.indexOf(item) === index; }).slice(0, 3);
+  antigramCase = generateAntigramCase(currentTargets);
+  antigramShowAnswer = false;
+  antigramStep = 1;
+  if (isAdmin) scheduleXmSave();
+  renderAntigramSim();
+}
+
+function setAntigramStep(step) {
+  antigramStep = Math.max(1, Math.min(3, Number(step) || 1));
+  antigramShowAnswer = antigramStep > 1;
+  renderAntigramSim();
+}
+
+function toggleAntigramAnswer() {
+  antigramShowAnswer = !antigramShowAnswer;
+  if (antigramShowAnswer && antigramStep < 2) antigramStep = 2;
+  renderAntigramSim();
+}
+
+function exportAntigramPractice(includeAnswer) {
+  var panel = cleanRemoteAntigramCase(antigramCase);
+  var analysis = analyzeAntigramCase(panel);
+  var content = '<section class="page antigram-export-page"><h1>' + escText(panel.title || 'Antigram Practice Panel') + '</h1>' +
+    '<div class="antigram-export-note">10-cell antibody identification panel. Reactions are included; use the blank rule-out boxes to follow along.</div>' +
+    buildAntigramTable(panel, {editable:false, reveal:includeAnswer ? 3 : 1}) +
+    (includeAnswer ? '<div class="antigram-answer-key"><strong>Ruled out:</strong> ' + escText(analysis.ruledOut.join(', ') || 'None') + '<br><strong>Still left:</strong> ' + escText(analysis.possible.join(', ') || 'None') + '</div>' : '<div class="antigram-practice-lines"><strong>Ruled out:</strong><br><br><strong>Still left:</strong><br><br><strong>Selected cells / notes:</strong><br><br></div>') +
+  '</section>';
+  printExportHtml(content, includeAnswer ? 'Antigram Answer Key' : 'Antigram Practice', 'landscape');
 }
 
 function nextXm() {
