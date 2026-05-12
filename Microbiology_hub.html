@@ -36,7 +36,7 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
 .nav-tab[data-section="gramPositive"]{border-color:rgba(123,58,167,.55);background:rgba(123,58,167,.24);color:#f8ecff}.nav-tab[data-section="gramPositive"].active{background:#f7efff;color:#5b2478;border-color:#f7efff}.nav-tab[data-section="gramNegative"]{border-color:rgba(199,85,132,.62);background:rgba(199,85,132,.23);color:#fff0f6}.nav-tab[data-section="gramNegative"].active{background:#fff0f6;color:#8c2c54;border-color:#fff0f6}#gramPositive .card{border-top-color:#7b3aa7}#gramNegative .card{border-top-color:#c75584}[data-table-id="gram_positive"] th{background:#5b2478}[data-table-id="gram_negative"] th{background:#8c2c54}[data-table-id="gram_positive"] .table-wrap{border-color:rgba(123,58,167,.3)}[data-table-id="gram_negative"] .table-wrap{border-color:rgba(199,85,132,.32)}
 .save-indicator{position:fixed;right:18px;bottom:18px;background:var(--green);color:#fff;border-radius:999px;padding:9px 15px;font-size:13px;font-weight:900;opacity:0;pointer-events:none;transition:.2s;z-index:50}.save-indicator.show{opacity:1}.modal-overlay{position:fixed;inset:0;background:rgba(10,40,31,.72);z-index:1000;display:none;align-items:center;justify-content:center}.modal-overlay.visible{display:flex}.modal-box{background:#fff;border-radius:18px;padding:30px;max-width:430px;width:90%;box-shadow:0 20px 60px rgba(14,70,55,.32);text-align:center;border:1px solid rgba(26,122,94,.35)}.modal-box h3{font-size:22px;color:var(--deep);margin-bottom:6px}.modal-box p{font-size:13px;color:var(--muted);margin-bottom:18px}.modal-input{width:100%;border:1.5px solid rgba(26,122,94,.35);border-radius:10px;padding:10px 14px;font-size:15px;text-align:center;background:#fff;margin-bottom:12px;letter-spacing:3px}.modal-error{color:var(--danger);font-size:12px;margin-bottom:10px;min-height:16px}.btn{border:none;border-radius:999px;background:var(--green);color:#fff;padding:8px 16px;font-size:12px;font-weight:900}.btn.ghost{background:transparent;color:var(--muted);border:1.5px solid rgba(26,122,94,.35)}.export-options{display:grid;gap:8px;margin:14px 0;text-align:left}.export-options label{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink);cursor:pointer}.export-options input{accent-color:var(--green)}
 #printArea{display:none}@media print{body{background:#fff;color:#000;-webkit-print-color-adjust:exact;print-color-adjust:exact}body.printing .site-header,body.printing .wrap,body.printing .save-indicator,body.printing .modal-overlay,body.printing .zoom-modal{display:none!important}body.printing #printArea{display:block!important}#printArea{font-family:Georgia,"Times New Roman",serif;color:#123126;padding:18px 24px}.print-page{break-after:page}.print-page:last-child{break-after:auto}.print-section-title{font-size:22px;color:#0e4637;margin:0 0 12px}.print-card{border:1px solid #1a7a5e;border-top:4px solid #1a7a5e;margin-bottom:12px;padding:10px;break-inside:avoid;background:#fff}.print-card h2{font-size:15px;color:#0e4637;margin-bottom:8px}#printArea table{width:100%;border-collapse:collapse}#printArea th{background:#0e4637!important;color:#fff;padding:5px 6px;text-align:left;font-size:9px;border:1px solid #0e4637}#printArea td{padding:5px 6px;border:1px solid #9acdb9;vertical-align:top;font-size:10px}#printArea img{display:block;max-width:105px;max-height:80px;border:1px solid #9acdb9}#printArea .flow-node.organism{min-width:360px;max-width:520px}#printArea .species-thumb{width:130px;height:96px;max-width:130px;max-height:96px}#printArea .species-link{display:none}}
-@media print{#printArea .endpoint-tools,#printArea .endpoint-picker,#printArea .chart-admin,#printArea .specimen-tabs,#printArea .specimen-bank,#printArea .active-flow-meta{display:none!important}#printArea .flowchart{overflow:visible;border:0;background:#fff;padding:8px}#printArea .flow-root{min-width:0;width:100%;gap:14px}#printArea .flow-branch{width:100%;align-items:center}#printArea .flow-children{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px 12px;width:100%;padding-top:20px}#printArea .flow-node{box-sizing:border-box;width:100%;font-size:10px;padding:6px 7px;min-width:0;max-width:220px}#printArea .flow-node.test{background:#fff4dc!important;border-left-color:#d28a05!important;color:#5d3d12!important}#printArea .flow-node.positive,#printArea .flow-node.negative{width:max-content;min-width:42px;max-width:78px;padding:3px 6px;font-size:8px;border-radius:5px}#printArea .flow-node.positive{background:#e8fff3!important;color:#0f6c49!important;border-color:#a8d7c7!important}#printArea .flow-node.negative{background:#fff0f4!important;color:#9b2946!important;border-color:#efb1c0!important}#printArea .flow-node.organism{min-width:0;max-width:240px;background:#27654a!important;color:#fff!important;border-color:#254336!important;border-left-color:#d58a00!important}#printArea .flow-node.organism .flow-badge{background:#fff!important;color:#682b91!important}#printArea .species-node-grid{min-width:0}#printArea .species-thumb{width:100px;height:72px;max-width:100px;max-height:72px}}
+@media print{@page{size:letter landscape;margin:.22in}#printArea .endpoint-tools,#printArea .endpoint-picker,#printArea .chart-admin,#printArea .specimen-tabs,#printArea .specimen-bank,#printArea .active-flow-meta{display:none!important}#printArea .flowchart{overflow:visible;border:0;background:#fff;padding:8px}#printArea .flow-root{min-width:0;width:100%;gap:14px}#printArea .flow-branch{width:100%;align-items:center}#printArea .flow-children{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px 12px;width:100%;padding-top:20px}#printArea .flow-node{box-sizing:border-box;width:100%;font-size:10px;padding:6px 7px;min-width:0;max-width:220px}#printArea .flow-node.test{background:#fff4dc!important;border-left-color:#d28a05!important;color:#5d3d12!important}#printArea .flow-node.positive,#printArea .flow-node.negative{width:max-content;min-width:42px;max-width:78px;padding:3px 6px;font-size:8px;border-radius:5px}#printArea .flow-node.positive{background:#e8fff3!important;color:#0f6c49!important;border-color:#a8d7c7!important}#printArea .flow-node.negative{background:#fff0f4!important;color:#9b2946!important;border-color:#efb1c0!important}#printArea .flow-node.organism{min-width:0;max-width:240px;background:#27654a!important;color:#fff!important;border-color:#254336!important;border-left-color:#d58a00!important}#printArea .flow-node.organism .flow-badge{background:#fff!important;color:#682b91!important}#printArea .species-node-grid{min-width:0}#printArea .species-thumb{width:100px;height:72px;max-width:100px;max-height:72px}#printArea .micro-flow-page{height:7.05in;overflow:hidden}#printArea .flat-flowchart{display:grid;grid-template-columns:repeat(auto-fit,minmax(.82in,1fr));gap:.08in;align-items:start;height:6.62in;overflow:hidden}#printArea .flat-path{display:flex;flex-direction:column;align-items:center;gap:.035in;min-width:0;position:relative}#printArea .flat-path-step{width:100%;max-width:1.14in;border:1px solid #9acdb9;border-left:4px solid #1a7a5e;border-radius:8px;background:#fff;color:#123126;text-align:center;font-size:6.4px;line-height:1.05;padding:.025in .035in;font-weight:800;break-inside:avoid;position:relative}#printArea .flat-path-step:not(:last-child)::after{content:"";position:absolute;left:50%;top:100%;height:.035in;border-left:1px solid #9acdb9}#printArea .flat-path-step.gram-positive{background:#f7efff!important;border-left-color:#7b3aa7!important;color:#47205f!important}#printArea .flat-path-step.gram-negative{background:#fff0f6!important;border-left-color:#c75584!important;color:#69263f!important}#printArea .flat-path-step.test{background:#fff4dc!important;border-left-color:#d28a05!important;color:#5d3d12!important}#printArea .flat-path-step.positive,#printArea .flat-path-step.negative{width:auto;min-width:.38in;max-width:.68in;font-size:5.6px;padding:.018in .03in;text-transform:uppercase;letter-spacing:.2px}#printArea .flat-path-step.organism{background:#27654a!important;color:#fff!important;border-color:#254336!important;border-left-color:#d58a00!important;font-size:6.6px}.micro-flow-printing #printArea .print-section-title{font-size:14px;margin:0 0 .05in;padding:0}.micro-flow-printing #printArea .print-card{border:0;padding:0;margin:0}.micro-flow-printing #printArea .print-card h2,.micro-flow-printing #printArea .print-card p{display:none}}
 @media(max-width:760px){.lab-layout{grid-template-columns:1fr}.lab-menu{position:static}.site-header{align-items:flex-start}.nav-tabs{width:100%}}
 </style>
 </head>
@@ -157,8 +157,8 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
   <section class="section" id="charts">
     <div class="hero"><h1>Flowchart</h1><p>Choose a workup, select bacteria, then generate a clean printable organism ID flow.</p></div>
     <article class="card">
-      <div class="card-title"><h2>Organism Flow Builder</h2><span class="tag">Flow</span></div>
-      <div class="table-tools"><button class="mini-btn" data-action="add-chart">Add Flowchart</button></div>
+      <div class="card-title"><h2>Specimen Flow Builder</h2><span class="tag">Flow</span></div>
+      <div class="table-tools"><button class="mini-btn" data-action="add-bank-specimen">Add Specimen / Fluid</button><button class="mini-btn" data-action="add-chart">Add Blank Flowchart</button></div>
       <div class="charts-grid" id="chartsGrid"></div>
     </article>
   </section>
@@ -195,7 +195,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   var saveInFlight=null;
   var safeDoc=null;
   var syncPresence=null;
-  var SPECIMEN_BANK_VERSION=3;
+  var SPECIMEN_BANK_VERSION=4;
   var state=defaultState();
   var activeChartId=null;
   var generatedChartId=null;
@@ -207,8 +207,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     ['charts','Flowcharts'],
     ['resources','Resources']
   ];
-  var CHAPTER6_SPECIMEN_IDS={class_unknown_workup:true,gram_positive_rods:true};
-  var LEGACY_SPECIMEN_IDS={blood:true,csf:true,throat:true,sputum:true,urine:true,stool:true,genital_tract:true,wounds_abscesses:true,blood_culture:true,fecal:true,genital_culture:true,skin_wounds:true,pleural_fluid:true,peritoneal_fluid:true,pericardial_fluid:true,synovial_fluid:true,throat_upper_respiratory:true,eye_ear:true,worksheet_unknown:true};
+  var CHAPTER6_SPECIMEN_IDS={blood:true,csf:true,throat:true,sputum:true,urine:true,stool:true,genital_tract:true,wounds_abscesses:true};
+  var LEGACY_SPECIMEN_IDS={class_unknown_workup:true,gram_positive_rods:true,blood_culture:true,fecal:true,genital_culture:true,skin_wounds:true,pleural_fluid:true,peritoneal_fluid:true,pericardial_fluid:true,synovial_fluid:true,throat_upper_respiratory:true,eye_ear:true,worksheet_unknown:true};
   function uid(prefix){return prefix+'_'+Math.random().toString(36).slice(2,9)}
   function escapeHtml(value){return String(value||'').replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]})}
   function decodeEntities(value){var box=document.createElement('textarea');box.innerHTML=String(value||'');return box.value}
@@ -310,8 +310,14 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function defaultSpecimenBank(){
     return [
-      {id:'class_unknown_workup',name:'Class Unknown Workup',category:'Organism ID',note:'Minimum organism identification flow.'},
-      {id:'gram_positive_rods',name:'Gram Positive Rods',category:'Organism ID',note:'Branching gram-positive rod workup.'}
+      {id:'blood',name:'Blood',category:'Specimen',note:'Blood culture workup with Gram stain first.'},
+      {id:'csf',name:'CSF',category:'Specimen',note:'CSF bacterial workup with urgent meningitis organisms.'},
+      {id:'throat',name:'Throat',category:'Specimen',note:'Throat culture organisms and common oral biota.'},
+      {id:'sputum',name:'Sputum',category:'Specimen',note:'Respiratory bacterial workup.'},
+      {id:'urine',name:'Urine',category:'Specimen',note:'Urine culture bacterial workup.'},
+      {id:'stool',name:'Stool',category:'Specimen',note:'Stool culture bacterial workup.'},
+      {id:'genital_tract',name:'Genital Tract',category:'Specimen',note:'Genital tract bacterial workup.'},
+      {id:'wounds_abscesses',name:'Wounds / Abscesses',category:'Specimen',note:'Skin, wound, and abscess bacterial workup.'}
     ];
   }
   function ensureSpecimenBankItem(item,index){
@@ -385,8 +391,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var templates={
       class_unknown_workup:{title:'Class Unknown Workup',note:'Minimum organism ID flow. Gram stain is the first split, then reactions narrow the bacteria.',selectedEndpoints:['__none__'],species:classUnknownSpecies()},
       gram_positive_rods:{title:'Gram Positive Rods',note:'Branching gram-positive rod workup with test decisions and positive/negative result tags.',selectedEndpoints:['__none__'],species:gramPositiveRodSpecies()},
-      blood:{title:'Blood Specimen Notes',note:'Chapter 6 gives blood culture collection and bottle handling here, but no specific bacteria list in this specimen section. Add organisms manually if your class gives a blood isolate list.',selectedEndpoints:['__none__'],species:[]},
-      csf:{title:'CSF Flowchart',note:'Extracted from Chapter 6: Neisseria meningitidis, Streptococcus pneumoniae, Streptococcus agalactiae, E. coli, S. aureus, and Listeria monocytogenes.',species:[
+      blood:{title:'Blood Flowchart',note:'Blood culture workup. Gram stain first, then morphology and core reactions.',species:bodyFluidSpecies('Blood culture')},
+      csf:{title:'CSF Flowchart',note:'CSF bacterial workup. Gram stain first, then morphology and core reactions.',species:[
         ['Neisseria meningitidis',root+' > Direct Gram stain > Gram-negative diplococci {GNDC} > Oxidase positive (+) > Neisseria meningitidis {GNDC}'],
         ['Streptococcus pneumoniae',root+' > Direct Gram stain > Gram-positive diplococci / lancet pairs {GPC pairs} > Alpha hemolysis > Optochin susceptible / bile soluble (+) > Streptococcus pneumoniae {GPC pairs}'],
         ['Streptococcus agalactiae',root+' > Direct Gram stain > Gram-positive cocci in chains {GPC chains} > Beta hemolysis > CAMP / hippurate positive (+) > Streptococcus agalactiae {GPC chains}'],
@@ -394,7 +400,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         ['S. aureus',root+' > Direct Gram stain > Gram-positive cocci in clusters {GPC clusters} > Catalase positive (+) > Coagulase positive (+) > S. aureus {GPC clusters}'],
         ['Listeria monocytogenes',root+' > Direct Gram stain > Small Gram-positive rods/coccobacilli {GPR} > Narrow beta hemolysis > Tumbling motility / CAMP positive (+) > Listeria monocytogenes {GPR}']
       ]},
-      throat:{title:'Throat Flowchart',note:'Extracted from Chapter 6: clinically significant throat isolates plus normal oral biota listed in the specimen section.',species:[
+      throat:{title:'Throat Flowchart',note:'Throat culture workup. Gram stain first, then morphology and core reactions.',species:[
         ['S. pyogenes / Group A Strep',root+' > Throat culture > Beta-hemolytic gram-positive cocci in chains {GPC chains} > PYR positive (+) / bacitracin susceptible > S. pyogenes / Group A Strep {GPC chains}'],
         ['Group B Streptococcus',root+' > Throat culture > Beta-hemolytic gram-positive cocci in chains {GPC chains} > CAMP / hippurate positive (+) > Group B Streptococcus {GPC chains}'],
         ['Group C Streptococcus',root+' > Throat culture > Beta-hemolytic gram-positive cocci in chains {GPC chains} > Lancefield group C > Group C Streptococcus {GPC chains}'],
@@ -405,7 +411,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         ['Corynebacterium spp.',root+' > Normal oral biota > Pleomorphic gram-positive rods {GPR} > Diphtheroid morphology > Corynebacterium spp. {GPR}'],
         ['Coagulase-negative staphylococci',root+' > Normal oral biota > Gram-positive cocci in clusters {GPC clusters} > Catalase positive (+) > Coagulase negative (-) > Coagulase-negative staphylococci {GPC clusters}']
       ]},
-      sputum:{title:'Sputum Flowchart',note:'Extracted from Chapter 6: common significant sputum isolates.',species:[
+      sputum:{title:'Sputum Flowchart',note:'Sputum bacterial workup. Gram stain first, then morphology and core reactions.',species:[
         ['S. pneumoniae',root+' > Acceptable sputum > Gram-positive diplococci / lancet pairs {GPC pairs} > Alpha hemolysis > Optochin susceptible / bile soluble (+) > S. pneumoniae {GPC pairs}'],
         ['K. pneumoniae',root+' > Acceptable sputum > Gram-negative rods {GNR} > Mucoid lactose fermenter > K. pneumoniae {GNR}'],
         ['S. aureus',root+' > Acceptable sputum > Gram-positive cocci in clusters {GPC clusters} > Catalase positive (+) > Coagulase positive (+) > S. aureus {GPC clusters}'],
@@ -414,7 +420,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         ['L. pneumophila',root+' > Acceptable sputum > Poor Gram stain visibility > Does not grow on routine media > BCYE / urine antigen clue > L. pneumophila'],
         ['M. pneumoniae',root+' > Atypical pneumonia clue > Does not grow on routine media > Molecular/serology method > M. pneumoniae']
       ]},
-      urine:{title:'Urine Flowchart',note:'Extracted from Chapter 6: common significant urine bacterial isolates. Yeast was listed in the PDF but not added here because this chart is bacteria-only.',species:[
+      urine:{title:'Urine Flowchart',note:'Urine bacterial workup. Gram stain first, then morphology and core reactions.',species:[
         ['E. coli',root+' > Significant colony count > Gram-negative rods {GNR} > Lactose fermenter > Indole positive (+) > E. coli {GNR}'],
         ['Klebsiella spp.',root+' > Significant colony count > Gram-negative rods {GNR} > Mucoid lactose fermenter > Nonmotile / urease variable > Klebsiella spp. {GNR}'],
         ['Enterobacter spp.',root+' > Significant colony count > Gram-negative rods {GNR} > Lactose fermenter > VP / citrate positive (+) > Enterobacter spp. {GNR}'],
@@ -424,7 +430,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         ['Enterococcus spp.',root+' > Significant colony count > Gram-positive cocci in pairs/chains {GPC chains} > PYR / 6.5% NaCl positive (+) > Enterococcus spp. {GPC chains}'],
         ['P. aeruginosa',root+' > Significant colony count > Non-lactose gram-negative rod {GNR} > Oxidase positive (+) > Pigment / cetrimide growth > P. aeruginosa {GNR}']
       ]},
-      stool:{title:'Stool Flowchart',note:'Extracted from Chapter 6: bacteria causing gastroenteritis.',species:[
+      stool:{title:'Stool Flowchart',note:'Stool culture bacterial workup. Gram stain first, then morphology and core reactions.',species:[
         ['Shigella spp.',root+' > Gastroenteritis workup > Non-lactose gram-negative rod {GNR} > H2S / motility negative (-) > Shigella spp. {GNR}'],
         ['Salmonella spp.',root+' > Gastroenteritis workup > Non-lactose gram-negative rod {GNR} > H2S positive (+) > Salmonella spp. {GNR}'],
         ['Campylobacter jejuni',root+' > Gastroenteritis workup > Curved gram-negative rods {GNR} > Microaerophilic growth at 42 C > Campylobacter jejuni {GNR}'],
@@ -433,7 +439,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         ['Clostridioides difficile',root+' > Gastroenteritis workup > Anaerobic gram-positive rod {GPR} > Toxin / NAAT positive (+) > Clostridioides difficile {GPR}'],
         ['Vibrio spp.',root+' > Gastroenteritis workup > Curved gram-negative rods {GNR} > Oxidase positive (+) > TCBS growth > Vibrio spp. {GNR}']
       ]},
-      genital_tract:{title:'Genital Tract Flowchart',note:'Extracted from Chapter 6: bacterial genital tract organisms and normal biota.',species:[
+      genital_tract:{title:'Genital Tract Flowchart',note:'Genital tract bacterial workup. Gram stain first, then morphology and core reactions.',species:[
         ['N. gonorrhoeae',root+' > Cervicitis / urethritis workup > Gram-negative diplococci {GNDC} > Oxidase positive (+) > N. gonorrhoeae {GNDC}'],
         ['C. trachomatis',root+' > Cervicitis / urethritis workup > Intracellular bacteria / NAAT target > C. trachomatis'],
         ['Mobiluncus spp.',root+' > BV / nonspecific vaginitis clue > Curved anaerobic rods {GPR} > Overgrowth pattern > Mobiluncus spp. {GPR}'],
@@ -443,7 +449,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         ['Staphylococci',root+' > Normal genital biota early/late life > Gram-positive cocci in clusters {GPC clusters} > Catalase positive (+) > Staphylococci {GPC clusters}'],
         ['Corynebacteria',root+' > Normal genital biota early/late life > Pleomorphic gram-positive rods {GPR} > Diphtheroid morphology > Corynebacteria {GPR}']
       ]},
-      wounds_abscesses:{title:'Wounds / Abscesses Flowchart',note:'Extracted from Chapter 6: bacteria listed for superficial skin infections, folliculitis, boils, impetigo, erysipelas, and deep wounds/abscesses.',species:[
+      wounds_abscesses:{title:'Wounds / Abscesses Flowchart',note:'Wound and abscess bacterial workup. Gram stain first, then morphology and core reactions.',species:[
         ['S. aureus',root+' > Wound / abscess culture > Gram-positive cocci in clusters {GPC clusters} > Catalase positive (+) > Coagulase positive (+) > S. aureus {GPC clusters}'],
         ['S. pyogenes',root+' > Skin infection / impetigo / erysipelas clue > Gram-positive cocci in chains {GPC chains} > PYR positive (+) / Group A > S. pyogenes {GPC chains}'],
         ['P. aeruginosa',root+' > Folliculitis / water exposure clue > Gram-negative rods {GNR} > Oxidase positive (+) > P. aeruginosa {GNR}'],
@@ -896,6 +902,20 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     paths.forEach(function(path){addFlowPath(root,path.parts,path.species)});
     return '<div class="flowchart"><div class="flow-root">'+root.map(renderFlowNode).join('')+'</div></div>';
   }
+  function renderFlatStep(part,index,total){
+    var parsed=parseFlowToken(part,index===total-1);
+    var badges=parsed.badges.map(function(badge){return '<span class="flow-badge '+escapeHtml(badgeClass(badge))+'">'+badgeIcon(badge)+escapeHtml(badge)+'</span>'}).join('');
+    return '<div class="flat-path-step '+escapeHtml(parsed.cls||'')+'">'+escapeHtml(parsed.label)+badges+'</div>';
+  }
+  function flatFlowHtml(chart){
+    var paths=speciesPaths(chart);
+    var picked=activeEndpointKeys(chart,paths);
+    paths=paths.filter(function(path){return picked.indexOf(path.species.id)>-1});
+    if(!paths.length)return '<p class="chart-note">No checked endpoints for this chart.</p>';
+    return '<div class="flat-flowchart">'+paths.map(function(path){
+      return '<div class="flat-path">'+path.parts.map(function(part,index){return renderFlatStep(part,index,path.parts.length)}).join('')+'</div>';
+    }).join('')+'</div>';
+  }
   function generatedFlowHtml(chart){
     if(generatedChartId!==chart.id)return '<div class="flow-placeholder">Select one or more bacteria above, then click Generate Flowchart.</div>';
     var picked=activeEndpointKeys(chart,speciesPaths(chart));
@@ -911,7 +931,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       var badges=item.terminal.badges.join(' ');
       return '<label class="endpoint-pill '+(checked?'checked':'')+'"><input type="checkbox" data-action="toggle-endpoint" data-chart="'+chart.id+'" value="'+escapeHtml(item.species.id)+'" '+(checked?'checked':'')+'> '+escapeHtml((item.species.name||item.terminal.label)+(badges?' '+badges:''))+'</label>';
     }).join('');
-    return '<div class="endpoint-tools"><button type="button" class="mini-btn" data-action="select-chart-endpoints" data-chart="'+chart.id+'">Show All</button><button type="button" class="mini-btn" data-action="clear-chart-endpoints" data-chart="'+chart.id+'">Clear</button><button type="button" class="mini-btn generate-flow-btn" data-action="generate-chart" data-chart="'+chart.id+'">Generate Flowchart</button><button type="button" class="mini-btn export-flow-btn" data-action="export-chart" data-chart="'+chart.id+'">Export</button></div><div class="endpoint-picker">'+pills+'</div>';
+    return '<div class="endpoint-tools"><button type="button" class="mini-btn" data-action="select-chart-endpoints" data-chart="'+chart.id+'">Show All</button><button type="button" class="mini-btn" data-action="clear-chart-endpoints" data-chart="'+chart.id+'">Clear</button><button type="button" class="mini-btn generate-flow-btn" data-action="generate-chart" data-chart="'+chart.id+'">Generate Flowchart</button></div><div class="endpoint-picker">'+pills+'</div>';
   }
   function speciesImagesHtml(chart){
     var picked=activeEndpointKeys(chart,speciesPaths(chart));
@@ -947,7 +967,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       var deleteBtn='<button type="button" class="mini-btn danger" data-action="delete-bank-specimen" data-specimen="'+specimen.id+'">Delete</button>';
       return '<div class="specimen-bank-row"><input placeholder="Specimen" data-specimen="'+specimen.id+'" data-specimen-field="name" value="'+escapeHtml(specimen.name||'')+'"><input placeholder="Category" data-specimen="'+specimen.id+'" data-specimen-field="category" value="'+escapeHtml(specimen.category||'')+'"><textarea placeholder="Specimen note" data-specimen="'+specimen.id+'" data-specimen-field="note">'+escapeHtml(specimen.note||'')+'</textarea><button type="button" class="mini-btn" data-action="create-specimen-chart" data-specimen="'+specimen.id+'">'+(hasChart?'Open Flowchart':'Create Flowchart')+'</button>'+deleteBtn+'</div>';
     }).join('');
-    return '<div class="specimen-bank"><div class="specimen-bank-title">Admin Specimen / Fluid Bank</div><div class="chart-help" style="margin-bottom:8px">Add, rename, or delete specimen sources, body fluids, and class examples here. Each one can create one reusable flowchart button.</div>'+rows+'</div>';
+    return '<div class="specimen-bank"><div class="specimen-bank-title">Admin Specimen Buttons</div><div class="chart-help" style="margin-bottom:8px">Add, rename, or delete specimen sources, body fluids, and class examples here. Each one can create one reusable flowchart button.</div><button type="button" class="mini-btn" data-action="add-bank-specimen" style="margin-bottom:8px">+ Add Specimen / Fluid</button>'+rows+'</div>';
   }
   function renderCharts(){
     var grid=document.getElementById('chartsGrid');if(!grid)return;
@@ -1098,16 +1118,16 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   });
   document.addEventListener('keydown',function(e){if(e.key==='Enter'&&document.getElementById('adminModal').classList.contains('visible'))attemptLogin();if(e.key==='Escape'){closeModal();closeExportModal();closeImageZoom()}});
   function tablePrintHtml(id){var table=state.tables[id];if(!table)return '';var head='<tr>'+table.columns.map(function(col){return '<th>'+escapeHtml(col.label||'')+'</th>'}).join('')+'</tr>';var body=table.rows.map(function(row){return '<tr>'+table.columns.map(function(col){var value=row.cells&&row.cells[col.id]?row.cells[col.id]:'';if(col.type==='image')return '<td>'+(value?'<img src="'+escapeHtml(value)+'" alt="uploaded image"/>':'')+'</td>';return '<td>'+cellDisplayHtml(value)+'</td>'}).join('')+'</tr>'}).join('');return '<div class="print-card"><h2>'+escapeHtml(table.title)+'</h2><table><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div>'}
-  function chartPrintHtml(chart){return '<div class="print-card"><h2>'+escapeHtml(chart.title||'Untitled Flow')+'</h2><p>'+escapeHtml(chart.note||'')+'</p>'+hierarchyHtml(chart)+'</div>'}
+  function chartPrintHtml(chart){return '<div class="print-card"><h2>'+escapeHtml(chart.title||'Untitled Flow')+'</h2><p>'+escapeHtml(chart.note||'')+'</p>'+flatFlowHtml(chart)+'</div>'}
   function findSpeciesById(id){var found=null;state.charts.some(function(chart){ensureChartSpecies(chart).species.some(function(sp){if(sp.id===id){found=sp;return true}return false});return !!found});return found}
   function openSpeciesZoom(speciesId,kind){var sp=findSpeciesById(speciesId);var src=sp&&sp[kind];if(!src)return;document.getElementById('imageZoomImg').src=src;document.getElementById('imageZoomCaption').textContent=(sp.name||'Organism')+(kind==='gramImage'?' Gram stain':' plate');document.getElementById('imageZoomModal').classList.add('visible')}
   function closeImageZoom(){document.getElementById('imageZoomModal').classList.remove('visible');document.getElementById('imageZoomImg').removeAttribute('src')}
-  function exportSingleChart(chart){collectVisibleState();saveLocal();if(isAdmin&&safeDoc)safeDoc.saveNow({reason:'manual'}).catch(function(e){console.warn(e)});var picked=activeEndpointKeys(chart,speciesPaths(chart));if(!picked.length){showToast('Choose at least one organism',true);return}var area=document.getElementById('printArea');area.innerHTML='<div class="print-page"><h1 class="print-section-title">'+escapeHtml(chart.title||'Flowchart')+'</h1>'+chartPrintHtml(chart)+'</div>';document.body.classList.add('printing');showToast('Opening selected flow export');window.print();setTimeout(function(){document.body.classList.remove('printing');area.innerHTML=''},1200)}
+  function exportSingleChart(chart){collectVisibleState();saveLocal();if(isAdmin&&safeDoc)safeDoc.saveNow({reason:'manual'}).catch(function(e){console.warn(e)});var picked=activeEndpointKeys(chart,speciesPaths(chart));if(!picked.length){showToast('Choose at least one organism',true);return}var area=document.getElementById('printArea');area.innerHTML='<div class="print-page micro-flow-page"><h1 class="print-section-title">'+escapeHtml(chart.title||'Flowchart')+'</h1>'+chartPrintHtml(chart)+'</div>';document.body.classList.add('printing','micro-flow-printing');showToast('Opening selected flow export');window.print();setTimeout(function(){document.body.classList.remove('printing','micro-flow-printing');area.innerHTML=''},1200)}
   window.openExportModal=function(){renderExportOptions();document.getElementById('exportModal').classList.add('visible')};
   window.closeExportModal=function(){document.getElementById('exportModal').classList.remove('visible')};
   window.selectAllExport=function(on){document.querySelectorAll('#exportModal .export-check').forEach(function(box){box.checked=!!on})};
   window.doExport=function(){collectVisibleState();saveLocal();if(isAdmin&&safeDoc)safeDoc.saveNow({reason:'manual'}).catch(function(e){console.warn(e)});var selected=Array.from(document.querySelectorAll('#exportModal .export-check:checked')).map(function(box){return box.value});if(!selected.length){showToast('Choose at least one section',true);return}closeExportModal();var html='';selected.forEach(function(id){if(state.tables[id])html+='<div class="print-page"><h1 class="print-section-title">'+escapeHtml(state.tables[id].title||id)+'</h1>'+tablePrintHtml(id)+'</div>';if(id==='charts')html+=(state.charts||[]).map(function(chart){return '<div class="print-page"><h1 class="print-section-title">'+escapeHtml(chart.title||'Flowchart')+'</h1>'+chartPrintHtml(chart)+'</div>'}).join('')});var area=document.getElementById('printArea');area.innerHTML=html;document.body.classList.add('printing');showToast('Opening PDF export');window.print();setTimeout(function(){document.body.classList.remove('printing');area.innerHTML=''},1200)};
-  window.addEventListener('afterprint',function(){document.body.classList.remove('printing');document.getElementById('printArea').innerHTML=''});
+  window.addEventListener('afterprint',function(){document.body.classList.remove('printing','micro-flow-printing');document.getElementById('printArea').innerHTML=''});
   window.addEventListener('beforeunload',function(){collectVisibleState();saveLocal()});
   window.addEventListener('load',function(){setTimeout(function(){var left=document.getElementById('doorLeft');var right=document.getElementById('doorRight');if(left)left.classList.add('open');if(right)right.classList.add('open');setTimeout(function(){var intro=document.getElementById('intro');document.body.classList.remove('intro-active');if(intro){intro.style.opacity='0';intro.style.transition='opacity .5s';setTimeout(function(){intro.style.display='none'},500)}},1100)},1500)});
   loadRemote();

@@ -100,6 +100,7 @@ button{cursor:pointer;font-family:inherit}
 .rbc-map-actions{display:none;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}.admin-mode .rbc-map-actions{display:flex}
 .rbc-help{font-size:12px;color:var(--warm-grey);line-height:1.35}
 .export-choice-list{display:grid;gap:8px;text-align:left;margin:14px 0}.export-choice-list label{display:flex;gap:8px;align-items:flex-start;border:1px solid var(--rose);background:#fff;border-radius:10px;padding:9px 10px;font-size:13px;color:var(--dark);cursor:pointer}.export-choice-list input{margin-top:2px;accent-color:var(--crimson)}
+.admin-only-inline{display:none}.admin-mode .admin-only-inline{display:inline-flex}
 
 /* SECTIONS */
 .section{display:none;padding:24px 20px 60px;max-width:1200px;margin:0 auto}
@@ -124,6 +125,13 @@ button{cursor:pointer;font-family:inherit}
 .sys-content-area{display:flex;flex-direction:column;gap:14px}
 .sys-card{background:var(--card-bg);border:1px solid var(--rose);border-radius:var(--r-lg);padding:22px;box-shadow:var(--shadow-md);position:relative}
 .sys-card-accent{border-top:3px solid var(--crimson)}
+.history-card{padding:14px 18px}
+.study-card,.freq-card{padding:24px}
+.study-card .edit-field{font-size:15px;line-height:1.45}
+.study-card .ws-table td.ws-label{font-size:10.5px;width:190px}
+.freq-card .freq-table td{padding:7px 8px}
+.freq-card .freq-field{font-size:15px}
+.freq-card .freq-field.freq-num{font-size:19px}
 
 /* SYS HEADER */
 .sys-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;flex-wrap:wrap}
@@ -133,15 +141,15 @@ button{cursor:pointer;font-family:inherit}
 .sys-pun{font-size:12px;font-style:italic;color:var(--crimson);font-weight:600}
 
 /* TIMELINE */
-.timeline{position:relative;padding-left:20px;margin-bottom:4px}
+.timeline{position:relative;padding-left:16px;margin-bottom:2px}
 .timeline::before{content:'';position:absolute;left:6px;top:0;bottom:0;width:2px;background:var(--rose);border-radius:2px}
-.tl-item{position:relative;margin-bottom:10px;font-size:13px;line-height:1.5}
+.tl-item{position:relative;margin-bottom:5px;font-size:11.5px;line-height:1.32}
 .tl-item::before{content:'';position:absolute;left:-18px;top:4px;width:8px;height:8px;border-radius:50%;background:var(--crimson);border:2px solid #fff;box-shadow:0 0 0 2px var(--rose)}
-.tl-year{font-weight:700;color:var(--crimson);font-size:11px;display:block;margin-bottom:1px}
+.tl-year{font-weight:700;color:var(--crimson);font-size:10px;display:inline-block;min-width:58px;margin-right:6px}
 
 /* MEMBRANE DIAGRAM */
-.mem-wrap{background:var(--blush);border:1px solid var(--rose);border-radius:var(--r-sm);padding:10px;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:10px}
-.mem-wrap svg{width:100%;height:260px;max-height:260px}
+.mem-wrap{background:var(--blush);border:1px solid var(--rose);border-radius:var(--r-sm);padding:4px;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:8px;min-height:285px}
+.mem-wrap svg{width:100%;height:295px;max-height:295px}
 @media(max-width:700px){.mem-wrap svg{height:210px;max-height:210px}}
 @media print{.rbc-rotate-handle{display:none!important}}
 
@@ -408,6 +416,8 @@ button{cursor:pointer;font-family:inherit}
         <select class="tool-field" id="rbcToolShape" onchange="updateRbcShapePreview()">
           <option value="aa-chain">AA / bead chain</option>
           <option value="sugar-chain">Sugar chain</option>
+          <option value="carb">Carbohydrate branch</option>
+          <option value="adsorbed">Lewis adsorbed glycolipid</option>
           <option value="glycoprotein">Glycoprotein chain</option>
           <option value="single-pass">Single-pass protein</option>
           <option value="multi-pass">Multi-pass protein</option>
@@ -533,6 +543,7 @@ button{cursor:pointer;font-family:inherit}
       <div class="sec-label" style="margin-bottom:10px">Encyclopedia Export</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button class="btn btn-primary btn-sm" onclick="openEncyclopediaExportModal()">Export Options</button>
+        <button class="btn btn-ghost btn-sm admin-only-inline" onclick="exportFlashcardCsv()">Export Flashcards CSV</button>
         <span style="font-size:12px;color:var(--warm-grey);align-self:center">Pick options first, then export.</span>
       </div>
     </div>
@@ -599,10 +610,12 @@ button{cursor:pointer;font-family:inherit}
         <button id="aboSimBtn" class="btn btn-primary" onclick="startABOsim()" style="font-size:15px;padding:12px 28px">🅰️ ABO Typing</button>
         <button id="xmSimBtn" class="btn btn-ghost" onclick="startXMsim()" style="font-size:15px;padding:12px 28px;border-width:2px">🩸 Crossmatch</button>
         <button id="calcSimBtn" class="btn btn-ghost" onclick="startCalcSim()" style="font-size:15px;padding:12px 28px;border-width:2px">🧮 Calculations</button>
+        <button id="antigramSimBtn" class="btn btn-ghost" onclick="startAntigramSim()" style="font-size:15px;padding:12px 28px;border-width:2px">📋 Antigram</button>
       </div>
       <div id="aboContent" style="display:block"></div>
       <div id="xmContent" style="display:none"></div>
       <div id="calcContent" style="display:none"></div>
+      <div id="antigramContent" style="display:none"></div>
     </div>
   </div>
 
@@ -787,10 +800,11 @@ function applyRemoteXm(data) {
   xmCases = data && Array.isArray(data.cases) && data.cases.length > 0 ? data.cases : defaultXmCases();
   aboCustomCases = cleanRemoteAboCases(data && data.aboCases);
   calcCustomScenarios = cleanRemoteCalcScenarios(data && data.calcScenarios);
-  if (xmMode === 'xm') renderXm();
+  if (typeof renderXm === 'function' && document.getElementById('xmContent') && document.getElementById('xmContent').style.display !== 'none') renderXm();
   renderXmEditor2();
   if (typeof renderABOsim === 'function' && document.getElementById('aboContent') && document.getElementById('aboContent').style.display !== 'none') renderABOsim();
   if (typeof renderCalcSim === 'function' && document.getElementById('calcContent') && document.getElementById('calcContent').style.display !== 'none') renderCalcSim();
+  if (typeof renderAntigramSim === 'function' && document.getElementById('antigramContent') && document.getElementById('antigramContent').style.display !== 'none') renderAntigramSim();
 }
 
 async function initApp() {
@@ -1462,7 +1476,7 @@ function renderSystem(key) {
 
   area.innerHTML = `
     <!-- HISTORY CARD -->
-    <div class="sys-card" style="border-top:3px solid ${sys.color}">
+    <div class="sys-card history-card" style="border-top:3px solid ${sys.color}">
       <div class="sys-header">
         <div class="sys-icon">${sys.icon}</div>
         <div>
@@ -1476,7 +1490,7 @@ function renderSystem(key) {
     </div>
 
     <!-- MEMBRANE CARD -->
-    <div class="sys-card" style="border-top:3px solid ${sys.color}">
+    <div class="sys-card membrane-card-live" style="border-top:3px solid ${sys.color}">
       <div class="sec-label" style="margin-bottom:10px">RBC Membrane Location</div>
       ${renderRbcMaker(skey, sys.color)}
       <div class="mem-wrap">${buildSystemRbcSVG(skey, sys.color)}</div>
@@ -1484,13 +1498,13 @@ function renderSystem(key) {
     </div>
 
     <!-- WORKSHEET CARD -->
-    <div class="sys-card" style="border-top:3px solid ${sys.color}">
+    <div class="sys-card study-card" style="border-top:3px solid ${sys.color}">
       <div class="sec-label" style="margin-bottom:10px">Study Reference</div>
       ${worksheetHTML}
     </div>
 
     <!-- ANTIGEN FREQUENCIES -->
-    <div class="sys-card" style="border-top:3px solid ${sys.color}">
+    <div class="sys-card freq-card" style="border-top:3px solid ${sys.color}">
       <div class="sec-label" style="margin-bottom:8px">Antigen Frequencies (% Occurrence)</div>
       <table class="freq-table">
         <thead>
@@ -1898,6 +1912,9 @@ function renderRbcMaker(systemKey, color) {
       '<button class="rbc-piece-btn" onclick="quickAddRbcPiece(\'' + systemKey + '\',\'surface-dot\')"><span class="rbc-piece-dot"></span>Dot</button>' +
       '<button class="rbc-piece-btn" onclick="quickAddRbcPiece(\'' + systemKey + '\',\'bead\')"><span class="rbc-piece-dot"></span>Bead</button>' +
       '<button class="rbc-piece-btn" onclick="quickAddRbcPiece(\'' + systemKey + '\',\'sugar-chain\')">Sugar</button>' +
+      '<button class="rbc-piece-btn" onclick="quickAddRbcPiece(\'' + systemKey + '\',\'adsorbed\')">Adsorbed</button>' +
+      '<button class="rbc-piece-btn" onclick="quickAddRbcPiece(\'' + systemKey + '\',\'branch\')">Branch</button>' +
+      '<button class="rbc-piece-btn" onclick="quickAddRbcPiece(\'' + systemKey + '\',\'anchor-stem\')">Stem</button>' +
       '<button class="rbc-piece-btn" onclick="quickAddRbcPiece(\'' + systemKey + '\',\'multi-pass\')">Multi-pass</button>' +
       '<button class="rbc-piece-btn" onclick="quickAddRbcPiece(\'' + systemKey + '\',\'single-pass\')">Single-pass</button>' +
       '<button class="rbc-piece-btn" onclick="quickAddRbcPiece(\'' + systemKey + '\',\'connector\')"><span class="rbc-piece-line"></span>Line</button>' +
@@ -1925,7 +1942,10 @@ function quickAddRbcPiece(systemKey, type) {
   var label = (labelEl && labelEl.value ? labelEl.value : '').trim();
   if (type === 'label' && !label) label = 'Text';
   var color = (colorEl && colorEl.value) || '#c0173d';
-  var size = Math.max(4, Math.min(140, parseFloat(sizeEl && sizeEl.value) || (type === 'connector' ? 54 : 18)));
+  var defaultSize = type === 'connector' ? 54 : (type === 'anchor-stem' ? 72 : (type === 'branch' ? 48 : (type === 'adsorbed' ? 58 : 18)));
+  var enteredSize = parseFloat(sizeEl && sizeEl.value);
+  if ((type === 'anchor-stem' || type === 'branch' || type === 'adsorbed' || type === 'connector') && (!enteredSize || enteredSize === 18)) enteredSize = defaultSize;
+  var size = Math.max(4, Math.min(140, enteredSize || defaultSize));
   var count = getRbcItems(systemKey).length;
   var item = {
     id: 'custom_' + systemKey + '_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
@@ -1972,15 +1992,15 @@ function buildDraggableRbcSVG() {
 }
 
 function rbcSystemFrame(items, minWidth) {
-  minWidth = minWidth || 860;
+  minWidth = minWidth || 430;
   if (!items.length) return { x:0, width:1380, labelX:18 };
   var minX = 1380;
   var maxX = 0;
   items.forEach(function(item) {
     var p = rbcPos(item);
-    var size = Math.max(70, Number(item.size) || 70);
-    minX = Math.min(minX, p.x - size - 90);
-    maxX = Math.max(maxX, p.x + size + 90);
+    var size = Math.max(42, Number(item.size) || 52);
+    minX = Math.min(minX, p.x - size - 54);
+    maxX = Math.max(maxX, p.x + size + 54);
   });
   var width = Math.min(1380, Math.max(minWidth, maxX - minX));
   var center = (minX + maxX) / 2;
@@ -1991,9 +2011,11 @@ function rbcSystemFrame(items, minWidth) {
 function buildSystemRbcSVG(systemKey, color, options) {
   options = options || {};
   var items = getRbcItems(systemKey);
-  var frame = rbcSystemFrame(items, options.minWidth || 860);
-  var svgStyle = options.exportMode ? 'width:100%;max-width:100%;font-family:Georgia,serif;touch-action:none' : 'width:100%;height:260px;max-height:260px;font-family:Georgia,serif;touch-action:none';
-  return '<div style="overflow:hidden;width:100%"><svg id="rbcMembraneSvg" data-rbc-scope="' + escText(systemKey) + '" viewBox="' + frame.x + ' 0 ' + frame.width + ' 430" xmlns="http://www.w3.org/2000/svg" style="' + svgStyle + '">' +
+  var frame = rbcSystemFrame(items, options.minWidth || (options.exportMode ? 360 : 430));
+  var vbY = options.exportMode ? 38 : 26;
+  var vbH = options.exportMode ? 282 : 334;
+  var svgStyle = options.exportMode ? 'width:100%;max-width:100%;font-family:Georgia,serif;touch-action:none' : 'width:100%;height:295px;max-height:295px;font-family:Georgia,serif;touch-action:none';
+  return '<div style="overflow:hidden;width:100%"><svg id="rbcMembraneSvg" data-rbc-scope="' + escText(systemKey) + '" viewBox="' + frame.x + ' ' + vbY + ' ' + frame.width + ' ' + vbH + '" xmlns="http://www.w3.org/2000/svg" style="' + svgStyle + '">' +
     '<rect x="0" y="170" width="1380" height="74" fill="#fce8ed" opacity=".55"/>' +
     '<line x1="0" y1="170" x2="1380" y2="170" stroke="' + color + '" stroke-width="4" stroke-opacity=".25"/>' +
     '<line x1="0" y1="244" x2="1380" y2="244" stroke="' + color + '" stroke-width="4" stroke-opacity=".25"/>' +
@@ -2598,7 +2620,7 @@ function buildFullSystemExportPage(key) {
   }).join('');
   var oldAdmin = isAdmin;
   isAdmin = false;
-  var membrane = buildSystemRbcSVG(skey, sys.color, {exportMode:true,minWidth:620});
+  var membrane = buildSystemRbcSVG(skey, sys.color, {exportMode:true,minWidth:360});
   isAdmin = oldAdmin;
   membrane = membrane
     .replace(/id="rbcMembraneSvg"/g, '')
@@ -2644,6 +2666,147 @@ function buildLesserSystemsExportPage() {
   '</section>';
 }
 
+function csvPlain(value) {
+  var text = String(value == null ? '' : value)
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/p>/gi, '\n')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  var box = document.createElement('textarea');
+  box.innerHTML = text;
+  return box.value.trim();
+}
+
+function csvCell(value) {
+  var text = csvPlain(value).replace(/"/g, '""');
+  return '"' + text + '"';
+}
+
+function uniqueCsvValues(values) {
+  var seen = {};
+  return values.map(csvPlain).filter(function(v) {
+    if (!v || seen[v]) return false;
+    seen[v] = true;
+    return true;
+  });
+}
+
+function csvChoices(correct, pool) {
+  var fallback = [
+    'Not routinely emphasized for this system',
+    'Varies by donor population',
+    'Usually not clinically significant',
+    'Requires correlation with antibody ID panel',
+    'No separate memorized value entered'
+  ];
+  var choices = uniqueCsvValues([correct].concat(pool || []).concat(fallback)).slice(0, 4);
+  while (choices.length < 4) choices.push('Review the encyclopedia entry');
+  return choices;
+}
+
+function addCsvQuestion(rows, question, correct, pool, explanation) {
+  correct = csvPlain(correct);
+  if (!question || !correct) return;
+  var choices = csvChoices(correct, pool);
+  rows.push([
+    question,
+    choices[0],
+    choices[1],
+    choices[2],
+    choices[3],
+    'a',
+    explanation || 'Generated from the Blood Bank hub.'
+  ]);
+}
+
+function downloadCsvFile(filename, rows) {
+  var header = ['question','a','b','c','d','correct','explanation'];
+  var csv = [header].concat(rows).map(function(row){ return row.map(csvCell).join(','); }).join('\n');
+  var blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); }, 250);
+}
+
+function buildFlashcardCsvRows() {
+  var rows = [];
+  var usualKeys = ['abo','rh','kell','duffy','kidd','mns','p1pk','lewis','lutheran'];
+  usualKeys.forEach(function(key) {
+    var sys = SYSTEMS[key];
+    var skey = sys.notes_key;
+    var data = notesData[skey] || {};
+    var fields = sys.mns_split ? (sys.fields_mn || []).concat(sys.fields_ss || []) : (sys.fields || []);
+    fields.forEach(function(field) {
+      var answer = data[field] || '';
+      var pool = usualKeys.map(function(otherKey) {
+        var other = SYSTEMS[otherKey];
+        return notesData[other.notes_key] && notesData[other.notes_key][field];
+      });
+      addCsvQuestion(
+        rows,
+        sys.name + ': ' + (FIELD_LABELS[field] || field),
+        answer,
+        pool,
+        'Study Reference entry from ' + sys.name + '.'
+      );
+    });
+    getFreqRows(skey).forEach(function(freqRow) {
+      if (!csvPlain(freqRow.memo)) return;
+      var memoPool = [];
+      usualKeys.forEach(function(otherKey) {
+        getFreqRows(SYSTEMS[otherKey].notes_key).forEach(function(r){ if (r.memo) memoPool.push(r.memo); });
+      });
+      addCsvQuestion(
+        rows,
+        sys.name + ': frequency to memorize for ' + (freqRow.ag || 'this antigen'),
+        freqRow.memo,
+        memoPool,
+        'Frequency to Memorize only. C/B/A/I/H row: ' + ['C '+(freqRow.c||''),'B '+(freqRow.b||''),'A '+(freqRow.a||''),'I '+(freqRow.i||''),'H '+(freqRow.h||'')].join(', ') + '.'
+      );
+    });
+  });
+
+  var lesserSystems = ['Gerbich','Diego','Colton','Dombrock','Cartwright','Chido/Rodgers','Cromer','Knops','Indian','LW','Scianna','Sda','Xga','RAPH','OK','JMH','HLA'];
+  var lesserCols = [
+    {key:'antigens', label:'Antigens'},
+    {key:'carrier', label:'Carrier Molecule'},
+    {key:'why_not', label:'Why Not on Antigram'},
+    {key:'hdn_htr', label:'HDN / HTR'},
+    {key:'notable', label:'Notable'}
+  ];
+  var lesserAnswers = [];
+  lesserSystems.forEach(function(name) {
+    var sk = 'lesser_' + name.toLowerCase().replace(/[^a-z0-9]/g,'');
+    var data = notesData[sk] || {};
+    var answer = lesserCols.map(function(col) {
+      return col.label + ': ' + csvPlain(data[col.key] || '');
+    }).filter(function(line){ return !/: $/.test(line); }).join(' | ');
+    if (answer) lesserAnswers.push(answer);
+  });
+  lesserSystems.forEach(function(name) {
+    var sk = 'lesser_' + name.toLowerCase().replace(/[^a-z0-9]/g,'');
+    var data = notesData[sk] || {};
+    var answer = lesserCols.map(function(col) {
+      return col.label + ': ' + csvPlain(data[col.key] || '');
+    }).filter(function(line){ return !/: $/.test(line); }).join(' | ');
+    addCsvQuestion(rows, 'Lesser-known blood group system: ' + name, answer, lesserAnswers, 'Includes all lesser-system information entered in the hub.');
+  });
+  return rows;
+}
+
+function exportFlashcardCsv() {
+  if (!isAdmin) { showToast('Unlock admin first', true); return; }
+  var rows = buildFlashcardCsvRows();
+  if (!rows.length) { showToast('Add Study Reference or Frequency to Memorize content first', true); return; }
+  downloadCsvFile('blood-bank-flashcards.csv', rows);
+  showToast('Flashcard CSV exported');
+}
+
 function buildHistoryExportPage() {
   var keys = ['abo','rh','kell','duffy','kidd','mns','p1pk','lewis','lutheran'];
   var cards = keys.map(function(key) {
@@ -2683,7 +2846,7 @@ function buildExportHtml(content, title, orientation) {
     '.tl{padding-left:12px;border-left:2px solid #f7c5d0}.tl-item{margin-bottom:7px;font-size:11px}.yr{font-weight:700;color:#c0173d;font-size:10px;display:block}' +
     '.system-page{padding:0;font-size:9px}.system-card{border-top:2.5px solid #5a0e20;border-left:1px solid #f7c5d0;border-right:1px solid #f7c5d0;border-bottom:1px solid #f7c5d0;border-radius:10px;padding:6px 8px;margin:0;background:#fffaf7;break-inside:avoid;page-break-inside:avoid}.hero-card{padding-bottom:10px}.system-head{display:flex;gap:8px;align-items:flex-start;margin-bottom:5px}.system-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;line-height:1;box-shadow:inset 0 2px 5px rgba(0,0,0,.22)}.system-head h1{text-align:left;font-size:20px;line-height:1;margin:0 0 2px;padding:0}.isbt{font-size:8px;letter-spacing:2px;color:#7a6468;text-transform:uppercase}.pun{font-size:9px;color:#c0173d;font-style:italic;font-weight:700;margin-top:2px}.card-label{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#7a6468;font-weight:700;margin:0 0 4px}.system-page .tl{padding-left:8px}.system-page .tl-item{font-size:8.4px;line-height:1.13;margin-bottom:3px}.system-page .yr{font-size:8px;display:inline-block;width:45px}.onepage-system{height:' + onePageHeight + ';overflow:hidden}.onepage-head{border-top:2.5px solid #5a0e20;border-left:1px solid #f7c5d0;border-right:1px solid #f7c5d0;border-bottom:1px solid #f7c5d0;border-radius:10px;background:#fffaf7;padding:5px 8px;margin-bottom:5px}.compact-head{align-items:center;margin-bottom:0}.onepage-grid{display:grid;' + onePageGrid + 'gap:5px;align-items:start}.compact-export h1{padding:0;margin:0 0 7px}.compact-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.compact-card h1{font-size:13px;text-align:left;padding:0;margin:0 0 5px}.compact-card .tl-item{font-size:9px;line-height:1.16;margin-bottom:3px}.compact-card .yr{display:inline-block;width:45px;font-size:9px}.compact-card .card-label{font-size:8px;margin-bottom:4px}.compact-card .study-table td{font-size:6.8px!important;padding:2px 3px!important}.compact-card .study-table td.lbl{font-size:6.5px!important;width:1.15in!important}' +
     '.membrane-card{padding-bottom:7px}.membrane-print{height:1.18in;overflow:hidden;margin:-4px 0 0}.membrane-print div{overflow:hidden!important}.membrane-print svg{width:100%!important;min-width:0!important;height:1.18in!important}.membrane-print text{font-size:14px!important}.mini-table td{font-size:8px;padding:2px 4px}.study-table{font-size:6.8px;line-height:1.08}.study-table td{font-size:6.8px;padding:2px 3px}.study-table td.lbl{width:1.15in;font-size:6.3px}.freq-export{font-size:6.2px;line-height:1.02;table-layout:fixed}.freq-export th{font-size:5.8px;padding:2px 2px}.freq-export td{font-size:5.8px;padding:2px 2px}.freq-export th:nth-child(1){width:.52in}.freq-export th:nth-child(2),.freq-export th:nth-child(3),.freq-export th:nth-child(4),.freq-export th:nth-child(5),.freq-export th:nth-child(6){width:.2in}.freq-export th:nth-child(7){width:.4in}.freq-export .center{text-align:center}.freq-export .memo{background:#dce6f4}.note-box{font-size:6.6px;line-height:1.1;padding:4px;background:#fff;border-left:3px solid #f7c5d0}.muted{color:#9a8588}' +
-    '.binder-system{height:10.25in;overflow:hidden;font-size:8px;padding-top:.18in}.binder-system table{margin-bottom:0}.binder-card{border-top:2.5px solid #5a0e20;border-left:1px solid #f7c5d0;border-right:1px solid #f7c5d0;border-bottom:1px solid #f7c5d0;border-radius:12px;background:#fffaf7;margin-bottom:.11in;break-inside:avoid;page-break-inside:avoid}.binder-hero{min-height:2.13in;padding:7px 12px 8px}.binder-head{gap:8px;align-items:flex-start;margin-bottom:5px}.binder-head .system-dot{width:31px;height:31px;font-size:15px}.binder-head h1{text-align:left;font-size:24px;line-height:.95;margin:0 0 3px;padding:0}.binder-head .isbt{font-size:7.8px;letter-spacing:2.4px}.binder-head .pun{font-size:11px;line-height:1.15;margin-top:4px}.binder-system .card-label{font-size:8.2px;letter-spacing:3px;text-transform:uppercase;color:#7a6468;font-weight:700;margin:0 0 5px}.binder-history .tl{padding-left:9px;border-left:2px solid #f7c5d0}.binder-history .tl-item{font-size:8.7px;line-height:1.18;margin-bottom:3px}.binder-history .yr{display:inline-block;width:.58in;font-size:8.8px;color:#c0173d;font-weight:700}.binder-membrane-card{height:1.58in;padding:8px 10px}.binder-membrane-print{height:1.19in;display:flex;align-items:center;justify-content:center;overflow:hidden}.binder-membrane-print>div{width:4.25in!important;overflow:hidden!important}.binder-membrane-print svg{width:4.25in!important;min-width:0!important;height:1.1in!important}.binder-membrane-print text{font-size:10px!important}.binder-study{height:3.68in;padding:8px 10px;overflow:hidden}.binder-system .study-table{font-size:7.3px;line-height:1.08}.binder-system .study-table td{font-size:7.2px;padding:2.65px 3px}.binder-system .study-table td.lbl{width:1.48in;font-size:6.9px;letter-spacing:.5px}.binder-freq{min-height:.82in;padding:8px 10px}.binder-system .freq-export{font-size:6px;line-height:1.02;table-layout:fixed}.binder-system .freq-export th{font-size:5.7px;padding:2px 2px}.binder-system .freq-export td{font-size:5.8px;padding:2px 2px}.binder-notes{min-height:1.12in;padding:8px 10px;margin-bottom:0}.binder-system .note-box{font-size:6.9px;line-height:1.15;padding:5px 6px;background:#fff;border-left:3px solid #f7c5d0}' +
+    '.binder-system{height:10.25in;overflow:hidden;font-size:8px;padding-top:.12in}.binder-system table{margin-bottom:0}.binder-card{border-top:2.5px solid #5a0e20;border-left:1px solid #f7c5d0;border-right:1px solid #f7c5d0;border-bottom:1px solid #f7c5d0;border-radius:12px;background:#fffaf7;margin-bottom:.08in;break-inside:avoid;page-break-inside:avoid}.binder-hero{min-height:1.55in;padding:5px 10px 6px}.binder-head{gap:8px;align-items:flex-start;margin-bottom:3px}.binder-head .system-dot{width:28px;height:28px;font-size:14px}.binder-head h1{text-align:left;font-size:22px;line-height:.95;margin:0 0 2px;padding:0}.binder-head .isbt{font-size:7px;letter-spacing:2.1px}.binder-head .pun{font-size:9.5px;line-height:1.08;margin-top:2px}.binder-system .card-label{font-size:8.2px;letter-spacing:3px;text-transform:uppercase;color:#7a6468;font-weight:700;margin:0 0 4px}.binder-history .tl{padding-left:8px;border-left:2px solid #f7c5d0}.binder-history .tl-item{font-size:6.8px;line-height:1.06;margin-bottom:2px}.binder-history .yr{display:inline-block;width:.5in;font-size:6.9px;color:#c0173d;font-weight:700}.binder-membrane-card{height:1.74in;padding:6px 8px}.binder-membrane-print{height:1.45in;display:flex;align-items:center;justify-content:center;overflow:hidden}.binder-membrane-print>div{width:5.55in!important;overflow:hidden!important}.binder-membrane-print svg{width:5.55in!important;min-width:0!important;height:1.42in!important}.binder-membrane-print text{font-size:10px!important}.binder-study{height:4.02in;padding:8px 10px;overflow:hidden}.binder-system .study-table{font-size:7.8px;line-height:1.12}.binder-system .study-table td{font-size:7.8px;padding:2.9px 3px}.binder-system .study-table td.lbl{width:1.5in;font-size:7.3px;letter-spacing:.5px}.binder-freq{min-height:.92in;padding:8px 10px}.binder-system .freq-export{font-size:6.4px;line-height:1.04;table-layout:fixed}.binder-system .freq-export th{font-size:6px;padding:2px 2px}.binder-system .freq-export td{font-size:6.2px;padding:2.1px 2px}.binder-notes{min-height:.92in;padding:7px 10px;margin-bottom:0}.binder-system .note-box{font-size:6.7px;line-height:1.12;padding:4px 6px;background:#fff;border-left:3px solid #f7c5d0}' +
     '.map-page{max-width:10.4in;height:7.15in;overflow:hidden}.map-page h1{font-size:16px;padding:0;margin:0 0 .06in}.map-print{height:6.86in;overflow:hidden;display:flex;align-items:center;justify-content:center}.map-print>div{width:100%!important;height:100%!important;overflow:hidden!important}.map-print svg{width:100%!important;max-width:100%!important;min-width:0!important;height:100%!important;max-height:6.78in!important}.map-rbc .map-print svg text{font-size:10px!important}.map-chrom .map-print{align-items:flex-start}.map-chrom .map-print svg text{font-size:8px!important}svg{max-width:100%;height:auto}' +
     portraitTweaks +
     '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style></head><body>' + content + '</body></html>';
@@ -2859,11 +3022,17 @@ function renderChromMap() {
       svg += '<rect x="' + x2 + '" y="' + yTop + '" width="' + CW + '" height="' + h + '" rx="' + (CW / 2) + '" fill="' + fillB + '" opacity="' + op + '"/>';
       genes.forEach(function(g, gi) {
         var gy = yTop + h * (genes.length === 1 ? .42 : (.3 + gi * .28));
-        var label = (g.h1 || g.gene) + (g.h2 ? ' | ' + g.h2 : '');
+        var geneY = gy - (exportMode ? 8 : 9);
+        var hapY = gy + (exportMode ? 12 : 14);
+        var geneFs = exportMode ? '5.4' : '6.4';
+        var hapFs = exportMode ? '4.9' : '5.8';
         svg += '<line x1="' + (x1 - 8) + '" y1="' + gy + '" x2="' + (x2 + CW + 8) + '" y2="' + gy + '" stroke="' + g.color + '" stroke-width="1.6" stroke-linecap="round"/>';
         svg += '<circle cx="' + x1 + '" cy="' + gy + '" r="2.4" fill="' + g.color + '"/><circle cx="' + (x2 + CW) + '" cy="' + gy + '" r="2.4" fill="' + g.color + '"/>';
-        svg += '<text x="' + midX + '" y="' + (gy - 5) + '" fill="' + g.color + '" font-size="' + (exportMode ? '5.8' : '6.6') + '" text-anchor="middle" font-weight="700">' + g.gene + '</text>';
-        svg += '<text x="' + midX + '" y="' + (gy + 9) + '" fill="#5a0e20" font-size="' + (exportMode ? '4.9' : '5.8') + '" text-anchor="middle">' + label + '</text>';
+        svg += '<line x1="' + midX + '" y1="' + (gy - 2) + '" x2="' + midX + '" y2="' + (geneY + 1) + '" stroke="' + g.color + '" stroke-width=".75" opacity=".7"/>';
+        svg += '<rect x="' + (midX - 17) + '" y="' + (geneY - 6) + '" width="34" height="8.5" rx="3" fill="#fffaf7" opacity=".88"/>';
+        svg += '<text x="' + midX + '" y="' + geneY + '" fill="' + g.color + '" font-size="' + geneFs + '" text-anchor="middle" font-weight="700">' + g.gene + '</text>';
+        svg += '<text x="' + (x1 + CW/2) + '" y="' + hapY + '" fill="#5a0e20" font-size="' + hapFs + '" text-anchor="middle">' + (g.h1 || g.gene) + '</text>';
+        if (g.h2) svg += '<text x="' + (x2 + CW/2) + '" y="' + hapY + '" fill="#5a0e20" font-size="' + hapFs + '" text-anchor="middle">' + g.h2 + '</text>';
       });
       svg += '<text x="' + midX + '" y="' + (yBot + 17) + '" fill="' + (hasG ? '#5a0e20' : '#bbb') + '" font-size="13" text-anchor="middle" font-weight="' + (hasG ? 'bold' : 'normal') + '">' + n + '</text>';
       svg += '</g>';
@@ -2909,15 +3078,53 @@ function renderChromMap() {
 // ── CROSSMATCH SIMULATION (step-by-step lab) ──────────────────
 var xmStep = 0, xmSelectedDonor = null, xmDonorIdx2 = null;
 
-function getSimResult(sc_idx, compat, reason) {
-  if (!xmSelectedDonor) return {is:'', t37:'', ahg:'', cc:''};
+function normalizeXmResultRow(row, fallback) {
+  row = row || {};
+  fallback = fallback || {};
+  var ahg = row.ahg != null ? String(row.ahg) : (fallback.ahg != null ? String(fallback.ahg) : '0');
+  var ccDefault = (ahg === '0' || ahg === '') ? '2+' : 'NT';
+  return {
+    is: row.is != null ? String(row.is) : (fallback.is != null ? String(fallback.is) : '0'),
+    t37: row.t37 != null ? String(row.t37) : (fallback.t37 != null ? String(fallback.t37) : '0'),
+    ahg: ahg,
+    cc: row.cc != null ? String(row.cc) : (fallback.cc != null ? String(fallback.cc) : ccDefault)
+  };
+}
+
+function normalizeXmResults(list, count) {
+  var rows = Array.isArray(list) ? list : [];
+  var out = [];
+  for (var i = 0; i < count; i++) out.push(normalizeXmResultRow(rows[i], {is:'0', t37:'0', ahg:'0', cc:'2+'}));
+  return out;
+}
+
+function defaultSimResultFor(sc_idx, compat, reason) {
   if (compat) return {is:'0', t37:'0', ahg:'0', cc:'2+'};
   var isABO = /ABO INCOMPAT|IS phase|IS agglu/i.test(reason||'');
   var isWarm = /anti-D|anti-E|anti-K|AHG POSITIVE/i.test(reason||'');
-  if (sc_idx === 2) return {is:'0', t37:'0', ahg:'0', cc:'0'};
+  var isScreen = /Antibody screen positive|screen positive/i.test(reason||'');
   if (isABO) return {is: sc_idx===0?'4+':'3+', t37:'0', ahg:'NT', cc:'NT'};
-  if (isWarm) return {is:'0', t37: sc_idx===0?'1+':'0', ahg: sc_idx===0?'2+':'1+', cc:'NT'};
+  if (isWarm || isScreen) {
+    var ahg = sc_idx === 0 ? '2+' : '0';
+    return {is:'0', t37:(isWarm && sc_idx===0)?'1+':'0', ahg:ahg, cc:ahg==='0'?'2+':'NT'};
+  }
   return {is:'0', t37:'0', ahg:'0', cc:'2+'};
+}
+
+function getSimResult(sc_idx, compat, reason) {
+  if (!xmSelectedDonor) return {is:'', t37:'', ahg:'', cc:''};
+  var fallback = defaultSimResultFor(sc_idx, compat, reason);
+  if (Array.isArray(xmSelectedDonor.results) && xmSelectedDonor.results[sc_idx]) {
+    return normalizeXmResultRow(xmSelectedDonor.results[sc_idx], fallback);
+  }
+  return fallback;
+}
+
+function defaultScreenResultsForCase(xcase) {
+  var hasAb = xcase && xcase.patient_abs && xcase.patient_abs.length > 0;
+  if (!hasAb) return normalizeXmResults([], 3);
+  var reason = 'Antibody screen positive: ' + xcase.patient_abs.join(', ');
+  return [0,1,2].map(function(i){ return defaultSimResultFor(i, false, reason); });
 }
 
 function infoBtn(text) {
@@ -3031,9 +3238,11 @@ function startCalcSim() {
   document.getElementById('aboContent').style.display = 'none';
   document.getElementById('xmContent').style.display  = 'none';
   document.getElementById('calcContent').style.display = 'block';
+  document.getElementById('antigramContent').style.display = 'none';
   document.getElementById('aboSimBtn').className = 'btn btn-ghost';
   document.getElementById('xmSimBtn').className  = 'btn btn-ghost';
   document.getElementById('calcSimBtn').className = 'btn btn-primary';
+  document.getElementById('antigramSimBtn').className = 'btn btn-ghost';
   renderCalcSim();
 }
 
@@ -3228,20 +3437,46 @@ function startABOsim() {
   document.getElementById('aboContent').style.display = 'block';
   document.getElementById('xmContent').style.display  = 'none';
   document.getElementById('calcContent').style.display = 'none';
+  document.getElementById('antigramContent').style.display = 'none';
   document.getElementById('aboSimBtn').className = 'btn btn-primary';
   document.getElementById('xmSimBtn').className  = 'btn btn-ghost';
   document.getElementById('calcSimBtn').className = 'btn btn-ghost';
+  document.getElementById('antigramSimBtn').className = 'btn btn-ghost';
   renderABOsim();
 }
 function startXMsim() {
   document.getElementById('aboContent').style.display = 'none';
   document.getElementById('xmContent').style.display  = 'block';
   document.getElementById('calcContent').style.display = 'none';
+  document.getElementById('antigramContent').style.display = 'none';
   document.getElementById('xmSimBtn').className  = 'btn btn-primary';
   document.getElementById('aboSimBtn').className = 'btn btn-ghost';
   document.getElementById('calcSimBtn').className = 'btn btn-ghost';
+  document.getElementById('antigramSimBtn').className = 'btn btn-ghost';
   if (!xmCurrent) nextXm();
   else renderXm();
+}
+
+function startAntigramSim() {
+  document.getElementById('aboContent').style.display = 'none';
+  document.getElementById('xmContent').style.display  = 'none';
+  document.getElementById('calcContent').style.display = 'none';
+  document.getElementById('antigramContent').style.display = 'block';
+  document.getElementById('aboSimBtn').className = 'btn btn-ghost';
+  document.getElementById('xmSimBtn').className  = 'btn btn-ghost';
+  document.getElementById('calcSimBtn').className = 'btn btn-ghost';
+  document.getElementById('antigramSimBtn').className = 'btn btn-primary';
+  renderAntigramSim();
+}
+
+function renderAntigramSim() {
+  var area = document.getElementById('antigramContent');
+  if (!area) return;
+  area.innerHTML = '<div class="sys-card" style="border-top:3px solid var(--crimson);padding:22px">' +
+    '<div class="sec-label" style="margin-bottom:10px">Antigram</div>' +
+    '<h3 style="color:var(--wine);font-size:30px;line-height:1.1;margin-bottom:10px">Coming Soon</h3>' +
+    '<p style="font-size:17px;line-height:1.45;color:var(--warm-grey);max-width:760px">This tab is reserved for panel interpretation practice, so Simulation Lab now has ABO Typing, Crossmatch, Calculations, and Antigram in one place.</p>' +
+  '</div>';
 }
 
 function nextXm() {
@@ -3261,7 +3496,8 @@ function startXmScreenCells() {
     compat: !hasAb,
     reason: hasAb
       ? 'Antibody screen positive: ' + xmCurrent.patient_abs.join(', ') + '. Patient plasma reacted with at least one screen cell.'
-      : 'Antibody screen negative. No unexpected antibody detected with screen cells.'
+      : 'Antibody screen negative. No unexpected antibody detected with screen cells.',
+    results: Array.isArray(xmCurrent.screenResults) ? normalizeXmResults(xmCurrent.screenResults, 3) : defaultScreenResultsForCase(xmCurrent)
   };
   xmDonorIdx2 = null;
   xmStep = 1;
@@ -3626,29 +3862,51 @@ function renderXmEditor2() {
   if (!editor) return;
   var html = '';
   xmCases.forEach(function(c, ci) {
+    var screenResults = Array.isArray(c.screenResults) ? normalizeXmResults(c.screenResults, 3) : defaultScreenResultsForCase(c);
     html += '<div class="xm-case-card">' +
       '<div class="xm-case-label">Case ' + (ci+1) + ' <button onclick="removeXmCase2(' + ci + ')" class="del-btn" style="display:inline-block;color:var(--crimson)">Remove</button></div>' +
       '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px">' +
-      '<div><label style="font-size:10px;color:var(--warm-grey)">Patient Type</label><input class="xm-input" value="' + (c.patient_type||'') + '" oninput="updateXmCase2(' + ci + ',\'patient_type\',this.value)"/></div>' +
-      '<div><label style="font-size:10px;color:var(--warm-grey)">Description</label><input class="xm-input" value="' + (c.patient_desc||'') + '" oninput="updateXmCase2(' + ci + ',\'patient_desc\',this.value)"/></div>' +
-      '<div><label style="font-size:10px;color:var(--warm-grey)">Antibodies (comma-sep)</label><input class="xm-input" value="' + (c.patient_abs||[]).join(', ') + '" oninput="updateXmCase2(' + ci + ',\'patient_abs\',this.value.split(\',\').map(function(s){return s.trim();}).filter(Boolean))"/></div>' +
+      '<div><label style="font-size:10px;color:var(--warm-grey)">Patient Type</label><input class="xm-input" value="' + escText(c.patient_type||'') + '" oninput="updateXmCase2(' + ci + ',\'patient_type\',this.value)"/></div>' +
+      '<div><label style="font-size:10px;color:var(--warm-grey)">Description</label><input class="xm-input" value="' + escText(c.patient_desc||'') + '" oninput="updateXmCase2(' + ci + ',\'patient_desc\',this.value)"/></div>' +
+      '<div><label style="font-size:10px;color:var(--warm-grey)">Antibodies (comma-sep)</label><input class="xm-input" value="' + escText((c.patient_abs||[]).join(', ')) + '" oninput="updateXmCase2(' + ci + ',\'patient_abs\',this.value.split(\',\').map(function(s){return s.trim();}).filter(Boolean))"/></div>' +
       '</div>' +
-      '<div class="xm-case-label" style="margin-bottom:4px">Donor Units</div>';
+      '<div class="xm-case-label" style="margin-bottom:4px">Screen Cell Results</div>' +
+      '<div style="overflow-x:auto;margin-bottom:10px"><div style="min-width:360px">' +
+        '<div style="display:grid;grid-template-columns:54px repeat(4,58px);gap:4px;margin-bottom:3px;font-size:9px;color:var(--warm-grey);font-weight:700;text-transform:uppercase"><span>Cell</span><span>IS</span><span>37</span><span>AHG</span><span>CC</span></div>' +
+        screenResults.map(function(r, ri) {
+          return '<div style="display:grid;grid-template-columns:54px repeat(4,58px);gap:4px;margin-bottom:4px;align-items:center">' +
+            '<span style="font-size:11px;font-weight:700;color:var(--wine)">SC ' + (ri + 1) + '</span>' +
+            '<input class="xm-input" value="' + escText(r.is) + '" oninput="updateXmScreenResult2(' + ci + ',' + ri + ',\'is\',this.value)"/>' +
+            '<input class="xm-input" value="' + escText(r.t37) + '" oninput="updateXmScreenResult2(' + ci + ',' + ri + ',\'t37\',this.value)"/>' +
+            '<input class="xm-input" value="' + escText(r.ahg) + '" oninput="updateXmScreenResult2(' + ci + ',' + ri + ',\'ahg\',this.value)"/>' +
+            '<input class="xm-input" value="' + escText(r.cc) + '" oninput="updateXmScreenResult2(' + ci + ',' + ri + ',\'cc\',this.value)"/>' +
+          '</div>';
+        }).join('') +
+      '</div></div>' +
+      '<div class="xm-case-label" style="margin-bottom:4px">Donor Units</div>' +
+      '<div style="overflow-x:auto"><div style="min-width:900px">' +
+      '<div style="display:grid;grid-template-columns:70px 1fr 65px repeat(4,52px) 1.4fr 24px;gap:4px;margin-bottom:3px;font-size:9px;color:var(--warm-grey);font-weight:700;text-transform:uppercase"><span>Type</span><span>Detail</span><span>Final</span><span>IS</span><span>37</span><span>AHG</span><span>CC</span><span>Explanation</span><span></span></div>';
     (c.donors||[]).forEach(function(d, di) {
-      html += '<div style="display:grid;grid-template-columns:70px 1fr 65px 1fr 24px;gap:4px;margin-bottom:4px;align-items:center">' +
-        '<input class="xm-input" value="' + (d.type||'') + '" placeholder="Type" oninput="updateDonor2(' + ci + ',' + di + ',\'type\',this.value)"/>' +
-        '<input class="xm-input" value="' + (d.detail||'') + '" placeholder="Detail" oninput="updateDonor2(' + ci + ',' + di + ',\'detail\',this.value)"/>' +
+      var dr = Array.isArray(d.results) ? normalizeXmResults(d.results, 1)[0] : defaultSimResultFor(0, d.compat, d.reason);
+      html += '<div style="display:grid;grid-template-columns:70px 1fr 65px repeat(4,52px) 1.4fr 24px;gap:4px;margin-bottom:4px;align-items:center">' +
+        '<input class="xm-input" value="' + escText(d.type||'') + '" placeholder="Type" oninput="updateDonor2(' + ci + ',' + di + ',\'type\',this.value)"/>' +
+        '<input class="xm-input" value="' + escText(d.detail||'') + '" placeholder="Detail" oninput="updateDonor2(' + ci + ',' + di + ',\'detail\',this.value)"/>' +
         '<select class="xm-input" onchange="updateDonor2(' + ci + ',' + di + ',\'compat\',this.value===\'true\')">' +
         '<option value="true"' + (d.compat?' selected':'') + '>Compat</option>' +
         '<option value="false"' + (!d.compat?' selected':'') + '>Incompat</option>' +
         '</select>' +
-        '<input class="xm-input" value="' + (d.reason||'') + '" placeholder="Explanation" oninput="updateDonor2(' + ci + ',' + di + ',\'reason\',this.value)"/>' +
+        '<input class="xm-input" value="' + escText(dr.is) + '" oninput="updateDonorResult2(' + ci + ',' + di + ',\'is\',this.value)"/>' +
+        '<input class="xm-input" value="' + escText(dr.t37) + '" oninput="updateDonorResult2(' + ci + ',' + di + ',\'t37\',this.value)"/>' +
+        '<input class="xm-input" value="' + escText(dr.ahg) + '" oninput="updateDonorResult2(' + ci + ',' + di + ',\'ahg\',this.value)"/>' +
+        '<input class="xm-input" value="' + escText(dr.cc) + '" oninput="updateDonorResult2(' + ci + ',' + di + ',\'cc\',this.value)"/>' +
+        '<input class="xm-input" value="' + escText(d.reason||'') + '" placeholder="Explanation" oninput="updateDonor2(' + ci + ',' + di + ',\'reason\',this.value)"/>' +
         '<button onclick="removeDonor2(' + ci + ',' + di + ')" class="del-btn" style="display:inline-block;color:var(--crimson);font-size:16px">x</button>' +
         '</div>';
     });
+    html += '</div></div>';
     if ((c.donors||[]).length < 5) html += '<button onclick="addDonor2(' + ci + ')" class="add-row-btn" style="display:inline-flex">+ Donor</button>';
     html += '<div style="margin-top:6px"><label style="font-size:10px;color:var(--warm-grey)">Teaching Point</label>' +
-      '<textarea class="xm-input" rows="2" oninput="updateXmCase2(' + ci + ',\'teach\',this.value)">' + (c.teach||'') + '</textarea></div>' +
+      '<textarea class="xm-input" rows="2" oninput="updateXmCase2(' + ci + ',\'teach\',this.value)">' + escText(c.teach||'') + '</textarea></div>' +
       '</div>';
   });
   editor.innerHTML = html;
@@ -3656,9 +3914,11 @@ function renderXmEditor2() {
 
 function updateXmCase2(ci,f,v){xmCases[ci][f]=v;scheduleXmSave();}
 function updateDonor2(ci,di,f,v){xmCases[ci].donors[di][f]=v;scheduleXmSave();}
-function addDonor2(ci){if((xmCases[ci].donors||[]).length<5){xmCases[ci].donors=xmCases[ci].donors||[];xmCases[ci].donors.push({type:'',detail:'',compat:true,reason:''});scheduleXmSave();}renderXmEditor2();}
+function updateXmScreenResult2(ci,ri,f,v){xmCases[ci].screenResults=normalizeXmResults(Array.isArray(xmCases[ci].screenResults)?xmCases[ci].screenResults:defaultScreenResultsForCase(xmCases[ci]),3);xmCases[ci].screenResults[ri][f]=v;scheduleXmSave();}
+function updateDonorResult2(ci,di,f,v){var donor=xmCases[ci].donors[di];donor.results=normalizeXmResults(Array.isArray(donor.results)?donor.results:[defaultSimResultFor(0,donor.compat,donor.reason)],1);donor.results[0][f]=v;scheduleXmSave();}
+function addDonor2(ci){if((xmCases[ci].donors||[]).length<5){xmCases[ci].donors=xmCases[ci].donors||[];xmCases[ci].donors.push({type:'',detail:'',compat:true,reason:'',results:[{is:'0',t37:'0',ahg:'0',cc:'2+'}]});scheduleXmSave();}renderXmEditor2();}
 function removeDonor2(ci,di){xmCases[ci].donors.splice(di,1);scheduleXmSave();renderXmEditor2();}
-function addXmCase2(){xmCases.push({patient_type:'',patient_desc:'',patient_abs:[],donors:[{type:'',detail:'',compat:true,reason:''}],teach:''});scheduleXmSave();renderXmEditor2();}
+function addXmCase2(){xmCases.push({patient_type:'',patient_desc:'',patient_abs:[],screenResults:normalizeXmResults([],3),donors:[{type:'',detail:'',compat:true,reason:'',results:[{is:'0',t37:'0',ahg:'0',cc:'2+'}]}],teach:''});scheduleXmSave();renderXmEditor2();}
 function removeXmCase2(ci){xmCases.splice(ci,1);scheduleXmSave();renderXmEditor2();}
 async function saveXmCases2(){
   await saveXmCasesNow('manual');
