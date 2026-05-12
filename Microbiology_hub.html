@@ -32,10 +32,11 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
 .charts-grid{display:grid;gap:14px}.chart-card{border:1px solid rgba(26,122,94,.28);border-radius:14px;background:#fff;padding:14px;box-shadow:0 6px 18px rgba(14,70,55,.08)}.chart-admin{display:none;gap:10px;margin-top:12px}.admin-mode .chart-admin{display:grid}.chart-admin input,.chart-admin textarea{border:1px solid rgba(26,122,94,.34);border-radius:8px;padding:8px;background:var(--pale);color:var(--ink);font-size:13px}.chart-admin textarea{min-height:68px;resize:vertical}.chart-title{font-size:20px;color:var(--deep);font-weight:900;margin-bottom:7px}.chart-note{font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:10px}.species-editor{display:grid;gap:8px;border:1px solid rgba(26,122,94,.24);border-radius:12px;background:#fbfffd;padding:10px}.species-editor-grid{display:grid;grid-template-columns:minmax(150px,.75fr) minmax(260px,1.4fr) minmax(140px,.7fr) auto;gap:8px;align-items:start}.species-image-preview{max-width:120px;max-height:80px;border:1px solid rgba(26,122,94,.28);border-radius:8px;background:#fff;display:block}.species-image-strip{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 4px}.species-image-card{display:grid;grid-template-columns:58px 1fr;gap:8px;align-items:center;border:1px solid rgba(26,122,94,.24);border-radius:10px;background:#fbfffd;padding:6px 8px;min-width:190px}.species-image-card img{width:58px;height:44px;object-fit:cover;border-radius:7px;border:1px solid rgba(26,122,94,.25)}.species-image-card span{font-size:12px;font-weight:900;color:var(--deep);line-height:1.2}
 .flowchart{overflow:auto;border:1px solid rgba(26,122,94,.2);border-radius:14px;background:linear-gradient(135deg,#fbfffd,#eefaf3);padding:14px}.flow-root{display:grid;gap:14px;min-width:max-content}.flow-branch{display:flex;align-items:center;gap:14px}.flow-node{min-width:126px;max-width:220px;border:1.5px solid rgba(26,122,94,.34);border-left:5px solid var(--green);background:#fff;color:var(--deep);border-radius:12px;padding:9px 11px;box-shadow:0 5px 14px rgba(14,70,55,.08);font-size:12px;font-weight:900;line-height:1.25}.flow-node.unknown{background:var(--mint);border-left-color:var(--deep)}.flow-node.positive{border-left-color:#1a8c5c;background:#effff6}.flow-node.negative{border-left-color:#a33a3a;background:#fff4f4}.flow-node.organism{border-left-color:#c47a00;background:#fffdf4;max-width:380px;min-width:270px}.flow-badge{display:inline-flex;align-items:center;gap:3px;margin-left:5px;border-radius:999px;background:rgba(26,122,94,.12);color:var(--green);border:1px solid rgba(26,122,94,.2);padding:2px 6px;font-size:10px;white-space:nowrap}.species-node-grid{display:grid;grid-template-columns:minmax(120px,1fr) auto;gap:10px;align-items:center}.species-links{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:5px}.species-link{border:none;background:transparent;color:var(--green);font-size:10px;font-weight:900;text-decoration:underline;padding:0}.species-thumbs{display:flex;gap:6px}.species-thumb{width:70px;height:52px;object-fit:cover;border-radius:8px;border:1px solid rgba(26,122,94,.28);background:#fff;cursor:zoom-in}.flow-children{display:grid;gap:10px;position:relative;padding-left:18px;border-left:2px solid rgba(26,122,94,.22)}.flow-children:before{content:"";position:absolute;left:-2px;top:50%;width:18px;border-top:2px solid rgba(26,122,94,.22)}.endpoint-picker{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 12px}.endpoint-pill{display:inline-flex;align-items:center;gap:6px;border:1.5px solid rgba(26,122,94,.28);border-radius:999px;background:#fff;color:var(--deep);padding:6px 10px;font-size:12px;font-weight:900;cursor:pointer}.endpoint-pill input{accent-color:var(--green)}.endpoint-pill.checked{background:var(--mint);border-color:rgba(26,122,94,.65)}.endpoint-tools{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 12px}.chart-help{font-size:12px;color:var(--muted);line-height:1.45;grid-column:1/-1}.zoom-modal{position:fixed;inset:0;z-index:1200;background:rgba(6,29,23,.82);display:none;align-items:center;justify-content:center;padding:24px}.zoom-modal.visible{display:flex}.zoom-box{max-width:min(920px,92vw);max-height:90vh;background:#fff;border:1px solid rgba(26,122,94,.35);border-radius:16px;padding:14px;box-shadow:0 24px 80px rgba(0,0,0,.35);display:grid;gap:10px}.zoom-box img{max-width:100%;max-height:72vh;object-fit:contain;border-radius:10px;background:#fff}.zoom-caption{display:flex;align-items:center;justify-content:space-between;gap:12px;color:var(--deep);font-size:14px;font-weight:900}.coming-soon{min-height:240px;display:grid;place-items:center;text-align:center;border:1.5px dashed rgba(26,122,94,.35);border-radius:16px;background:linear-gradient(135deg,var(--pale),#fff)}.coming-soon strong{display:block;color:var(--deep);font-size:clamp(28px,5vw,54px);line-height:1}.coming-soon span{display:block;color:var(--muted);font-size:15px;margin-top:8px}
 .flowchart{padding:20px 18px;overflow:auto}.flow-root{padding:0;min-width:760px;display:flex;flex-direction:column;align-items:center;gap:18px}.flow-branch{display:flex;flex-direction:column;align-items:center;gap:14px;position:relative}.flow-node{min-width:190px;max-width:360px;width:max-content;white-space:normal;overflow:visible;text-align:center;font-size:13px;padding:10px 13px}.flow-node.organism{min-width:260px;max-width:460px}.flow-node.gram-positive{border-left-color:#7b3aa7;background:#f7efff;color:#47205f}.flow-node.gram-negative{border-left-color:#c75584;background:#fff0f6;color:#69263f}.flow-children{display:flex;align-items:flex-start;justify-content:center;gap:14px;position:relative;padding:24px 8px 0;border-left:0;width:100%;flex-wrap:wrap}.flow-children:before{content:"";position:absolute;left:50%;top:0;height:18px;width:0;border-left:2px solid rgba(26,122,94,.25)}.flow-children>.flow-branch:before{content:"";position:absolute;top:-24px;left:50%;height:24px;border-left:2px solid rgba(26,122,94,.25)}.flow-children>.flow-branch:after{content:"";position:absolute;top:-24px;left:-7px;right:-7px;border-top:2px solid rgba(26,122,94,.18)}.flow-children>.flow-branch:only-child:after{display:none}.species-node-grid{display:flex;flex-direction:column;align-items:center;gap:9px;min-width:280px;white-space:normal;text-align:center}.species-node-main{display:grid;gap:6px;justify-items:center}.species-node-title{font-size:16px;line-height:1.2}.species-links{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:0}.species-link{border:none;background:transparent;color:var(--green);font-size:12px;font-weight:900;text-decoration:underline;padding:0;cursor:pointer}.species-thumbs{position:relative;display:flex;justify-content:center;gap:10px;margin-top:8px;padding-top:12px;border-top:2px solid rgba(26,122,94,.18);width:100%}.species-thumbs:before{content:"";position:absolute;left:50%;top:-12px;height:12px;border-left:2px solid rgba(26,122,94,.24)}.species-thumb{width:118px;height:86px;object-fit:cover;border-radius:10px;border:1.5px solid rgba(26,122,94,.32);background:#fff;cursor:zoom-in;box-shadow:0 4px 12px rgba(14,70,55,.1)}.flow-node.organism{border-left:7px solid #c47a00;background:#fffdf4;box-shadow:0 8px 22px rgba(14,70,55,.1)}.flow-badge.gp{background:#f2e5fb;color:#682b91;border-color:rgba(123,58,167,.28)}.flow-badge.gn{background:#ffe6ef;color:#9c2f5d;border-color:rgba(199,85,132,.28)}.morph-mark{position:relative;display:inline-block;width:18px;height:14px;vertical-align:-2px;margin-right:2px}.morph-mark i{position:absolute;width:4px;height:4px;border-radius:50%;background:currentColor;box-shadow:0 0 0 1px rgba(255,255,255,.45) inset}.morph-mark.cluster i:nth-child(1){left:6px;top:1px}.morph-mark.cluster i:nth-child(2){left:2px;top:5px}.morph-mark.cluster i:nth-child(3){left:8px;top:5px}.morph-mark.cluster i:nth-child(4){left:13px;top:5px}.morph-mark.cluster i:nth-child(5){left:5px;top:9px}.morph-mark.cluster i:nth-child(6){left:11px;top:9px}.morph-mark.chain i:nth-child(1){left:0;top:5px}.morph-mark.chain i:nth-child(2){left:4px;top:4px}.morph-mark.chain i:nth-child(3){left:8px;top:5px}.morph-mark.chain i:nth-child(4){left:12px;top:4px}.morph-mark.dc i:nth-child(1){left:3px;top:4px}.morph-mark.dc i:nth-child(2){left:8px;top:4px}.morph-mark.dc i:nth-child(3){left:5px;top:9px}.morph-mark.dc i:nth-child(4){left:10px;top:9px}.specimen-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}.specimen-tab-wrap{display:inline-flex;align-items:center;border:1.5px solid rgba(26,122,94,.35);border-radius:999px;background:#fff;box-shadow:0 3px 10px rgba(14,70,55,.06);overflow:hidden}.specimen-tab{border:0;background:transparent;color:var(--deep);border-radius:0;padding:9px 13px;font-size:12px;font-weight:900}.specimen-tab.active{background:var(--green);color:#fff;border-color:var(--green)}.specimen-tab-delete{display:none;border:0;border-left:1px solid rgba(26,122,94,.22);align-self:stretch;background:#fff;color:var(--danger);font-size:14px;font-weight:900;padding:0 10px;cursor:pointer}.admin-mode .specimen-tab-delete{display:inline-flex;align-items:center}.endpoint-tools{align-items:center}.export-flow-btn{background:var(--green)!important;color:#fff!important;border-color:var(--green)!important}.specimen-bank{display:none;border:1px solid rgba(26,122,94,.24);border-radius:14px;background:#fbfffd;padding:12px;margin:0 0 14px}.admin-mode .specimen-bank{display:block}.specimen-bank-title{font-size:13px;text-transform:uppercase;letter-spacing:1.5px;color:var(--deep);font-weight:900;margin-bottom:8px}.specimen-bank-row{display:grid;grid-template-columns:minmax(120px,.8fr) minmax(110px,.55fr) minmax(180px,1fr) auto auto;gap:7px;align-items:start;margin-bottom:7px}.specimen-bank-row input,.specimen-bank-row textarea{border:1px solid rgba(26,122,94,.34);border-radius:8px;background:#fff;color:var(--ink);padding:8px;font-size:12px}.specimen-bank-row textarea{min-height:38px;resize:vertical}.active-flow-meta{border:1px solid rgba(26,122,94,.22);background:var(--pale);border-radius:12px;padding:10px 12px;margin-bottom:12px;color:var(--muted);font-size:13px;line-height:1.45}.active-flow-meta strong{color:var(--deep)}
+.generate-flow-btn{background:var(--deep)!important;color:#fff!important;border-color:var(--deep)!important}.flow-placeholder{border:1.5px dashed rgba(26,122,94,.28);border-radius:14px;background:#fff;padding:22px;text-align:center;color:var(--muted);font-size:14px;font-weight:800}.generated-flow-panel{margin-top:14px;border:1px solid rgba(26,122,94,.28);border-radius:14px;background:#fff;padding:12px;box-shadow:0 8px 24px rgba(14,70,55,.08)}.generated-flow-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px;color:var(--deep);font-size:14px;font-weight:900}.generated-flow-panel .flowchart{background:#fff;border:1px solid rgba(26,122,94,.18);border-radius:10px;padding:18px 12px;overflow:auto}.generated-flow-panel .flow-root{min-width:0;width:100%;gap:16px}.generated-flow-panel .flow-branch{width:100%;align-items:center}.generated-flow-panel .flow-node{box-sizing:border-box;min-width:0;width:100%;max-width:260px;font-size:12px;line-height:1.2;padding:8px 10px}.generated-flow-panel .flow-node.organism{min-width:0;width:100%;max-width:270px}.generated-flow-panel .flow-children{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:22px 18px;width:min(100%,1080px);padding:24px 0 0;margin:0 auto}.generated-flow-panel .flow-children>.flow-branch:after{left:50%;right:50%}.generated-flow-panel .species-node-grid{min-width:0}.generated-flow-panel .species-thumb{width:88px;height:64px}.generated-flow-panel .flow-badge{font-size:9px;padding:2px 5px}.endpoint-picker{max-height:184px;overflow:auto;border:1px solid rgba(26,122,94,.18);border-radius:12px;padding:8px;background:#fff}
 .nav-tab[data-section="gramPositive"]{border-color:rgba(123,58,167,.55);background:rgba(123,58,167,.24);color:#f8ecff}.nav-tab[data-section="gramPositive"].active{background:#f7efff;color:#5b2478;border-color:#f7efff}.nav-tab[data-section="gramNegative"]{border-color:rgba(199,85,132,.62);background:rgba(199,85,132,.23);color:#fff0f6}.nav-tab[data-section="gramNegative"].active{background:#fff0f6;color:#8c2c54;border-color:#fff0f6}#gramPositive .card{border-top-color:#7b3aa7}#gramNegative .card{border-top-color:#c75584}[data-table-id="gram_positive"] th{background:#5b2478}[data-table-id="gram_negative"] th{background:#8c2c54}[data-table-id="gram_positive"] .table-wrap{border-color:rgba(123,58,167,.3)}[data-table-id="gram_negative"] .table-wrap{border-color:rgba(199,85,132,.32)}
 .save-indicator{position:fixed;right:18px;bottom:18px;background:var(--green);color:#fff;border-radius:999px;padding:9px 15px;font-size:13px;font-weight:900;opacity:0;pointer-events:none;transition:.2s;z-index:50}.save-indicator.show{opacity:1}.modal-overlay{position:fixed;inset:0;background:rgba(10,40,31,.72);z-index:1000;display:none;align-items:center;justify-content:center}.modal-overlay.visible{display:flex}.modal-box{background:#fff;border-radius:18px;padding:30px;max-width:430px;width:90%;box-shadow:0 20px 60px rgba(14,70,55,.32);text-align:center;border:1px solid rgba(26,122,94,.35)}.modal-box h3{font-size:22px;color:var(--deep);margin-bottom:6px}.modal-box p{font-size:13px;color:var(--muted);margin-bottom:18px}.modal-input{width:100%;border:1.5px solid rgba(26,122,94,.35);border-radius:10px;padding:10px 14px;font-size:15px;text-align:center;background:#fff;margin-bottom:12px;letter-spacing:3px}.modal-error{color:var(--danger);font-size:12px;margin-bottom:10px;min-height:16px}.btn{border:none;border-radius:999px;background:var(--green);color:#fff;padding:8px 16px;font-size:12px;font-weight:900}.btn.ghost{background:transparent;color:var(--muted);border:1.5px solid rgba(26,122,94,.35)}.export-options{display:grid;gap:8px;margin:14px 0;text-align:left}.export-options label{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink);cursor:pointer}.export-options input{accent-color:var(--green)}
 #printArea{display:none}@media print{body{background:#fff;color:#000;-webkit-print-color-adjust:exact;print-color-adjust:exact}body.printing .site-header,body.printing .wrap,body.printing .save-indicator,body.printing .modal-overlay,body.printing .zoom-modal{display:none!important}body.printing #printArea{display:block!important}#printArea{font-family:Georgia,"Times New Roman",serif;color:#123126;padding:18px 24px}.print-page{break-after:page}.print-page:last-child{break-after:auto}.print-section-title{font-size:22px;color:#0e4637;margin:0 0 12px}.print-card{border:1px solid #1a7a5e;border-top:4px solid #1a7a5e;margin-bottom:12px;padding:10px;break-inside:avoid;background:#fff}.print-card h2{font-size:15px;color:#0e4637;margin-bottom:8px}#printArea table{width:100%;border-collapse:collapse}#printArea th{background:#0e4637!important;color:#fff;padding:5px 6px;text-align:left;font-size:9px;border:1px solid #0e4637}#printArea td{padding:5px 6px;border:1px solid #9acdb9;vertical-align:top;font-size:10px}#printArea img{display:block;max-width:105px;max-height:80px;border:1px solid #9acdb9}#printArea .flow-node.organism{min-width:360px;max-width:520px}#printArea .species-thumb{width:130px;height:96px;max-width:130px;max-height:96px}#printArea .species-link{display:none}}
-@media print{#printArea .endpoint-tools,#printArea .endpoint-picker,#printArea .chart-admin,#printArea .specimen-tabs,#printArea .specimen-bank,#printArea .active-flow-meta{display:none!important}#printArea .flowchart{overflow:visible;border:0;background:#fff;padding:8px}#printArea .flow-root{min-width:0;gap:14px}#printArea .flow-node{font-size:11px;padding:7px 9px;min-width:140px;max-width:280px}#printArea .flow-node.organism{min-width:260px;max-width:430px}#printArea .species-node-grid{min-width:240px}#printArea .species-thumb{width:120px;height:84px;max-width:120px;max-height:84px}}
+@media print{#printArea .endpoint-tools,#printArea .endpoint-picker,#printArea .chart-admin,#printArea .specimen-tabs,#printArea .specimen-bank,#printArea .active-flow-meta{display:none!important}#printArea .flowchart{overflow:visible;border:0;background:#fff;padding:8px}#printArea .flow-root{min-width:0;width:100%;gap:14px}#printArea .flow-branch{width:100%;align-items:center}#printArea .flow-children{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px 12px;width:100%;padding-top:20px}#printArea .flow-node{box-sizing:border-box;width:100%;font-size:10px;padding:6px 7px;min-width:0;max-width:220px}#printArea .flow-node.organism{min-width:0;max-width:240px}#printArea .species-node-grid{min-width:0}#printArea .species-thumb{width:100px;height:72px;max-width:100px;max-height:72px}}
 @media(max-width:760px){.lab-layout{grid-template-columns:1fr}.lab-menu{position:static}.site-header{align-items:flex-start}.nav-tabs{width:100%}}
 </style>
 </head>
@@ -191,11 +192,13 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   var isAdmin=false;
   var editMode=false;
   var saveTimer=null;
-	  var saveInFlight=null;
+  var saveInFlight=null;
   var safeDoc=null;
   var syncPresence=null;
+  var SPECIMEN_BANK_VERSION=2;
   var state=defaultState();
   var activeChartId=null;
+  var generatedChartId=null;
   var EXPORT_ITEMS=[
     ['overview_core','Big Picture'],
     ['gram_positive','Gram Positive Organisms'],
@@ -204,6 +207,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     ['charts','Flowcharts'],
     ['resources','Resources']
   ];
+  var CHAPTER6_SPECIMEN_IDS={blood:true,csf:true,throat:true,sputum:true,urine:true,stool:true,genital_tract:true,wounds_abscesses:true};
+  var LEGACY_SPECIMEN_IDS={blood_culture:true,fecal:true,genital_culture:true,skin_wounds:true,pleural_fluid:true,peritoneal_fluid:true,pericardial_fluid:true,synovial_fluid:true,throat_upper_respiratory:true,eye_ear:true,worksheet_unknown:true};
   function uid(prefix){return prefix+'_'+Math.random().toString(36).slice(2,9)}
   function escapeHtml(value){return String(value||'').replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]})}
   function decodeEntities(value){var box=document.createElement('textarea');box.innerHTML=String(value||'');return box.value}
@@ -305,19 +310,14 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function defaultSpecimenBank(){
     return [
-      {id:'blood_culture',name:'Blood Culture',category:'Sterile / Blood',note:'Positive bottle: Gram stain immediately, subculture, then ID by morphology and rapid bench clues.'},
-      {id:'csf',name:'CSF',category:'Sterile / STAT',note:'Critical specimen. Gram stain, culture, and rapid escalation for likely meningitis bacteria.'},
-      {id:'urine',name:'Urine',category:'Urinary',note:'Quantitative culture, colony count, and common uropathogen ID logic.'},
-      {id:'sputum',name:'Sputum',category:'Respiratory',note:'Start with specimen quality, then work up likely bacterial respiratory pathogens.'},
-      {id:'fecal',name:'Fecal / Stool Culture',category:'GI',note:'Screen enteric pathogens; normal flora is not the endpoint.'},
-      {id:'genital_culture',name:'Genital Culture',category:'Genital',note:'Includes GC-style workup and common genital bacterial screening paths.'},
-      {id:'skin_wounds',name:'Skin (wounds)',category:'Wounds',note:'Use depth and Gram stain to decide skin flora versus true wound pathogens.'},
-      {id:'pleural_fluid',name:'Pleural Fluid (lungs)',category:'Body Fluids',note:'Sterile body fluid from lungs; Gram stain and culture are interpreted as significant.'},
-      {id:'peritoneal_fluid',name:'Peritoneal Fluid (abdomen)',category:'Body Fluids',note:'Sterile abdominal fluid; think enteric Gram negatives, anaerobes, and streptococci.'},
-      {id:'pericardial_fluid',name:'Pericardial Fluid (heart)',category:'Body Fluids',note:'Sterile heart fluid; any growth needs careful organism ID and escalation.'},
-      {id:'synovial_fluid',name:'Synovial Fluid',category:'Body Fluids',note:'Sterile joint fluid; include S. aureus, streptococci, and gonococcal arthritis clues.'},
-      {id:'throat_upper_respiratory',name:'Throat / Upper Respiratory',category:'Additional Bacteria',note:'Useful ASCP-style flow for beta-hemolytic streptococci and respiratory flora decisions.'},
-      {id:'eye_ear',name:'Eye / Ear',category:'Additional Bacteria',note:'Useful ASCP-style flow for source-linked pathogens such as S. aureus, H. influenzae, and Pseudomonas.'}
+      {id:'blood',name:'Blood',category:'Chapter 6 Specimen',note:'Chapter 6 lists blood culture collection/culture handling here, but does not give a specific bacteria list in this specimen section.'},
+      {id:'csf',name:'CSF',category:'Chapter 6 Specimen',note:'Most common CSF isolates listed in Chapter 6.'},
+      {id:'throat',name:'Throat',category:'Chapter 6 Specimen',note:'Clinically significant throat culture bacteria and normal oral biota listed in Chapter 6.'},
+      {id:'sputum',name:'Sputum',category:'Chapter 6 Specimen',note:'Common significant sputum isolates listed in Chapter 6.'},
+      {id:'urine',name:'Urine',category:'Chapter 6 Specimen',note:'Common significant urine bacterial isolates listed in Chapter 6.'},
+      {id:'stool',name:'Stool',category:'Chapter 6 Specimen',note:'Bacteria causing gastroenteritis listed in Chapter 6.'},
+      {id:'genital_tract',name:'Genital Tract',category:'Chapter 6 Specimen',note:'Bacterial genital tract organisms and normal biota listed in Chapter 6.'},
+      {id:'wounds_abscesses',name:'Wounds / Abscesses',category:'Chapter 6 Specimen',note:'Wound and abscess bacteria listed in Chapter 6.'}
     ];
   }
   function ensureSpecimenBankItem(item,index){
@@ -348,6 +348,71 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var name=specimen.name||'Specimen';
     var root='Specimen: '+name;
     var templates={
+      blood:{title:'Blood Specimen Notes',note:'Chapter 6 gives blood culture collection and bottle handling here, but no specific bacteria list in this specimen section. Add organisms manually if your class gives a blood isolate list.',selectedEndpoints:['__none__'],species:[]},
+      csf:{title:'CSF Flowchart',note:'Extracted from Chapter 6: Neisseria meningitidis, Streptococcus pneumoniae, Streptococcus agalactiae, E. coli, S. aureus, and Listeria monocytogenes.',species:[
+        ['Neisseria meningitidis',root+' > Direct Gram stain > Gram-negative diplococci {GNDC} > Oxidase positive (+) > Neisseria meningitidis {GNDC}'],
+        ['Streptococcus pneumoniae',root+' > Direct Gram stain > Gram-positive diplococci / lancet pairs {GPC pairs} > Alpha hemolysis > Optochin susceptible / bile soluble (+) > Streptococcus pneumoniae {GPC pairs}'],
+        ['Streptococcus agalactiae',root+' > Direct Gram stain > Gram-positive cocci in chains {GPC chains} > Beta hemolysis > CAMP / hippurate positive (+) > Streptococcus agalactiae {GPC chains}'],
+        ['E. coli',root+' > Direct Gram stain > Gram-negative rods {GNR} > Oxidase negative (-) > Lactose fermenter > E. coli {GNR}'],
+        ['S. aureus',root+' > Direct Gram stain > Gram-positive cocci in clusters {GPC clusters} > Catalase positive (+) > Coagulase positive (+) > S. aureus {GPC clusters}'],
+        ['Listeria monocytogenes',root+' > Direct Gram stain > Small Gram-positive rods/coccobacilli {GPR} > Narrow beta hemolysis > Tumbling motility / CAMP positive (+) > Listeria monocytogenes {GPR}']
+      ]},
+      throat:{title:'Throat Flowchart',note:'Extracted from Chapter 6: clinically significant throat isolates plus normal oral biota listed in the specimen section.',species:[
+        ['S. pyogenes / Group A Strep',root+' > Throat culture > Beta-hemolytic gram-positive cocci in chains {GPC chains} > PYR positive (+) / bacitracin susceptible > S. pyogenes / Group A Strep {GPC chains}'],
+        ['Group B Streptococcus',root+' > Throat culture > Beta-hemolytic gram-positive cocci in chains {GPC chains} > CAMP / hippurate positive (+) > Group B Streptococcus {GPC chains}'],
+        ['Group C Streptococcus',root+' > Throat culture > Beta-hemolytic gram-positive cocci in chains {GPC chains} > Lancefield group C > Group C Streptococcus {GPC chains}'],
+        ['Group G Streptococcus',root+' > Throat culture > Beta-hemolytic gram-positive cocci in chains {GPC chains} > Lancefield group G > Group G Streptococcus {GPC chains}'],
+        ['Arcanobacterium spp.',root+' > Throat culture > Gram-positive bacilli {GPR} > Beta hemolysis > CAMP inhibition pattern > Arcanobacterium spp. {GPR}'],
+        ['Viridans group streptococci',root+' > Normal oral biota > Alpha-hemolytic gram-positive cocci {GPC chains} > Optochin resistant / bile insoluble (-) > Viridans group streptococci {GPC chains}'],
+        ['Neisseria spp.',root+' > Normal oral biota > Gram-negative diplococci {GNDC} > Oxidase positive (+) > Neisseria spp. {GNDC}'],
+        ['Corynebacterium spp.',root+' > Normal oral biota > Pleomorphic gram-positive rods {GPR} > Diphtheroid morphology > Corynebacterium spp. {GPR}'],
+        ['Coagulase-negative staphylococci',root+' > Normal oral biota > Gram-positive cocci in clusters {GPC clusters} > Catalase positive (+) > Coagulase negative (-) > Coagulase-negative staphylococci {GPC clusters}']
+      ]},
+      sputum:{title:'Sputum Flowchart',note:'Extracted from Chapter 6: common significant sputum isolates.',species:[
+        ['S. pneumoniae',root+' > Acceptable sputum > Gram-positive diplococci / lancet pairs {GPC pairs} > Alpha hemolysis > Optochin susceptible / bile soluble (+) > S. pneumoniae {GPC pairs}'],
+        ['K. pneumoniae',root+' > Acceptable sputum > Gram-negative rods {GNR} > Mucoid lactose fermenter > K. pneumoniae {GNR}'],
+        ['S. aureus',root+' > Acceptable sputum > Gram-positive cocci in clusters {GPC clusters} > Catalase positive (+) > Coagulase positive (+) > S. aureus {GPC clusters}'],
+        ['P. aeruginosa',root+' > Acceptable sputum > Gram-negative rods {GNR} > Oxidase positive (+) > Pigment / metallic sheen > P. aeruginosa {GNR}'],
+        ['H. influenzae',root+' > Acceptable sputum > Small gram-negative coccobacilli {GNCB} > Chocolate growth > X and V factor requirement > H. influenzae {GNCB}'],
+        ['L. pneumophila',root+' > Acceptable sputum > Poor Gram stain visibility > Does not grow on routine media > BCYE / urine antigen clue > L. pneumophila'],
+        ['M. pneumoniae',root+' > Atypical pneumonia clue > Does not grow on routine media > Molecular/serology method > M. pneumoniae']
+      ]},
+      urine:{title:'Urine Flowchart',note:'Extracted from Chapter 6: common significant urine bacterial isolates. Yeast was listed in the PDF but not added here because this chart is bacteria-only.',species:[
+        ['E. coli',root+' > Significant colony count > Gram-negative rods {GNR} > Lactose fermenter > Indole positive (+) > E. coli {GNR}'],
+        ['Klebsiella spp.',root+' > Significant colony count > Gram-negative rods {GNR} > Mucoid lactose fermenter > Nonmotile / urease variable > Klebsiella spp. {GNR}'],
+        ['Enterobacter spp.',root+' > Significant colony count > Gram-negative rods {GNR} > Lactose fermenter > VP / citrate positive (+) > Enterobacter spp. {GNR}'],
+        ['Proteus spp.',root+' > Significant colony count > Gram-negative rods {GNR} > Swarming / H2S > Urease positive (+) > Proteus spp. {GNR}'],
+        ['S. aureus',root+' > Significant colony count > Gram-positive cocci in clusters {GPC clusters} > Catalase positive (+) > Coagulase positive (+) > S. aureus {GPC clusters}'],
+        ['Staphylococcus saprophyticus',root+' > Significant colony count > Gram-positive cocci in clusters {GPC clusters} > Coagulase negative (-) > Novobiocin resistant > Staphylococcus saprophyticus {GPC clusters}'],
+        ['Enterococcus spp.',root+' > Significant colony count > Gram-positive cocci in pairs/chains {GPC chains} > PYR / 6.5% NaCl positive (+) > Enterococcus spp. {GPC chains}'],
+        ['P. aeruginosa',root+' > Significant colony count > Non-lactose gram-negative rod {GNR} > Oxidase positive (+) > Pigment / cetrimide growth > P. aeruginosa {GNR}']
+      ]},
+      stool:{title:'Stool Flowchart',note:'Extracted from Chapter 6: bacteria causing gastroenteritis.',species:[
+        ['Shigella spp.',root+' > Gastroenteritis workup > Non-lactose gram-negative rod {GNR} > H2S / motility negative (-) > Shigella spp. {GNR}'],
+        ['Salmonella spp.',root+' > Gastroenteritis workup > Non-lactose gram-negative rod {GNR} > H2S positive (+) > Salmonella spp. {GNR}'],
+        ['Campylobacter jejuni',root+' > Gastroenteritis workup > Curved gram-negative rods {GNR} > Microaerophilic growth at 42 C > Campylobacter jejuni {GNR}'],
+        ['E. coli O157:H7',root+' > Gastroenteritis workup > Gram-negative rods {GNR} > Sorbitol negative on SMAC > E. coli O157:H7 {GNR}'],
+        ['Yersinia enterocolitica',root+' > Gastroenteritis workup > Gram-negative coccobacilli {GNCB} > CIN bullseye / urease positive (+) > Yersinia enterocolitica {GNCB}'],
+        ['Clostridioides difficile',root+' > Gastroenteritis workup > Anaerobic gram-positive rod {GPR} > Toxin / NAAT positive (+) > Clostridioides difficile {GPR}'],
+        ['Vibrio spp.',root+' > Gastroenteritis workup > Curved gram-negative rods {GNR} > Oxidase positive (+) > TCBS growth > Vibrio spp. {GNR}']
+      ]},
+      genital_tract:{title:'Genital Tract Flowchart',note:'Extracted from Chapter 6: bacterial genital tract organisms and normal biota.',species:[
+        ['N. gonorrhoeae',root+' > Cervicitis / urethritis workup > Gram-negative diplococci {GNDC} > Oxidase positive (+) > N. gonorrhoeae {GNDC}'],
+        ['C. trachomatis',root+' > Cervicitis / urethritis workup > Intracellular bacteria / NAAT target > C. trachomatis'],
+        ['Mobiluncus spp.',root+' > BV / nonspecific vaginitis clue > Curved anaerobic rods {GPR} > Overgrowth pattern > Mobiluncus spp. {GPR}'],
+        ['Gardnerella vaginalis',root+' > BV indicator clue > Clue cells / vaginal microbiota shift > Gardnerella vaginalis'],
+        ['Enterics',root+' > Prostatitis clue > Gram-negative rods {GNR} > Enterobacterales screen > Enterics {GNR}'],
+        ['Lactobacillus spp.',root+' > Normal vaginal biota > Gram-positive rods {GPR} > Predominant during childbearing years > Lactobacillus spp. {GPR}'],
+        ['Staphylococci',root+' > Normal genital biota early/late life > Gram-positive cocci in clusters {GPC clusters} > Catalase positive (+) > Staphylococci {GPC clusters}'],
+        ['Corynebacteria',root+' > Normal genital biota early/late life > Pleomorphic gram-positive rods {GPR} > Diphtheroid morphology > Corynebacteria {GPR}']
+      ]},
+      wounds_abscesses:{title:'Wounds / Abscesses Flowchart',note:'Extracted from Chapter 6: bacteria listed for superficial skin infections, folliculitis, boils, impetigo, erysipelas, and deep wounds/abscesses.',species:[
+        ['S. aureus',root+' > Wound / abscess culture > Gram-positive cocci in clusters {GPC clusters} > Catalase positive (+) > Coagulase positive (+) > S. aureus {GPC clusters}'],
+        ['S. pyogenes',root+' > Skin infection / impetigo / erysipelas clue > Gram-positive cocci in chains {GPC chains} > PYR positive (+) / Group A > S. pyogenes {GPC chains}'],
+        ['P. aeruginosa',root+' > Folliculitis / water exposure clue > Gram-negative rods {GNR} > Oxidase positive (+) > P. aeruginosa {GNR}'],
+        ['Erysipelothrix rhusiopathiae',root+' > Erysipeloid / animal exposure clue > Gram-positive rods {GPR} > Catalase negative (-) / H2S positive (+) > Erysipelothrix rhusiopathiae {GPR}'],
+        ['Anaerobes',root+' > Deep surgical wound or abscess > Foul odor / mixed organisms > Anaerobic culture indicated > Anaerobes']
+      ]},
       blood_culture:{title:'Blood Culture Flowchart',note:'Positive blood culture workup: Gram stain first, then separate Gram-positive cocci, Gram-negative rods, and urgent organism clues.',species:[
         ['Staphylococcus aureus',root+' > Positive bottle Gram stain > Gram-positive cocci in clusters {GPC clusters} > Catalase positive (+) > Staph latex / coagulase positive (+) > Staphylococcus aureus {GPC clusters}'],
         ['Coagulase-negative Staphylococcus',root+' > Positive bottle Gram stain > Gram-positive cocci in clusters {GPC clusters} > Catalase positive (+) > Staph latex / coagulase negative (-) > Coagulase-negative Staphylococcus {GPC clusters}'],
@@ -357,14 +422,14 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         ['Enterobacterales',root+' > Positive bottle Gram stain > Gram-negative rods {GNR} > Oxidase negative (-) > MacConkey growth > Enterobacterales screen {GNR}'],
         ['Pseudomonas aeruginosa',root+' > Positive bottle Gram stain > Gram-negative rods {GNR} > Oxidase positive (+) > Pigment or Cetrimide growth > Pseudomonas aeruginosa {GNR}']
       ]},
-      csf:{title:'CSF Flowchart',note:'CSF is a STAT sterile specimen. Use Gram stain morphology to recognize urgent meningitis bacteria.',species:[
+      legacy_csf:{title:'CSF Flowchart',note:'CSF is a STAT sterile specimen. Use Gram stain morphology to recognize urgent meningitis bacteria.',species:[
         ['Streptococcus pneumoniae',root+' > STAT Gram stain > Gram-positive diplococci / lancet pairs {GPC pairs} > Alpha hemolysis > Bile solubility or Taxo P positive (+) > Streptococcus pneumoniae {GPC pairs}'],
         ['Neisseria meningitidis',root+' > STAT Gram stain > Gram-negative diplococci {GNDC} > Oxidase positive (+) > Chocolate growth > Neisseria meningitidis {GNDC}'],
         ['Haemophilus influenzae',root+' > STAT Gram stain > Small pleomorphic Gram-negative coccobacilli {GNCB} > Chocolate growth > X and V factor requirement > Haemophilus influenzae {GNCB}'],
         ['Listeria monocytogenes',root+' > STAT Gram stain > Small Gram-positive rods/coccobacilli {GPR} > Catalase positive (+) > Tumbling motility at room temp > Listeria monocytogenes {GPR}'],
         ['Streptococcus agalactiae',root+' > STAT Gram stain > Gram-positive cocci in chains {GPC chains} > Beta hemolysis > StrepPro Group B > Streptococcus agalactiae {GPC chains}']
       ]},
-      urine:{title:'Urine Culture Flowchart',note:'Urine workup starts with colony count and morphology, then common uropathogen ID.',species:[
+      legacy_urine:{title:'Urine Culture Flowchart',note:'Urine workup starts with colony count and morphology, then common uropathogen ID.',species:[
         ['Probable E. coli',root+' > Significant colony count > Gram-negative rod {GNR} > Lactose fermenter > Indole positive (+) > Probable E. coli {GNR}'],
         ['Probable Klebsiella pneumoniae',root+' > Significant colony count > Gram-negative rod {GNR} > Mucoid lactose fermenter > Indole negative (-) > Probable Klebsiella pneumoniae {GNR}'],
         ['Probable Proteus mirabilis',root+' > Significant colony count > Gram-negative rod {GNR} > Swarming growth > Indole negative (-) > Probable Proteus mirabilis {GNR}'],
@@ -372,7 +437,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         ['Staphylococcus saprophyticus',root+' > Significant colony count > Gram-positive cocci in clusters {GPC clusters} > Catalase positive (+) > Coagulase negative (-) > Novobiocin resistant > Staphylococcus saprophyticus {GPC clusters}'],
         ['Pseudomonas aeruginosa',root+' > Significant colony count > Non-lactose Gram-negative rod {GNR} > Oxidase positive (+) > Pigment or Cetrimide growth > Pseudomonas aeruginosa {GNR}']
       ]},
-      sputum:{title:'Sputum Flowchart',note:'Sputum begins with specimen quality. Work up likely lower respiratory bacterial pathogens from acceptable specimens.',species:[
+      legacy_sputum:{title:'Sputum Flowchart',note:'Sputum begins with specimen quality. Work up likely lower respiratory bacterial pathogens from acceptable specimens.',species:[
         ['Reject / recollect specimen',root+' > Direct smear quality screen > Many squamous epithelial cells > Poor lower respiratory specimen > Reject / recollect specimen'],
         ['Streptococcus pneumoniae',root+' > Acceptable sputum > Gram-positive diplococci / lancet pairs {GPC pairs} > Alpha hemolysis > Bile solubility or Taxo P positive (+) > Streptococcus pneumoniae {GPC pairs}'],
         ['Haemophilus influenzae',root+' > Acceptable sputum > Small Gram-negative coccobacilli {GNCB} > Chocolate growth > X and V factor requirement > Haemophilus influenzae {GNCB}'],
@@ -430,12 +495,16 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   function makeSpecimenChart(specimen){
     var template=specimenTemplate(specimen);
     var species=Array.isArray(template.species)&&template.species.length&&Array.isArray(template.species[0])?specimenSpecies(template.species):template.species;
-    return {id:uid('chart'),specimenId:specimen.id,title:template.title||((specimen.name||'Specimen')+' Flowchart'),note:template.note||specimen.note||'',selectedEndpoints:[],species:species};
+    return {id:uid('chart'),specimenId:specimen.id,title:template.title||((specimen.name||'Specimen')+' Flowchart'),note:template.note||specimen.note||'',selectedEndpoints:template.selectedEndpoints||['__none__'],species:species};
   }
   function defaultSpecimenCharts(bank){
     return (bank||defaultSpecimenBank()).map(makeSpecimenChart);
   }
-  function mergeSpecimenBank(incoming){
+  function isCustomSpecimen(item){
+    var id=item&&item.id;
+    return !!(id&&!CHAPTER6_SPECIMEN_IDS[id]&&!LEGACY_SPECIMEN_IDS[id]);
+  }
+  function mergeSpecimenBank(incoming,bankVersion){
     var out=[],seen={};
     function add(item,index){
       var clean=ensureSpecimenBankItem(item,index);
@@ -445,7 +514,13 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       seen[clean.id]=true;
       out.push(clean);
     }
-    (Array.isArray(incoming)?incoming:defaultSpecimenBank()).forEach(add);
+    var source;
+    if(Array.isArray(incoming)&&bankVersion>=SPECIMEN_BANK_VERSION){
+      source=incoming;
+    }else{
+      source=defaultSpecimenBank().concat(Array.isArray(incoming)?incoming.filter(isCustomSpecimen):[]);
+    }
+    source.forEach(add);
     return out;
   }
   function keepIncomingChart(chart){
@@ -470,6 +545,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     return {
       version:1,
       updatedAt:Date.now(),
+      specimenBankVersion:SPECIMEN_BANK_VERSION,
       specimenBank:bank,
       tables:{
         overview_core:makeTable('Big Picture',['Area','What To Track','Why It Matters'],[
@@ -492,7 +568,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   function mergeState(incoming){
     var base=defaultState();
     if(!incoming||typeof incoming!=='object')return base;
-    base.specimenBank=mergeSpecimenBank(incoming.specimenBank);
+    var bankVersion=Number(incoming.specimenBankVersion||0)||0;
+    base.specimenBank=mergeSpecimenBank(incoming.specimenBank,bankVersion);
     if(Array.isArray(incoming.specimenBank)&&incoming.specimenBank.length&&!base.specimenBank.length)base.specimenBank=defaultSpecimenBank();
     if(incoming.tables){
       Object.keys(base.tables).forEach(function(id){
@@ -500,12 +577,18 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       });
     }
     if(Array.isArray(incoming.charts)&&incoming.charts.length){
-      base.charts=incoming.charts.map(ensureChartSpecies).filter(keepIncomingChart);
+      var bankIds={};
+      base.specimenBank.forEach(function(specimen){bankIds[specimen.id]=true});
+      base.charts=incoming.charts.map(ensureChartSpecies).filter(function(chart){
+        if(!keepIncomingChart(chart)||!bankIds[chart.specimenId])return false;
+        return bankVersion>=SPECIMEN_BANK_VERSION||isCustomSpecimen({id:chart.specimenId});
+      });
       addMissingPreloadedCharts(base);
     }else{
       base.charts=defaultSpecimenCharts(base.specimenBank);
     }
     base.version=1;
+    base.specimenBankVersion=SPECIMEN_BANK_VERSION;
     base.updatedAt=Number(incoming.updatedAt||0)||base.updatedAt;
     return base;
   }
@@ -748,16 +831,22 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     paths.forEach(function(path){addFlowPath(root,path.parts,path.species)});
     return '<div class="flowchart"><div class="flow-root">'+root.map(renderFlowNode).join('')+'</div></div>';
   }
+  function generatedFlowHtml(chart){
+    if(generatedChartId!==chart.id)return '<div class="flow-placeholder">Select one or more bacteria above, then click Generate Flowchart.</div>';
+    var picked=activeEndpointKeys(chart,speciesPaths(chart));
+    if(!picked.length)return '<div class="flow-placeholder">Select at least one bacteria to generate the flowchart.</div>';
+    return '<div class="generated-flow-panel"><div class="generated-flow-actions"><strong>Generated Flowchart</strong><span><button type="button" class="mini-btn export-flow-btn" data-action="export-chart" data-chart="'+chart.id+'">Export</button> <button type="button" class="mini-btn" data-action="close-generated-flow">Close</button></span></div>'+hierarchyHtml(chart)+'</div>';
+  }
   function endpointPickerHtml(chart){
     var endpoints=speciesPaths(chart);
-    if(!endpoints.length)return '<p class="chart-note">Add paths to create endpoint checkboxes.</p>';
+    if(!endpoints.length)return '<p class="chart-note">No bacteria were listed for this specimen in the Chapter 6 specimen section. Add organisms manually in admin mode if needed.</p>';
     var active=activeEndpointKeys(chart,endpoints);
     var pills=endpoints.map(function(item){
       var checked=active.indexOf(item.species.id)>-1;
       var badges=item.terminal.badges.join(' ');
       return '<label class="endpoint-pill '+(checked?'checked':'')+'"><input type="checkbox" data-action="toggle-endpoint" data-chart="'+chart.id+'" value="'+escapeHtml(item.species.id)+'" '+(checked?'checked':'')+'> '+escapeHtml((item.species.name||item.terminal.label)+(badges?' '+badges:''))+'</label>';
     }).join('');
-    return '<div class="endpoint-tools"><button type="button" class="mini-btn" data-action="select-chart-endpoints" data-chart="'+chart.id+'">Show All</button><button type="button" class="mini-btn" data-action="clear-chart-endpoints" data-chart="'+chart.id+'">Clear</button><button type="button" class="mini-btn export-flow-btn" data-action="export-chart" data-chart="'+chart.id+'">Export This Flowchart</button></div><div class="endpoint-picker">'+pills+'</div>';
+    return '<div class="endpoint-tools"><button type="button" class="mini-btn" data-action="select-chart-endpoints" data-chart="'+chart.id+'">Show All</button><button type="button" class="mini-btn" data-action="clear-chart-endpoints" data-chart="'+chart.id+'">Clear</button><button type="button" class="mini-btn generate-flow-btn" data-action="generate-chart" data-chart="'+chart.id+'">Generate Flowchart</button><button type="button" class="mini-btn export-flow-btn" data-action="export-chart" data-chart="'+chart.id+'">Export</button></div><div class="endpoint-picker">'+pills+'</div>';
   }
   function speciesImagesHtml(chart){
     var picked=activeEndpointKeys(chart,speciesPaths(chart));
@@ -808,7 +897,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var active=chartById(activeChartId)||state.charts[0];
     var specimen=active&&active.specimenId?specimenById(active.specimenId):null;
     var meta=specimen?'<div class="active-flow-meta"><strong>'+escapeHtml(specimen.name)+'</strong> - '+escapeHtml(specimen.category||'Specimen')+'. '+escapeHtml(specimen.note||'')+'</div>':'';
-    grid.innerHTML=specimenBankHtml()+specimenTabsHtml(state.charts)+'<div class="chart-card" data-chart-card="'+active.id+'"><div class="card-title"><h2>'+escapeHtml(active.title||'Untitled Flow')+'</h2><span class="tag">Specimen</span></div><p class="chart-note">'+escapeHtml(active.note||'')+'</p>'+meta+endpointPickerHtml(active)+hierarchyHtml(active)+speciesEditorHtml(active)+'</div>';
+    grid.innerHTML=specimenBankHtml()+specimenTabsHtml(state.charts)+'<div class="chart-card" data-chart-card="'+active.id+'"><div class="card-title"><h2>'+escapeHtml(active.title||'Untitled Flow')+'</h2><span class="tag">Specimen</span></div><p class="chart-note">'+escapeHtml(active.note||'')+'</p>'+meta+endpointPickerHtml(active)+generatedFlowHtml(active)+speciesEditorHtml(active)+'</div>';
   }
   function renderExportOptions(){
     var box=document.getElementById('exportOptions');if(!box)return;
@@ -836,9 +925,16 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var tab=e.target.closest('.nav-tab[data-section]');if(tab){showSection(tab.dataset.section);return}
     var zoom=e.target.closest('[data-action="zoom-species-image"]');if(zoom){openSpeciesZoom(zoom.dataset.species,zoom.dataset.kind);return}
     var btn=e.target.closest('button[data-action]');if(!btn)return;
-    if(btn.dataset.action==='select-chart'){activeChartId=btn.dataset.chart;renderCharts();return}
-    if(btn.dataset.action==='select-chart-endpoints'){var sc=state.charts.find(function(chart){return chart.id===btn.dataset.chart});if(sc){sc.selectedEndpoints=[];saveDraft();renderCharts()}return}
-    if(btn.dataset.action==='clear-chart-endpoints'){var cc=state.charts.find(function(chart){return chart.id===btn.dataset.chart});if(cc){cc.selectedEndpoints=['__none__'];saveDraft();renderCharts()}return}
+    if(btn.dataset.action==='select-chart'){activeChartId=btn.dataset.chart;generatedChartId=null;renderCharts();return}
+    if(btn.dataset.action==='select-chart-endpoints'){var sc=state.charts.find(function(chart){return chart.id===btn.dataset.chart});if(sc){sc.selectedEndpoints=[];generatedChartId=null;saveDraft();renderCharts()}return}
+    if(btn.dataset.action==='clear-chart-endpoints'){var cc=state.charts.find(function(chart){return chart.id===btn.dataset.chart});if(cc){cc.selectedEndpoints=['__none__'];generatedChartId=null;saveDraft();renderCharts()}return}
+    if(btn.dataset.action==='generate-chart'){
+      var gc=state.charts.find(function(chart){return chart.id===btn.dataset.chart});
+      if(gc&&!activeEndpointKeys(gc,speciesPaths(gc)).length){showToast('Choose at least one bacteria',true);return}
+      if(gc){generatedChartId=gc.id;renderCharts()}
+      return;
+    }
+    if(btn.dataset.action==='close-generated-flow'){generatedChartId=null;renderCharts();return}
     if(btn.dataset.action==='export-chart'){var ec=state.charts.find(function(chart){return chart.id===btn.dataset.chart});if(ec)exportSingleChart(ec);return}
     if(!isAdmin||!editMode)return;
     if(btn.dataset.action==='add-bank-specimen'){
@@ -912,6 +1008,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       var chart=state.charts.find(function(item){return item.id===input.dataset.chart});if(!chart)return;
       var checked=Array.from(document.querySelectorAll('[data-action="toggle-endpoint"][data-chart="'+chart.id+'"]:checked')).map(function(box){return box.value});
       chart.selectedEndpoints=checked.length?checked:['__none__'];
+      generatedChartId=null;
       touchState();saveLocal();if(isAdmin)scheduleSave();renderCharts();return;
     }
     if(!isAdmin||!editMode||!input.files||!input.files[0])return;
