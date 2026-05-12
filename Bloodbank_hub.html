@@ -101,6 +101,31 @@ button{cursor:pointer;font-family:inherit}
 .rbc-help{font-size:12px;color:var(--warm-grey);line-height:1.35}
 .export-choice-list{display:grid;gap:8px;text-align:left;margin:14px 0}.export-choice-list label{display:flex;gap:8px;align-items:flex-start;border:1px solid var(--rose);background:#fff;border-radius:10px;padding:9px 10px;font-size:13px;color:var(--dark);cursor:pointer}.export-choice-list input{margin-top:2px;accent-color:var(--crimson)}
 .admin-only-inline{display:none}.admin-mode .admin-only-inline{display:inline-flex}
+.flash-launch{border:0;background:linear-gradient(135deg,#fff36a,#ff9fb5 48%,#7bdff2);color:#4b0820;border-radius:999px;padding:10px 18px;font-size:14px;font-weight:900;box-shadow:0 8px 20px rgba(192,23,61,.18);display:inline-flex;align-items:center;gap:8px;max-width:100%;white-space:normal;line-height:1.2;text-align:left}
+.flash-launch:hover{transform:translateY(-1px);filter:saturate(1.08)}
+.flash-modal{background:linear-gradient(135deg,#fff7fb 0%,#fff 34%,#eefcff 72%,#fff8dc 100%);border:2px solid rgba(192,23,61,.18);border-radius:26px;padding:20px;max-width:980px;width:min(96vw,980px);max-height:92vh;overflow:auto;box-shadow:0 24px 70px rgba(90,14,32,.28);text-align:left}
+.flash-shell{display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:18px;align-items:stretch}
+.flash-top{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:14px}
+.flash-title{font-size:28px;color:#5a0e20;line-height:1.05}
+.flash-sub{font-size:13px;color:#7a6468;font-weight:700}
+.flash-card{min-height:390px;border:2px solid rgba(192,23,61,.18);border-radius:24px;background:#fff;box-shadow:0 14px 34px rgba(90,14,32,.12);padding:24px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;touch-action:pan-y}
+.flash-card:before{content:"";position:absolute;inset:0 0 auto;height:10px;background:linear-gradient(90deg,#c0173d,#e8a832,#1a8c5c,#1a5c8c);opacity:.9}
+.flash-tag{display:inline-flex;align-items:center;gap:6px;border-radius:999px;background:#fce8ed;color:#8b0a26;padding:5px 11px;font-size:12px;font-weight:900;width:max-content;margin-bottom:14px}
+.flash-question{font-size:clamp(26px,4vw,46px);line-height:1.12;color:#1e0d10;font-weight:900;margin:10px 0 18px}
+.flash-answer{border:2px dashed #f7c5d0;border-radius:18px;background:#fff9f5;padding:18px;font-size:clamp(22px,3vw,34px);line-height:1.22;color:#5a0e20;font-weight:900;white-space:pre-wrap}
+.flash-answer.hidden{color:#9a8588;font-size:22px;text-align:center}
+.flash-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.flash-action{border:none;border-radius:999px;padding:11px 18px;font-size:14px;font-weight:900;color:#fff;box-shadow:0 7px 16px rgba(0,0,0,.12)}
+.flash-wrong{background:#c0173d}.flash-right{background:#1a8c5c}.flash-skip{background:#7a6468}.flash-reveal{background:#5a0e20}
+.flash-side{border:2px solid rgba(26,140,92,.18);border-radius:24px;background:rgba(255,255,255,.78);padding:16px;display:flex;flex-direction:column;gap:14px}
+.flash-rbc-wrap{min-height:170px;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#fff,#fce8ed);border-radius:20px;border:1px solid #f7c5d0}
+.flash-rbc svg{width:150px;height:150px;display:block}.flash-rbc .cell{transition:all .25s ease}.flash-rbc.right .cell{filter:drop-shadow(0 8px 10px rgba(26,140,92,.22))}.flash-rbc.wrong .cell{filter:drop-shadow(0 8px 10px rgba(192,23,61,.24))}
+.flash-map-title{font-size:12px;text-transform:uppercase;letter-spacing:1.5px;color:#7a6468;font-weight:900}
+.flash-map{display:flex;gap:5px;flex-wrap:wrap}
+.flash-dot{width:12px;height:12px;border-radius:50%;background:#ead4dc;border:1px solid #f7c5d0}.flash-dot.done{background:#1a8c5c;border-color:#1a8c5c}.flash-dot.wrong{background:#c0173d;border-color:#c0173d}.flash-dot.skip{background:#e8a832;border-color:#e8a832}.flash-dot.current{transform:scale(1.35);background:#7bdff2;border-color:#1a5c8c}
+.flash-score{display:grid;grid-template-columns:1fr 1fr;gap:8px}.flash-score div{border-radius:14px;background:#fff;border:1px solid #f7c5d0;padding:10px;text-align:center}.flash-score strong{display:block;font-size:22px;color:#5a0e20}.flash-score span{font-size:11px;color:#7a6468;text-transform:uppercase;letter-spacing:1px;font-weight:900}
+.flash-finished{min-height:360px;display:grid;place-items:center;text-align:center}.flash-finished h3{font-size:34px;color:#5a0e20;margin-bottom:8px}.flash-finished p{font-size:17px;color:#7a6468}
+@media(max-width:760px){.flash-shell{grid-template-columns:1fr}.flash-side{order:-1}.flash-card{min-height:330px}.flash-title{font-size:23px}}
 
 /* SECTIONS */
 .section{display:none;padding:24px 20px 60px;max-width:1200px;margin:0 auto}
@@ -541,6 +566,19 @@ button{cursor:pointer;font-family:inherit}
   </div>
 </div>
 
+<div class="modal-overlay" id="flashcardModal">
+  <div class="flash-modal">
+    <div class="flash-top">
+      <div>
+        <div class="flash-title">Flashcard Lab</div>
+        <div class="flash-sub">Swipe right if it clicked. Swipe left if it needs another spin. Skip is allowed.</div>
+      </div>
+      <button class="btn btn-ghost" onclick="closeFlashcardPractice()">Close</button>
+    </div>
+    <div id="flashcardPracticeRoot"></div>
+  </div>
+</div>
+
 <div class="save-indicator" id="saveToast">Saved to Supabase</div>
 
 <!-- MAIN APP -->
@@ -571,8 +609,8 @@ button{cursor:pointer;font-family:inherit}
       <div class="sec-label" style="margin-bottom:10px">Encyclopedia Export</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button class="btn btn-primary btn-sm" onclick="openEncyclopediaExportModal()">Export Options</button>
-        <button class="btn btn-ghost btn-sm admin-only-inline" onclick="exportFlashcardCsv()">Export Flashcards CSV</button>
-        <span style="font-size:12px;color:var(--warm-grey);align-self:center">Pick options first, then export.</span>
+        <button class="flash-launch" onclick="openFlashcardPractice()">Ready to practice flashcards? Click here and boss those antibodies.</button>
+        <span style="font-size:12px;color:var(--warm-grey);align-self:center">Exports stay under options. Flashcards pull from the editable encyclopedia.</span>
       </div>
     </div>
     <div class="enc-layout">
@@ -2697,85 +2735,46 @@ function buildLesserSystemsExportPage() {
   '</section>';
 }
 
-function csvPlain(value) {
+function flashPlain(value) {
   var text = String(value == null ? '' : value)
     .replace(/<br\s*\/?>/gi, '\n')
     .replace(/<\/p>/gi, '\n')
     .replace(/<[^>]+>/g, ' ')
-    .replace(/\s+/g, ' ')
+    .replace(/[ \t\r\f\v]+/g, ' ')
+    .replace(/\n[ \t]+/g, '\n')
+    .replace(/\n{3,}/g, '\n\n')
     .trim();
   var box = document.createElement('textarea');
   box.innerHTML = text;
   return box.value.trim();
 }
 
-function csvCell(value) {
-  var text = csvPlain(value).replace(/"/g, '""');
-  return '"' + text + '"';
+function shuffleFlashcards(cards) {
+  cards = cards.slice();
+  for (var i = cards.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = cards[i]; cards[i] = cards[j]; cards[j] = tmp;
+  }
+  return cards;
 }
 
-function uniqueCsvValues(values) {
-  var seen = {};
-  return values.map(csvPlain).filter(function(v) {
-    if (!v || seen[v]) return false;
-    seen[v] = true;
-    return true;
+function addFlashcard(cards, question, answer, meta) {
+  answer = flashPlain(answer);
+  question = flashPlain(question);
+  if (!question || !answer) return;
+  meta = meta || {};
+  cards.push({
+    id: meta.id || ('fc-' + cards.length + '-' + Math.random().toString(36).slice(2)),
+    question: question,
+    answer: answer,
+    system: meta.system || 'Blood Bank',
+    category: meta.category || 'Study',
+    color: meta.color || '#c0173d'
   });
 }
 
-function csvChoices(correct, pool) {
-  var fallback = [
-    'Not routinely emphasized for this system',
-    'Varies by donor population',
-    'Usually not clinically significant',
-    'Requires correlation with antibody ID panel',
-    'No separate memorized value entered'
-  ];
-  var choices = uniqueCsvValues([correct].concat(pool || []).concat(fallback)).slice(0, 4);
-  while (choices.length < 4) choices.push('Review the encyclopedia entry');
-  return choices;
-}
-
-function shuffleCsvChoices(choices, correct) {
-  choices = choices.slice(0, 4);
-  for (var i = choices.length - 1; i > 0; i--) {
-    var j = Math.floor(Math.random() * (i + 1));
-    var tmp = choices[i]; choices[i] = choices[j]; choices[j] = tmp;
-  }
-  if (choices.indexOf(correct) === -1) choices[0] = correct;
-  return choices;
-}
-
-function addCsvQuestion(rows, question, correct, pool) {
-  correct = csvPlain(correct);
-  if (!question || !correct) return;
-  var choices = shuffleCsvChoices(csvChoices(correct, pool), correct);
-  var correctLetter = ['a','b','c','d'][choices.indexOf(correct)] || 'a';
-  rows.push([
-    question,
-    choices[0],
-    choices[1],
-    choices[2],
-    choices[3],
-    correctLetter
-  ]);
-}
-
-function downloadCsvFile(filename, rows) {
-  var header = ['question','a','b','c','d','correct'];
-  var csv = [header].concat(rows).map(function(row){ return row.map(csvCell).join(','); }).join('\n');
-  var blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); }, 250);
-}
-
-function buildFlashcardCsvRows() {
-  var rows = [];
+function buildFlashcardDeck() {
+  var cards = [];
   var usualKeys = ['abo','rh','kell','duffy','kidd','mns','p1pk','lewis','lutheran'];
   usualKeys.forEach(function(key) {
     var sys = SYSTEMS[key];
@@ -2783,31 +2782,17 @@ function buildFlashcardCsvRows() {
     var data = notesData[skey] || {};
     var fields = sys.mns_split ? (sys.fields_mn || []).concat(sys.fields_ss || []) : (sys.fields || []);
     fields.forEach(function(field) {
-      var answer = data[field] || '';
-      var pool = usualKeys.map(function(otherKey) {
-        var other = SYSTEMS[otherKey];
-        return notesData[other.notes_key] && notesData[other.notes_key][field];
-      });
-      addCsvQuestion(
-        rows,
+      addFlashcard(cards,
         sys.name + ': ' + (FIELD_LABELS[field] || field),
-        answer,
-        pool,
-        'Study Reference entry from ' + sys.name + '.'
+        data[field] || '',
+        {id:key + '-' + field, system:sys.name.replace(' System',''), category:'Study Reference', color:sys.color}
       );
     });
-    getFreqRows(skey).forEach(function(freqRow) {
-      if (!csvPlain(freqRow.memo)) return;
-      var memoPool = [];
-      usualKeys.forEach(function(otherKey) {
-        getFreqRows(SYSTEMS[otherKey].notes_key).forEach(function(r){ if (r.memo) memoPool.push(r.memo); });
-      });
-      addCsvQuestion(
-        rows,
+    getFreqRows(skey).forEach(function(freqRow, idx) {
+      addFlashcard(cards,
         sys.name + ': frequency to memorize for ' + (freqRow.ag || 'this antigen'),
-        freqRow.memo,
-        memoPool,
-        'Frequency to Memorize only. C/B/A/I/H row: ' + ['C '+(freqRow.c||''),'B '+(freqRow.b||''),'A '+(freqRow.a||''),'I '+(freqRow.i||''),'H '+(freqRow.h||'')].join(', ') + '.'
+        freqRow.memo || '',
+        {id:key + '-freq-' + idx, system:sys.name.replace(' System',''), category:'Antigen Frequency', color:sys.color}
       );
     });
   });
@@ -2820,32 +2805,140 @@ function buildFlashcardCsvRows() {
     {key:'hdn_htr', label:'HDN / HTR'},
     {key:'notable', label:'Notable'}
   ];
-  var lesserAnswers = [];
   lesserSystems.forEach(function(name) {
     var sk = 'lesser_' + name.toLowerCase().replace(/[^a-z0-9]/g,'');
     var data = notesData[sk] || {};
     var answer = lesserCols.map(function(col) {
-      return col.label + ': ' + csvPlain(data[col.key] || '');
-    }).filter(function(line){ return !/: $/.test(line); }).join(' | ');
-    if (answer) lesserAnswers.push(answer);
+      var val = flashPlain(data[col.key] || '');
+      return val ? col.label + ': ' + val : '';
+    }).filter(Boolean).join('\n');
+    addFlashcard(cards, 'Lesser-known blood group system: ' + name, answer, {
+      id:'lesser-' + sk,
+      system:name,
+      category:'Lesser Systems',
+      color:'#555'
+    });
   });
-  lesserSystems.forEach(function(name) {
-    var sk = 'lesser_' + name.toLowerCase().replace(/[^a-z0-9]/g,'');
-    var data = notesData[sk] || {};
-    var answer = lesserCols.map(function(col) {
-      return col.label + ': ' + csvPlain(data[col.key] || '');
-    }).filter(function(line){ return !/: $/.test(line); }).join(' | ');
-    addCsvQuestion(rows, 'Lesser-known blood group system: ' + name, answer, lesserAnswers, 'Includes all lesser-system information entered in the hub.');
-  });
-  return rows;
+  return cards;
+}
+
+var flashQueue = [];
+var flashResults = {};
+var flashWrongCards = [];
+var flashIndex = 0;
+var flashRevealed = false;
+var flashMood = 'neutral';
+var flashTouchStartX = null;
+var flashAdvancing = false;
+
+function openFlashcardPractice(cards) {
+  var deck = cards && cards.length ? cards : buildFlashcardDeck();
+  if (!deck.length) { showToast('Add Study Reference or Frequency to Memorize content first', true); return; }
+  flashQueue = shuffleFlashcards(deck);
+  flashResults = {};
+  flashWrongCards = [];
+  flashIndex = 0;
+  flashRevealed = false;
+  flashMood = 'neutral';
+  flashAdvancing = false;
+  document.getElementById('flashcardModal').classList.add('visible');
+  renderFlashcardPractice();
+}
+
+function closeFlashcardPractice() {
+  document.getElementById('flashcardModal').classList.remove('visible');
+}
+
+function currentFlashcard() {
+  return flashQueue[flashIndex] || null;
+}
+
+function flashRbcSvg(mood) {
+  if (mood === 'wrong') {
+    return '<svg viewBox="0 0 160 160" aria-label="abnormal RBC"><path class="cell" d="M78 16 C95 18 98 34 111 36 C128 38 124 58 138 68 C150 78 137 93 139 108 C141 125 121 126 113 139 C104 153 88 143 75 146 C58 150 53 132 39 127 C24 121 32 102 21 91 C9 79 25 66 26 51 C27 35 47 40 57 27 C64 18 70 15 78 16 Z" fill="#c0173d" stroke="#8b0a26" stroke-width="5"/><circle cx="59" cy="61" r="9" fill="#f7c5d0" opacity=".75"/><circle cx="96" cy="93" r="11" fill="#f7c5d0" opacity=".6"/><path d="M52 112 C66 101 92 101 109 113" fill="none" stroke="#5a0e20" stroke-width="6" stroke-linecap="round"/></svg>';
+  }
+  if (mood === 'right') {
+    return '<svg viewBox="0 0 160 160" aria-label="healthy concave RBC"><defs><radialGradient id="rbcGood" cx="50%" cy="48%" r="54%"><stop offset="0%" stop-color="#ffd3dc"/><stop offset="48%" stop-color="#e64f6c"/><stop offset="100%" stop-color="#9b0d2b"/></radialGradient></defs><circle class="cell" cx="80" cy="80" r="58" fill="url(#rbcGood)" stroke="#7b0922" stroke-width="5"/><ellipse cx="80" cy="80" rx="30" ry="22" fill="#fff6f3" opacity=".72"/><ellipse cx="80" cy="80" rx="17" ry="10" fill="#f7c5d0" opacity=".8"/><path d="M55 57 C66 47 94 47 105 57" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".55"/></svg>';
+  }
+  return '<svg viewBox="0 0 160 160" aria-label="practice RBC"><defs><radialGradient id="rbcReady" cx="48%" cy="45%" r="60%"><stop offset="0%" stop-color="#ffe2e8"/><stop offset="55%" stop-color="#e64162"/><stop offset="100%" stop-color="#8b0a26"/></radialGradient></defs><circle class="cell" cx="80" cy="80" r="57" fill="url(#rbcReady)" stroke="#8b0a26" stroke-width="4"/><ellipse cx="80" cy="82" rx="28" ry="20" fill="#fff9f5" opacity=".55"/><circle cx="59" cy="63" r="5" fill="#5a0e20"/><circle cx="101" cy="63" r="5" fill="#5a0e20"/><path d="M58 102 C68 112 91 112 103 101" fill="none" stroke="#5a0e20" stroke-width="5" stroke-linecap="round"/></svg>';
+}
+
+function renderFlashMap() {
+  return flashQueue.map(function(card, i) {
+    var state = flashResults[card.id] || '';
+    var cls = 'flash-dot' + (i === flashIndex ? ' current' : '') + (state ? ' ' + state : '');
+    return '<span class="' + cls + '" title="' + (i + 1) + '"></span>';
+  }).join('');
+}
+
+function renderFlashcardPractice() {
+  var root = document.getElementById('flashcardPracticeRoot');
+  if (!root) return;
+  var rightCount = Object.keys(flashResults).filter(function(id){ return flashResults[id] === 'done'; }).length;
+  var wrongCount = Object.keys(flashResults).filter(function(id){ return flashResults[id] === 'wrong'; }).length;
+  var skipCount = Object.keys(flashResults).filter(function(id){ return flashResults[id] === 'skip'; }).length;
+  var card = currentFlashcard();
+  if (!card) {
+    root.innerHTML = '<div class="flash-shell"><div class="flash-card flash-finished"><div><h3>Round complete.</h3><p>' + rightCount + ' right, ' + wrongCount + ' to review, ' + skipCount + ' skipped.</p><div class="flash-actions">' + (flashWrongCards.length ? '<button class="flash-action flash-reveal" onclick="studyMissedFlashcards()">Study missed cards</button><button class="flash-action flash-skip" onclick="exportMissedFlashcardsPdf()">Export missed as PDF</button>' : '<button class="flash-action flash-right" onclick="openFlashcardPractice()">Start a fresh shuffle</button>') + '</div></div></div><aside class="flash-side"><div class="flash-rbc-wrap"><div class="flash-rbc right">' + flashRbcSvg('right') + '</div></div><div class="flash-map-title">Deck map</div><div class="flash-map">' + renderFlashMap() + '</div></aside></div>';
+    return;
+  }
+  var answerHtml = flashRevealed ? exportText(card.answer) : 'Tap Reveal, then swipe or use the buttons.';
+  root.innerHTML = '<div class="flash-shell"><main class="flash-card" onpointerdown="flashTouchStartX=event.clientX" onpointerup="handleFlashPointerUp(event)"><div><div class="flash-tag" style="border:1px solid ' + card.color + ';color:' + card.color + '">' + exportText(card.system) + ' / ' + exportText(card.category) + '</div><div class="flash-question">' + exportText(card.question) + '</div></div><div class="flash-answer ' + (flashRevealed ? '' : 'hidden') + '">' + answerHtml + '</div><div class="flash-actions"><button class="flash-action flash-wrong" onclick="markFlashcard(&quot;wrong&quot;)">Swipe left / missed it</button><button class="flash-action flash-reveal" onclick="flashRevealed=true;flashMood=&quot;neutral&quot;;renderFlashcardPractice()">Reveal answer</button><button class="flash-action flash-skip" onclick="markFlashcard(&quot;skip&quot;)">Skip</button><button class="flash-action flash-right" onclick="markFlashcard(&quot;done&quot;)">Swipe right / got it</button></div></main><aside class="flash-side"><div class="flash-rbc-wrap"><div class="flash-rbc ' + flashMood + '">' + flashRbcSvg(flashMood) + '</div></div><div class="flash-score"><div><strong>' + (flashIndex + 1) + '</strong><span>Current</span></div><div><strong>' + flashQueue.length + '</strong><span>Total</span></div><div><strong>' + rightCount + '</strong><span>Right</span></div><div><strong>' + wrongCount + '</strong><span>Missed</span></div></div><div><div class="flash-map-title">Deck map</div><div class="flash-map">' + renderFlashMap() + '</div></div></aside></div>';
+}
+
+function handleFlashPointerUp(e) {
+  if (flashTouchStartX == null) return;
+  var dx = e.clientX - flashTouchStartX;
+  flashTouchStartX = null;
+  if (dx > 85) markFlashcard('done');
+  else if (dx < -85) markFlashcard('wrong');
+}
+
+function markFlashcard(result) {
+  if (flashAdvancing) return;
+  var card = currentFlashcard();
+  if (!card) return;
+  flashResults[card.id] = result;
+  flashMood = result === 'done' ? 'right' : (result === 'wrong' ? 'wrong' : 'neutral');
+  if (result === 'wrong' && !flashWrongCards.some(function(c){ return c.id === card.id; })) flashWrongCards.push(card);
+  flashAdvancing = true;
+  renderFlashcardPractice();
+  setTimeout(function() {
+    flashIndex += 1;
+    flashRevealed = false;
+    flashMood = 'neutral';
+    flashAdvancing = false;
+    renderFlashcardPractice();
+  }, result === 'skip' ? 120 : 520);
+}
+
+function studyMissedFlashcards() {
+  if (!flashWrongCards.length) { showToast('No missed cards to study yet'); return; }
+  openFlashcardPractice(flashWrongCards);
+}
+
+function buildFlashcardPrintPages(cards) {
+  var pages = '';
+  for (var i = 0; i < cards.length; i += 4) {
+    var group = cards.slice(i, i + 4);
+    pages += '<section class="page flash-print-page"><h1>Blood Bank Flashcards - Front</h1><div class="flash-print-grid">' + group.map(function(card) {
+      return '<div class="flash-print-card"><div class="flash-print-meta">' + exportText(card.system) + ' / ' + exportText(card.category) + '</div><div class="flash-print-q">' + exportText(card.question) + '</div></div>';
+    }).join('') + '</div></section>';
+    pages += '<section class="page flash-print-page"><h1>Blood Bank Flashcards - Back</h1><div class="flash-print-grid">' + group.map(function(card) {
+      return '<div class="flash-print-card"><div class="flash-print-meta">Answer</div><div class="flash-print-a">' + exportText(card.answer) + '</div></div>';
+    }).join('') + '</div></section>';
+  }
+  return pages;
+}
+
+function exportMissedFlashcardsPdf() {
+  if (!flashWrongCards.length) { showToast('No missed cards to export yet', true); return; }
+  printExportHtml(buildFlashcardPrintPages(flashWrongCards), 'Missed Blood Bank Flashcards', 'portrait');
+  showToast('Missed flashcards ready to print or save as PDF');
 }
 
 function exportFlashcardCsv() {
-  if (!isAdmin) { showToast('Unlock admin first', true); return; }
-  var rows = buildFlashcardCsvRows();
-  if (!rows.length) { showToast('Add Study Reference or Frequency to Memorize content first', true); return; }
-  downloadCsvFile('blood-bank-flashcards.csv', rows);
-  showToast('Flashcard CSV exported');
+  openFlashcardPractice();
 }
 
 function buildHistoryExportPage() {
@@ -2889,6 +2982,7 @@ function buildExportHtml(content, title, orientation) {
     '.membrane-card{padding-bottom:7px}.membrane-print{height:1.18in;overflow:hidden;margin:-4px 0 0}.membrane-print div{overflow:hidden!important}.membrane-print svg{width:100%!important;min-width:0!important;height:1.18in!important}.membrane-print text{font-size:14px!important}.mini-table td{font-size:8px;padding:2px 4px}.study-table{font-size:6.8px;line-height:1.08}.study-table td{font-size:6.8px;padding:2px 3px}.study-table td.lbl{width:1.15in;font-size:6.3px}.freq-export{font-size:6.2px;line-height:1.02;table-layout:fixed}.freq-export th{font-size:5.8px;padding:2px 2px}.freq-export td{font-size:5.8px;padding:2px 2px}.freq-export th:nth-child(1){width:.52in}.freq-export th:nth-child(2),.freq-export th:nth-child(3),.freq-export th:nth-child(4),.freq-export th:nth-child(5),.freq-export th:nth-child(6){width:.2in}.freq-export th:nth-child(7){width:.4in}.freq-export .center{text-align:center}.freq-export .memo{background:#dce6f4}.note-box{font-size:6.6px;line-height:1.1;padding:4px;background:#fff;border-left:3px solid #f7c5d0}.muted{color:#9a8588}' +
     '.binder-system{height:10.25in;overflow:hidden;font-size:10px;padding-top:.03in}.binder-system table{margin-bottom:0}.binder-card{border-top:2.5px solid #5a0e20;border-left:1px solid #f7c5d0;border-right:1px solid #f7c5d0;border-bottom:1px solid #f7c5d0;border-radius:12px;background:#fffaf7;margin-bottom:.07in;break-inside:avoid;page-break-inside:avoid}.binder-hero{min-height:1.08in;padding:5px 10px 6px}.binder-head{gap:8px;align-items:flex-start;margin-bottom:2px}.binder-head .system-dot{width:28px;height:28px;font-size:14px}.binder-head h1{text-align:left;font-size:22px;line-height:.95;margin:0 0 2px;padding:0}.binder-head .isbt{font-size:7px;letter-spacing:2.1px}.binder-head .pun{font-size:9.5px;line-height:1.08;margin-top:2px}.binder-system .card-label{font-size:8.6px;letter-spacing:3px;text-transform:uppercase;color:#7a6468;font-weight:700;margin:0 0 5px}.binder-history .tl{padding-left:8px;border-left:2px solid #f7c5d0}.binder-history .tl-item{font-size:6px;line-height:1.03;margin-bottom:1px}.binder-history .yr{display:inline-block;width:.5in;font-size:6.2px;color:#c0173d;font-weight:700}.binder-membrane-card{height:1.32in;padding:5px 8px}.binder-membrane-print{height:1.08in;display:flex;align-items:center;justify-content:center;overflow:hidden}.binder-membrane-print>div{width:5.25in!important;overflow:hidden!important}.binder-membrane-print svg{width:5.25in!important;min-width:0!important;height:1.05in!important}.binder-membrane-print text{font-size:9px!important}.binder-study{height:auto;max-height:4.9in;padding:8px 10px 9px;overflow:hidden}.binder-system .study-table{font-size:10.2px;line-height:1.18;table-layout:fixed}.binder-system .study-table tr:nth-child(even) td{background:#fff3f0}.binder-system .study-table td{font-size:10.2px;padding:4px 5px;white-space:normal;overflow-wrap:anywhere}.binder-system .study-table td.lbl{width:1.55in;font-size:8.7px;letter-spacing:.5px;color:#7a6468}.binder-system .study-table .muted{font-size:8.2px;color:#b69aa0}.binder-freq{min-height:0;padding:8px 10px}.binder-system .freq-export{font-size:8.8px;line-height:1.08;table-layout:fixed}.binder-system .freq-export th{font-size:7.7px;padding:3px 3px}.binder-system .freq-export td{font-size:8.4px;padding:3px 3px;white-space:normal;overflow-wrap:anywhere}.binder-system .freq-export th:nth-child(1){width:.7in}.binder-system .freq-export th:nth-child(2),.binder-system .freq-export th:nth-child(3),.binder-system .freq-export th:nth-child(4),.binder-system .freq-export th:nth-child(5),.binder-system .freq-export th:nth-child(6){width:.28in}.binder-system .freq-export th:nth-child(7){width:.45in}.binder-notes{min-height:0;padding:6px 10px;margin-bottom:0}.binder-system .note-box{font-size:8.4px;line-height:1.16;padding:4px 6px;background:#fff;border-left:3px solid #f7c5d0}' +
     '.antigram-export-page{max-width:10.4in;height:7.1in;overflow:hidden}.antigram-export-page h1{font-size:15px;margin:0 0 .04in;padding:0}.antigram-export-note{font-size:8px;color:#7a6468;margin-bottom:.05in}.antigram-export-page .antigram-panel-wrap{overflow:hidden;border:1px solid #5a0e20;border-radius:4px;background:#fff}.antigram-export-page .antigram-table{width:100%;min-width:0;border-collapse:collapse;table-layout:fixed;font-size:5.4px}.antigram-export-page .antigram-table th{position:static;background:#5a0e20;color:#fff;font-size:5.2px;padding:2px 1px;text-align:center}.antigram-export-page .antigram-table td{border:1px solid #d9a9b4;padding:2px 1px;text-align:center;font-size:5.6px;min-width:0}.antigram-export-page .antigram-table td.cell-id{position:static;background:#fffaf7;font-weight:bold;color:#5a0e20;font-size:5.5px}.antigram-export-page .antigram-table td.ruled-out{background:#dff4eb!important}.antigram-export-page .antigram-table td.suspect-hit{background:#fff1b8!important}.antigram-answer-key,.antigram-practice-lines{font-size:8px;line-height:1.25;margin-top:.06in;border:1px solid #f7c5d0;border-radius:6px;padding:.06in;background:#fffaf7}' +
+    '.flash-print-page{max-width:7.9in;height:10.4in;overflow:hidden}.flash-print-page h1{font-size:15px;color:#000;text-align:left;margin:0 0 .12in;padding:0}.flash-print-grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:.18in;height:9.9in}.flash-print-card{border:2px solid #000;background:#fff;color:#000;border-radius:0;padding:.18in;display:flex;flex-direction:column;justify-content:center;text-align:center;break-inside:avoid;page-break-inside:avoid}.flash-print-meta{font-size:12px;text-transform:uppercase;letter-spacing:.7px;margin-bottom:.12in;color:#000;font-weight:700}.flash-print-q{font-size:24px;line-height:1.18;font-weight:900}.flash-print-a{font-size:22px;line-height:1.2;font-weight:900;white-space:pre-wrap}' +
     '.map-page{max-width:10.4in;height:7.15in;overflow:hidden}.map-page h1{font-size:16px;padding:0;margin:0 0 .06in}.map-print{height:6.86in;overflow:hidden;display:flex;align-items:center;justify-content:center}.map-print>div{width:100%!important;height:100%!important;overflow:hidden!important}.map-print svg{width:100%!important;max-width:100%!important;min-width:0!important;height:100%!important;max-height:6.78in!important}.map-rbc .map-print svg text{font-size:10px!important}.map-chrom .map-print{align-items:flex-start}svg{max-width:100%;height:auto}' +
     portraitTweaks +
     '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style></head><body>' + content + '</body></html>';
@@ -3064,19 +3158,20 @@ function renderChromMap() {
       svg += '<rect x="' + x1 + '" y="' + yTop + '" width="' + CW + '" height="' + h + '" rx="' + (CW / 2) + '" fill="' + fillA + '" opacity="' + op + '"/>';
       svg += '<rect x="' + x2 + '" y="' + yTop + '" width="' + CW + '" height="' + h + '" rx="' + (CW / 2) + '" fill="' + fillB + '" opacity="' + op + '"/>';
       genes.forEach(function(g, gi) {
-        var gy = yTop + h * (genes.length === 1 ? .42 : (.3 + gi * .28));
-        var geneY = gy - (exportMode ? 7 : 8);
-        var hapY = gy + (exportMode ? 4 : 5);
-        var geneFs = exportMode ? '5.3' : '6.6';
-        var hapFs = exportMode ? '4.4' : '5.2';
-        var labelX = x2 + CW + (exportMode ? 11 : 13);
-        var labelW = exportMode ? 52 : 64;
-        var labelH = exportMode ? 15 : 18;
+        var gy = yTop + h * (genes.length === 1 ? .42 : (.26 + gi * .46));
+        var geneFs = exportMode ? '6.2' : '8.5';
+        var hapFs = exportMode ? '5.1' : '6.4';
+        var labelX = x2 + CW + (exportMode ? 10 : 13);
+        var labelW = exportMode ? 63 : 78;
+        var labelH = exportMode ? 22 : 28;
+        var labelY = gy - labelH / 2;
+        var geneY = labelY + (exportMode ? 8 : 11);
+        var hapY = labelY + (exportMode ? 17 : 22);
         var labelText = (g.h1 || g.gene) + (g.h2 ? ' | ' + g.h2 : '');
         svg += '<line x1="' + (x1 - 8) + '" y1="' + gy + '" x2="' + (x2 + CW + 8) + '" y2="' + gy + '" stroke="' + g.color + '" stroke-width="1.6" stroke-linecap="round"/>';
         svg += '<circle cx="' + x1 + '" cy="' + gy + '" r="2.4" fill="' + g.color + '"/><circle cx="' + (x2 + CW) + '" cy="' + gy + '" r="2.4" fill="' + g.color + '"/>';
         svg += '<line x1="' + (x2 + CW + 5) + '" y1="' + gy + '" x2="' + (labelX - 3) + '" y2="' + gy + '" stroke="#7a6468" stroke-width=".8" marker-end="url(#chromArrow' + ri + ')" opacity=".75"/>';
-        svg += '<rect x="' + (labelX - 2) + '" y="' + (geneY - 6) + '" width="' + labelW + '" height="' + labelH + '" rx="4" fill="#fffaf7" stroke="' + g.color + '" stroke-width=".45" opacity=".96"/>';
+        svg += '<rect x="' + (labelX - 2) + '" y="' + labelY + '" width="' + labelW + '" height="' + labelH + '" rx="5" fill="#fffaf7" stroke="' + g.color + '" stroke-width=".7" opacity=".97"/>';
         svg += '<text x="' + (labelX + 3) + '" y="' + geneY + '" fill="' + g.color + '" font-size="' + geneFs + '" text-anchor="start" font-weight="700">' + g.gene + '</text>';
         svg += '<text x="' + (labelX + 3) + '" y="' + hapY + '" fill="#5a0e20" font-size="' + hapFs + '" text-anchor="start">' + labelText + '</text>';
       });
