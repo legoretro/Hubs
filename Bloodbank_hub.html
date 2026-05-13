@@ -393,6 +393,16 @@ button{cursor:pointer;font-family:inherit}
 .antigram-table select,.antigram-table input{width:44px;border:1px solid var(--rose);border-radius:5px;background:#fff;font-family:Georgia,serif;font-size:11px;text-align:center;padding:3px}
 .antigram-table input[type="text"]{width:54px}
 .antigram-table button.antigen-toggle{border:0;background:transparent;font-family:Georgia,serif;font-weight:900;color:inherit;width:100%;cursor:pointer}
+.antigram-cell-tools{display:flex;align-items:center;justify-content:center;gap:3px}
+.antigram-cell-tools input[type="text"]{width:46px}
+.antigram-cell-remove{width:19px;height:19px;border:1px solid var(--rose);border-radius:50%;background:#fff;color:var(--crimson);font-size:12px;font-weight:900;line-height:1;cursor:pointer}
+.antigram-lot-panel{border:1px solid var(--rose);background:#fff;border-radius:14px;padding:12px;margin-top:12px;box-shadow:var(--shadow-sm)}
+.antigram-lot-row{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin:7px 0 10px}
+.antigram-lot-btn{border:2px solid var(--rose);background:#fffaf7;color:var(--wine);border-radius:999px;padding:7px 13px;font-family:Georgia,serif;font-weight:900;font-size:14px;cursor:pointer}
+.antigram-lot-btn.active{background:var(--crimson);border-color:var(--crimson);color:#fff;box-shadow:0 6px 16px rgba(192,23,61,.18)}
+.antigram-mini-btn{border:1px solid var(--rose);background:#fff;color:var(--wine);border-radius:999px;padding:6px 10px;font-family:Georgia,serif;font-weight:800;font-size:12px;cursor:pointer}
+.antigram-mini-btn.danger{color:var(--crimson)}
+.antigram-cell-count{font-size:12px;color:var(--warm-grey);font-weight:800;margin-left:auto}
 .antigram-steps{display:grid;gap:9px}
 .antigram-step{border-left:4px solid var(--rose);background:#fff;border-radius:10px;padding:11px 13px;color:var(--dark);font-size:14px;line-height:1.45}
 .antigram-step.active{border-left-color:var(--crimson);background:var(--blush)}
@@ -770,6 +780,8 @@ let rbcHiddenItems = [];
 let rbcToolScope = 'abo';
 let rbcEditingItemId = null;
 let antigramCase = null;
+let antigramLots = [];
+let activeAntigramLotId = null;
 let antigramShowAnswer = false;
 let antigramStep = 1;
 
@@ -871,7 +883,12 @@ function applyRemoteXm(data) {
   xmCases = data && Array.isArray(data.cases) && data.cases.length > 0 ? data.cases : defaultXmCases();
   aboCustomCases = cleanRemoteAboCases(data && data.aboCases);
   calcCustomScenarios = cleanRemoteCalcScenarios(data && data.calcScenarios);
-  antigramCase = cleanRemoteAntigramCase(data && data.antigramCase);
+  antigramLots = cleanRemoteAntigramLots(data && data.antigramLots, data && data.antigramCase);
+  if (!activeAntigramLotId || !antigramLots.some(function(lot){ return lot.id === activeAntigramLotId; })) {
+    activeAntigramLotId = antigramLots.length ? antigramLots[0].id : null;
+  }
+  var activeLot = getActiveAntigramLot();
+  antigramCase = activeLot ? cleanRemoteAntigramCase(activeLot.panel) : cleanRemoteAntigramCase(data && data.antigramCase);
   if (typeof renderXm === 'function' && document.getElementById('xmContent') && document.getElementById('xmContent').style.display !== 'none') renderXm();
   renderXmEditor2();
   if (typeof renderABOsim === 'function' && document.getElementById('aboContent') && document.getElementById('aboContent').style.display !== 'none') renderABOsim();
@@ -897,15 +914,19 @@ async function initApp() {
     key: SUPABASE_KEY,
     table: TABLE_NAME,
     id: 'bb_xmatch',
-    defaultData: () => ({ cases: defaultXmCases(), aboCases: [], calcScenarios: [], antigramCase: defaultAntigramCase(), updatedAt: Date.now() }),
+    defaultData: () => ({ cases: defaultXmCases(), aboCases: [], calcScenarios: [], antigramCase: defaultAntigramCase(), antigramLots: defaultAntigramLots(), updatedAt: Date.now() }),
     normalize: data => ({
       cases: data && Array.isArray(data.cases) && data.cases.length ? data.cases : defaultXmCases(),
       aboCases: cleanRemoteAboCases(data && data.aboCases),
       calcScenarios: cleanRemoteCalcScenarios(data && data.calcScenarios),
       antigramCase: cleanRemoteAntigramCase(data && data.antigramCase),
+      antigramLots: cleanRemoteAntigramLots(data && data.antigramLots, data && data.antigramCase),
       updatedAt: data && data.updatedAt || Date.now()
     }),
-    getLocal: () => ({ cases: xmCases, aboCases: aboCustomCases, calcScenarios: calcCustomScenarios, antigramCase: cleanRemoteAntigramCase(antigramCase), updatedAt: Date.now() }),
+    getLocal: () => {
+      syncActiveAntigramLot();
+      return { cases: xmCases, aboCases: aboCustomCases, calcScenarios: calcCustomScenarios, antigramCase: cleanRemoteAntigramCase(antigramCase), antigramLots: cleanRemoteAntigramLots(antigramLots, antigramCase), updatedAt: Date.now() };
+    },
     setLocal: data => applyRemoteXm(data),
     toast: showToast,
     onConflict: info => console.warn('Blood Bank crossmatch save conflict:', info.paths)
@@ -3720,7 +3741,14 @@ function startAntigramSim() {
 function renderAntigramSim() {
   var area = document.getElementById('antigramContent');
   if (!area) return;
-  if (!antigramCase) antigramCase = defaultAntigramCase();
+  antigramLots = cleanRemoteAntigramLots(antigramLots, antigramCase);
+  if (!activeAntigramLotId || !antigramLots.some(function(lot){ return lot.id === activeAntigramLotId; })) {
+    activeAntigramLotId = antigramLots[0] ? antigramLots[0].id : null;
+  }
+  if (!antigramCase) {
+    var activeLot = getActiveAntigramLot();
+    antigramCase = activeLot ? cleanRemoteAntigramCase(activeLot.panel) : defaultAntigramCase();
+  }
   var analysis = analyzeAntigramCase(antigramCase);
   var answerStyle = antigramShowAnswer ? '' : ' style="display:none"';
   area.innerHTML = '<div class="antigram-shell">' +
@@ -3737,7 +3765,7 @@ function renderAntigramSim() {
         '<button class="btn btn-ghost" onclick="exportAntigramPractice(false)">Export Practice</button>' +
         '<button class="btn btn-ghost admin-only-inline" onclick="exportAntigramPractice(true)">Export Answer Key</button>' +
       '</div>' +
-      (isAdmin ? buildAntigramAdminTitle() : '') +
+      (isAdmin ? buildAntigramAdminPanel() : '') +
     '</div>' +
     buildAntigramTable(antigramCase, {editable:isAdmin, reveal:antigramShowAnswer ? antigramStep : 1}) +
     '<div class="antigram-status"' + answerStyle + '>' +
@@ -3762,11 +3790,20 @@ const ANTIGRAM_ANTIGENS = [
 const ANTIGRAM_FREQ = {D:.85,C:.68,E:.29,c:.80,e:.98,f:.64,Cw:.02,V:.01,K:.09,k:.99,Kpa:.02,Kpb:.99,Jsa:.01,Jsb:.99,Fya:.66,Fyb:.83,Jka:.77,Jkb:.74,Lea:.22,Leb:.72,P1:.79,M:.78,N:.72,S:.55,s:.89,Lua:.08,Lub:.99,Xga:.78};
 const ANTIGRAM_TARGET_POOL = ['K','E','c','Fya','Fyb','Jka','Jkb','S','M','Lua'];
 const ANTIGRAM_RXN_OPTIONS = ['0','w+','1+','2+','3+','4+','NT'];
+const ANTIGRAM_MIN_CELLS = 1;
+const ANTIGRAM_MAX_CELLS = 18;
 
-function cleanRemoteAntigramCase(item) {
-  item = item || defaultAntigramCase();
-  var cells = Array.isArray(item.cells) ? item.cells : [];
-  cells = cells.slice(0, 10).map(function(cell, index) {
+function clampAntigramCellCount(count, fallback) {
+  var n = Number(count);
+  if (!Number.isFinite(n) || n < ANTIGRAM_MIN_CELLS) n = fallback || 10;
+  return Math.max(ANTIGRAM_MIN_CELLS, Math.min(ANTIGRAM_MAX_CELLS, Math.round(n)));
+}
+
+function cleanRemoteAntigramCase(item, minCells) {
+  item = item && typeof item === 'object' ? item : {};
+  var sourceCells = Array.isArray(item.cells) ? item.cells : [];
+  var targetMin = clampAntigramCellCount(minCells || (sourceCells.length ? sourceCells.length : 10), 10);
+  var cells = sourceCells.slice(0, ANTIGRAM_MAX_CELLS).map(function(cell, index) {
     cell = cell || {};
     var antigens = {};
     ANTIGRAM_ANTIGENS.forEach(function(ag){ antigens[ag] = !!(cell.antigens && cell.antigens[ag]); });
@@ -3781,7 +3818,8 @@ function cleanRemoteAntigramCase(item) {
       }
     };
   });
-  while (cells.length < 10) cells.push(blankAntigramCell(cells.length));
+  while (cells.length < targetMin) cells.push(blankAntigramCell(cells.length));
+  if (!cells.length) cells.push(blankAntigramCell(0));
   return {
     title: item.title || 'Antigram Practice Panel',
     targetAbs: Array.isArray(item.targetAbs) ? item.targetAbs.map(String).filter(Boolean) : [],
@@ -3796,17 +3834,65 @@ function blankAntigramCell(index) {
 }
 
 function defaultAntigramCase() {
-  return generateAntigramCase(['K','E']);
+  return generateAntigramCase(['K','E'], 10, 'Auto Panel - rule out practice');
+}
+
+function defaultAntigramLots(fallbackCase) {
+  var firstPanel = cleanRemoteAntigramCase(fallbackCase || defaultAntigramCase());
+  if (!firstPanel.title || firstPanel.title === 'Antigram Practice Panel') firstPanel.title = 'Lot 1 - rule out practice';
+  return [
+    {id:'lot-1', name:'Lot 1', panel:firstPanel},
+    {id:'lot-2', name:'Lot 2', panel:generateAntigramCase(['E','c'], 11, 'Lot 2 - warm antibody practice')},
+    {id:'lot-3', name:'Lot 3', panel:generateAntigramCase(['Jka','Fya'], 12, 'Lot 3 - Kidd/Duffy practice')}
+  ];
+}
+
+function cleanAntigramLotId(id, index) {
+  var cleaned = String(id || '').replace(/[^A-Za-z0-9_-]/g, '');
+  return cleaned || ('lot-' + (index + 1));
+}
+
+function cleanRemoteAntigramLots(list, fallbackCase) {
+  var source = Array.isArray(list) ? list : [];
+  if (!source.length) return defaultAntigramLots(fallbackCase);
+  var seen = {};
+  var lots = source.slice(0, 24).map(function(lot, index) {
+    lot = lot || {};
+    var id = cleanAntigramLotId(lot.id, index);
+    while (seen[id]) id = id + '-' + (index + 1);
+    seen[id] = true;
+    var panel = cleanRemoteAntigramCase(lot.panel || lot.antigramCase || lot);
+    return {
+      id: id,
+      name: lot.name || ('Lot ' + (index + 1)),
+      panel: panel
+    };
+  });
+  return lots.length ? lots : defaultAntigramLots(fallbackCase);
+}
+
+function getActiveAntigramLot() {
+  return antigramLots.find(function(lot){ return lot.id === activeAntigramLotId; }) || antigramLots[0] || null;
+}
+
+function syncActiveAntigramLot() {
+  if (!isAdmin || !activeAntigramLotId) return;
+  antigramLots = cleanRemoteAntigramLots(antigramLots, antigramCase);
+  var lot = getActiveAntigramLot();
+  if (!lot) return;
+  lot.panel = cleanRemoteAntigramCase(antigramCase);
+  if (!lot.panel.title) lot.panel.title = lot.name || 'Antigram Practice Panel';
 }
 
 function randomChoice(list) {
   return list[Math.floor(Math.random() * list.length)];
 }
 
-function generateAntigramCase(targets) {
+function generateAntigramCase(targets, count, title) {
   targets = Array.isArray(targets) && targets.length ? targets.slice(0, 3) : [randomChoice(ANTIGRAM_TARGET_POOL)];
+  count = clampAntigramCellCount(count || 10, 10);
   var cells = [];
-  for (var i = 0; i < 10; i++) {
+  for (var i = 0; i < count; i++) {
     var cell = blankAntigramCell(i);
     ANTIGRAM_ANTIGENS.forEach(function(ag) {
       cell.antigens[ag] = Math.random() < (ANTIGRAM_FREQ[ag] || .45);
@@ -3822,7 +3908,7 @@ function generateAntigramCase(targets) {
       : {is:'0', t37:'0', ahg:'0'};
     cells.push(cell);
   }
-  return {title:'Auto Panel - rule out practice', targetAbs:targets, cells:cells};
+  return {title:title || 'Auto Panel - rule out practice', targetAbs:targets, cells:cells};
 }
 
 function isPositiveReaction(rxn) {
@@ -3854,10 +3940,32 @@ function pillList(items, cls) {
   return items.length ? items.map(function(item){ return '<span class="antigram-pill ' + cls + '">' + escText(item) + '</span>'; }).join('') : '<span style="font-size:12px;color:var(--warm-grey)">None yet</span>';
 }
 
-function buildAntigramAdminTitle() {
-  return '<div class="antigram-admin-grid">' +
-    '<input class="xm-input" value="' + escText(antigramCase.title || '') + '" placeholder="Panel title" oninput="updateAntigramTitle(this.value)">' +
-    '<input class="xm-input" value="' + escText((antigramCase.targetAbs || []).join(', ')) + '" placeholder="Optional hidden answer, ex: K, E" oninput="updateAntigramTargets(this.value)">' +
+function buildAntigramAdminPanel() {
+  var lot = getActiveAntigramLot();
+  var lotButtons = antigramLots.map(function(item) {
+    return '<button class="antigram-lot-btn ' + (item.id === activeAntigramLotId ? 'active' : '') + '" onclick="selectAntigramLot(\'' + item.id + '\')">' + escText(item.name || 'Lot') + '</button>';
+  }).join('');
+  var cellCount = antigramCase && antigramCase.cells ? antigramCase.cells.length : 0;
+  return '<div class="antigram-lot-panel">' +
+    '<div class="sec-label">Admin: Saved Practice Lots</div>' +
+    '<div style="font-size:12px;color:var(--warm-grey);line-height:1.35;margin-top:4px">Lots save with Simulation Lab. Pick a lot, edit its panel, then students can still use Auto Generate for quick practice.</div>' +
+    '<div class="antigram-lot-row">' +
+      lotButtons +
+      '<button class="antigram-mini-btn" onclick="addAntigramLot()">+ Add Lot</button>' +
+      '<button class="antigram-mini-btn danger" onclick="deleteActiveAntigramLot()">Delete Lot</button>' +
+      '<span class="antigram-cell-count">' + cellCount + ' cell' + (cellCount === 1 ? '' : 's') + ' in this panel</span>' +
+    '</div>' +
+    '<div class="antigram-admin-grid">' +
+      '<input class="xm-input" value="' + escText(lot && lot.name || '') + '" placeholder="Lot name, ex: Lot 1" oninput="updateAntigramLotName(this.value)">' +
+      '<input class="xm-input" value="' + escText(antigramCase.title || '') + '" placeholder="Panel title" oninput="updateAntigramTitle(this.value)">' +
+      '<input class="xm-input" value="' + escText((antigramCase.targetAbs || []).join(', ')) + '" placeholder="Hidden answer, ex: K, E" oninput="updateAntigramTargets(this.value)">' +
+    '</div>' +
+    '<div class="antigram-lot-row" style="margin-bottom:0">' +
+      '<button class="antigram-mini-btn" onclick="addAntigramCells(1)">+ Add Cell</button>' +
+      '<button class="antigram-mini-btn" onclick="addAntigramCells(2)">+ Add 2 Cells</button>' +
+      '<button class="antigram-mini-btn danger" onclick="removeLastAntigramCell()">Remove Last Cell</button>' +
+      '<button class="antigram-mini-btn" onclick="autoGenerateAntigram()">Regenerate This Lot</button>' +
+    '</div>' +
   '</div>';
 }
 
@@ -3883,7 +3991,10 @@ function buildAntigramTable(panel, opts) {
       return '<td class="' + cls + '">' + content + '</td>';
     }).join('');
     var rxn = cell.rxn || {};
-    return '<tr><td class="cell-id">' + (opts.editable ? '<input type="text" value="' + escText(cell.id) + '" oninput="updateAntigramCellId(' + rowIndex + ',this.value)">' : escText(cell.id)) + '</td>' +
+    var cellLabel = opts.editable
+      ? '<div class="antigram-cell-tools"><input type="text" value="' + escText(cell.id) + '" oninput="updateAntigramCellId(' + rowIndex + ',this.value)"><button class="antigram-cell-remove" title="Remove this cell" onclick="removeAntigramCell(' + rowIndex + ')">x</button></div>'
+      : escText(cell.id);
+    return '<tr><td class="cell-id">' + cellLabel + '</td>' +
       cells +
       '<td class="rxn-cell">' + (opts.editable ? buildReactionSelect(rxn.is, rowIndex, 'is') : escText(rxn.is || '0')) + '</td>' +
       '<td class="rxn-cell">' + (opts.editable ? buildReactionSelect(rxn.t37, rowIndex, 't37') : escText(rxn.t37 || '0')) + '</td>' +
@@ -3892,10 +4003,104 @@ function buildAntigramTable(panel, opts) {
   return '<div class="antigram-panel-wrap"><table class="antigram-table"><thead>' + head + '</thead><tbody>' + body + '</tbody></table></div>';
 }
 
+function selectAntigramLot(id) {
+  if (!isAdmin) return;
+  syncActiveAntigramLot();
+  var lot = antigramLots.find(function(item){ return item.id === id; });
+  if (!lot) return;
+  activeAntigramLotId = lot.id;
+  antigramCase = cleanRemoteAntigramCase(lot.panel);
+  antigramShowAnswer = false;
+  antigramStep = 1;
+  renderAntigramSim();
+}
+
+function addAntigramLot() {
+  if (!isAdmin) return;
+  syncActiveAntigramLot();
+  var next = antigramLots.length + 1;
+  var id = 'lot-' + Date.now();
+  var panel = generateAntigramCase([randomChoice(ANTIGRAM_TARGET_POOL), randomChoice(ANTIGRAM_TARGET_POOL)], 10, 'Lot ' + next + ' - rule out practice');
+  antigramLots.push({id:id, name:'Lot ' + next, panel:panel});
+  activeAntigramLotId = id;
+  antigramCase = cleanRemoteAntigramCase(panel);
+  antigramShowAnswer = false;
+  antigramStep = 1;
+  scheduleXmSave();
+  renderAntigramSim();
+}
+
+function deleteActiveAntigramLot() {
+  if (!isAdmin) return;
+  if (antigramLots.length <= 1) {
+    showToast('Keep at least one antigram lot.', true);
+    return;
+  }
+  var idx = antigramLots.findIndex(function(item){ return item.id === activeAntigramLotId; });
+  if (idx < 0) return;
+  antigramLots.splice(idx, 1);
+  activeAntigramLotId = (antigramLots[Math.max(0, idx - 1)] || antigramLots[0]).id;
+  antigramCase = cleanRemoteAntigramCase(getActiveAntigramLot().panel);
+  scheduleXmSave();
+  renderAntigramSim();
+}
+
+function updateAntigramLotName(value) {
+  if (!isAdmin) return;
+  var lot = getActiveAntigramLot();
+  if (!lot) return;
+  lot.name = value || 'Lot';
+  scheduleXmSave();
+}
+
+function nextAntigramCellId(cells) {
+  var max = 0;
+  (cells || []).forEach(function(cell) {
+    var n = parseInt(String(cell.id || '').replace(/\D/g, ''), 10);
+    if (Number.isFinite(n)) max = Math.max(max, n);
+  });
+  return String(max ? max + 1 : ((cells || []).length + 1));
+}
+
+function addAntigramCells(count) {
+  if (!isAdmin) return;
+  antigramCase = cleanRemoteAntigramCase(antigramCase);
+  count = Math.max(1, Number(count) || 1);
+  for (var i = 0; i < count && antigramCase.cells.length < ANTIGRAM_MAX_CELLS; i++) {
+    var cell = blankAntigramCell(antigramCase.cells.length);
+    cell.id = nextAntigramCellId(antigramCase.cells);
+    antigramCase.cells.push(cell);
+  }
+  if (antigramCase.cells.length >= ANTIGRAM_MAX_CELLS) showToast('Maximum 18 cells for one printable panel.', true);
+  syncActiveAntigramLot();
+  scheduleXmSave();
+  renderAntigramSim();
+}
+
+function removeLastAntigramCell() {
+  removeAntigramCell(-1);
+}
+
+function removeAntigramCell(index) {
+  if (!isAdmin) return;
+  antigramCase = cleanRemoteAntigramCase(antigramCase);
+  if (antigramCase.cells.length <= ANTIGRAM_MIN_CELLS) {
+    showToast('Keep at least one cell in the panel.', true);
+    return;
+  }
+  var idx = Number(index);
+  if (!Number.isFinite(idx) || idx < 0 || idx >= antigramCase.cells.length) idx = antigramCase.cells.length - 1;
+  antigramCase.cells.splice(idx, 1);
+  syncActiveAntigramLot();
+  scheduleXmSave();
+  renderAntigramSim();
+}
+
 function updateAntigramTitle(value) {
   if (!isAdmin) return;
   antigramCase = cleanRemoteAntigramCase(antigramCase);
   antigramCase.title = value;
+  syncActiveAntigramLot();
   scheduleXmSave();
 }
 
@@ -3903,6 +4108,7 @@ function updateAntigramTargets(value) {
   if (!isAdmin) return;
   antigramCase = cleanRemoteAntigramCase(antigramCase);
   antigramCase.targetAbs = String(value || '').split(',').map(function(item){ return item.trim(); }).filter(Boolean);
+  syncActiveAntigramLot();
   scheduleXmSave();
 }
 
@@ -3910,6 +4116,7 @@ function updateAntigramCellId(index, value) {
   if (!isAdmin) return;
   antigramCase = cleanRemoteAntigramCase(antigramCase);
   antigramCase.cells[index].id = value || String(index + 1);
+  syncActiveAntigramLot();
   scheduleXmSave();
 }
 
@@ -3917,7 +4124,10 @@ function updateAntigramReaction(index, phase, value) {
   antigramCase = cleanRemoteAntigramCase(antigramCase);
   if (!antigramCase.cells[index].rxn) antigramCase.cells[index].rxn = {is:'0',t37:'0',ahg:'0'};
   antigramCase.cells[index].rxn[phase] = value;
-  if (isAdmin) scheduleXmSave();
+  if (isAdmin) {
+    syncActiveAntigramLot();
+    scheduleXmSave();
+  }
   renderAntigramSim();
 }
 
@@ -3925,6 +4135,7 @@ function toggleAntigramAntigen(index, ag) {
   if (!isAdmin) return;
   antigramCase = cleanRemoteAntigramCase(antigramCase);
   antigramCase.cells[index].antigens[ag] = !antigramCase.cells[index].antigens[ag];
+  syncActiveAntigramLot();
   scheduleXmSave();
   renderAntigramSim();
 }
@@ -3932,10 +4143,16 @@ function toggleAntigramAntigen(index, ag) {
 function autoGenerateAntigram() {
   var currentTargets = antigramCase && Array.isArray(antigramCase.targetAbs) && antigramCase.targetAbs.length ? antigramCase.targetAbs : [randomChoice(ANTIGRAM_TARGET_POOL), randomChoice(ANTIGRAM_TARGET_POOL)];
   currentTargets = currentTargets.filter(function(item, index, arr){ return item && arr.indexOf(item) === index; }).slice(0, 3);
-  antigramCase = generateAntigramCase(currentTargets);
+  var currentCount = antigramCase && Array.isArray(antigramCase.cells) ? antigramCase.cells.length : 10;
+  var activeLot = getActiveAntigramLot();
+  var title = activeLot && activeLot.name ? (activeLot.name + ' - rule out practice') : 'Auto Panel - rule out practice';
+  antigramCase = generateAntigramCase(currentTargets, currentCount, title);
   antigramShowAnswer = false;
   antigramStep = 1;
-  if (isAdmin) scheduleXmSave();
+  if (isAdmin) {
+    syncActiveAntigramLot();
+    scheduleXmSave();
+  }
   renderAntigramSim();
 }
 
@@ -3955,7 +4172,7 @@ function exportAntigramPractice(includeAnswer) {
   var panel = cleanRemoteAntigramCase(antigramCase);
   var analysis = analyzeAntigramCase(panel);
   var content = '<section class="page antigram-export-page"><h1>' + escText(panel.title || 'Antigram Practice Panel') + '</h1>' +
-    '<div class="antigram-export-note">10-cell antibody identification panel. Reactions are included; use the blank rule-out boxes to follow along.</div>' +
+    '<div class="antigram-export-note">' + panel.cells.length + '-cell antibody identification panel. Reactions are included; use the blank rule-out boxes to follow along.</div>' +
     buildAntigramTable(panel, {editable:false, reveal:includeAnswer ? 3 : 1}) +
     (includeAnswer ? '<div class="antigram-answer-key"><strong>Ruled out:</strong> ' + escText(analysis.ruledOut.join(', ') || 'None') + '<br><strong>Still left:</strong> ' + escText(analysis.possible.join(', ') || 'None') + '</div>' : '<div class="antigram-practice-lines"><strong>Ruled out:</strong><br><br><strong>Still left:</strong><br><br><strong>Selected cells / notes:</strong><br><br></div>') +
   '</section>';
