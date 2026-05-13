@@ -425,6 +425,12 @@
         'font:700 13px/1.35 Georgia,serif',
         'display:none'
       ].join(';');
+      if (!document.getElementById('safeSyncPrintStyle')) {
+        var style = document.createElement('style');
+        style.id = 'safeSyncPrintStyle';
+        style.textContent = '@media print{.safe-sync-presence{display:none!important}}';
+        document.head.appendChild(style);
+      }
       document.body.appendChild(indicator);
       return indicator;
     }

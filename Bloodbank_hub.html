@@ -109,6 +109,7 @@ button{cursor:pointer;font-family:inherit}
 .flash-title{font-size:28px;color:#5a0e20;line-height:1.05}
 .flash-sub{font-size:13px;color:#7a6468;font-weight:700}
 .flash-card{min-height:390px;border:2px solid rgba(192,23,61,.18);border-radius:24px;background:#fff;box-shadow:0 14px 34px rgba(90,14,32,.12);padding:24px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;touch-action:pan-y}
+.flash-card.swiping{transition:none}.flash-card.swipe-right{box-shadow:0 18px 40px rgba(26,140,92,.22);border-color:rgba(26,140,92,.45)}.flash-card.swipe-left{box-shadow:0 18px 40px rgba(192,23,61,.22);border-color:rgba(192,23,61,.45)}
 .flash-card:before{content:"";position:absolute;inset:0 0 auto;height:10px;background:linear-gradient(90deg,#c0173d,#e8a832,#1a8c5c,#1a5c8c);opacity:.9}
 .flash-tag{display:inline-flex;align-items:center;gap:6px;border-radius:999px;background:#fce8ed;color:#8b0a26;padding:5px 11px;font-size:12px;font-weight:900;width:max-content;margin-bottom:14px}
 .flash-question{font-size:clamp(26px,4vw,46px);line-height:1.12;color:#1e0d10;font-weight:900;margin:10px 0 18px}
@@ -125,6 +126,7 @@ button{cursor:pointer;font-family:inherit}
 .flash-dot{width:12px;height:12px;border-radius:50%;background:#ead4dc;border:1px solid #f7c5d0}.flash-dot.done{background:#1a8c5c;border-color:#1a8c5c}.flash-dot.wrong{background:#c0173d;border-color:#c0173d}.flash-dot.skip{background:#e8a832;border-color:#e8a832}.flash-dot.current{transform:scale(1.35);background:#7bdff2;border-color:#1a5c8c}
 .flash-score{display:grid;grid-template-columns:1fr 1fr;gap:8px}.flash-score div{border-radius:14px;background:#fff;border:1px solid #f7c5d0;padding:10px;text-align:center}.flash-score strong{display:block;font-size:22px;color:#5a0e20}.flash-score span{font-size:11px;color:#7a6468;text-transform:uppercase;letter-spacing:1px;font-weight:900}
 .flash-finished{min-height:360px;display:grid;place-items:center;text-align:center}.flash-finished h3{font-size:34px;color:#5a0e20;margin-bottom:8px}.flash-finished p{font-size:17px;color:#7a6468}
+.flash-resume{min-height:330px;display:grid;place-items:center;text-align:center}.flash-resume h3{font-size:32px;color:#5a0e20;margin-bottom:8px}.flash-resume p{font-size:17px;color:#7a6468;max-width:560px;margin:0 auto 16px}
 @media(max-width:760px){.flash-shell{grid-template-columns:1fr}.flash-side{order:-1}.flash-card{min-height:330px}.flash-title{font-size:23px}}
 
 /* SECTIONS */
@@ -609,7 +611,7 @@ button{cursor:pointer;font-family:inherit}
       <div class="sec-label" style="margin-bottom:10px">Encyclopedia Export</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button class="btn btn-primary btn-sm" onclick="openEncyclopediaExportModal()">Export Options</button>
-        <button class="flash-launch" onclick="openFlashcardPractice()">Ready to practice flashcards? Click here and boss those antibodies.</button>
+        <button class="flash-launch" onclick="openFlashcardPractice()">Ready to practice flashcards? Click here.</button>
         <span style="font-size:12px;color:var(--warm-grey);align-self:center">Exports stay under options. Flashcards pull from the editable encyclopedia.</span>
       </div>
     </div>
@@ -1546,7 +1548,7 @@ function renderSystem(key) {
   }
 
   area.innerHTML = `
-    <!-- HISTORY CARD -->
+    <!-- SYSTEM OVERVIEW -->
     <div class="sys-card history-card" style="border-top:3px solid ${sys.color}">
       <div class="sys-header">
         <div class="sys-icon">${sys.icon}</div>
@@ -1556,8 +1558,6 @@ function renderSystem(key) {
           <div class="sys-pun">${sys.pun}</div>
         </div>
       </div>
-      <div class="sec-label">History</div>
-      <div class="timeline">${histHTML}</div>
     </div>
 
     <!-- MEMBRANE CARD -->
@@ -1566,12 +1566,6 @@ function renderSystem(key) {
       ${renderRbcMaker(skey, sys.color)}
       <div class="mem-wrap">${buildSystemRbcSVG(skey, sys.color)}</div>
 
-    </div>
-
-    <!-- WORKSHEET CARD -->
-    <div class="sys-card study-card" style="border-top:3px solid ${sys.color}">
-      <div class="sec-label" style="margin-bottom:10px">Study Reference</div>
-      ${worksheetHTML}
     </div>
 
     <!-- ANTIGEN FREQUENCIES -->
@@ -1595,12 +1589,20 @@ function renderSystem(key) {
       <button class="add-row-btn" onclick="addFreqRow('${skey}')">+ Add row</button>
     </div>
 
-    <!-- LAB NOTES (formerly Clinical Pearls) -->
-    <div class="sys-card" style="border-top:3px solid ${sys.color}">
-      <div class="sec-label" style="margin-bottom:8px">Transfusion Notes</div>
+    <!-- WORKSHEET CARD -->
+    <div class="sys-card study-card" style="border-top:3px solid ${sys.color}">
+      <div class="sec-label" style="margin-bottom:10px">Study Reference</div>
+      ${worksheetHTML}
+      <div class="sec-label" style="margin:14px 0 8px">Transfusion Notes</div>
       <textarea class="edit-field" rows="5" style="width:100%" ${isAdmin?'':'disabled'}
         oninput="setNote('${skey}','lab_notes',this.value)"
         placeholder="${isAdmin ? 'Add transfusion notes, mnemonics, clinical pearls...' : 'Transfusion notes will appear here.'}">${labNoteVal}</textarea>
+    </div>
+
+    <!-- HISTORY CARD -->
+    <div class="sys-card history-card" style="border-top:3px solid ${sys.color}">
+      <div class="sec-label">History</div>
+      <div class="timeline">${histHTML}</div>
     </div>`;
   setTimeout(function(){ initRbcDrag(area); }, 0);
 }
@@ -2657,10 +2659,12 @@ function buildExportWsRows(sys, skey) {
     ? (sys.fields_mn || []).concat(sys.fields_ss || [])
     : (sys.fields || []);
   if (!fields.length) return '<tr><td colspan="2">No study reference fields yet.</td></tr>';
-  return fields.map(function(f) {
+  var rows = fields.map(function(f) {
     var val = data[f] || '';
     return '<tr><td class="lbl">' + exportText(FIELD_LABELS[f] || f) + '</td><td>' + (val ? exportText(val) : '<span class="muted">blank</span>') + '</td></tr>';
   }).join('');
+  if (data.lab_notes) rows += '<tr><td class="lbl">Transfusion Notes</td><td>' + exportText(data.lab_notes) + '</td></tr>';
+  return rows;
 }
 
 function buildExportFrequencyRows(skey) {
@@ -2696,7 +2700,7 @@ function buildFullSystemExportPage(key) {
   membrane = membrane
     .replace(/id="rbcMembraneSvg"/g, '')
     .replace(/touch-action:none/g, '');
-  var notes = data.lab_notes ? '<div class="note-box">' + exportText(data.lab_notes) + '</div>' : '';
+  var studyRows = buildExportWsRows(sys, skey);
   return '<section class="page binder-system">' +
     '<div class="binder-card binder-hero" style="border-top-color:' + sys.color + '">' +
       '<div class="system-head binder-head">' +
@@ -2705,12 +2709,11 @@ function buildFullSystemExportPage(key) {
         '<div class="isbt">' + exportText(sys.isbt || '') + '</div>' +
         '<div class="pun">' + exportText(sys.pun || '') + '</div></div>' +
       '</div>' +
-      '<div class="binder-history"><div class="card-label">History</div><div class="tl">' + history + '</div></div>' +
     '</div>' +
     '<div class="binder-card binder-membrane-card" style="border-top-color:' + sys.color + '"><div class="card-label">RBC Membrane Location</div><div class="binder-membrane-print">' + membrane + '</div></div>' +
-    '<div class="binder-card binder-study" style="border-top-color:' + sys.color + '"><div class="card-label">Study Reference</div><table class="study-table"><tbody>' + buildExportWsRows(sys, skey) + '</tbody></table></div>' +
     '<div class="binder-card binder-freq" style="border-top-color:' + sys.color + '"><div class="card-label">Antigen Frequencies</div><table class="freq-export"><thead><tr><th>Antigen</th><th>C</th><th>B</th><th>A</th><th>I</th><th>H</th><th>Memo</th><th>Population Different In</th><th>Higher or Lower?</th></tr></thead><tbody>' + buildExportFrequencyRows(skey) + '</tbody></table></div>' +
-    (notes ? '<div class="binder-card binder-notes" style="border-top-color:' + sys.color + '"><div class="card-label">Transfusion Notes</div>' + notes + '</div>' : '') +
+    '<div class="binder-card binder-study" style="border-top-color:' + sys.color + '"><div class="card-label">Study Reference</div><table class="study-table"><tbody>' + studyRows + '</tbody></table></div>' +
+    '<div class="binder-card binder-notes" style="border-top-color:' + sys.color + '"><div class="card-label">History</div><div class="binder-history"><div class="tl">' + history + '</div></div></div>' +
   '</section>';
 }
 
@@ -2830,8 +2833,53 @@ var flashRevealed = false;
 var flashMood = 'neutral';
 var flashTouchStartX = null;
 var flashAdvancing = false;
+var FLASH_SESSION_KEY = 'blood-bank-flashcard-session-v1';
+var flashSwipeCard = null;
 
-function openFlashcardPractice(cards) {
+function loadFlashSession() {
+  try {
+    var saved = JSON.parse(localStorage.getItem(FLASH_SESSION_KEY) || 'null');
+    if (!saved || !Array.isArray(saved.queue) || !saved.queue.length) return null;
+    if (Number(saved.index || 0) >= saved.queue.length) return null;
+    return saved;
+  } catch (e) { return null; }
+}
+
+function saveFlashSession() {
+  try {
+    localStorage.setItem(FLASH_SESSION_KEY, JSON.stringify({
+      queue: flashQueue,
+      results: flashResults,
+      wrongCards: flashWrongCards,
+      index: flashIndex,
+      at: Date.now()
+    }));
+  } catch (e) { console.warn('Flashcard session save failed', e); }
+}
+
+function clearFlashSession() {
+  try { localStorage.removeItem(FLASH_SESSION_KEY); } catch (e) {}
+}
+
+function applyFlashSession(saved) {
+  flashQueue = saved.queue || [];
+  flashResults = saved.results || {};
+  flashWrongCards = saved.wrongCards || [];
+  flashIndex = Number(saved.index || 0);
+  flashRevealed = false;
+  flashMood = 'neutral';
+  flashAdvancing = false;
+}
+
+function openFlashcardPractice(cards, forceNew) {
+  if (!cards && !forceNew) {
+    var saved = loadFlashSession();
+    if (saved) {
+      document.getElementById('flashcardModal').classList.add('visible');
+      renderFlashResume(saved);
+      return;
+    }
+  }
   var deck = cards && cards.length ? cards : buildFlashcardDeck();
   if (!deck.length) { showToast('Add Study Reference or Frequency to Memorize content first', true); return; }
   flashQueue = shuffleFlashcards(deck);
@@ -2841,8 +2889,28 @@ function openFlashcardPractice(cards) {
   flashRevealed = false;
   flashMood = 'neutral';
   flashAdvancing = false;
+  saveFlashSession();
   document.getElementById('flashcardModal').classList.add('visible');
   renderFlashcardPractice();
+}
+
+function renderFlashResume(saved) {
+  var root = document.getElementById('flashcardPracticeRoot');
+  if (!root) return;
+  var remaining = Math.max(0, saved.queue.length - Number(saved.index || 0));
+  root.innerHTML = '<div class="flash-card flash-resume"><div><h3>Pick up where you left off?</h3><p>You have ' + remaining + ' card' + (remaining === 1 ? '' : 's') + ' left in this round.</p><div class="flash-actions"><button class="flash-action flash-right" onclick="resumeFlashcards()">Resume</button><button class="flash-action flash-skip" onclick="restartFlashcards()">Restart</button></div></div></div>';
+}
+
+function resumeFlashcards() {
+  var saved = loadFlashSession();
+  if (!saved) { restartFlashcards(); return; }
+  applyFlashSession(saved);
+  renderFlashcardPractice();
+}
+
+function restartFlashcards() {
+  clearFlashSession();
+  openFlashcardPractice(null, true);
 }
 
 function closeFlashcardPractice() {
@@ -2883,15 +2951,43 @@ function renderFlashcardPractice() {
     return;
   }
   var answerHtml = flashRevealed ? exportText(card.answer) : 'Tap Reveal, then swipe or use the buttons.';
-  root.innerHTML = '<div class="flash-shell"><main class="flash-card" onpointerdown="flashTouchStartX=event.clientX" onpointerup="handleFlashPointerUp(event)"><div><div class="flash-tag" style="border:1px solid ' + card.color + ';color:' + card.color + '">' + exportText(card.system) + ' / ' + exportText(card.category) + '</div><div class="flash-question">' + exportText(card.question) + '</div></div><div class="flash-answer ' + (flashRevealed ? '' : 'hidden') + '">' + answerHtml + '</div><div class="flash-actions"><button class="flash-action flash-wrong" onclick="markFlashcard(&quot;wrong&quot;)">Swipe left / missed it</button><button class="flash-action flash-reveal" onclick="flashRevealed=true;flashMood=&quot;neutral&quot;;renderFlashcardPractice()">Reveal answer</button><button class="flash-action flash-skip" onclick="markFlashcard(&quot;skip&quot;)">Skip</button><button class="flash-action flash-right" onclick="markFlashcard(&quot;done&quot;)">Swipe right / got it</button></div></main><aside class="flash-side"><div class="flash-rbc-wrap"><div class="flash-rbc ' + flashMood + '">' + flashRbcSvg(flashMood) + '</div></div><div class="flash-score"><div><strong>' + (flashIndex + 1) + '</strong><span>Current</span></div><div><strong>' + flashQueue.length + '</strong><span>Total</span></div><div><strong>' + rightCount + '</strong><span>Right</span></div><div><strong>' + wrongCount + '</strong><span>Missed</span></div></div><div><div class="flash-map-title">Deck map</div><div class="flash-map">' + renderFlashMap() + '</div></div></aside></div>';
+  var cardMoodClass = flashMood === 'right' ? ' swipe-right' : (flashMood === 'wrong' ? ' swipe-left' : '');
+  root.innerHTML = '<div class="flash-shell"><main id="flashCardSwipe" class="flash-card' + cardMoodClass + '" onpointerdown="beginFlashSwipe(event)" onpointermove="moveFlashSwipe(event)" onpointerup="endFlashSwipe(event)" onpointercancel="endFlashSwipe(event)"><div><div class="flash-tag" style="border:1px solid ' + card.color + ';color:' + card.color + '">' + exportText(card.system) + ' / ' + exportText(card.category) + '</div><div class="flash-question">' + exportText(card.question) + '</div></div><div class="flash-answer ' + (flashRevealed ? '' : 'hidden') + '">' + answerHtml + '</div><div class="flash-actions"><button class="flash-action flash-wrong" onclick="markFlashcard(&quot;wrong&quot;)">Swipe left / missed it</button><button class="flash-action flash-reveal" onclick="flashRevealed=true;flashMood=&quot;neutral&quot;;renderFlashcardPractice();saveFlashSession()">Reveal answer</button><button class="flash-action flash-skip" onclick="markFlashcard(&quot;skip&quot;)">Skip</button><button class="flash-action flash-right" onclick="markFlashcard(&quot;done&quot;)">Swipe right / got it</button></div></main><aside class="flash-side"><div class="flash-rbc-wrap"><div class="flash-rbc ' + flashMood + '">' + flashRbcSvg(flashMood) + '</div></div><div class="flash-score"><div><strong>' + (flashIndex + 1) + '</strong><span>Current</span></div><div><strong>' + flashQueue.length + '</strong><span>Total</span></div><div><strong>' + rightCount + '</strong><span>Right</span></div><div><strong>' + wrongCount + '</strong><span>Missed</span></div></div><div><div class="flash-map-title">Deck map</div><div class="flash-map">' + renderFlashMap() + '</div></div></aside></div>';
 }
 
-function handleFlashPointerUp(e) {
-  if (flashTouchStartX == null) return;
+function beginFlashSwipe(e) {
+  if (e.target.closest('button') || flashAdvancing) return;
+  flashTouchStartX = e.clientX;
+  flashSwipeCard = e.currentTarget;
+  flashSwipeCard.classList.add('swiping');
+  if (flashSwipeCard.setPointerCapture) flashSwipeCard.setPointerCapture(e.pointerId);
+}
+
+function moveFlashSwipe(e) {
+  if (flashTouchStartX == null || !flashSwipeCard) return;
   var dx = e.clientX - flashTouchStartX;
+  flashSwipeCard.style.transform = 'translateX(' + dx + 'px) rotate(' + (dx / 18) + 'deg)';
+  flashSwipeCard.classList.toggle('swipe-right', dx > 45);
+  flashSwipeCard.classList.toggle('swipe-left', dx < -45);
+}
+
+function endFlashSwipe(e) {
+  if (flashTouchStartX == null || !flashSwipeCard) return;
+  var dx = e.clientX - flashTouchStartX;
+  var card = flashSwipeCard;
   flashTouchStartX = null;
-  if (dx > 85) markFlashcard('done');
-  else if (dx < -85) markFlashcard('wrong');
+  flashSwipeCard = null;
+  card.classList.remove('swiping');
+  if (Math.abs(dx) <= 85) {
+    card.style.transition = 'transform .18s ease';
+    card.style.transform = '';
+    card.classList.remove('swipe-right','swipe-left');
+    setTimeout(function(){ card.style.transition = ''; }, 200);
+    return;
+  }
+  card.style.transition = 'transform .18s ease';
+  card.style.transform = 'translateX(' + (dx > 0 ? 900 : -900) + 'px) rotate(' + (dx > 0 ? 18 : -18) + 'deg)';
+  setTimeout(function(){ markFlashcard(dx > 0 ? 'done' : 'wrong'); }, 140);
 }
 
 function markFlashcard(result) {
@@ -2908,6 +3004,7 @@ function markFlashcard(result) {
     flashRevealed = false;
     flashMood = 'neutral';
     flashAdvancing = false;
+    saveFlashSession();
     renderFlashcardPractice();
   }, result === 'skip' ? 120 : 520);
 }
@@ -3890,12 +3987,15 @@ function startXmScreenCells() {
   renderXm();
 }
 
+function getPrimaryDonor(xcase) {
+  if (!xcase.donors || !xcase.donors.length) {
+    xcase.donors = [{type:'', detail:'', compat:true, reason:'', results:[{is:'0', t37:'0', ahg:'0', cc:'2+'}]}];
+  }
+  return xcase.donors[0];
+}
+
 function startXmDonorMode() {
-  xmMode = 'donor';
-  xmStep = 0;
-  xmSelectedDonor = null;
-  xmDonorIdx2 = null;
-  renderXm();
+  pickDonor2(0);
 }
 
 function xmTubeLabels() {
@@ -3916,15 +4016,6 @@ function renderXm() {
   var strip = phases.map(function(p, i) {
     var cls = xmStep > i+1 ? 'done' : xmStep === i+1 ? 'active' : '';
     return '<div class="phase-step ' + cls + '">' + p + '</div>';
-  }).join('');
-
-  var donorBtns = (c.donors||[]).map(function(d, i) {
-    var ex = xmStep >= 5 && xmDonorIdx2 !== null
-      ? (i === xmDonorIdx2 ? (d.compat ? ' compat' : ' incompat') : (d.compat ? ' compat' : '')) : '';
-    var dis = (xmStep > 0 && xmStep < 6) ? ' disabled' : '';
-    return '<button class="donor-btn' + ex + '"' + dis + ' onclick="pickDonor2(' + i + ')">' +
-      '<span class="donor-type">' + d.type + '</span>' +
-      '<span class="donor-detail">' + (d.detail||'') + '</span></button>';
   }).join('');
 
   var scNames = xmTubeLabels();
@@ -3979,10 +4070,9 @@ function renderXm() {
           ? '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">' +
               '<button class="donor-btn" onclick="startXmScreenCells()"><span class="donor-type" style="font-size:16px">Screen Cells</span><span class="donor-detail">Patient plasma + reagent cells</span></button>' +
               '<button class="donor-btn" onclick="startXmDonorMode()"><span class="donor-type" style="font-size:16px">Donor Blood</span><span class="donor-detail">Patient plasma + donor cells</span></button>' +
-            '</div>' + (xmMode === 'donor' ? '<div class="donor-grid">' + donorBtns + '</div>' : '')
+            '</div>'
           : '<div style="text-align:center;padding:8px"><div style="font-size:28px;font-weight:700;color:var(--crimson)">' + (xmSelectedDonor?xmSelectedDonor.type:'') + '</div>' +
-            '<div style="font-size:12px;color:var(--warm-grey)">' + (xmSelectedDonor?xmSelectedDonor.detail:'') + '</div></div>' +
-            (xmStep>=6 && xmMode === 'donor' ? '<div class="donor-grid" style="margin-top:8px">' + donorBtns + '</div>' : '')) +
+            '<div style="font-size:12px;color:var(--warm-grey)">' + (xmSelectedDonor?xmSelectedDonor.detail:'') + '</div></div>') +
       '</div>' +
     '</div>' +
     (xmStep > 1 && xmStep < 6 ? '<div style="margin-bottom:8px"><button class="btn btn-ghost btn-sm" onclick="prevXm2()" style="font-size:11px">&larr; Back</button></div>' : '') +
@@ -4221,8 +4311,8 @@ function buildAHGStep2() {
 function pickDonor2(idx) {
   if (xmStep > 0 && xmStep < 6) return;
   xmMode = 'donor';
-  xmSelectedDonor = xmCurrent.donors[idx];
-  xmDonorIdx2 = idx;
+  xmSelectedDonor = getPrimaryDonor(xmCurrent);
+  xmDonorIdx2 = 0;
   xmStep = 1;
   renderXm();
 }
@@ -4269,28 +4359,25 @@ function renderXmEditor2() {
           '</div>';
         }).join('') +
       '</div></div>' +
-      '<div class="xm-case-label" style="margin-bottom:4px">Donor Units</div>' +
+      '<div class="xm-case-label" style="margin-bottom:4px">Single Donor Blood Crossmatch</div>' +
       '<div style="overflow-x:auto"><div style="min-width:900px">' +
-      '<div style="display:grid;grid-template-columns:70px 1fr 65px repeat(4,52px) 1.4fr 24px;gap:4px;margin-bottom:3px;font-size:9px;color:var(--warm-grey);font-weight:700;text-transform:uppercase"><span>Type</span><span>Detail</span><span>Final</span><span>IS</span><span>37</span><span>AHG</span><span>CC</span><span>Explanation</span><span></span></div>';
-    (c.donors||[]).forEach(function(d, di) {
-      var dr = Array.isArray(d.results) ? normalizeXmResults(d.results, 1)[0] : defaultSimResultFor(0, d.compat, d.reason);
-      html += '<div style="display:grid;grid-template-columns:70px 1fr 65px repeat(4,52px) 1.4fr 24px;gap:4px;margin-bottom:4px;align-items:center">' +
-        '<input class="xm-input" value="' + escText(d.type||'') + '" placeholder="Type" oninput="updateDonor2(' + ci + ',' + di + ',\'type\',this.value)"/>' +
-        '<input class="xm-input" value="' + escText(d.detail||'') + '" placeholder="Detail" oninput="updateDonor2(' + ci + ',' + di + ',\'detail\',this.value)"/>' +
-        '<select class="xm-input" onchange="updateDonor2(' + ci + ',' + di + ',\'compat\',this.value===\'true\')">' +
+      '<div style="display:grid;grid-template-columns:70px 1fr 65px repeat(4,52px) 1.4fr;gap:4px;margin-bottom:3px;font-size:9px;color:var(--warm-grey);font-weight:700;text-transform:uppercase"><span>Type</span><span>Detail</span><span>Final</span><span>IS</span><span>37</span><span>AHG</span><span>CC</span><span>Explanation</span></div>';
+    var d = getPrimaryDonor(c);
+    var dr = Array.isArray(d.results) ? normalizeXmResults(d.results, 1)[0] : defaultSimResultFor(0, d.compat, d.reason);
+    html += '<div style="display:grid;grid-template-columns:70px 1fr 65px repeat(4,52px) 1.4fr;gap:4px;margin-bottom:4px;align-items:center">' +
+        '<input class="xm-input" value="' + escText(d.type||'') + '" placeholder="Type" oninput="updateDonor2(' + ci + ',0,\'type\',this.value)"/>' +
+        '<input class="xm-input" value="' + escText(d.detail||'') + '" placeholder="Detail" oninput="updateDonor2(' + ci + ',0,\'detail\',this.value)"/>' +
+        '<select class="xm-input" onchange="updateDonor2(' + ci + ',0,\'compat\',this.value===\'true\')">' +
         '<option value="true"' + (d.compat?' selected':'') + '>Compat</option>' +
         '<option value="false"' + (!d.compat?' selected':'') + '>Incompat</option>' +
         '</select>' +
-        '<input class="xm-input" value="' + escText(dr.is) + '" oninput="updateDonorResult2(' + ci + ',' + di + ',\'is\',this.value)"/>' +
-        '<input class="xm-input" value="' + escText(dr.t37) + '" oninput="updateDonorResult2(' + ci + ',' + di + ',\'t37\',this.value)"/>' +
-        '<input class="xm-input" value="' + escText(dr.ahg) + '" oninput="updateDonorResult2(' + ci + ',' + di + ',\'ahg\',this.value)"/>' +
-        '<input class="xm-input" value="' + escText(dr.cc) + '" oninput="updateDonorResult2(' + ci + ',' + di + ',\'cc\',this.value)"/>' +
-        '<input class="xm-input" value="' + escText(d.reason||'') + '" placeholder="Explanation" oninput="updateDonor2(' + ci + ',' + di + ',\'reason\',this.value)"/>' +
-        '<button onclick="removeDonor2(' + ci + ',' + di + ')" class="del-btn" style="display:inline-block;color:var(--crimson);font-size:16px">x</button>' +
+        '<input class="xm-input" value="' + escText(dr.is) + '" oninput="updateDonorResult2(' + ci + ',0,\'is\',this.value)"/>' +
+        '<input class="xm-input" value="' + escText(dr.t37) + '" oninput="updateDonorResult2(' + ci + ',0,\'t37\',this.value)"/>' +
+        '<input class="xm-input" value="' + escText(dr.ahg) + '" oninput="updateDonorResult2(' + ci + ',0,\'ahg\',this.value)"/>' +
+        '<input class="xm-input" value="' + escText(dr.cc) + '" oninput="updateDonorResult2(' + ci + ',0,\'cc\',this.value)"/>' +
+        '<input class="xm-input" value="' + escText(d.reason||'') + '" placeholder="Explanation" oninput="updateDonor2(' + ci + ',0,\'reason\',this.value)"/>' +
         '</div>';
-    });
     html += '</div></div>';
-    if ((c.donors||[]).length < 5) html += '<button onclick="addDonor2(' + ci + ')" class="add-row-btn" style="display:inline-flex">+ Donor</button>';
     html += '<div style="margin-top:6px"><label style="font-size:10px;color:var(--warm-grey)">Teaching Point</label>' +
       '<textarea class="xm-input" rows="2" oninput="updateXmCase2(' + ci + ',\'teach\',this.value)">' + escText(c.teach||'') + '</textarea></div>' +
       '</div>';
@@ -4299,9 +4386,9 @@ function renderXmEditor2() {
 }
 
 function updateXmCase2(ci,f,v){xmCases[ci][f]=v;scheduleXmSave();}
-function updateDonor2(ci,di,f,v){xmCases[ci].donors[di][f]=v;scheduleXmSave();}
+function updateDonor2(ci,di,f,v){getPrimaryDonor(xmCases[ci])[f]=v;scheduleXmSave();}
 function updateXmScreenResult2(ci,ri,f,v){xmCases[ci].screenResults=normalizeXmResults(Array.isArray(xmCases[ci].screenResults)?xmCases[ci].screenResults:defaultScreenResultsForCase(xmCases[ci]),3);xmCases[ci].screenResults[ri][f]=v;scheduleXmSave();}
-function updateDonorResult2(ci,di,f,v){var donor=xmCases[ci].donors[di];donor.results=normalizeXmResults(Array.isArray(donor.results)?donor.results:[defaultSimResultFor(0,donor.compat,donor.reason)],1);donor.results[0][f]=v;scheduleXmSave();}
+function updateDonorResult2(ci,di,f,v){var donor=getPrimaryDonor(xmCases[ci]);donor.results=normalizeXmResults(Array.isArray(donor.results)?donor.results:[defaultSimResultFor(0,donor.compat,donor.reason)],1);donor.results[0][f]=v;scheduleXmSave();}
 function addDonor2(ci){if((xmCases[ci].donors||[]).length<5){xmCases[ci].donors=xmCases[ci].donors||[];xmCases[ci].donors.push({type:'',detail:'',compat:true,reason:'',results:[{is:'0',t37:'0',ahg:'0',cc:'2+'}]});scheduleXmSave();}renderXmEditor2();}
 function removeDonor2(ci,di){xmCases[ci].donors.splice(di,1);scheduleXmSave();renderXmEditor2();}
 function addXmCase2(){xmCases.push({patient_type:'',patient_desc:'',patient_abs:[],screenResults:normalizeXmResults([],3),donors:[{type:'',detail:'',compat:true,reason:'',results:[{is:'0',t37:'0',ahg:'0',cc:'2+'}]}],teach:''});scheduleXmSave();renderXmEditor2();}
