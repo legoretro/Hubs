@@ -159,6 +159,19 @@ button{cursor:pointer;font-family:inherit}
 .freq-card .freq-table td{padding:7px 8px}
 .freq-card .freq-field{font-size:15px}
 .freq-card .freq-field.freq-num{font-size:19px}
+.general-card{padding:22px}
+.general-help{font-size:13px;line-height:1.55;color:var(--warm-grey);margin:0 0 12px}
+.general-table-wrap{width:100%;overflow:auto;border:1px solid var(--rose);border-radius:12px;background:#fff}
+.general-table{width:100%;min-width:980px;border-collapse:collapse;table-layout:fixed}
+.general-table th{background:var(--wine);color:#fff;font-size:11px;line-height:1.15;padding:8px 7px;text-align:center;border:1px solid var(--rose)}
+.general-table th:first-child{width:180px;text-align:left}
+.general-table td{border:1px solid var(--rose);padding:5px 6px;vertical-align:top;background:#fffaf7}
+.general-table tr:nth-child(even) td{background:#fff1f4}
+.general-row-label,.general-cell{width:100%;min-height:42px;border:0;background:transparent;color:var(--dark);font-family:Georgia,serif;font-size:13px;line-height:1.35;resize:vertical;padding:4px;border-radius:6px}
+.general-row-label{font-weight:800;color:var(--wine)}
+.general-cell:focus,.general-row-label:focus{outline:1px dashed var(--warn);background:#fff}
+.general-cell:disabled,.general-row-label:disabled{opacity:1}
+.general-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 
 /* SYS HEADER */
 .sys-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;flex-wrap:wrap}
@@ -627,6 +640,8 @@ button{cursor:pointer;font-family:inherit}
     </div>
     <div class="enc-layout">
       <div class="system-menu">
+        <h3>General</h3>
+        <button class="sys-btn" onclick="showSystem('general',this)"><span class="sys-dot" style="background:#8b0a26"></span>Comparison Table</button>
         <h3>Usual Suspects</h3>
         <button class="sys-btn active" onclick="showSystem('abo',this)"><span class="sys-dot" style="background:#c0173d"></span>ABO</button>
         <button class="sys-btn" onclick="showSystem('rh',this)"><span class="sys-dot" style="background:#7b3fa0"></span>Rh</button>
@@ -1542,10 +1557,124 @@ function getFreqRows(sysKey) {
   return (FREQ_DEFAULT_ROWS[sysKey] || ['']).map(ag => normalizeFreqRow({ ag }));
 }
 
+const GENERAL_COMPARE_KEY = '__generalComparison';
+const GENERAL_COMPARE_SYSTEMS = ['abo','rh','kell','duffy','kidd','mns','lewis','p1pk','lutheran'];
+
+function makeGeneralRowId() {
+  return 'general_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+}
+
+function shortSystemName(key) {
+  const sys = SYSTEMS[key];
+  if (!sys) return key;
+  return sys.name.replace(' System','').replace(' / Globoside','');
+}
+
+function defaultGeneralAntigenText(key) {
+  return (FREQ_DEFAULT_ROWS[key] || []).join(', ');
+}
+
+function normalizeGeneralComparison(raw) {
+  const saved = raw && typeof raw === 'object' ? raw : {};
+  const rows = Array.isArray(saved.rows) ? saved.rows : [];
+  const cleanRows = rows.map(function(row, index) {
+    row = row || {};
+    const cells = {};
+    GENERAL_COMPARE_SYSTEMS.forEach(function(key) {
+      cells[key] = String(row.cells && row.cells[key] != null ? row.cells[key] : '');
+    });
+    return {
+      id: row.id || makeGeneralRowId() + '_' + index,
+      label: String(row.label || ''),
+      cells: cells
+    };
+  });
+  if (!cleanRows.length) {
+    const antigenCells = {};
+    GENERAL_COMPARE_SYSTEMS.forEach(function(key) { antigenCells[key] = defaultGeneralAntigenText(key); });
+    cleanRows.push({ id:'general_antigens', label:'Antigens / high-frequency reminders', cells: antigenCells });
+  }
+  return { rows: cleanRows };
+}
+
+function getGeneralComparison() {
+  return normalizeGeneralComparison(notesData[GENERAL_COMPARE_KEY]);
+}
+
+function ensureGeneralComparison() {
+  if (!notesData[GENERAL_COMPARE_KEY]) notesData[GENERAL_COMPARE_KEY] = getGeneralComparison();
+  return notesData[GENERAL_COMPARE_KEY];
+}
+
+function updateGeneralComparison(rowId, field, value) {
+  if (!isAdmin) return;
+  const table = ensureGeneralComparison();
+  const normalized = normalizeGeneralComparison(table);
+  const row = normalized.rows.find(function(item) { return item.id === rowId; });
+  if (!row) return;
+  if (field === 'label') row.label = value;
+  else if (GENERAL_COMPARE_SYSTEMS.indexOf(field) > -1) row.cells[field] = value;
+  notesData[GENERAL_COMPARE_KEY] = normalized;
+  scheduleSave();
+}
+
+function addGeneralComparisonRow() {
+  if (!isAdmin) return;
+  const table = normalizeGeneralComparison(ensureGeneralComparison());
+  const cells = {};
+  GENERAL_COMPARE_SYSTEMS.forEach(function(key) { cells[key] = ''; });
+  table.rows.push({ id: makeGeneralRowId(), label: '', cells: cells });
+  notesData[GENERAL_COMPARE_KEY] = table;
+  scheduleSave();
+  renderSystem('general');
+}
+
+function deleteGeneralComparisonRow(rowId) {
+  if (!isAdmin) return;
+  const table = normalizeGeneralComparison(ensureGeneralComparison());
+  table.rows = table.rows.filter(function(row) { return row.id !== rowId; });
+  if (!table.rows.length) table.rows = normalizeGeneralComparison(null).rows;
+  notesData[GENERAL_COMPARE_KEY] = table;
+  scheduleSave();
+  renderSystem('general');
+}
+
+function renderGeneral(area) {
+  currentSystemKey = 'general';
+  if (syncPresence) syncPresence.setSection('encyclopedia / general comparison');
+  const table = getGeneralComparison();
+  const head = '<tr><th>Prompt / Row</th>' + GENERAL_COMPARE_SYSTEMS.map(function(key) {
+    return '<th>' + escText(shortSystemName(key)) + '</th>';
+  }).join('') + (isAdmin ? '<th>Row</th>' : '') + '</tr>';
+  const body = table.rows.map(function(row) {
+    const label = '<td><textarea class="general-row-label" rows="2" ' + (isAdmin ? '' : 'disabled') + ' placeholder="' + (isAdmin ? 'Example: Which antibodies are IgG?' : '') + '" oninput="updateGeneralComparison(\'' + row.id + '\',\'label\',this.value)">' + escText(row.label) + '</textarea></td>';
+    const cells = GENERAL_COMPARE_SYSTEMS.map(function(key) {
+      return '<td><textarea class="general-cell" rows="3" ' + (isAdmin ? '' : 'disabled') + ' placeholder="' + (isAdmin ? 'Add notes...' : '') + '" oninput="updateGeneralComparison(\'' + row.id + '\',\'' + key + '\',this.value)">' + escText(row.cells && row.cells[key] || '') + '</textarea></td>';
+    }).join('');
+    const del = isAdmin ? '<td><button class="del-btn" style="display:inline-block" onclick="deleteGeneralComparisonRow(\'' + row.id + '\')">x</button></td>' : '';
+    return '<tr>' + label + cells + del + '</tr>';
+  }).join('');
+  area.innerHTML = `
+    <div class="sys-card general-card" style="border-top:3px solid var(--wine)">
+      <div class="sys-header">
+        <div class="sys-icon">🧾</div>
+        <div>
+          <div class="sys-name" style="color:var(--wine)">General Comparison</div>
+          <div class="sys-isbt">USUAL SUSPECTS SIDE-BY-SIDE</div>
+          <div class="sys-pun">Build your own compare table. Blank rows become flashcards when you add answers.</div>
+        </div>
+      </div>
+      <p class="general-help">Use the first column like a flashcard question, then fill in the systems that answer it. Example: “Which antibodies are IgG?” The flashcards will use that row and only include filled cells.</p>
+      <div class="general-table-wrap"><table class="general-table"><thead>${head}</thead><tbody>${body}</tbody></table></div>
+      <div class="general-actions"><button class="add-row-btn" onclick="addGeneralComparisonRow()">+ Add comparison row</button></div>
+    </div>`;
+}
+
 function renderSystem(key) {
   currentSystemKey = key;
   if (syncPresence) syncPresence.setSection(`encyclopedia / ${currentSystemKey}`);
   const area = document.getElementById('sysContentArea');
+  if (key === 'general') { renderGeneral(area); return; }
   if (key === 'lesser') { renderLesser(area); return; }
   const sys = SYSTEMS[key];
   if (!sys) return;
@@ -2799,6 +2928,20 @@ function addFlashcard(cards, question, answer, meta) {
 
 function buildFlashcardDeck() {
   var cards = [];
+  getGeneralComparison().rows.forEach(function(row, idx) {
+    var label = flashPlain(row.label || '');
+    var answer = GENERAL_COMPARE_SYSTEMS.map(function(key) {
+      var val = flashPlain(row.cells && row.cells[key] || '');
+      return val ? shortSystemName(key) + ': ' + val : '';
+    }).filter(Boolean).join('\n');
+    if (label && answer) {
+      addFlashcard(cards,
+        /\?$/.test(label) ? label : ('General comparison: ' + label),
+        answer,
+        {id:'general-compare-' + (row.id || idx), system:'General', category:'Comparison Table', color:'#8b0a26'}
+      );
+    }
+  });
   var usualKeys = ['abo','rh','kell','duffy','kidd','mns','p1pk','lewis','lutheran'];
   usualKeys.forEach(function(key) {
     var sys = SYSTEMS[key];
