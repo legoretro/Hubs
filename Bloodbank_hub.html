@@ -172,6 +172,17 @@ button{cursor:pointer;font-family:inherit}
 .general-cell:focus,.general-row-label:focus{outline:1px dashed var(--warn);background:#fff}
 .general-cell:disabled,.general-row-label:disabled{opacity:1}
 .general-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.general-title-only{font-size:clamp(26px,4.2vw,46px);line-height:1;color:var(--wine);font-weight:900;margin:0 0 16px}
+.general-summary-card{margin-top:16px;border:1px solid var(--rose);border-radius:14px;background:#fff;overflow:hidden}
+.general-summary-head{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:12px 14px;background:#fffaf7;border-bottom:1px solid var(--rose)}
+.general-summary-title{font-size:14px;text-transform:uppercase;letter-spacing:2px;color:var(--warm-grey);font-weight:900}
+.general-summary-note{font-size:12px;color:var(--warm-grey);line-height:1.35}
+.general-summary-table{width:100%;border-collapse:collapse;table-layout:fixed}
+.general-summary-table th{background:var(--wine);color:#fff;font-size:12px;padding:8px 10px;text-align:left;border:1px solid var(--rose)}
+.general-summary-table td{font-size:13px;line-height:1.35;padding:8px 10px;border:1px solid var(--rose);vertical-align:top;background:#fff}
+.general-summary-table tr:nth-child(even) td{background:#fff1f4}
+.general-summary-question{font-weight:900;color:var(--wine)}
+.general-summary-answer{font-weight:800;color:var(--dark)}
 
 /* SYS HEADER */
 .sys-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;flex-wrap:wrap}
@@ -2031,6 +2042,7 @@ function updateGeneralComparison(rowId, field, value) {
   if (field === 'label') row.label = value;
   else if (GENERAL_COMPARE_SYSTEMS.indexOf(field) > -1) row.cells[field] = value;
   notesData[GENERAL_COMPARE_KEY] = normalized;
+  renderGeneralSharedSummary();
   scheduleSave();
 }
 
@@ -2055,15 +2067,104 @@ function deleteGeneralComparisonRow(rowId) {
   renderSystem('general');
 }
 
+function generalTextParts(value) {
+  var text = String(value == null ? '' : value)
+    .replace(/\r/g, '\n')
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<[^>]+>/g, ' ')
+    .trim();
+  if (!text) return [];
+  var pieces = [];
+  text.split(/\n|;|\u2028|\u2029/).forEach(function(part) {
+    part = part.replace(/\s+/g, ' ').trim();
+    if (!part) return;
+    var antibodyMatches = part.match(/Ig[GM]\s*:\s*(Warm|Cold)/gi);
+    if (antibodyMatches && antibodyMatches.length) {
+      antibodyMatches.forEach(function(match) { pieces.push(match); });
+    } else {
+      pieces.push(part);
+    }
+  });
+  return pieces;
+}
+
+function normalizeGeneralSharedValue(value) {
+  return String(value == null ? '' : value)
+    .replace(/\s+/g, ' ')
+    .replace(/\s*:\s*/g, ': ')
+    .replace(/\bIg([gm])\b/ig, function(_, g) { return 'Ig' + g.toUpperCase(); })
+    .replace(/\b(warm|cold)\b/ig, function(w) { return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase(); })
+    .trim();
+}
+
+function generalSharedQuestion(rowLabel, value) {
+  var label = String(rowLabel || '').replace(/[?:]+$/g, '').trim() || 'this row';
+  if (/antibody temp/i.test(label)) return 'What systems have antibodies that are ' + value + '?';
+  if (/dosage/i.test(label)) return 'Which systems show dosage = ' + value + '?';
+  if (/chemicals|enzymes/i.test(label)) return 'Which systems share chemicals/enzymes = ' + value + '?';
+  if (/complement/i.test(label)) return 'Which systems have complement = ' + value + '?';
+  if (/^hdn$/i.test(label)) return 'Which systems have HDN = ' + value + '?';
+  if (/^other$/i.test(label)) return 'Which systems share this note: ' + value + '?';
+  return 'Which systems share ' + label + ' = ' + value + '?';
+}
+
+function buildGeneralSharedSummaryRows() {
+  var rows = [];
+  getGeneralComparison().rows.forEach(function(row) {
+    var label = String(row.label || '').trim();
+    if (!label || /^antigens?$/i.test(label)) return;
+    var groups = {};
+    GENERAL_COMPARE_SYSTEMS.forEach(function(key) {
+      var cell = row.cells && row.cells[key];
+      generalTextParts(cell).forEach(function(piece) {
+        var normalized = normalizeGeneralSharedValue(piece);
+        if (!normalized) return;
+        var groupKey = normalized.toLowerCase();
+        if (!groups[groupKey]) groups[groupKey] = { value: normalized, systems: [] };
+        if (groups[groupKey].systems.indexOf(key) === -1) groups[groupKey].systems.push(key);
+      });
+    });
+    Object.keys(groups).forEach(function(groupKey) {
+      var group = groups[groupKey];
+      if (group.systems.length < 2) return;
+      rows.push({
+        source: label,
+        shared: group.value,
+        question: generalSharedQuestion(label, group.value),
+        answer: group.systems.map(shortSystemName).join(', ')
+      });
+    });
+  });
+  return rows;
+}
+
+function buildGeneralSharedSummaryHtml() {
+  var rows = buildGeneralSharedSummaryRows();
+  if (!rows.length) return '';
+  return '<div class="general-summary-card">' +
+    '<div class="general-summary-head"><div class="general-summary-title">Shared Patterns</div><div class="general-summary-note">Auto-built from repeated answers in the comparison table.</div></div>' +
+    '<table class="general-summary-table"><thead><tr><th style="width:42%">Question</th><th style="width:18%">Shared Answer</th><th>Systems</th></tr></thead><tbody>' +
+      rows.map(function(row) {
+        return '<tr><td class="general-summary-question">' + escText(row.question) + '</td><td>' + escText(row.shared) + '</td><td class="general-summary-answer">' + escText(row.answer) + '</td></tr>';
+      }).join('') +
+    '</tbody></table>' +
+  '</div>';
+}
+
+function renderGeneralSharedSummary() {
+  var target = document.getElementById('generalSharedSummary');
+  if (target) target.innerHTML = buildGeneralSharedSummaryHtml();
+}
+
 function renderGeneral(area) {
   currentSystemKey = 'general';
   if (syncPresence) syncPresence.setSection('encyclopedia / general comparison');
   const table = getGeneralComparison();
-  const head = '<tr><th>Prompt / Row</th>' + GENERAL_COMPARE_SYSTEMS.map(function(key) {
+  const head = '<tr><th>Row</th>' + GENERAL_COMPARE_SYSTEMS.map(function(key) {
     return '<th>' + escText(shortSystemName(key)) + '</th>';
   }).join('') + (isAdmin ? '<th>Row</th>' : '') + '</tr>';
   const body = table.rows.map(function(row) {
-    const label = '<td><textarea class="general-row-label" rows="2" ' + (isAdmin ? '' : 'disabled') + ' placeholder="' + (isAdmin ? 'Example: Which antibodies are IgG?' : '') + '" oninput="updateGeneralComparison(\'' + row.id + '\',\'label\',this.value)">' + escText(row.label) + '</textarea></td>';
+    const label = '<td><textarea class="general-row-label" rows="2" ' + (isAdmin ? '' : 'disabled') + ' placeholder="' + (isAdmin ? 'Row label' : '') + '" oninput="updateGeneralComparison(\'' + row.id + '\',\'label\',this.value)">' + escText(row.label) + '</textarea></td>';
     const cells = GENERAL_COMPARE_SYSTEMS.map(function(key) {
       return '<td><textarea class="general-cell" rows="3" ' + (isAdmin ? '' : 'disabled') + ' placeholder="' + (isAdmin ? 'Add notes...' : '') + '" oninput="updateGeneralComparison(\'' + row.id + '\',\'' + key + '\',this.value)">' + escText(row.cells && row.cells[key] || '') + '</textarea></td>';
     }).join('');
@@ -2072,16 +2173,13 @@ function renderGeneral(area) {
   }).join('');
   area.innerHTML = `
     <div class="sys-card general-card" style="border-top:3px solid var(--wine)">
-      <div class="sys-header">
-        <div class="sys-icon">🧾</div>
-        <div>
-          <div class="sys-name" style="color:var(--wine)">General Comparison</div>
-          <div class="sys-isbt">USUAL SUSPECTS SIDE-BY-SIDE</div>
-          <div class="sys-pun">Build your own compare table. Blank rows become flashcards when you add answers.</div>
-        </div>
-      </div>
+      <div class="general-title-only">General Comparison</div>
       <div class="general-table-wrap"><table class="general-table"><thead>${head}</thead><tbody>${body}</tbody></table></div>
-      <div class="general-actions"><button class="add-row-btn" onclick="addGeneralComparisonRow()">+ Add comparison row</button></div>
+      <div id="generalSharedSummary">${buildGeneralSharedSummaryHtml()}</div>
+      <div class="general-actions">
+        ${isAdmin ? '<button class="add-row-btn" onclick="addGeneralComparisonRow()">+ Add comparison row</button>' : ''}
+        <button class="add-row-btn" onclick="exportGeneralComparisonPage()">Export General Comparison</button>
+      </div>
     </div>`;
 }
 
@@ -3303,6 +3401,29 @@ function buildLesserSystemsExportPage() {
   '</section>';
 }
 
+function buildGeneralComparisonExportPage() {
+  var table = getGeneralComparison();
+  var summaryRows = buildGeneralSharedSummaryRows();
+  var head = '<tr><th>Row</th>' + GENERAL_COMPARE_SYSTEMS.map(function(key) {
+    return '<th>' + exportText(shortSystemName(key)) + '</th>';
+  }).join('') + '</tr>';
+  var body = table.rows.map(function(row) {
+    var label = exportText(row.label || '');
+    var cells = GENERAL_COMPARE_SYSTEMS.map(function(key) {
+      return '<td>' + exportText(row.cells && row.cells[key] || '') + '</td>';
+    }).join('');
+    return '<tr><td class="general-export-label">' + label + '</td>' + cells + '</tr>';
+  }).join('');
+  var summary = summaryRows.length
+    ? '<div class="general-export-summary"><h2>Shared Patterns</h2><table><thead><tr><th>Question</th><th>Shared Answer</th><th>Systems</th></tr></thead><tbody>' +
+      summaryRows.map(function(row) {
+        return '<tr><td>' + exportText(row.question) + '</td><td>' + exportText(row.shared) + '</td><td>' + exportText(row.answer) + '</td></tr>';
+      }).join('') +
+      '</tbody></table></div>'
+    : '';
+  return '<section class="page general-export-page"><h1>General Comparison</h1><table class="general-export-main"><thead>' + head + '</thead><tbody>' + body + '</tbody></table>' + summary + '</section>';
+}
+
 function flashPlain(value) {
   var text = String(value == null ? '' : value)
     .replace(/<br\s*\/?>/gi, '\n')
@@ -3356,6 +3477,13 @@ function buildFlashcardDeck() {
         {id:'general-compare-' + (row.id || idx), system:'General', category:'Comparison Table', color:'#8b0a26'}
       );
     }
+  });
+  buildGeneralSharedSummaryRows().forEach(function(row, idx) {
+    addFlashcard(cards,
+      row.question,
+      row.answer,
+      {id:'general-shared-' + idx + '-' + row.shared.toLowerCase().replace(/[^a-z0-9]+/g,'-'), system:'General', category:'Shared Patterns', color:'#8b0a26'}
+    );
   });
   var usualKeys = ['abo','rh','kell','duffy','kidd','mns','p1pk','lewis','lutheran'];
   usualKeys.forEach(function(key) {
@@ -3659,6 +3787,7 @@ function buildExportHtml(content, title, orientation) {
     '.binder-system{height:10.25in;overflow:hidden;font-size:10px;padding-top:.03in}.binder-system table{margin-bottom:0}.binder-card{border-top:2.5px solid #5a0e20;border-left:1px solid #f7c5d0;border-right:1px solid #f7c5d0;border-bottom:1px solid #f7c5d0;border-radius:12px;background:#fffaf7;margin-bottom:.07in;break-inside:avoid;page-break-inside:avoid}.binder-hero{min-height:1.08in;padding:5px 10px 6px}.binder-head{gap:8px;align-items:flex-start;margin-bottom:2px}.binder-head .system-dot{width:28px;height:28px;font-size:14px}.binder-head h1{text-align:left;font-size:22px;line-height:.95;margin:0 0 2px;padding:0}.binder-head .isbt{font-size:7px;letter-spacing:2.1px}.binder-head .pun{font-size:9.5px;line-height:1.08;margin-top:2px}.binder-system .card-label{font-size:8.6px;letter-spacing:3px;text-transform:uppercase;color:#7a6468;font-weight:700;margin:0 0 5px}.binder-history .tl{padding-left:8px;border-left:2px solid #f7c5d0}.binder-history .tl-item{font-size:6px;line-height:1.03;margin-bottom:1px}.binder-history .yr{display:inline-block;width:.5in;font-size:6.2px;color:#c0173d;font-weight:700}.binder-membrane-card{height:1.32in;padding:5px 8px}.binder-membrane-print{height:1.08in;display:flex;align-items:center;justify-content:center;overflow:hidden}.binder-membrane-print>div{width:5.25in!important;overflow:hidden!important}.binder-membrane-print svg{width:5.25in!important;min-width:0!important;height:1.05in!important}.binder-membrane-print text{font-size:9px!important}.binder-study{height:auto;max-height:4.9in;padding:8px 10px 9px;overflow:hidden}.binder-system .study-table{font-size:10.2px;line-height:1.18;table-layout:fixed}.binder-system .study-table tr:nth-child(even) td{background:#fff3f0}.binder-system .study-table td{font-size:10.2px;padding:4px 5px;white-space:normal;overflow-wrap:anywhere}.binder-system .study-table td.lbl{width:1.55in;font-size:8.7px;letter-spacing:.5px;color:#7a6468}.binder-system .study-table .muted{font-size:8.2px;color:#b69aa0}.binder-freq{min-height:0;padding:8px 10px}.binder-system .freq-export{font-size:8.8px;line-height:1.08;table-layout:fixed}.binder-system .freq-export th{font-size:7.7px;padding:3px 3px}.binder-system .freq-export td{font-size:8.4px;padding:3px 3px;white-space:normal;overflow-wrap:anywhere}.binder-system .freq-export th:nth-child(1){width:.7in}.binder-system .freq-export th:nth-child(2),.binder-system .freq-export th:nth-child(3),.binder-system .freq-export th:nth-child(4),.binder-system .freq-export th:nth-child(5),.binder-system .freq-export th:nth-child(6){width:.28in}.binder-system .freq-export th:nth-child(7){width:.45in}.binder-notes{min-height:0;padding:6px 10px;margin-bottom:0}.binder-system .note-box{font-size:8.4px;line-height:1.16;padding:4px 6px;background:#fff;border-left:3px solid #f7c5d0}' +
     '.antigram-export-page{max-width:10.4in;height:7.1in;overflow:hidden}.antigram-export-page h1{font-size:15px;margin:0 0 .04in;padding:0}.antigram-export-note{font-size:8px;color:#7a6468;margin-bottom:.05in}.antigram-export-page .antigram-panel-wrap{overflow:hidden;border:1px solid #5a0e20;border-radius:4px;background:#fff}.antigram-export-page .antigram-table{width:100%;min-width:0;border-collapse:collapse;table-layout:fixed;font-size:5.4px}.antigram-export-page .antigram-table th{position:static;background:#5a0e20;color:#fff;font-size:5.2px;padding:2px 1px;text-align:center}.antigram-export-page .antigram-table td{border:1px solid #d9a9b4;padding:2px 1px;text-align:center;font-size:5.6px;min-width:0}.antigram-export-page .antigram-table td.cell-id{position:static;background:#fffaf7;font-weight:bold;color:#5a0e20;font-size:5.5px}.antigram-export-page .antigram-table td.ruled-out{background:#dff4eb!important}.antigram-export-page .antigram-table td.suspect-hit{background:#fff1b8!important}.antigram-answer-key,.antigram-practice-lines{font-size:8px;line-height:1.25;margin-top:.06in;border:1px solid #f7c5d0;border-radius:6px;padding:.06in;background:#fffaf7}' +
     '.flash-print-page{max-width:7.9in;height:10.4in;overflow:hidden}.flash-print-page h1{font-size:15px;color:#000;text-align:left;margin:0 0 .12in;padding:0}.flash-print-grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:.18in;height:9.9in}.flash-print-card{border:2px solid #000;background:#fff;color:#000;border-radius:0;padding:.18in;display:flex;flex-direction:column;justify-content:center;text-align:center;break-inside:avoid;page-break-inside:avoid}.flash-print-meta{font-size:12px;text-transform:uppercase;letter-spacing:.7px;margin-bottom:.12in;color:#000;font-weight:700}.flash-print-q{font-size:24px;line-height:1.18;font-weight:900}.flash-print-a{font-size:22px;line-height:1.2;font-weight:900;white-space:pre-wrap}' +
+    '.general-export-page{max-width:10.4in;height:7.12in;overflow:hidden}.general-export-page h1{text-align:left;font-size:18px;margin:0 0 .07in;padding:0;color:#5a0e20}.general-export-main{table-layout:fixed;margin-bottom:.07in;border:1px solid #f7c5d0}.general-export-main th{font-size:7.2px;line-height:1.05;text-align:center;padding:3px 2px;background:#5a0e20;color:#fff}.general-export-main th:first-child{width:.92in;text-align:left}.general-export-main td{font-size:7.1px;line-height:1.08;padding:3px 3px;border:1px solid #f7c5d0;white-space:normal;overflow-wrap:anywhere}.general-export-main tr:nth-child(even) td{background:#fff1f4}.general-export-label{font-weight:800;color:#5a0e20}.general-export-summary h2{font-size:9px;letter-spacing:1.2px;text-transform:uppercase;color:#7a6468;border:0;margin:.02in 0 .035in;padding:0}.general-export-summary table{table-layout:fixed;border:1px solid #f7c5d0}.general-export-summary th{font-size:7px;padding:3px 4px}.general-export-summary td{font-size:7px;line-height:1.08;padding:3px 4px;border:1px solid #f7c5d0}.general-export-summary th:nth-child(1){width:45%}.general-export-summary th:nth-child(2){width:20%}' +
     '.map-page{max-width:10.4in;height:7.15in;overflow:hidden}.map-page h1{font-size:16px;padding:0;margin:0 0 .06in}.map-print{height:6.86in;overflow:hidden;display:flex;align-items:center;justify-content:center}.map-print>div{width:100%!important;height:100%!important;overflow:hidden!important}.map-print svg{width:100%!important;max-width:100%!important;min-width:0!important;height:100%!important;max-height:6.78in!important}.map-rbc .map-print svg text{font-size:10px!important}.map-chrom .map-print{align-items:flex-start}svg{max-width:100%;height:auto}' +
     portraitTweaks +
     '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style></head><body>' + content + '</body></html>';
@@ -3689,11 +3818,17 @@ function printExportHtml(content, title, orientation) {
 }
 
 function exportCurrentSystemPage() {
-  if (currentSystemKey === 'lesser') {
+  if (currentSystemKey === 'general') {
+    exportGeneralComparisonPage();
+  } else if (currentSystemKey === 'lesser') {
     printExportHtml(buildLesserSystemsExportPage(), 'Lesser Systems Export');
   } else {
     printExportHtml(buildFullSystemExportPage(currentSystemKey), 'Blood Bank ' + currentSystemKey + ' Export');
   }
+}
+
+function exportGeneralComparisonPage() {
+  printExportHtml(buildGeneralComparisonExportPage(), 'Blood Bank General Comparison', 'landscape');
 }
 
 function exportLesserSystemsPage() {
