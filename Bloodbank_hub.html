@@ -833,6 +833,7 @@ async function supabaseError(response) {
 
 function hydrateNotesData(data) {
   notesData = data || {};
+  applyBloodGroupWorksheetDefaults();
   rbcLayout = notesData.__rbcLayoutVersion === 2 ? (notesData.__rbcLayout || {}) : {};
   rbcCustomItems = Array.isArray(notesData.__rbcCustomItems) ? notesData.__rbcCustomItems : [];
   rbcMapCopies = Array.isArray(notesData.__rbcMapCopies) ? notesData.__rbcMapCopies : [];
@@ -1536,6 +1537,269 @@ const FREQ_DEFAULT_ROWS = {
   lutheran: ['Lua','Lub']
 };
 
+const BB_WORKSHEET_DEFAULT_VERSION = 1;
+
+const WORKSHEET_FREQ_ROWS = {
+  abo: [
+    {ag:'A', c:'40', b:'27', a:'23', i:'23', h:'12', memo:'40', pop:'Caucasian', hiLo:'Higher'},
+    {ag:'B', c:'20', b:'20', a:'10', i:'32', h:'04', memo:'20', pop:'Asian and Hispanic', hiLo:'Lower'},
+    {ag:'O', c:'45', b:'49', a:'46', i:'37', h:'84', memo:'45', pop:'Hispanic', hiLo:'Higher'},
+    {ag:'AB', c:'04', b:'04', a:'06', i:'08', h:'00', memo:'05', pop:'', hiLo:''}
+  ],
+  rh: [
+    {ag:'D', c:'85', b:'92', a:'99', i:'93', h:'93', memo:'85', pop:'', hiLo:''},
+    {ag:'C', c:'70', b:'34', a:'93', i:'87', h:'70', memo:'70', pop:'Black', hiLo:'Lower'},
+    {ag:'c', c:'80', b:'97', a:'47', i:'58', h:'40', memo:'80', pop:'Asian, Indian, Hispanic', hiLo:'Lower'},
+    {ag:'E', c:'30', b:'21', a:'40', i:'20', h:'24', memo:'30', pop:'', hiLo:''},
+    {ag:'e', c:'98', b:'99', a:'96', i:'99', h:'81', memo:'98', pop:'', hiLo:''}
+  ],
+  kell: [
+    {ag:'K', c:'09', b:'02', a:'00', i:'04', h:'03', memo:'09', pop:'', hiLo:''},
+    {ag:'k', c:'99', b:'99', a:'99', i:'99', h:'99', memo:'100', pop:'', hiLo:''},
+    {ag:'Kpa', c:'02', b:'00', a:'00', i:'00', h:'00', memo:'00', pop:'', hiLo:''},
+    {ag:'Kpb', c:'99', b:'99', a:'99', i:'99', h:'99', memo:'100', pop:'', hiLo:''},
+    {ag:'Jsa', c:'00', b:'20', a:'00', i:'00', h:'01', memo:'01', pop:'Black', hiLo:'Higher'},
+    {ag:'Jsb', c:'99', b:'99', a:'99', i:'99', h:'99', memo:'100', pop:'', hiLo:''}
+  ],
+  duffy: [
+    {ag:'Fya', c:'65', b:'10', a:'99', i:'81', h:'78', memo:'60', pop:'Black', hiLo:'Lower'},
+    {ag:'Fyb', c:'80', b:'23', a:'09', i:'57', h:'64', memo:'75', pop:'Asian lowest; Black lower; Caucasian higher', hiLo:'Lower / Higher'},
+    {ag:'Fy3/Fy5', c:'99', b:'32', a:'99', i:'99', h:'99', memo:'100', pop:'', hiLo:''}
+  ],
+  kidd: [
+    {ag:'Jka', c:'79', b:'94', a:'38', i:'47', h:'', memo:'80', pop:'Asian', hiLo:'Lower'},
+    {ag:'Jkb', c:'74', b:'49', a:'76', i:'50', h:'', memo:'70', pop:'', hiLo:''}
+  ],
+  mns: [
+    {ag:'M', c:'78', b:'70', a:'79', i:'88', h:'88', memo:'85', pop:'', hiLo:''},
+    {ag:'N', c:'72', b:'74', a:'67', i:'65', h:'59', memo:'70', pop:'', hiLo:''},
+    {ag:'S', c:'55', b:'37', a:'09', i:'54', h:'57', memo:'50', pop:'Black and Asian', hiLo:'Lower / extremely lower'},
+    {ag:'s', c:'89', b:'93', a:'100', i:'89', h:'87', memo:'90', pop:'', hiLo:''},
+    {ag:'U', c:'99', b:'99', a:'99', i:'99', h:'99', memo:'100', pop:'', hiLo:''}
+  ],
+  p1pk: [
+    {ag:'P1 (P1, P, Pk)', c:'79', b:'94', a:'38', i:'47', h:'', memo:'80', pop:'Asian', hiLo:'Lower'},
+    {ag:'P2 (P, Pk)', c:'', b:'', a:'', i:'', h:'', memo:'100', pop:'', hiLo:''},
+    {ag:'p', c:'', b:'', a:'', i:'', h:'', memo:'Rare', pop:'', hiLo:''},
+    {ag:'P1k', c:'', b:'', a:'', i:'', h:'', memo:'Rare', pop:'', hiLo:''},
+    {ag:'P2k', c:'', b:'', a:'', i:'', h:'', memo:'Rare', pop:'', hiLo:''}
+  ],
+  lewis: [
+    {ag:'Lea', c:'22', b:'23', a:'14', i:'20', h:'NT', memo:'20', pop:'', hiLo:''},
+    {ag:'Leb', c:'72', b:'55', a:'59', i:'60', h:'NT', memo:'70', pop:'', hiLo:''}
+  ],
+  lutheran: [
+    {ag:'Lua', c:'08', b:'05', a:'01', i:'00', h:'03', memo:'05', pop:'', hiLo:''},
+    {ag:'Lub', c:'99', b:'99', a:'99', i:'99', h:'99', memo:'99', pop:'', hiLo:''}
+  ]
+};
+
+const WORKSHEET_NOTE_DEFAULTS = {
+  abo: {
+    antigen_names:'A, B, O, AB',
+    null_phenotype:'Bombay (No H antigen by FUT1 & FUT2), Parabombay (No H antigen by FUT1 but yes by FUT2 secretor)',
+    antithetical_pairs:'None',
+    chromosome:'Chromosome 9',
+    disease_assoc:'HTRXN, HDN Mild',
+    antigen_structure:'Transferase attaches oligosaccharide to Glycoprotein and Glycosphingolipid.\nIt is Extrinsic.\nRelated Substance: Type 2 Chains (FUT1)',
+    cord_cells:'Yes',
+    destroyed:'N/Ap',
+    enhanced:'Enzymes',
+    dosage:'No',
+    ig_class:'IgM',
+    temp:'Cold Antibodies',
+    naturally_occurring:'Yes',
+    complement:'Yes',
+    hdn:'Yes Mild',
+    htr:'Yes Extreme',
+    immunogenic:'Yes',
+    lab_notes:'expected naturally occurring ABO antibodies in plasma; clinically severe if incompatible transfusion.',
+    freqRows: WORKSHEET_FREQ_ROWS.abo
+  },
+  rh: {
+    antigen_names:'D, C, c, E, e',
+    null_phenotype:'Lack Rh genes (may or may not have RHAG) on cells, visual stomatocytosis and increase osmotic fragility and gene sequence can show Rh antigens',
+    antithetical_pairs:'D/- (no antithetical pair for D), C/c and E/e',
+    chromosome:'Chromosome 1',
+    disease_assoc:'HDN',
+    antigen_structure:'Intrinsic Glycoprotein.\nRelated Substance: RhAG',
+    cord_cells:'Yes',
+    destroyed:'N/Ap',
+    enhanced:'Enzymes',
+    dosage:'Yes',
+    ig_class:'IgG',
+    temp:'Warm',
+    naturally_occurring:'No',
+    complement:'No',
+    hdn:'Yes Extreme',
+    htr:'Yes',
+    immunogenic:'Yes',
+    lab_notes:'Resistant to enzyme system.',
+    freqRows: WORKSHEET_FREQ_ROWS.rh
+  },
+  kell: {
+    antigen_names:'K, k, Kpa, Kpb, Jsa, Jsb',
+    null_phenotype:'K0 = Kell null. McLeod occurs with XK/Kx absence.',
+    antithetical_pairs:'K/k, Kpa/Kpb and Jsa/Jsb',
+    chromosome:'Chromosome 7',
+    disease_assoc:'McLeod Syndrome when absence. X Linked.',
+    antigen_structure:'Glycoprotein with cystine bond with Kx (intrinsic).\nRelated Substance: XK / Kx',
+    cord_cells:'Yes',
+    destroyed:'Susceptible to DTT not Enzymes.',
+    enhanced:'Enzymes (ficin and papain)',
+    dosage:'No',
+    ig_class:'IgG',
+    temp:'Warm',
+    naturally_occurring:'No',
+    complement:'No',
+    hdn:'Yes',
+    htr:'Yes',
+    immunogenic:'Yes',
+    lab_notes:'AHG IgG; DTT destroys Kell antigens; K is highly immunogenic.',
+    freqRows: WORKSHEET_FREQ_ROWS.kell
+  },
+  duffy: {
+    antigen_names:'Fya, Fyb, Fy3/Fy5',
+    null_phenotype:'Duffy null common west Africans fy on RBCs',
+    antithetical_pairs:'Fya and Fyb',
+    chromosome:'Chromosome 1',
+    disease_assoc:'Protection from Plasmodium vivax malaria',
+    antigen_structure:'Multipass Intrinsic membrane Glycoprotein.\nRelated Substance: ACKR1',
+    cord_cells:'Yes',
+    destroyed:'Susceptible Enzymes',
+    enhanced:'',
+    dosage:'Yes, Variable',
+    ig_class:'IgG',
+    temp:'Warm',
+    naturally_occurring:'No',
+    complement:'Rare (not in exam)',
+    hdn:'Yes',
+    htr:'Yes',
+    immunogenic:'Yes',
+    lab_notes:'Null more common. Related to Malaria/Protection. Enzyme-treated cells weaken/destroy Fya/Fyb reactions.',
+    freqRows: WORKSHEET_FREQ_ROWS.duffy
+  },
+  kidd: {
+    antigen_names:'Jka, Jkb',
+    null_phenotype:'Jk(a-b-) / Jk3-',
+    antithetical_pairs:'Jka/Jkb',
+    chromosome:'Chromosome 18',
+    disease_assoc:'Urea transport / urine concentration; delayed HTRXN',
+    antigen_structure:'Multipass Glycoprotein Intrinsic.\nRelated Substance: HUT11 urea transporter',
+    cord_cells:'Yes',
+    destroyed:'N/Ap',
+    enhanced:'Enzymes',
+    dosage:'Yes, severe changes in titer, know to titer down fast.',
+    ig_class:'IgG',
+    temp:'Warm',
+    naturally_occurring:'No',
+    complement:'Yes, localized not systemic',
+    hdn:'Yes but not as severe',
+    htr:'Yes delayed',
+    immunogenic:'Yes',
+    lab_notes:'Titer high/low fast (Hide/Seek). Significant for HTRXN (delayed).',
+    freqRows: WORKSHEET_FREQ_ROWS.kidd
+  },
+  mns: {
+    antigen_names:'M, N',
+    null_phenotype:'En(a-) [Envelope] (M-,N-) absence of GYPA. Mk- (M-N-S-s-).',
+    antithetical_pairs:'M/N',
+    chromosome:'Chromosome 4',
+    disease_assoc:'GYPA receptor for complement, bacteria, and viruses. Involved in Plasmodium falciparum invasion of RBCs. Anti-N found in dialysis patients.',
+    antigen_structure:'GYPA and GYPB are Glycoprotein. MNS antigen structure is Intrinsic.\nRelated Substance: GYPA (MN). GYPB (Ss).',
+    cord_cells:'Yes for MNSs.',
+    destroyed:'MN are susceptible to enzymes and chemicals.',
+    enhanced:'',
+    dosage:'Yes dosage for Anti-M and Anti-N.',
+    ig_class:'Anti-M and Anti-N: IgM (may have IgG components).',
+    temp:'Typically Cold for Anti-M and Anti-N.',
+    naturally_occurring:'Yes for Anti-M and Anti-N.',
+    complement:'No for Anti-M/N.',
+    hdn:'No for Anti-M. M+N-,S-s- is clinically significant can make Anti-N potent.',
+    htr:'No for Anti-M/N.',
+    immunogenic:'Yes for Anti-M. Anti-N weak/less immunogenic.',
+    antigen_names_ss:'S, s, U',
+    null_phenotype_ss:'U is absence of GYPB (S-,s-).',
+    antithetical_pairs_ss:'S/s. U is NOT antithetical.',
+    cord_cells_ss:'Yes for MNSs.',
+    destroyed_ss:'S/s variable due to location. U less likely due to location resistance due to being close to RBC membrane.',
+    enhanced_ss:'',
+    dosage_ss:'Yes dosage for Anti-S/s but not as strong.',
+    ig_class_ss:'Anti-S/s/U are IgGs.',
+    temp_ss:'Anti-S/s warm.',
+    naturally_occurring_ss:'Anti-S/s/U not naturally occurring.',
+    complement_ss:'Yes may fix for Anti-S/s. Anti-U does not.',
+    hdn_ss:'Anti-S/s probable. Anti-U probable.',
+    htr_ss:'Anti-S/s probable. Anti-U probable.',
+    immunogenic_ss:'Yes for Anti-S/s/U.',
+    lab_notes:'Disequilibrium haplotype most frequently: Ns > Ms > MS > NS. High frequency of anti-s, only human source. Anti-N seen in dialysis patients transient.',
+    freqRows: WORKSHEET_FREQ_ROWS.mns
+  },
+  p1pk: {
+    antigen_names:'P1, P2, p, P1k, P2k',
+    null_phenotype:'Pnull is p.',
+    antithetical_pairs:'None',
+    chromosome:'Chromosome 22 P1PK gene and Chromosome 03 Glob.',
+    disease_assoc:'P antigen receptor for parvovirus; anti-P linked to PCH IgG.',
+    antigen_structure:'Extrinsic Glycosphingolipid.\nRelated Substance: Type 2 Chain',
+    cord_cells:'P1 poorly expressed at birth (takes up to 7 years to express).',
+    destroyed:'N/Ap',
+    enhanced:'Anti-P1 enhanced by enzyme treated RBCs',
+    dosage:'No',
+    ig_class:'IgM (Anti-P1) and IgG (Anti-PP1PK)',
+    temp:'Cold (Anti-P1 but clinically insignificant)',
+    naturally_occurring:'Yes for Anti-P1 and Anti-P.',
+    complement:'Yes (Anti-PP1Pk)',
+    hdn:'Yes (Anti-PP1Pk) major cause of not being able to have children. No (Anti-P1).',
+    htr:'Yes (Anti-PP1Pk)',
+    immunogenic:'Yes for severe P antibodies; anti-P1 usually low significance',
+    lab_notes:'anti-P1 is naturally occurring; PCH is Donath-Landsteiner anti-P.',
+    freqRows: WORKSHEET_FREQ_ROWS.p1pk
+  },
+  lewis: {
+    antigen_names:'Lea, Leb',
+    null_phenotype:'Le(a-,b-)',
+    antithetical_pairs:'None. Lea and Leb are not antithetical.',
+    chromosome:'Chromosome 19',
+    disease_assoc:'Secretor Status',
+    antigen_structure:'Extrinsic Glycosphingolipid.\nRelated Substance: Type 1 Chains (FUT3)',
+    cord_cells:'No',
+    destroyed:'N/Ap',
+    enhanced:'Enzymes',
+    dosage:'No',
+    ig_class:'IgM',
+    temp:'Cold',
+    naturally_occurring:'Yes',
+    complement:'Yes',
+    hdn:'No',
+    htr:'No',
+    immunogenic:'No poor',
+    lab_notes:'Anti-Lea seen in pregnancy transient. Enzyme enhanced, often neutralizable by soluble Lewis substance/plasma; not clinically significant.',
+    freqRows: WORKSHEET_FREQ_ROWS.lewis
+  },
+  lutheran: {
+    antigen_names:'Lua, Lub',
+    null_phenotype:'Lu null recessive (makes LU3) and In(Lu) dominant silencer.',
+    antithetical_pairs:'Lua/Lub',
+    chromosome:'Chromosome 19',
+    disease_assoc:'Sickle cells overexpression causes vasoocclusion.',
+    antigen_structure:'BCAM Intrinsic Glycoprotein.\nRelated Substance: genetically linked to H and Lewis',
+    cord_cells:'Poorly developed',
+    destroyed:'DTT',
+    enhanced:'Not Enhanced but Resistant to enzyme treatment but not DTT',
+    dosage:'No',
+    ig_class:'IgG (Lub) and IgM (Lua)',
+    temp:'Warm (Lub) or Cold (Lua)',
+    naturally_occurring:'Anti-Lua naturally occurring',
+    complement:'No',
+    hdn:'No',
+    htr:'No severe HTRXN. Anti-Lub may cause post-transfusion jaundice.',
+    immunogenic:'Anti-Lub immune stimulated',
+    lab_notes:'Variable expressions have mixed field. Characteristic mf reactivity; poor immunogen; not clinically significant.',
+    freqRows: WORKSHEET_FREQ_ROWS.lutheran
+  }
+};
+
 function normalizeFreqRow(row) {
   row = row || {};
   return {
@@ -1554,24 +1818,178 @@ function normalizeFreqRow(row) {
 function getFreqRows(sysKey) {
   const savedRows = ((notesData[sysKey] || {}).freqRows || []).map(normalizeFreqRow);
   if (savedRows.length) return savedRows;
-  return (FREQ_DEFAULT_ROWS[sysKey] || ['']).map(ag => normalizeFreqRow({ ag }));
+  const defaults = WORKSHEET_FREQ_ROWS[sysKey] || (FREQ_DEFAULT_ROWS[sysKey] || ['']).map(ag => ({ ag }));
+  return defaults.map(normalizeFreqRow);
 }
 
 const GENERAL_COMPARE_KEY = '__generalComparison';
 const GENERAL_COMPARE_SYSTEMS = ['abo','rh','kell','duffy','kidd','mns','lewis','p1pk','lutheran'];
+
+function defaultGeneralRows() {
+  return [
+    {
+      id:'general_antigens',
+      label:'Antigens',
+      cells:{
+        abo:'A, B, O, AB',
+        rh:'D, C/c, E/e',
+        kell:'K/k\nJsa/Jsb\nKpa/Kpb',
+        duffy:'Fya/Fyb',
+        kidd:'Jka/Jkb',
+        mns:'M/N\nS/s',
+        lewis:'Lea\nLeb',
+        p1pk:'P1\np\npk',
+        lutheran:'Lua/Lub'
+      }
+    },
+    {
+      id:'general_antibody_temp',
+      label:'Antibody Temp',
+      cells:{
+        abo:'IgM: Cold',
+        rh:'IgG: Warm',
+        kell:'IgG: Warm',
+        duffy:'IgG: Warm',
+        kidd:'IgG: Warm',
+        mns:'MN IgM: Cold\nSs IgG: Warm',
+        lewis:'IgM: Cold',
+        p1pk:'IgM: Cold',
+        lutheran:'Lua IgM: Cold\nLub IgG: Warm'
+      }
+    },
+    {
+      id:'general_dosage',
+      label:'Dosage',
+      cells:{
+        abo:'No',
+        rh:'Yes',
+        kell:'No',
+        duffy:'Variable',
+        kidd:'Yes',
+        mns:'No',
+        lewis:'No',
+        p1pk:'No',
+        lutheran:'No'
+      }
+    },
+    {
+      id:'general_chemicals',
+      label:'Chemicals/Enzymes',
+      cells:{
+        abo:'Enzymes',
+        rh:'Enzyme Stronger',
+        kell:'DTT susceptible',
+        duffy:'Enzyme susceptible',
+        kidd:'Enzyme Stronger',
+        mns:'Enzyme susceptible',
+        lewis:'Enzyme enhanced',
+        p1pk:'Enzyme: No Change',
+        lutheran:'DTT susceptible; enzyme resistant'
+      }
+    },
+    {
+      id:'general_complement',
+      label:'Complement',
+      cells:{
+        abo:'Yes',
+        rh:'No',
+        kell:'No',
+        duffy:'No',
+        kidd:'Does Fix',
+        mns:'No',
+        lewis:'No',
+        p1pk:'No, except IgG Donath-Landsteiner (anti-P)',
+        lutheran:'No'
+      }
+    },
+    {
+      id:'general_hdn',
+      label:'HDN',
+      cells:{
+        abo:'Yes Mild',
+        rh:'Yes',
+        kell:'Yes',
+        duffy:'Yes',
+        kidd:'Yes',
+        mns:'Only S/s',
+        lewis:'No',
+        p1pk:'No',
+        lutheran:'No'
+      }
+    },
+    {
+      id:'general_other',
+      label:'Other',
+      cells:{
+        abo:'Naturally occurring',
+        rh:'',
+        kell:'',
+        duffy:'Null more common\nRelated to Malaria/Protection',
+        kidd:'Titer high/low fast (Hide/Seek)\nSignificant for HTRXN (delayed)',
+        mns:'Anti-N seen in dialysis patients transient',
+        lewis:'Anti-Lea seen in pregnancy transient',
+        p1pk:'Naturally occurring',
+        lutheran:'Mixed Field'
+      }
+    },
+    {
+      id:'general_plasma_clue',
+      label:'Plasma antibody clue / neutralization',
+      cells:{
+        abo:'expected naturally occurring ABO antibodies in plasma; clinically severe if incompatible transfusion.',
+        rh:'AHG reactions; enzyme enhanced; history of pregnancy/transfusion supports immune antibody.',
+        kell:'AHG IgG; DTT destroys Kell antigens; K is highly immunogenic.',
+        duffy:'AHG IgG; enzyme-treated cells weaken/destroy Fya/Fyb reactions.',
+        kidd:'dosage + disappearing; enzyme enhancement separate mixtures.',
+        mns:'enzyme treatment helps separate MNS from enzyme-resistant/enhanced antibodies.',
+        lewis:'enzyme enhanced, often neutralizable by soluble Lewis substance/plasma; not clinically significant.',
+        p1pk:'anti-P1 is naturally occurring; PCH is Donath-Landsteiner anti-P.',
+        lutheran:'characteristic mf reactivity; poor immunogen; not clinically significant.'
+      }
+    }
+  ].map(function(row) {
+    const cells = {};
+    GENERAL_COMPARE_SYSTEMS.forEach(function(key) {
+      cells[key] = row.cells[key] || '';
+    });
+    return { id: row.id, label: row.label, cells: cells };
+  });
+}
+
+function applyBloodGroupWorksheetDefaults() {
+  if (!notesData || typeof notesData !== 'object') notesData = {};
+  if (Number(notesData.__bbWorksheetVersion || 0) >= BB_WORKSHEET_DEFAULT_VERSION) return;
+  Object.keys(WORKSHEET_NOTE_DEFAULTS).forEach(function(key) {
+    const existing = notesData[key] && typeof notesData[key] === 'object' ? notesData[key] : {};
+    const defaults = Object.assign({}, WORKSHEET_NOTE_DEFAULTS[key]);
+    if (Array.isArray(defaults.freqRows)) defaults.freqRows = defaults.freqRows.map(function(row) { return Object.assign({}, row); });
+    notesData[key] = Object.assign({}, existing, defaults);
+  });
+  const defaultRows = defaultGeneralRows();
+  const defaultIds = {};
+  defaultRows.forEach(function(row) { defaultIds[row.id] = true; });
+  const currentGeneral = normalizeGeneralComparison(notesData[GENERAL_COMPARE_KEY]);
+  const customRows = currentGeneral.rows.filter(function(row) {
+    const hasContent = row.label || Object.values(row.cells || {}).some(function(value) { return String(value || '').trim(); });
+    return hasContent && !defaultIds[row.id];
+  });
+  notesData[GENERAL_COMPARE_KEY] = { rows: defaultRows.concat(customRows) };
+  notesData.__bbWorksheetVersion = BB_WORKSHEET_DEFAULT_VERSION;
+}
 
 function makeGeneralRowId() {
   return 'general_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
 }
 
 function shortSystemName(key) {
+  if (key === 'p1pk') return 'P';
   const sys = SYSTEMS[key];
   if (!sys) return key;
   return sys.name.replace(' System','').replace(' / Globoside','');
 }
 
 function defaultGeneralAntigenText(key) {
-  return (FREQ_DEFAULT_ROWS[key] || []).join(', ');
+  return (WORKSHEET_FREQ_ROWS[key] || (FREQ_DEFAULT_ROWS[key] || []).map(function(ag) { return { ag: ag }; })).map(function(row) { return row.ag || ''; }).filter(Boolean).join(', ');
 }
 
 function normalizeGeneralComparison(raw) {
@@ -1590,9 +2008,7 @@ function normalizeGeneralComparison(raw) {
     };
   });
   if (!cleanRows.length) {
-    const antigenCells = {};
-    GENERAL_COMPARE_SYSTEMS.forEach(function(key) { antigenCells[key] = defaultGeneralAntigenText(key); });
-    cleanRows.push({ id:'general_antigens', label:'Antigens / high-frequency reminders', cells: antigenCells });
+    cleanRows.push.apply(cleanRows, defaultGeneralRows());
   }
   return { rows: cleanRows };
 }
@@ -1664,7 +2080,6 @@ function renderGeneral(area) {
           <div class="sys-pun">Build your own compare table. Blank rows become flashcards when you add answers.</div>
         </div>
       </div>
-      <p class="general-help">Use the first column like a flashcard question, then fill in the systems that answer it. Example: “Which antibodies are IgG?” The flashcards will use that row and only include filled cells.</p>
       <div class="general-table-wrap"><table class="general-table"><thead>${head}</thead><tbody>${body}</tbody></table></div>
       <div class="general-actions"><button class="add-row-btn" onclick="addGeneralComparisonRow()">+ Add comparison row</button></div>
     </div>`;
@@ -5017,7 +5432,7 @@ function showChromDetail(n) {
       var isPair = chromPairStatus(p.anti);
       html += '<div style="background:#fff;border:1px solid var(--rose);border-radius:10px;padding:12px;box-shadow:var(--shadow-sm)">';
       html += '<div style="display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;margin-bottom:8px"><span style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--warm-grey);font-weight:700">Gene</span><span style="border-radius:999px;background:var(--blush);color:' + sys.color + ';padding:4px 9px;font-size:12px;font-weight:700">' + chromGeneLabel(sys.name) + '</span></div>';
-      html += '<div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--warm-grey);font-weight:700;margin-bottom:7px">Antigen / phenotype</div>';
+      html += '<div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--warm-grey);font-weight:700;margin-bottom:7px">Antigens</div>';
       html += '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:10px">' + chromChips(p.ag, sys.color) + '</div>';
       html += '<div style="display:flex;align-items:center;justify-content:center;gap:8px;border-radius:8px;padding:8px;background:' + (isPair ? '#d4f5e8' : '#fee2e8') + ';color:' + (isPair ? '#0a4a2a' : '#6b0a1e') + ';font-size:13px;font-weight:700;margin-bottom:8px">' + (isPair ? 'ANTITHETICAL PAIR' : 'NOT ANTITHETICAL') + '</div>';
       html += '<div style="font-size:11px;line-height:1.35;color:var(--warm-grey);text-align:center">' + (isPair ? p.ag + ' are the pair to memorize.' : p.ag + ' does not form a true antithetical pair.') + '</div>';
