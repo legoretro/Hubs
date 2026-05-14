@@ -2080,9 +2080,9 @@ function generalTextParts(value) {
     if (!part) return;
     var antibodyMatches = part.match(/Ig[GM]\s*:\s*(Warm|Cold)/gi);
     if (antibodyMatches && antibodyMatches.length) {
-      antibodyMatches.forEach(function(match) { pieces.push(match); });
+      antibodyMatches.forEach(function(match) { pieces.push({ value: match, raw: part }); });
     } else {
-      pieces.push(part);
+      pieces.push({ value: part, raw: part });
     }
   });
   return pieces;
@@ -2099,17 +2099,45 @@ function normalizeGeneralSharedValue(value) {
 
 function generalSharedQuestion(rowLabel, value) {
   var label = String(rowLabel || '').replace(/[?:]+$/g, '').trim() || 'this row';
-  if (/antibody temp/i.test(label)) return 'What systems have antibodies that are ' + value + '?';
-  if (/dosage/i.test(label)) return 'Which systems show dosage = ' + value + '?';
-  if (/chemicals|enzymes/i.test(label)) return 'Which systems share chemicals/enzymes = ' + value + '?';
-  if (/complement/i.test(label)) return 'Which systems have complement = ' + value + '?';
-  if (/^hdn$/i.test(label)) return 'Which systems have HDN = ' + value + '?';
-  if (/^other$/i.test(label)) return 'Which systems share this note: ' + value + '?';
-  return 'Which systems share ' + label + ' = ' + value + '?';
+  if (/antibody temp/i.test(label)) return 'What antigen groups have antibodies that are ' + value + '?';
+  if (/dosage/i.test(label)) return 'Which antigen groups show dosage = ' + value + '?';
+  if (/chemicals|enzymes/i.test(label)) return 'Which antigen groups share chemicals/enzymes = ' + value + '?';
+  if (/complement/i.test(label)) return 'Which antigen groups have complement = ' + value + '?';
+  if (/^hdn$/i.test(label)) return 'Which antigen groups have HDN = ' + value + '?';
+  if (/^other$/i.test(label)) return 'Which antigen groups share this note: ' + value + '?';
+  return 'Which antigen groups share ' + label + ' = ' + value + '?';
+}
+
+function getGeneralAntigenLabels() {
+  var labels = {};
+  var antigenRow = getGeneralComparison().rows.find(function(row) {
+    return /^antigens?$/i.test(String(row.label || '').trim());
+  });
+  GENERAL_COMPARE_SYSTEMS.forEach(function(key) {
+    var value = antigenRow && antigenRow.cells ? antigenRow.cells[key] : '';
+    labels[key] = String(value || defaultGeneralAntigenText(key) || '').replace(/\s*\n+\s*/g, '; ').replace(/\s+/g, ' ').trim();
+  });
+  return labels;
+}
+
+function antigenAnswerForSharedPiece(key, rawPart, sharedValue, antigenLabels) {
+  var prefix = shortSystemName(key);
+  var raw = String(rawPart || '');
+  var antigens = antigenLabels[key] || '';
+  if (key === 'mns') {
+    if (/\bMN\b|M\/N|Anti-M|Anti-N/i.test(raw)) return 'MNS: M/N';
+    if (/\bSs\b|S\/s|Anti-S|Anti-s|Anti-U/i.test(raw)) return 'MNS: S/s';
+  }
+  if (key === 'lutheran') {
+    if (/\bLua\b|Anti-Lua/i.test(raw)) return 'Lutheran: Lua';
+    if (/\bLub\b|Anti-Lub/i.test(raw)) return 'Lutheran: Lub';
+  }
+  return prefix + (antigens ? ': ' + antigens : '');
 }
 
 function buildGeneralSharedSummaryRows() {
   var rows = [];
+  var antigenLabels = getGeneralAntigenLabels();
   getGeneralComparison().rows.forEach(function(row) {
     var label = String(row.label || '').trim();
     if (!label || /^antigens?$/i.test(label)) return;
@@ -2117,21 +2145,22 @@ function buildGeneralSharedSummaryRows() {
     GENERAL_COMPARE_SYSTEMS.forEach(function(key) {
       var cell = row.cells && row.cells[key];
       generalTextParts(cell).forEach(function(piece) {
-        var normalized = normalizeGeneralSharedValue(piece);
+        var normalized = normalizeGeneralSharedValue(piece.value);
         if (!normalized) return;
         var groupKey = normalized.toLowerCase();
-        if (!groups[groupKey]) groups[groupKey] = { value: normalized, systems: [] };
-        if (groups[groupKey].systems.indexOf(key) === -1) groups[groupKey].systems.push(key);
+        if (!groups[groupKey]) groups[groupKey] = { value: normalized, antigens: [] };
+        var answer = antigenAnswerForSharedPiece(key, piece.raw, normalized, antigenLabels);
+        if (answer && groups[groupKey].antigens.indexOf(answer) === -1) groups[groupKey].antigens.push(answer);
       });
     });
     Object.keys(groups).forEach(function(groupKey) {
       var group = groups[groupKey];
-      if (group.systems.length < 2) return;
+      if (group.antigens.length < 2) return;
       rows.push({
         source: label,
         shared: group.value,
         question: generalSharedQuestion(label, group.value),
-        answer: group.systems.map(shortSystemName).join(', ')
+        answer: group.antigens.join(', ')
       });
     });
   });
@@ -2143,7 +2172,7 @@ function buildGeneralSharedSummaryHtml() {
   if (!rows.length) return '';
   return '<div class="general-summary-card">' +
     '<div class="general-summary-head"><div class="general-summary-title">Shared Patterns</div><div class="general-summary-note">Auto-built from repeated answers in the comparison table.</div></div>' +
-    '<table class="general-summary-table"><thead><tr><th style="width:42%">Question</th><th style="width:18%">Shared Answer</th><th>Systems</th></tr></thead><tbody>' +
+    '<table class="general-summary-table"><thead><tr><th style="width:42%">Question</th><th style="width:18%">Shared Answer</th><th>Antigens</th></tr></thead><tbody>' +
       rows.map(function(row) {
         return '<tr><td class="general-summary-question">' + escText(row.question) + '</td><td>' + escText(row.shared) + '</td><td class="general-summary-answer">' + escText(row.answer) + '</td></tr>';
       }).join('') +
@@ -3415,7 +3444,7 @@ function buildGeneralComparisonExportPage() {
     return '<tr><td class="general-export-label">' + label + '</td>' + cells + '</tr>';
   }).join('');
   var summary = summaryRows.length
-    ? '<div class="general-export-summary"><h2>Shared Patterns</h2><table><thead><tr><th>Question</th><th>Shared Answer</th><th>Systems</th></tr></thead><tbody>' +
+    ? '<div class="general-export-summary"><h2>Shared Patterns</h2><table><thead><tr><th>Question</th><th>Shared Answer</th><th>Antigens</th></tr></thead><tbody>' +
       summaryRows.map(function(row) {
         return '<tr><td>' + exportText(row.question) + '</td><td>' + exportText(row.shared) + '</td><td>' + exportText(row.answer) + '</td></tr>';
       }).join('') +
