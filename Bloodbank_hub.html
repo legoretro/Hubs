@@ -162,13 +162,16 @@ button{cursor:pointer;font-family:inherit}
 .general-card{padding:22px}
 .general-help{font-size:13px;line-height:1.55;color:var(--warm-grey);margin:0 0 12px}
 .general-table-wrap{width:100%;overflow:auto;border:1px solid var(--rose);border-radius:12px;background:#fff}
-.general-table{width:100%;min-width:980px;border-collapse:collapse;table-layout:fixed}
+.general-table{width:100%;min-width:1280px;border-collapse:collapse;table-layout:fixed}
 .general-table th{background:var(--wine);color:#fff;font-size:11px;line-height:1.15;padding:8px 7px;text-align:center;border:1px solid var(--rose)}
-.general-table th:first-child{width:180px;text-align:left}
+.general-table th:first-child{width:180px;text-align:left}.general-table th:last-child{width:74px}
 .general-table td{border:1px solid var(--rose);padding:5px 6px;vertical-align:top;background:#fffaf7}
 .general-table tr:nth-child(even) td{background:#fff1f4}
 .general-row-label,.general-cell{width:100%;min-height:42px;border:0;background:transparent;color:var(--dark);font-family:Georgia,serif;font-size:13px;line-height:1.35;resize:vertical;padding:4px;border-radius:6px}
 .general-row-label{font-weight:800;color:var(--wine)}
+.general-col-label{width:100%;border:0;border-radius:6px;background:rgba(255,255,255,.12);color:#fff;font-family:Georgia,serif;font-weight:900;font-size:12px;line-height:1.15;text-align:center;resize:vertical;min-height:28px;padding:3px}
+.general-col-label:focus{outline:1px dashed #fff;background:rgba(255,255,255,.2)}
+.general-col-delete{margin-top:4px;border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.1);color:#fff;border-radius:999px;padding:1px 8px;font-size:10px;font-weight:900}
 .general-cell:focus,.general-row-label:focus{outline:1px dashed var(--warn);background:#fff}
 .general-cell:disabled,.general-row-label:disabled{opacity:1}
 .general-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
@@ -318,12 +321,17 @@ button{cursor:pointer;font-family:inherit}
 
 /* LESSER TABLE */
 .lesser-table{width:100%;border-collapse:collapse;font-size:12px}
-.lesser-table th{background:var(--wine);color:#fff;padding:7px 10px;text-align:left;font-size:10px;letter-spacing:.5px}
+.lesser-table th{background:var(--wine);color:#fff;padding:7px 10px;text-align:left;font-size:10px;letter-spacing:.5px;vertical-align:top}
 .lesser-table td{padding:7px 10px;border-bottom:1px solid var(--rose);vertical-align:top}
 .lesser-table tr:nth-child(even) td{background:rgba(252,232,237,.3)}
-.lesser-edit{width:100%;border:none;background:transparent;font-size:12px;font-family:Georgia,serif;color:var(--dark);resize:vertical;min-height:22px;padding:1px 3px}
-.admin-mode .lesser-edit{background:rgba(232,168,50,.08);border:1px dashed rgba(232,168,50,.4);border-radius:3px}
-.lesser-edit:focus{outline:none;background:rgba(192,23,61,.06)}
+.lesser-edit,.lesser-system-edit,.lesser-col-label{width:100%;border:none;background:transparent;font-size:12px;font-family:Georgia,serif;color:var(--dark);resize:vertical;min-height:28px;padding:3px 4px;border-radius:5px}
+.lesser-system-edit{font-weight:900;color:var(--wine);min-width:130px}
+.lesser-col-label{color:#fff;font-weight:900;background:rgba(255,255,255,.12);text-align:left;min-height:30px}
+.admin-mode .lesser-edit,.admin-mode .lesser-system-edit{background:rgba(232,168,50,.08);border:1px dashed rgba(232,168,50,.4)}
+.lesser-edit:focus,.lesser-system-edit:focus,.lesser-col-label:focus{outline:1px dashed var(--warn);background:rgba(192,23,61,.06)}
+.lesser-col-label:focus{background:rgba(255,255,255,.22);outline-color:#fff}
+.lesser-col-delete{margin-top:4px;border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.1);color:#fff;border-radius:999px;padding:1px 8px;font-size:10px;font-weight:900}
+.lesser-row-delete{border:1px solid var(--rose);background:#fff;color:var(--crimson);border-radius:999px;padding:3px 8px;font-size:11px;font-weight:900}
 
 /* RESOURCES */
 .resource-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
@@ -1834,9 +1842,28 @@ function getFreqRows(sysKey) {
 }
 
 const GENERAL_COMPARE_KEY = '__generalComparison';
-const GENERAL_COMPARE_SYSTEMS = ['abo','rh','kell','duffy','kidd','mns','lewis','p1pk','lutheran'];
+const GENERAL_COMPARE_DEFAULT_COLUMNS = [
+  {id:'abo', label:'ABO'},
+  {id:'rh', label:'Rh'},
+  {id:'kell', label:'Kell'},
+  {id:'duffy', label:'Duffy'},
+  {id:'kidd', label:'Kidd'},
+  {id:'mns_mn', label:'MN'},
+  {id:'mns_ss', label:'S/s'},
+  {id:'lewis', label:'Lewis'},
+  {id:'p1pk', label:'P'},
+  {id:'lutheran_lua', label:'Lua'},
+  {id:'lutheran_lub', label:'Lub'}
+];
+
+function defaultGeneralColumns() {
+  return GENERAL_COMPARE_DEFAULT_COLUMNS.map(function(col) {
+    return { id: col.id, label: col.label };
+  });
+}
 
 function defaultGeneralRows() {
+  const cols = defaultGeneralColumns();
   return [
     {
       id:'general_antigens',
@@ -1847,10 +1874,12 @@ function defaultGeneralRows() {
         kell:'K/k\nJsa/Jsb\nKpa/Kpb',
         duffy:'Fya/Fyb',
         kidd:'Jka/Jkb',
-        mns:'M/N\nS/s',
+        mns_mn:'M/N',
+        mns_ss:'S/s',
         lewis:'Lea\nLeb',
         p1pk:'P1\np\npk',
-        lutheran:'Lua/Lub'
+        lutheran_lua:'Lua',
+        lutheran_lub:'Lub'
       }
     },
     {
@@ -1862,10 +1891,12 @@ function defaultGeneralRows() {
         kell:'IgG: Warm',
         duffy:'IgG: Warm',
         kidd:'IgG: Warm',
-        mns:'MN IgM: Cold\nSs IgG: Warm',
+        mns_mn:'IgM: Cold',
+        mns_ss:'IgG: Warm',
         lewis:'IgM: Cold',
         p1pk:'IgM: Cold',
-        lutheran:'Lua IgM: Cold\nLub IgG: Warm'
+        lutheran_lua:'IgM: Cold',
+        lutheran_lub:'IgG: Warm'
       }
     },
     {
@@ -1877,10 +1908,12 @@ function defaultGeneralRows() {
         kell:'No',
         duffy:'Variable',
         kidd:'Yes',
-        mns:'No',
+        mns_mn:'No',
+        mns_ss:'No',
         lewis:'No',
         p1pk:'No',
-        lutheran:'No'
+        lutheran_lua:'No',
+        lutheran_lub:'No'
       }
     },
     {
@@ -1892,10 +1925,12 @@ function defaultGeneralRows() {
         kell:'DTT susceptible',
         duffy:'Enzyme susceptible',
         kidd:'Enzyme Stronger',
-        mns:'Enzyme susceptible',
+        mns_mn:'Enzyme susceptible',
+        mns_ss:'Enzyme susceptible',
         lewis:'Enzyme enhanced',
         p1pk:'Enzyme: No Change',
-        lutheran:'DTT susceptible; enzyme resistant'
+        lutheran_lua:'DTT susceptible; enzyme resistant',
+        lutheran_lub:'DTT susceptible; enzyme resistant'
       }
     },
     {
@@ -1907,10 +1942,12 @@ function defaultGeneralRows() {
         kell:'No',
         duffy:'No',
         kidd:'Does Fix',
-        mns:'No',
+        mns_mn:'No',
+        mns_ss:'No',
         lewis:'No',
         p1pk:'No, except IgG Donath-Landsteiner (anti-P)',
-        lutheran:'No'
+        lutheran_lua:'No',
+        lutheran_lub:'No'
       }
     },
     {
@@ -1922,10 +1959,12 @@ function defaultGeneralRows() {
         kell:'Yes',
         duffy:'Yes',
         kidd:'Yes',
-        mns:'Only S/s',
+        mns_mn:'No',
+        mns_ss:'Only S/s',
         lewis:'No',
         p1pk:'No',
-        lutheran:'No'
+        lutheran_lua:'No',
+        lutheran_lub:'No'
       }
     },
     {
@@ -1937,10 +1976,12 @@ function defaultGeneralRows() {
         kell:'',
         duffy:'Null more common\nRelated to Malaria/Protection',
         kidd:'Titer high/low fast (Hide/Seek)\nSignificant for HTRXN (delayed)',
-        mns:'Anti-N seen in dialysis patients transient',
+        mns_mn:'Anti-N seen in dialysis patients transient',
+        mns_ss:'',
         lewis:'Anti-Lea seen in pregnancy transient',
         p1pk:'Naturally occurring',
-        lutheran:'Mixed Field'
+        lutheran_lua:'Mixed Field',
+        lutheran_lub:'Mixed Field'
       }
     },
     {
@@ -1952,16 +1993,18 @@ function defaultGeneralRows() {
         kell:'AHG IgG; DTT destroys Kell antigens; K is highly immunogenic.',
         duffy:'AHG IgG; enzyme-treated cells weaken/destroy Fya/Fyb reactions.',
         kidd:'dosage + disappearing; enzyme enhancement separate mixtures.',
-        mns:'enzyme treatment helps separate MNS from enzyme-resistant/enhanced antibodies.',
+        mns_mn:'enzyme treatment helps separate MNS from enzyme-resistant/enhanced antibodies.',
+        mns_ss:'enzyme treatment helps separate MNS from enzyme-resistant/enhanced antibodies.',
         lewis:'enzyme enhanced, often neutralizable by soluble Lewis substance/plasma; not clinically significant.',
         p1pk:'anti-P1 is naturally occurring; PCH is Donath-Landsteiner anti-P.',
-        lutheran:'characteristic mf reactivity; poor immunogen; not clinically significant.'
+        lutheran_lua:'characteristic mf reactivity; poor immunogen; not clinically significant.',
+        lutheran_lub:'characteristic mf reactivity; poor immunogen; not clinically significant.'
       }
     }
   ].map(function(row) {
     const cells = {};
-    GENERAL_COMPARE_SYSTEMS.forEach(function(key) {
-      cells[key] = row.cells[key] || '';
+    cols.forEach(function(col) {
+      cells[col.id] = row.cells[col.id] || '';
     });
     return { id: row.id, label: row.label, cells: cells };
   });
@@ -1984,7 +2027,7 @@ function applyBloodGroupWorksheetDefaults() {
     const hasContent = row.label || Object.values(row.cells || {}).some(function(value) { return String(value || '').trim(); });
     return hasContent && !defaultIds[row.id];
   });
-  notesData[GENERAL_COMPARE_KEY] = { rows: defaultRows.concat(customRows) };
+  notesData[GENERAL_COMPARE_KEY] = { columns: defaultGeneralColumns(), rows: defaultRows.concat(customRows) };
   notesData.__bbWorksheetVersion = BB_WORKSHEET_DEFAULT_VERSION;
 }
 
@@ -1992,25 +2035,76 @@ function makeGeneralRowId() {
   return 'general_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
 }
 
-function shortSystemName(key) {
-  if (key === 'p1pk') return 'P';
-  const sys = SYSTEMS[key];
-  if (!sys) return key;
-  return sys.name.replace(' System','').replace(' / Globoside','');
+function makeGeneralColumnId() {
+  return 'general_col_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
 }
 
-function defaultGeneralAntigenText(key) {
-  return (WORKSHEET_FREQ_ROWS[key] || (FREQ_DEFAULT_ROWS[key] || []).map(function(ag) { return { ag: ag }; })).map(function(row) { return row.ag || ''; }).filter(Boolean).join(', ');
+function normalizeGeneralColumns(cols) {
+  var source = Array.isArray(cols) && cols.length ? cols : defaultGeneralColumns();
+  var seen = {};
+  var normalized = [];
+  function addColumn(id, label) {
+    id = String(id || makeGeneralColumnId());
+    if (seen[id]) return;
+    seen[id] = true;
+    normalized.push({ id: id, label: String(label || id || 'Column') });
+  }
+  source.forEach(function(col) {
+    col = col || {};
+    var id = String(col.id || '');
+    var label = String(col.label || col.id || 'Column');
+    if (id === 'mns') {
+      addColumn('mns_mn', 'MN');
+      addColumn('mns_ss', 'S/s');
+    } else if (id === 'lutheran') {
+      addColumn('lutheran_lua', 'Lua');
+      addColumn('lutheran_lub', 'Lub');
+    } else {
+      addColumn(id || makeGeneralColumnId(), label);
+    }
+  });
+  return normalized.length ? normalized : defaultGeneralColumns();
+}
+
+function legacyGeneralCell(row, colId) {
+  var cells = row && row.cells ? row.cells : {};
+  if (cells[colId] != null) return cells[colId];
+  var label = String(row && row.label || '').toLowerCase();
+  if (colId === 'mns_mn') {
+    if (/antigen/.test(label)) return 'M/N';
+    if (/antibody/.test(label)) return 'IgM: Cold';
+    if (/hdn|htr/.test(label)) return 'No';
+    if (/other/.test(label)) return 'Anti-N seen in dialysis patients transient';
+    return cells.mns || '';
+  }
+  if (colId === 'mns_ss') {
+    if (/antigen/.test(label)) return 'S/s';
+    if (/antibody/.test(label)) return 'IgG: Warm';
+    if (/hdn/.test(label)) return 'Only S/s';
+    return cells.mns || '';
+  }
+  if (colId === 'lutheran_lua') {
+    if (/antigen/.test(label)) return 'Lua';
+    if (/antibody/.test(label)) return 'IgM: Cold';
+    return cells.lutheran || '';
+  }
+  if (colId === 'lutheran_lub') {
+    if (/antigen/.test(label)) return 'Lub';
+    if (/antibody/.test(label)) return 'IgG: Warm';
+    return cells.lutheran || '';
+  }
+  return cells[colId] != null ? cells[colId] : '';
 }
 
 function normalizeGeneralComparison(raw) {
   const saved = raw && typeof raw === 'object' ? raw : {};
   const rows = Array.isArray(saved.rows) ? saved.rows : [];
+  const columns = normalizeGeneralColumns(saved.columns);
   const cleanRows = rows.map(function(row, index) {
     row = row || {};
     const cells = {};
-    GENERAL_COMPARE_SYSTEMS.forEach(function(key) {
-      cells[key] = String(row.cells && row.cells[key] != null ? row.cells[key] : '');
+    columns.forEach(function(col) {
+      cells[col.id] = String(legacyGeneralCell(row, col.id) || '');
     });
     return {
       id: row.id || makeGeneralRowId() + '_' + index,
@@ -2021,7 +2115,7 @@ function normalizeGeneralComparison(raw) {
   if (!cleanRows.length) {
     cleanRows.push.apply(cleanRows, defaultGeneralRows());
   }
-  return { rows: cleanRows };
+  return { columns: columns, rows: cleanRows };
 }
 
 function getGeneralComparison() {
@@ -2029,7 +2123,7 @@ function getGeneralComparison() {
 }
 
 function ensureGeneralComparison() {
-  if (!notesData[GENERAL_COMPARE_KEY]) notesData[GENERAL_COMPARE_KEY] = getGeneralComparison();
+  notesData[GENERAL_COMPARE_KEY] = getGeneralComparison();
   return notesData[GENERAL_COMPARE_KEY];
 }
 
@@ -2040,8 +2134,19 @@ function updateGeneralComparison(rowId, field, value) {
   const row = normalized.rows.find(function(item) { return item.id === rowId; });
   if (!row) return;
   if (field === 'label') row.label = value;
-  else if (GENERAL_COMPARE_SYSTEMS.indexOf(field) > -1) row.cells[field] = value;
+  else row.cells[field] = value;
   notesData[GENERAL_COMPARE_KEY] = normalized;
+  renderGeneralSharedSummary();
+  scheduleSave();
+}
+
+function updateGeneralColumn(colId, value) {
+  if (!isAdmin) return;
+  const table = ensureGeneralComparison();
+  const col = table.columns.find(function(item) { return item.id === colId; });
+  if (!col) return;
+  col.label = value;
+  notesData[GENERAL_COMPARE_KEY] = table;
   renderGeneralSharedSummary();
   scheduleSave();
 }
@@ -2050,8 +2155,30 @@ function addGeneralComparisonRow() {
   if (!isAdmin) return;
   const table = normalizeGeneralComparison(ensureGeneralComparison());
   const cells = {};
-  GENERAL_COMPARE_SYSTEMS.forEach(function(key) { cells[key] = ''; });
+  table.columns.forEach(function(col) { cells[col.id] = ''; });
   table.rows.push({ id: makeGeneralRowId(), label: '', cells: cells });
+  notesData[GENERAL_COMPARE_KEY] = table;
+  scheduleSave();
+  renderSystem('general');
+}
+
+function addGeneralComparisonColumn() {
+  if (!isAdmin) return;
+  const table = normalizeGeneralComparison(ensureGeneralComparison());
+  var id = makeGeneralColumnId();
+  table.columns.push({ id: id, label: 'New column' });
+  table.rows.forEach(function(row) { row.cells[id] = ''; });
+  notesData[GENERAL_COMPARE_KEY] = table;
+  scheduleSave();
+  renderSystem('general');
+}
+
+function deleteGeneralComparisonColumn(colId) {
+  if (!isAdmin) return;
+  const table = normalizeGeneralComparison(ensureGeneralComparison());
+  if (table.columns.length <= 1) { showToast('Keep at least one comparison column.', true); return; }
+  table.columns = table.columns.filter(function(col) { return col.id !== colId; });
+  table.rows.forEach(function(row) { delete row.cells[colId]; });
   notesData[GENERAL_COMPARE_KEY] = table;
   scheduleSave();
   renderSystem('general');
@@ -2110,46 +2237,38 @@ function generalSharedQuestion(rowLabel, value) {
 
 function getGeneralAntigenLabels() {
   var labels = {};
-  var antigenRow = getGeneralComparison().rows.find(function(row) {
+  var table = getGeneralComparison();
+  var antigenRow = table.rows.find(function(row) {
     return /^antigens?$/i.test(String(row.label || '').trim());
   });
-  GENERAL_COMPARE_SYSTEMS.forEach(function(key) {
-    var value = antigenRow && antigenRow.cells ? antigenRow.cells[key] : '';
-    labels[key] = String(value || defaultGeneralAntigenText(key) || '').replace(/\s*\n+\s*/g, '; ').replace(/\s+/g, ' ').trim();
+  table.columns.forEach(function(col) {
+    var value = antigenRow && antigenRow.cells ? antigenRow.cells[col.id] : '';
+    labels[col.id] = String(value || col.label || '').replace(/\s*\n+\s*/g, '; ').replace(/\s+/g, ' ').trim();
   });
   return labels;
 }
 
-function antigenAnswerForSharedPiece(key, rawPart, sharedValue, antigenLabels) {
-  var prefix = shortSystemName(key);
-  var raw = String(rawPart || '');
-  var antigens = antigenLabels[key] || '';
-  if (key === 'mns') {
-    if (/\bMN\b|M\/N|Anti-M|Anti-N/i.test(raw)) return 'MNS: M/N';
-    if (/\bSs\b|S\/s|Anti-S|Anti-s|Anti-U/i.test(raw)) return 'MNS: S/s';
-  }
-  if (key === 'lutheran') {
-    if (/\bLua\b|Anti-Lua/i.test(raw)) return 'Lutheran: Lua';
-    if (/\bLub\b|Anti-Lub/i.test(raw)) return 'Lutheran: Lub';
-  }
-  return prefix + (antigens ? ': ' + antigens : '');
+function antigenAnswerForSharedPiece(col, rawPart, sharedValue, antigenLabels) {
+  var antigens = antigenLabels[col.id] || col.label || '';
+  return col.label + (antigens && antigens !== col.label ? ': ' + antigens : '');
 }
 
 function buildGeneralSharedSummaryRows() {
   var rows = [];
+  var table = getGeneralComparison();
   var antigenLabels = getGeneralAntigenLabels();
-  getGeneralComparison().rows.forEach(function(row) {
+  table.rows.forEach(function(row) {
     var label = String(row.label || '').trim();
     if (!label || /^antigens?$/i.test(label)) return;
     var groups = {};
-    GENERAL_COMPARE_SYSTEMS.forEach(function(key) {
-      var cell = row.cells && row.cells[key];
+    table.columns.forEach(function(col) {
+      var cell = row.cells && row.cells[col.id];
       generalTextParts(cell).forEach(function(piece) {
         var normalized = normalizeGeneralSharedValue(piece.value);
         if (!normalized) return;
         var groupKey = normalized.toLowerCase();
         if (!groups[groupKey]) groups[groupKey] = { value: normalized, antigens: [] };
-        var answer = antigenAnswerForSharedPiece(key, piece.raw, normalized, antigenLabels);
+        var answer = antigenAnswerForSharedPiece(col, piece.raw, normalized, antigenLabels);
         if (answer && groups[groupKey].antigens.indexOf(answer) === -1) groups[groupKey].antigens.push(answer);
       });
     });
@@ -2189,13 +2308,14 @@ function renderGeneral(area) {
   currentSystemKey = 'general';
   if (syncPresence) syncPresence.setSection('encyclopedia / general comparison');
   const table = getGeneralComparison();
-  const head = '<tr><th>Row</th>' + GENERAL_COMPARE_SYSTEMS.map(function(key) {
-    return '<th>' + escText(shortSystemName(key)) + '</th>';
+  const head = '<tr><th>Row</th>' + table.columns.map(function(col) {
+    if (!isAdmin) return '<th>' + escText(col.label) + '</th>';
+    return '<th><textarea class="general-col-label" rows="1" oninput="updateGeneralColumn(\'' + col.id + '\',this.value)">' + escText(col.label) + '</textarea><button class="general-col-delete" onclick="deleteGeneralComparisonColumn(\'' + col.id + '\')">x</button></th>';
   }).join('') + (isAdmin ? '<th>Row</th>' : '') + '</tr>';
   const body = table.rows.map(function(row) {
     const label = '<td><textarea class="general-row-label" rows="2" ' + (isAdmin ? '' : 'disabled') + ' placeholder="' + (isAdmin ? 'Row label' : '') + '" oninput="updateGeneralComparison(\'' + row.id + '\',\'label\',this.value)">' + escText(row.label) + '</textarea></td>';
-    const cells = GENERAL_COMPARE_SYSTEMS.map(function(key) {
-      return '<td><textarea class="general-cell" rows="3" ' + (isAdmin ? '' : 'disabled') + ' placeholder="' + (isAdmin ? 'Add notes...' : '') + '" oninput="updateGeneralComparison(\'' + row.id + '\',\'' + key + '\',this.value)">' + escText(row.cells && row.cells[key] || '') + '</textarea></td>';
+    const cells = table.columns.map(function(col) {
+      return '<td><textarea class="general-cell" rows="3" ' + (isAdmin ? '' : 'disabled') + ' placeholder="' + (isAdmin ? 'Add notes...' : '') + '" oninput="updateGeneralComparison(\'' + row.id + '\',\'' + col.id + '\',this.value)">' + escText(row.cells && row.cells[col.id] || '') + '</textarea></td>';
     }).join('');
     const del = isAdmin ? '<td><button class="del-btn" style="display:inline-block" onclick="deleteGeneralComparisonRow(\'' + row.id + '\')">x</button></td>' : '';
     return '<tr>' + label + cells + del + '</tr>';
@@ -2207,6 +2327,7 @@ function renderGeneral(area) {
       <div id="generalSharedSummary">${buildGeneralSharedSummaryHtml()}</div>
       <div class="general-actions">
         ${isAdmin ? '<button class="add-row-btn" onclick="addGeneralComparisonRow()">+ Add comparison row</button>' : ''}
+        ${isAdmin ? '<button class="add-row-btn" onclick="addGeneralComparisonColumn()">+ Add comparison column</button>' : ''}
         <button class="add-row-btn" onclick="exportGeneralComparisonPage()">Export General Comparison</button>
       </div>
     </div>`;
@@ -2339,46 +2460,213 @@ const LESSER_SYSTEMS = [
   {key:'hla',name:'HLA',isbt:'Not ISBT red cell',ags:'HLA-A, B, C, DR, DQ, DP -- many alleles; Bg antigens on RBCs',carrier:'HLA glycoproteins (WBC/platelet); trace on RBCs via adsorption'},
 ];
 
-const LESSER_COLS = [
-  {key:'why_not', label:'Why Not on Antigram (choose: High/Low | No HDN/HTR | Not Immunogenic)'},
-  {key:'hdn_htr', label:'HDN / HTR'},
-  {key:'notable',  label:'Notable / Disease Assoc.'},
+const LESSER_TABLE_KEY = '__lesserSystemsTable';
+const LESSER_DEFAULT_COLUMNS = [
+  {id:'antigens', label:'Antigens in System'},
+  {id:'carrier', label:'Carrier Molecule'},
+  {id:'why_not', label:'Why Not on Antigram'},
+  {id:'hdn_htr', label:'HDN / HTR'},
+  {id:'notable', label:'Notable'}
 ];
 
+function makeLesserColumnId() {
+  return 'lesser_col_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+}
+
+function makeLesserRowId(label) {
+  var base = String(label || 'row').toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '') || 'row';
+  return 'lesser_' + base + '_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+}
+
+function lesserDisplayName(sys) {
+  var names = {
+    ge:'Gerbich', di:'Diego', co:'Colton', do:'Dombrock', yt:'Cartwright',
+    chrg:'Chido/Rodgers', crom:'Cromer', kn:'Knops', in:'Indian', lw:'LW',
+    sc:'Scianna', sda:'Sda', xg:'Xga', raph:'RAPH', ok:'OK', jmh:'JMH', hla:'HLA'
+  };
+  return names[sys.key] || sys.name || sys.key;
+}
+
+function lesserLegacyKey(label) {
+  return 'lesser_' + String(label || '').toLowerCase().replace(/[^a-z0-9]/g,'');
+}
+
+function defaultLesserColumns() {
+  return LESSER_DEFAULT_COLUMNS.map(function(col) { return { id: col.id, label: col.label }; });
+}
+
+function defaultLesserRows() {
+  var cols = defaultLesserColumns();
+  return LESSER_SYSTEMS.map(function(sys) {
+    var label = lesserDisplayName(sys);
+    var legacy = notesData[lesserLegacyKey(label)] || {};
+    var cells = {
+      antigens: legacy.antigens || sys.ags || '',
+      carrier: legacy.carrier || sys.carrier || '',
+      why_not: legacy.why_not || '',
+      hdn_htr: legacy.hdn_htr || '',
+      notable: legacy.notable || ''
+    };
+    var cleanCells = {};
+    cols.forEach(function(col) { cleanCells[col.id] = cells[col.id] || ''; });
+    return { id: lesserLegacyKey(label), label: label, cells: cleanCells };
+  });
+}
+
+function normalizeLesserColumns(cols) {
+  var source = Array.isArray(cols) && cols.length ? cols : defaultLesserColumns();
+  var seen = {};
+  var normalized = [];
+  source.forEach(function(col) {
+    col = col || {};
+    var id = String(col.id || col.key || makeLesserColumnId());
+    if (seen[id]) return;
+    seen[id] = true;
+    normalized.push({ id: id, label: String(col.label || col.id || 'Column') });
+  });
+  return normalized.length ? normalized : defaultLesserColumns();
+}
+
+function normalizeLesserTable(raw) {
+  var saved = raw && typeof raw === 'object' ? raw : {};
+  var columns = normalizeLesserColumns(saved.columns);
+  var sourceRows = Array.isArray(saved.rows) && saved.rows.length ? saved.rows : defaultLesserRows();
+  var rows = sourceRows.map(function(row, index) {
+    row = row || {};
+    var label = String(row.label || row.name || '');
+    var cells = {};
+    columns.forEach(function(col) {
+      var value = row.cells && row.cells[col.id] != null ? row.cells[col.id] : row[col.id];
+      cells[col.id] = String(value == null ? '' : value);
+    });
+    return {
+      id: String(row.id || lesserLegacyKey(label) || ('lesser_row_' + index)),
+      label: label || 'New system',
+      cells: cells
+    };
+  });
+  return { columns: columns, rows: rows };
+}
+
+function getLesserTable() {
+  return normalizeLesserTable(notesData[LESSER_TABLE_KEY]);
+}
+
+function ensureLesserTable() {
+  notesData[LESSER_TABLE_KEY] = getLesserTable();
+  return notesData[LESSER_TABLE_KEY];
+}
+
+function updateLesserRow(rowId, value) {
+  if (!isAdmin) return;
+  var table = normalizeLesserTable(ensureLesserTable());
+  var row = table.rows.find(function(item) { return item.id === rowId; });
+  if (!row) return;
+  row.label = value;
+  notesData[LESSER_TABLE_KEY] = table;
+  scheduleSave();
+}
+
+function updateLesserColumn(colId, value) {
+  if (!isAdmin) return;
+  var table = normalizeLesserTable(ensureLesserTable());
+  var col = table.columns.find(function(item) { return item.id === colId; });
+  if (!col) return;
+  col.label = value;
+  notesData[LESSER_TABLE_KEY] = table;
+  scheduleSave();
+}
+
+function updateLesserCell(rowId, colId, value) {
+  if (!isAdmin) return;
+  var table = normalizeLesserTable(ensureLesserTable());
+  var row = table.rows.find(function(item) { return item.id === rowId; });
+  if (!row) return;
+  row.cells[colId] = value;
+  notesData[LESSER_TABLE_KEY] = table;
+  scheduleSave();
+}
+
+function addLesserRow() {
+  if (!isAdmin) return;
+  var table = normalizeLesserTable(ensureLesserTable());
+  var cells = {};
+  table.columns.forEach(function(col) { cells[col.id] = ''; });
+  table.rows.push({ id: makeLesserRowId('new system'), label: 'New system', cells: cells });
+  notesData[LESSER_TABLE_KEY] = table;
+  scheduleSave();
+  renderSystem('lesser');
+}
+
+function deleteLesserRow(rowId) {
+  if (!isAdmin) return;
+  var table = normalizeLesserTable(ensureLesserTable());
+  table.rows = table.rows.filter(function(row) { return row.id !== rowId; });
+  if (!table.rows.length) table.rows = defaultLesserRows();
+  notesData[LESSER_TABLE_KEY] = table;
+  scheduleSave();
+  renderSystem('lesser');
+}
+
+function addLesserColumn() {
+  if (!isAdmin) return;
+  var table = normalizeLesserTable(ensureLesserTable());
+  var id = makeLesserColumnId();
+  table.columns.push({ id: id, label: 'New column' });
+  table.rows.forEach(function(row) { row.cells[id] = ''; });
+  notesData[LESSER_TABLE_KEY] = table;
+  scheduleSave();
+  renderSystem('lesser');
+}
+
+function deleteLesserColumn(colId) {
+  if (!isAdmin) return;
+  var table = normalizeLesserTable(ensureLesserTable());
+  if (table.columns.length <= 1) { showToast('Keep at least one Lesser Systems column.', true); return; }
+  table.columns = table.columns.filter(function(col) { return col.id !== colId; });
+  table.rows.forEach(function(row) { delete row.cells[colId]; });
+  notesData[LESSER_TABLE_KEY] = table;
+  scheduleSave();
+  renderSystem('lesser');
+}
+
 function renderLesser(area) {
-  var systems = ['Gerbich','Diego','Colton','Dombrock','Cartwright','Chido/Rodgers','Cromer','Knops','Indian','LW','Scianna','Sda','Xga','RAPH','OK','JMH','HLA'];
-  var cols = [
-    {key:'antigens', label:'Antigens in System'},
-    {key:'carrier',  label:'Carrier Molecule'},
-    {key:'why_not',  label:'Why Not on Antigram'},
-    {key:'hdn_htr',  label:'HDN / HTR'},
-    {key:'notable',  label:'Notable'},
-  ];
-  var rows = systems.map(function(sys) {
-    var sk = 'lesser_' + sys.toLowerCase().replace(/[^a-z0-9]/g,'');
-    var cells = cols.map(function(col) {
-      var val = (notesData[sk] && notesData[sk][col.key]) ? notesData[sk][col.key] : '';
-      return '<td><textarea class="lesser-edit" rows="2" ' + (isAdmin ? '' : 'disabled') + ' oninput="setNote(\'' + sk + '\',\'' + col.key + '\',this.value)">' + val + '</textarea></td>';
+  var table = getLesserTable();
+  var head = '<tr><th>System</th>' + table.columns.map(function(col) {
+    if (!isAdmin) return '<th>' + escText(col.label) + '</th>';
+    return '<th><textarea class="lesser-col-label" rows="1" oninput="updateLesserColumn(\'' + col.id + '\',this.value)">' + escText(col.label) + '</textarea><button class="lesser-col-delete" onclick="deleteLesserColumn(\'' + col.id + '\')">x</button></th>';
+  }).join('') + (isAdmin ? '<th>Row</th>' : '') + '</tr>';
+  var rows = table.rows.map(function(row) {
+    var label = isAdmin
+      ? '<textarea class="lesser-system-edit" rows="2" oninput="updateLesserRow(\'' + row.id + '\',this.value)">' + escText(row.label) + '</textarea>'
+      : '<strong>' + escText(row.label) + '</strong>';
+    var cells = table.columns.map(function(col) {
+      return '<td><textarea class="lesser-edit" rows="3" ' + (isAdmin ? '' : 'disabled') + ' oninput="updateLesserCell(\'' + row.id + '\',\'' + col.id + '\',this.value)">' + escText(row.cells && row.cells[col.id] || '') + '</textarea></td>';
     }).join('');
-    return '<tr><td style="font-size:12px;font-weight:700;white-space:nowrap">' + sys + '</td>' + cells + '</tr>';
+    var del = isAdmin ? '<td><button class="lesser-row-delete" onclick="deleteLesserRow(\'' + row.id + '\')">x</button></td>' : '';
+    return '<tr><td>' + label + '</td>' + cells + del + '</tr>';
   }).join('');
 
   area.innerHTML =
     '<div class="sys-card" style="border-top:3px solid #888">' +
       '<div class="sys-header"><div class="sys-icon">🔍</div><div>' +
         '<div class="sys-name" style="color:#666">Lesser-Known Blood Group Systems</div>' +
-        '<div class="sys-isbt">Gerbich - Diego - Colton - Dombrock - Cartwright - Chido/Rodgers - Cromer - Knops - Indian - LW - Scianna - Sda - Xga - RAPH - OK - JMH - HLA</div>' +
+        '<div class="sys-isbt">Editable rows and columns. Add only what you need for your review table.</div>' +
       '</div></div>' +
       '<div class="callout blue" style="margin-bottom:14px"><span class="ci">📌</span>' +
         '<span><strong>3 Reasons a system is not on the antigram:</strong><br>' +
         '1. All antigens are HIGH or LOW incidence only<br>' +
         '2. Antibodies do NOT cause clinically significant HDN or HTR<br>' +
         '3. Antigens are not immunogenic</span></div>' +
-      (isAdmin ? '' : '<div style="font-size:12px;color:var(--warm-grey);margin-bottom:10px;font-style:italic">Log in as Admin to fill in this table.</div>') +
+      (isAdmin ? '' : '<div style="font-size:12px;color:var(--warm-grey);margin-bottom:10px;font-style:italic">Log in as Admin to edit this table.</div>') +
       '<div style="overflow-x:auto"><table class="lesser-table">' +
-        '<thead><tr><th>System</th>' + cols.map(function(col){ return '<th>' + col.label + '</th>'; }).join('') + '</tr></thead>' +
+        '<thead>' + head + '</thead>' +
         '<tbody>' + rows + '</tbody>' +
       '</table></div>' +
+      '<div class="general-actions">' +
+        (isAdmin ? '<button class="add-row-btn" onclick="addLesserRow()">+ Add row</button><button class="add-row-btn" onclick="addLesserColumn()">+ Add column</button>' : '') +
+        '<button class="add-row-btn" onclick="exportLesserSystemsPage()">Export Lesser Systems</button>' +
+      '</div>' +
     '</div>';
 }
 
@@ -3410,36 +3698,28 @@ function buildFullSystemExportPage(key) {
 }
 
 function buildLesserSystemsExportPage() {
-  var systems = ['Gerbich','Diego','Colton','Dombrock','Cartwright','Chido/Rodgers','Cromer','Knops','Indian','LW','Scianna','Sda','Xga','RAPH','OK','JMH','HLA'];
-  var cols = [
-    {key:'antigens', label:'Antigens in System'},
-    {key:'carrier',  label:'Carrier Molecule'},
-    {key:'why_not',  label:'Why Not on Antigram'},
-    {key:'hdn_htr',  label:'HDN / HTR'},
-    {key:'notable',  label:'Notable'}
-  ];
-  var rows = systems.map(function(sys) {
-    var sk = 'lesser_' + sys.toLowerCase().replace(/[^a-z0-9]/g,'');
-    return '<tr><td><strong>' + exportText(sys) + '</strong></td>' + cols.map(function(col) {
-      var val = notesData[sk] && notesData[sk][col.key] ? notesData[sk][col.key] : '';
+  var table = getLesserTable();
+  var rows = table.rows.map(function(row) {
+    return '<tr><td><strong>' + exportText(row.label) + '</strong></td>' + table.columns.map(function(col) {
+      var val = row.cells && row.cells[col.id] ? row.cells[col.id] : '';
       return '<td>' + (val ? exportText(val) : '<span class="muted">blank</span>') + '</td>';
     }).join('') + '</tr>';
   }).join('');
-  return '<section class="page"><h1>Lesser-Known Blood Group Systems</h1>' +
-    '<table class="freq-export"><thead><tr><th>System</th>' + cols.map(function(c){ return '<th>' + exportText(c.label) + '</th>'; }).join('') + '</tr></thead><tbody>' + rows + '</tbody></table>' +
+  return '<section class="page lesser-export-page"><h1>Lesser-Known Blood Group Systems</h1>' +
+    '<table class="freq-export lesser-export-table"><thead><tr><th>System</th>' + table.columns.map(function(c){ return '<th>' + exportText(c.label) + '</th>'; }).join('') + '</tr></thead><tbody>' + rows + '</tbody></table>' +
   '</section>';
 }
 
 function buildGeneralComparisonExportPage() {
   var table = getGeneralComparison();
   var summaryRows = buildGeneralSharedSummaryRows();
-  var head = '<tr><th>Row</th>' + GENERAL_COMPARE_SYSTEMS.map(function(key) {
-    return '<th>' + exportText(shortSystemName(key)) + '</th>';
+  var head = '<tr><th>Row</th>' + table.columns.map(function(col) {
+    return '<th>' + exportText(col.label) + '</th>';
   }).join('') + '</tr>';
   var body = table.rows.map(function(row) {
     var label = exportText(row.label || '');
-    var cells = GENERAL_COMPARE_SYSTEMS.map(function(key) {
-      return '<td>' + exportText(row.cells && row.cells[key] || '') + '</td>';
+    var cells = table.columns.map(function(col) {
+      return '<td>' + exportText(row.cells && row.cells[col.id] || '') + '</td>';
     }).join('');
     return '<tr><td class="general-export-label">' + label + '</td>' + cells + '</tr>';
   }).join('');
@@ -3493,11 +3773,12 @@ function addFlashcard(cards, question, answer, meta) {
 
 function buildFlashcardDeck() {
   var cards = [];
-  getGeneralComparison().rows.forEach(function(row, idx) {
+  var generalTable = getGeneralComparison();
+  generalTable.rows.forEach(function(row, idx) {
     var label = flashPlain(row.label || '');
-    var answer = GENERAL_COMPARE_SYSTEMS.map(function(key) {
-      var val = flashPlain(row.cells && row.cells[key] || '');
-      return val ? shortSystemName(key) + ': ' + val : '';
+    var answer = generalTable.columns.map(function(col) {
+      var val = flashPlain(row.cells && row.cells[col.id] || '');
+      return val ? col.label + ': ' + val : '';
     }).filter(Boolean).join('\n');
     if (label && answer) {
       addFlashcard(cards,
@@ -3536,24 +3817,15 @@ function buildFlashcardDeck() {
     });
   });
 
-  var lesserSystems = ['Gerbich','Diego','Colton','Dombrock','Cartwright','Chido/Rodgers','Cromer','Knops','Indian','LW','Scianna','Sda','Xga','RAPH','OK','JMH','HLA'];
-  var lesserCols = [
-    {key:'antigens', label:'Antigens'},
-    {key:'carrier', label:'Carrier Molecule'},
-    {key:'why_not', label:'Why Not on Antigram'},
-    {key:'hdn_htr', label:'HDN / HTR'},
-    {key:'notable', label:'Notable'}
-  ];
-  lesserSystems.forEach(function(name) {
-    var sk = 'lesser_' + name.toLowerCase().replace(/[^a-z0-9]/g,'');
-    var data = notesData[sk] || {};
-    var answer = lesserCols.map(function(col) {
-      var val = flashPlain(data[col.key] || '');
+  var lesserTable = getLesserTable();
+  lesserTable.rows.forEach(function(row) {
+    var answer = lesserTable.columns.map(function(col) {
+      var val = flashPlain(row.cells && row.cells[col.id] || '');
       return val ? col.label + ': ' + val : '';
     }).filter(Boolean).join('\n');
-    addFlashcard(cards, 'Lesser-known blood group system: ' + name, answer, {
-      id:'lesser-' + sk,
-      system:name,
+    addFlashcard(cards, 'Lesser-known blood group system: ' + row.label, answer, {
+      id:'lesser-' + row.id,
+      system:row.label,
       category:'Lesser Systems',
       color:'#555'
     });
@@ -3816,7 +4088,7 @@ function buildExportHtml(content, title, orientation) {
     '.binder-system{height:10.25in;overflow:hidden;font-size:10px;padding-top:.03in}.binder-system table{margin-bottom:0}.binder-card{border-top:2.5px solid #5a0e20;border-left:1px solid #f7c5d0;border-right:1px solid #f7c5d0;border-bottom:1px solid #f7c5d0;border-radius:12px;background:#fffaf7;margin-bottom:.07in;break-inside:avoid;page-break-inside:avoid}.binder-hero{min-height:1.08in;padding:5px 10px 6px}.binder-head{gap:8px;align-items:flex-start;margin-bottom:2px}.binder-head .system-dot{width:28px;height:28px;font-size:14px}.binder-head h1{text-align:left;font-size:22px;line-height:.95;margin:0 0 2px;padding:0}.binder-head .isbt{font-size:7px;letter-spacing:2.1px}.binder-head .pun{font-size:9.5px;line-height:1.08;margin-top:2px}.binder-system .card-label{font-size:8.6px;letter-spacing:3px;text-transform:uppercase;color:#7a6468;font-weight:700;margin:0 0 5px}.binder-history .tl{padding-left:8px;border-left:2px solid #f7c5d0}.binder-history .tl-item{font-size:6px;line-height:1.03;margin-bottom:1px}.binder-history .yr{display:inline-block;width:.5in;font-size:6.2px;color:#c0173d;font-weight:700}.binder-membrane-card{height:1.32in;padding:5px 8px}.binder-membrane-print{height:1.08in;display:flex;align-items:center;justify-content:center;overflow:hidden}.binder-membrane-print>div{width:5.25in!important;overflow:hidden!important}.binder-membrane-print svg{width:5.25in!important;min-width:0!important;height:1.05in!important}.binder-membrane-print text{font-size:9px!important}.binder-study{height:auto;max-height:4.9in;padding:8px 10px 9px;overflow:hidden}.binder-system .study-table{font-size:10.2px;line-height:1.18;table-layout:fixed}.binder-system .study-table tr:nth-child(even) td{background:#fff3f0}.binder-system .study-table td{font-size:10.2px;padding:4px 5px;white-space:normal;overflow-wrap:anywhere}.binder-system .study-table td.lbl{width:1.55in;font-size:8.7px;letter-spacing:.5px;color:#7a6468}.binder-system .study-table .muted{font-size:8.2px;color:#b69aa0}.binder-freq{min-height:0;padding:8px 10px}.binder-system .freq-export{font-size:8.8px;line-height:1.08;table-layout:fixed}.binder-system .freq-export th{font-size:7.7px;padding:3px 3px}.binder-system .freq-export td{font-size:8.4px;padding:3px 3px;white-space:normal;overflow-wrap:anywhere}.binder-system .freq-export th:nth-child(1){width:.7in}.binder-system .freq-export th:nth-child(2),.binder-system .freq-export th:nth-child(3),.binder-system .freq-export th:nth-child(4),.binder-system .freq-export th:nth-child(5),.binder-system .freq-export th:nth-child(6){width:.28in}.binder-system .freq-export th:nth-child(7){width:.45in}.binder-notes{min-height:0;padding:6px 10px;margin-bottom:0}.binder-system .note-box{font-size:8.4px;line-height:1.16;padding:4px 6px;background:#fff;border-left:3px solid #f7c5d0}' +
     '.antigram-export-page{max-width:10.4in;height:7.1in;overflow:hidden}.antigram-export-page h1{font-size:15px;margin:0 0 .04in;padding:0}.antigram-export-note{font-size:8px;color:#7a6468;margin-bottom:.05in}.antigram-export-page .antigram-panel-wrap{overflow:hidden;border:1px solid #5a0e20;border-radius:4px;background:#fff}.antigram-export-page .antigram-table{width:100%;min-width:0;border-collapse:collapse;table-layout:fixed;font-size:5.4px}.antigram-export-page .antigram-table th{position:static;background:#5a0e20;color:#fff;font-size:5.2px;padding:2px 1px;text-align:center}.antigram-export-page .antigram-table td{border:1px solid #d9a9b4;padding:2px 1px;text-align:center;font-size:5.6px;min-width:0}.antigram-export-page .antigram-table td.cell-id{position:static;background:#fffaf7;font-weight:bold;color:#5a0e20;font-size:5.5px}.antigram-export-page .antigram-table td.ruled-out{background:#dff4eb!important}.antigram-export-page .antigram-table td.suspect-hit{background:#fff1b8!important}.antigram-answer-key,.antigram-practice-lines{font-size:8px;line-height:1.25;margin-top:.06in;border:1px solid #f7c5d0;border-radius:6px;padding:.06in;background:#fffaf7}' +
     '.flash-print-page{max-width:7.9in;height:10.4in;overflow:hidden}.flash-print-page h1{font-size:15px;color:#000;text-align:left;margin:0 0 .12in;padding:0}.flash-print-grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:.18in;height:9.9in}.flash-print-card{border:2px solid #000;background:#fff;color:#000;border-radius:0;padding:.18in;display:flex;flex-direction:column;justify-content:center;text-align:center;break-inside:avoid;page-break-inside:avoid}.flash-print-meta{font-size:12px;text-transform:uppercase;letter-spacing:.7px;margin-bottom:.12in;color:#000;font-weight:700}.flash-print-q{font-size:24px;line-height:1.18;font-weight:900}.flash-print-a{font-size:22px;line-height:1.2;font-weight:900;white-space:pre-wrap}' +
-    '.general-export-page{max-width:10.4in;height:7.12in;overflow:hidden}.general-export-page h1{text-align:left;font-size:18px;margin:0 0 .07in;padding:0;color:#5a0e20}.general-export-main{table-layout:fixed;margin-bottom:.07in;border:1px solid #f7c5d0}.general-export-main th{font-size:7.2px;line-height:1.05;text-align:center;padding:3px 2px;background:#5a0e20;color:#fff}.general-export-main th:first-child{width:.92in;text-align:left}.general-export-main td{font-size:7.1px;line-height:1.08;padding:3px 3px;border:1px solid #f7c5d0;white-space:normal;overflow-wrap:anywhere}.general-export-main tr:nth-child(even) td{background:#fff1f4}.general-export-label{font-weight:800;color:#5a0e20}.general-export-summary h2{font-size:9px;letter-spacing:1.2px;text-transform:uppercase;color:#7a6468;border:0;margin:.02in 0 .035in;padding:0}.general-export-summary table{table-layout:fixed;border:1px solid #f7c5d0}.general-export-summary th{font-size:7px;padding:3px 4px}.general-export-summary td{font-size:7px;line-height:1.08;padding:3px 4px;border:1px solid #f7c5d0}.general-export-summary th:nth-child(1){width:45%}.general-export-summary th:nth-child(2){width:20%}' +
+    '.general-export-page{max-width:10.4in;height:7.12in;overflow:hidden}.general-export-page h1{text-align:left;font-size:18px;margin:0 0 .07in;padding:0;color:#5a0e20}.general-export-main{table-layout:fixed;margin-bottom:.07in;border:1px solid #f7c5d0}.general-export-main th{font-size:6.6px;line-height:1.05;text-align:center;padding:3px 2px;background:#5a0e20;color:#fff}.general-export-main th:first-child{width:.78in;text-align:left}.general-export-main td{font-size:6.5px;line-height:1.06;padding:2px 3px;border:1px solid #f7c5d0;white-space:normal;overflow-wrap:anywhere}.general-export-main tr:nth-child(even) td{background:#fff1f4}.general-export-label{font-weight:800;color:#5a0e20}.general-export-summary h2{font-size:8px;letter-spacing:1.2px;text-transform:uppercase;color:#7a6468;border:0;margin:.02in 0 .035in;padding:0}.general-export-summary table{table-layout:fixed;border:1px solid #f7c5d0}.general-export-summary th{font-size:6.4px;padding:2px 4px}.general-export-summary td{font-size:6.4px;line-height:1.05;padding:2px 4px;border:1px solid #f7c5d0}.general-export-summary th:nth-child(1){width:45%}.general-export-summary th:nth-child(2){width:20%}.lesser-export-page{max-width:10.4in;height:7.12in;overflow:hidden}.lesser-export-page h1{text-align:left;font-size:18px;margin:0 0 .08in;padding:0;color:#5a0e20}.lesser-export-table{table-layout:fixed}.lesser-export-table th{font-size:6.6px;line-height:1.05;padding:3px 3px}.lesser-export-table td{font-size:6.6px;line-height:1.07;padding:3px 3px;white-space:normal;overflow-wrap:anywhere}.lesser-export-table th:first-child{width:.85in}' +
     '.map-page{max-width:10.4in;height:7.15in;overflow:hidden}.map-page h1{font-size:16px;padding:0;margin:0 0 .06in}.map-print{height:6.86in;overflow:hidden;display:flex;align-items:center;justify-content:center}.map-print>div{width:100%!important;height:100%!important;overflow:hidden!important}.map-print svg{width:100%!important;max-width:100%!important;min-width:0!important;height:100%!important;max-height:6.78in!important}.map-rbc .map-print svg text{font-size:10px!important}.map-chrom .map-print{align-items:flex-start}svg{max-width:100%;height:auto}' +
     portraitTweaks +
     '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style></head><body>' + content + '</body></html>';
@@ -3850,7 +4122,7 @@ function exportCurrentSystemPage() {
   if (currentSystemKey === 'general') {
     exportGeneralComparisonPage();
   } else if (currentSystemKey === 'lesser') {
-    printExportHtml(buildLesserSystemsExportPage(), 'Lesser Systems Export');
+    exportLesserSystemsPage();
   } else {
     printExportHtml(buildFullSystemExportPage(currentSystemKey), 'Blood Bank ' + currentSystemKey + ' Export');
   }
@@ -3861,7 +4133,7 @@ function exportGeneralComparisonPage() {
 }
 
 function exportLesserSystemsPage() {
-  printExportHtml(buildLesserSystemsExportPage(), 'Lesser Systems Export');
+  printExportHtml(buildLesserSystemsExportPage(), 'Lesser Systems Export', 'landscape');
 }
 
 function exportEncyclopediaSet(kind) {
