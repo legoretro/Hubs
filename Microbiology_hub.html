@@ -1008,13 +1008,14 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(!paths.length)return '<p class="chart-note">No checked endpoints for this chart.</p>';
     var prefixLen=sharedPrefixLength(paths);
     var density=paths.length>14?' ultra':(paths.length>8?' dense':'');
-    var common=prefixLen?'<div class="print-flow-common">'+paths[0].parts.slice(0,prefixLen).map(function(part,index){return printStepHtml(part,index,prefixLen,null)}).join('')+'</div>':'';
+    var commonParts=commonEndpointParts(paths,prefixLen);
+    var common=commonParts.length?'<div class="print-flow-common">'+commonParts.map(function(part,index){return printStepHtml(part,index,commonParts.length,null)}).join('')+'</div>':'';
     var groups=[];
     var byKey={};
     paths.forEach(function(path){
       var tail=path.parts.slice(prefixLen);
       if(!tail.length)tail=[path.parts[path.parts.length-1]];
-      var info=gramSuperGroupInfo(tail);
+      var info=gramSuperGroupInfo(path.parts);
       if(!byKey[info.key]){
         byKey[info.key]={part:info.part,paths:[]};
         groups.push(byKey[info.key]);
@@ -1023,8 +1024,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     });
     var groupHtml=groups.map(function(group){
       var lanes=group.paths.map(function(item){
-        var remaining=item.tail.slice(1);
-        if(!remaining.length)remaining=item.tail;
+        var remaining=cleanEndpointTail(item.tail);
         return '<div class="print-flow-lane">'+remaining.map(function(part,index){return printStepHtml(part,index,remaining.length,item.path.species)}).join('')+'</div>';
       }).join('');
       var groupClass=group.paths.length>2?' wide':'';
@@ -1050,6 +1050,10 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   function endpointGroupKey(part,total){
     return endpointGroupInfo(part,total).key;
   }
+  function isStandaloneResultPart(part){
+    var label=(parseFlowToken(part||'',false).label||'').trim();
+    return /^(yes|no|positive|negative|pos|neg|\+|\-|\(\+\)|\(-\)|positive\s*\(\+\)|negative\s*\(-\))$/i.test(label);
+  }
   function endpointGroupInfo(part,total){
     var parsed=parseFlowToken(part||'',total<=1);
     var label=(parsed.label||'').toLowerCase();
@@ -1062,6 +1066,41 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(/gpc\s*pair|gram[\s-]*positive diplococci|lancet/.test(badges+' '+label))return {key:'gram-positive-cocci-pairs',part:'Gram-positive cocci in pairs {GPC pairs}'};
     if(/gpr|gram[\s-]*positive.*rod|positive rods|positive bacilli/.test(badges+' '+label))return {key:'gram-positive-rods',part:'Gram-positive rods {GPR}'};
     return {key:parsed.key,part:part};
+  }
+  function isMorphologyPart(part){
+    return /^gram-(negative|positive)-/.test(endpointGroupInfo(part,2).key);
+  }
+  function isGramStainPart(part){
+    var parsed=parseFlowToken(part||'',false);
+    return /gram\s*stain/i.test(parsed.label||'');
+  }
+  function isGramPolarityPart(part){
+    var parsed=parseFlowToken(part||'',false);
+    return /^gram[\s-]*(positive|negative)$/i.test(parsed.label||'');
+  }
+  function isGramSuperPart(part){
+    return isGramStainPart(part)||isGramPolarityPart(part);
+  }
+  function cleanEndpointTail(tail){
+    tail=tail||[];
+    var hasMorph=tail.some(function(part,index){return index<tail.length-1&&isMorphologyPart(part)});
+    var cleaned=[];
+    tail.forEach(function(part,index){
+      var isEndpoint=index===tail.length-1;
+      if(!isEndpoint&&isMorphologyPart(part))return;
+      if(!isEndpoint&&isGramSuperPart(part))return;
+      if(isStandaloneResultPart(part)&&hasMorph&&cleaned.length===0)return;
+      cleaned.push(part);
+    });
+    return cleaned.length?cleaned:tail.slice(-1);
+  }
+  function commonEndpointParts(paths,prefixLen){
+    if(!prefixLen||!paths.length)return [];
+    return paths[0].parts.slice(0,prefixLen).filter(function(part,index,parts){
+      if(isMorphologyPart(part)||isGramPolarityPart(part))return false;
+      if(isStandaloneResultPart(part)&&index>0&&/gram\s*stain/i.test(tokenPlainLabel(parts[index-1]||'')))return false;
+      return true;
+    });
   }
   function normalizedFlowToken(part,isLast){
     var parsed=parseFlowToken(part||'',isLast);
@@ -1080,7 +1119,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     paths.forEach(function(path){
       var tail=path.parts.slice(prefixLen);
       if(!tail.length)tail=[path.parts[path.parts.length-1]];
-      var superInfo=gramSuperGroupInfo(tail);
+      var superInfo=gramSuperGroupInfo(path.parts);
       if(!bySuper[superInfo.key]){
         bySuper[superInfo.key]={key:superInfo.key,part:superInfo.part,paths:[]};
         superGroups.push(bySuper[superInfo.key]);
@@ -1088,28 +1127,12 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       bySuper[superInfo.key].paths.push({path:path,tail:tail});
     });
     return '<div class="gram-super-grid">'+superGroups.map(function(superGroup){
-      var morphGroups=[];
-      var byMorph={};
+      var tree=[];
       superGroup.paths.forEach(function(item){
-        var info=endpointGroupInfo(item.tail[0],item.tail.length);
-        if(!byMorph[info.key]){
-          byMorph[info.key]={part:info.part,paths:[]};
-          morphGroups.push(byMorph[info.key]);
-        }
-        byMorph[info.key].paths.push(item);
+        var remaining=cleanEndpointTail(item.tail);
+        addEndpointTreePath(tree,remaining,item.path.species);
       });
-      var morphHtml=morphGroups.map(function(group){
-        var tree=[];
-        group.paths.forEach(function(item){
-          var remaining=item.tail.slice(1);
-          if(!remaining.length)remaining=item.tail;
-          addEndpointTreePath(tree,remaining,item.path.species);
-        });
-        var branchHtml=endpointTreeHtml(tree);
-        var groupClass=group.paths.length>3?' wide':'';
-        return '<div class="endpoint-morph-group '+groupClass+'"><div class="endpoint-morph-head">'+endpointStepHtml(group.part,0,2,null)+'</div>'+branchHtml+'</div>';
-      }).join('');
-      return '<div class="gram-super-group '+escapeHtml(superGroup.key)+'"><div class="gram-super-head">'+endpointStepHtml(superGroup.part,0,2,null)+'</div><div class="endpoint-morph-grid">'+morphHtml+'</div></div>';
+      return '<div class="gram-super-group '+escapeHtml(superGroup.key)+'"><div class="gram-super-head">'+endpointStepHtml(superGroup.part,0,2,null)+'</div>'+endpointTreeHtml(tree)+'</div>';
     }).join('')+'</div>';
   }
   function addEndpointTreePath(root,parts,species){
@@ -1167,7 +1190,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     paths=paths.filter(function(path){return picked.indexOf(path.species.id)>-1});
     if(!paths.length)return '<p class="chart-note">No checked endpoints for this chart.</p>';
     var prefixLen=sharedPrefixLength(paths);
-    var common=prefixLen?'<div class="endpoint-common">'+paths[0].parts.slice(0,prefixLen).map(function(part,index){return endpointStepHtml(part,index,prefixLen,null)}).join('')+'</div>':'';
+    var commonParts=commonEndpointParts(paths,prefixLen);
+    var common=commonParts.length?'<div class="endpoint-common">'+commonParts.map(function(part,index){return endpointStepHtml(part,index,commonParts.length,null)}).join('')+'</div>':'';
     return '<div class="endpoint-flowchart'+endpointFlowDensity(paths.length)+'">'+common+endpointGroupedFlowHtml(paths,prefixLen)+'</div>';
   }
   function defaultFlowZoom(chart){
