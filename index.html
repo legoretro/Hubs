@@ -74,10 +74,10 @@
     }
 
     main {
-      width: min(1120px, calc(100% - 32px));
+      width: min(1320px, calc(100% - 32px));
       margin: 30px auto 44px;
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
       gap: 16px;
     }
 
@@ -393,6 +393,8 @@
         <input id="url-hematology" data-hub-input="hematology" placeholder="hematology_hub.html or https://...">
         <label for="url-microbiology">Microbiology</label>
         <input id="url-microbiology" data-hub-input="microbiology" placeholder="Microbiology_hub.html or https://...">
+        <label for="url-chemistry">Chemistry</label>
+        <input id="url-chemistry" data-hub-input="chemistry" placeholder="Chemistry_hub.html or https://...">
         <label for="url-urinalysis">Urinalysis</label>
         <input id="url-urinalysis" data-hub-input="urinalysis" placeholder="UA_hub.html or https://...">
       </div>
@@ -407,28 +409,35 @@
         <div class="hub-icon">BB</div>
         <h2>Blood Bank</h2>
         <p>Blood groups, RBC antigens, chromosome mapping, crossmatch practice, frequencies, and study references.</p>
-        <a class="hub-link" data-hub-link="bloodbank" href="https://legoretro.github.io/Hubs/Bloodbank_hub.html">Open Blood Bank Hub</a>
+        <a class="hub-link" data-hub-link="bloodbank" href="https://legoretro.github.io/Hubs/Bloodbank_hub.html">Open Hub</a>
       </section>
 
       <section class="hub-card" style="--accent: var(--purple)">
         <div class="hub-icon">H</div>
         <h2>Hematology</h2>
         <p>Cells, morphology, anemias, leukemias, hemostasis, coagulation, and case-based review.</p>
-        <a class="hub-link" data-hub-link="hematology" href="https://legoretro.github.io/Hubs/Hematology_hub.html">Open Hematology Hub</a>
+        <a class="hub-link" data-hub-link="hematology" href="https://legoretro.github.io/Hubs/Hematology_hub.html">Open Hub</a>
       </section>
 
       <section class="hub-card" style="--accent: var(--green)">
         <div class="hub-icon">M</div>
         <h2>Microbiology</h2>
         <p>Organisms, media, biochemical reactions, ID workflows, antimicrobials, and bench algorithms.</p>
-        <a class="hub-link" data-hub-link="microbiology" href="https://legoretro.github.io/Hubs/Microbiology_hub.html">Open Microbiology Hub</a>
+        <a class="hub-link" data-hub-link="microbiology" href="https://legoretro.github.io/Hubs/Microbiology_hub.html">Open Hub</a>
+      </section>
+
+      <section class="hub-card" style="--accent: var(--blue)">
+        <div class="hub-icon">CC</div>
+        <h2>Chemistry</h2>
+        <p>Clinical chemistry organ flowcharts, hormone maps, chemistry patterns, and future simulation practice.</p>
+        <a class="hub-link" data-hub-link="chemistry" href="https://legoretro.github.io/Hubs/Chemistry_hub.html">Open Hub</a>
       </section>
 
       <section class="hub-card" style="--accent: var(--gold)">
         <div class="hub-icon">U</div>
         <h2>Urinalysis</h2>
         <p>Physical, chemical, and microscopic urine findings with crystals, casts, cells, and disease correlations.</p>
-        <a class="hub-link" data-hub-link="urinalysis" href="https://legoretro.github.io/Hubs/UA_hub.html">Open Urinalysis Hub</a>
+        <a class="hub-link" data-hub-link="urinalysis" href="https://legoretro.github.io/Hubs/UA_hub.html">Open Hub</a>
       </section>
     </main>
 
@@ -464,6 +473,7 @@
       bloodbank: HUB_BASE + 'Bloodbank_hub.html',
       hematology: HUB_BASE + 'Hematology_hub.html',
       microbiology: HUB_BASE + 'Microbiology_hub.html',
+      chemistry: HUB_BASE + 'Chemistry_hub.html',
       urinalysis: HUB_BASE + 'UA_hub.html'
     };
     let hubUrls = Object.assign({}, defaultHubUrls);
@@ -601,7 +611,7 @@
         const url = (urls[key] || '').trim();
         if (url) {
           link.href = url;
-          link.textContent = key === 'bloodbank' ? 'Open Blood Bank Hub' : key === 'hematology' ? 'Open Hematology Hub' : key === 'urinalysis' ? 'Open Urinalysis Hub' : 'Open Hub';
+          link.textContent = 'Open Hub';
           link.classList.remove('disabled');
           link.removeAttribute('aria-disabled');
         } else {
