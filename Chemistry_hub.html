@@ -31,6 +31,7 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
 .outline-builder .outline-row{grid-template-columns:34px minmax(320px,1fr) minmax(280px,auto);align-items:start;gap:8px;margin-left:calc(var(--indent,0)*20px);padding:6px;border:1px solid rgba(31,116,168,.14);border-radius:12px;background:#fbfdff}.outline-fields{display:grid;grid-template-columns:minmax(170px,1fr) minmax(170px,1fr) 44px auto;gap:6px;align-items:center}.outline-note{border:1px solid rgba(31,116,168,.35);border-radius:9px;padding:7px 9px;background:#fff;color:var(--ink);font-size:12px;min-height:34px;height:34px;resize:vertical;line-height:1.15}.outline-color{width:38px;height:34px;padding:2px;border:1px solid rgba(31,116,168,.34);border-radius:9px;background:#fff}.outline-controls{display:flex;gap:5px;align-items:center;justify-content:flex-end;flex-wrap:wrap}.outline-image-tools{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.outline-image-input{position:absolute;left:-9999px}.outline-thumb{width:34px;height:34px;object-fit:cover;border:1px solid rgba(31,116,168,.35);border-radius:8px;background:#fff}.flow-node-title{display:block}.flow-node-note{display:block;margin-top:4px;color:var(--muted);font-size:11px;font-weight:800;white-space:pre-line}.flow-node-image{display:block;width:48px;height:48px;object-fit:contain;margin:6px auto 0;border:1px solid rgba(31,116,168,.2);border-radius:9px;background:#fff}
 .flow-card-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.flow-children{width:max-content;max-width:none}.flow-children:before{left:50%!important;right:auto!important;width:calc(100% - 178px);max-width:calc(100% - 178px);min-width:0;transform:translateX(-50%)}.flow-children:has(>.flow-branch:only-child):before{display:none}
 .flowchart .flow-root{zoom:var(--chem-view-scale,.56)}
+.chem-chart-tabs,.chem-branch-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}.chem-chart-tab,.chem-branch-tab{border:1.5px solid rgba(31,116,168,.35);background:#fff;color:var(--deep);border-radius:999px;padding:8px 13px;font-size:12px;font-weight:900}.chem-chart-tab.active,.chem-branch-tab.active{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 8px 18px rgba(31,116,168,.18)}.chem-branch-tab{padding:7px 11px;font-size:11px}.flow-card-head{align-items:center}.flow-card .flowchart{max-height:430px}.flow-node{min-width:128px;max-width:230px;font-size:12px;padding:7px 10px}.flow-node.organ{font-size:13px}.flow-node-note{font-size:10px}.flow-children{gap:12px!important;padding-top:16px}.flow-children:before{border-top-color:#0b3558!important;border-top-width:3px!important;width:calc(100% - 130px)!important}.flow-children>.flow-branch:before{top:-16px!important;height:16px!important;border-left-color:#0b3558!important;border-left-width:3px!important}.flow-branch.has-children>.flow-node+.flow-children:after{content:"";position:absolute;top:-10px;left:50%;height:10px;border-left:3px solid #0b3558;transform:translateX(-50%)}.flow-children>.flow-branch:first-child:after,.flow-children>.flow-branch:last-child:after{content:"";position:absolute;top:0;width:50%;border-top:3px solid #fff}.flow-children>.flow-branch:first-child:after{left:-18px}.flow-children>.flow-branch:last-child:after{right:-18px}.flow-children>.flow-branch:only-child:after{display:none}.flow-view-tools{margin:2px 0 8px}.flow-editor-details{margin-top:12px}.flow-editor-details:not([open]){padding-bottom:2px}.outline-builder .outline-row{grid-template-columns:28px minmax(280px,1fr);gap:6px;margin-left:calc(var(--indent,0)*16px);padding:5px}.outline-number{height:28px;width:28px;font-size:11px}.outline-fields{grid-template-columns:minmax(150px,1fr) minmax(150px,1fr) 38px auto}.outline-input,.outline-note{font-size:12px;padding:6px 8px}.outline-note{height:30px;min-height:30px}.outline-note:focus{height:66px}.outline-color{width:34px;height:30px}.outline-controls{grid-column:2;justify-content:flex-start}.outline-row .mini-btn{height:28px;min-width:28px;padding:4px 7px;font-size:11px}.outline-thumb{width:30px;height:30px}.flow-admin{padding:8px}.branch-builder{padding:8px}
 #printArea{display:none}
 @page{size:letter landscape;margin:.25in}
 @media print{body.printing{background:#fff!important}body.printing .site-header,body.printing .wrap,body.printing .modal-overlay,body.printing .save-indicator{display:none!important}body.printing #printArea{display:block!important}.print-page{width:10.5in;height:8in;overflow:hidden;background:#fff;color:#0b3558;padding:.1in}.print-page h1{font-size:17pt;line-height:1;margin-bottom:.08in;color:#0b3558}.print-page .flowchart{border:0!important;padding:.03in!important;overflow:hidden!important;display:flex;justify-content:center;align-items:flex-start;max-height:none!important}.print-page .flow-root{zoom:var(--chem-print-scale,.58)!important;transform:none!important;transform-origin:top center;min-width:max-content;gap:.07in}.print-page .flow-branch{gap:.045in}.print-page .flow-children{gap:.08in!important;padding-top:.12in!important}.print-page .flow-children:before{border-top-color:#0b3558!important;border-top-width:1.5px!important;width:calc(100% - 1.05in)!important}.print-page .flow-children>.flow-branch:before{top:-.12in!important;height:.12in!important;border-left-color:#0b3558!important;border-left-width:1.5px!important}.print-page .flow-node{box-shadow:none!important;background:#fff!important;min-width:.95in!important;max-width:1.55in!important;border-width:1.5px!important;border-left-width:4px!important;border-radius:.08in!important;font-size:7.5pt!important;line-height:1.05!important;padding:.035in .055in!important}.print-page .flow-node.organ{font-size:8pt!important}.print-page .flow-node-note{font-size:6pt!important;margin-top:.025in!important}.print-page .flow-node-image{width:.42in!important;height:.42in!important;margin-top:.035in!important;border-radius:.05in!important}}
@@ -118,7 +119,10 @@ const CHEM_ROW_ID='chemistry_hub';
 const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c675';
 (function(){
   var isAdmin=false,state=defaultState(),safeDoc=null,syncPresence=null;
-  var chemFlowZoom=Number(localStorage.getItem('chemistryFlowZoom2')||0.56);
+  var chemFlowZoom=Number(localStorage.getItem('chemistryFlowZoom3')||0.82);
+  var activeChartId=localStorage.getItem('chemistryActiveChart')||'';
+  var activeBranchByChart={};
+  try{activeBranchByChart=JSON.parse(localStorage.getItem('chemistryActiveBranches')||'{}')||{}}catch(e){activeBranchByChart={}}
   function uid(prefix){return prefix+'_'+Math.random().toString(36).slice(2,9)}
   function escapeHtml(value){return String(value||'').replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]})}
   function showToast(message,isError){var el=document.getElementById('saveIndicator');el.textContent=message;el.style.background=isError?'#9b1238':'#0f7b61';el.classList.add('show');clearTimeout(showToast.timer);showToast.timer=setTimeout(function(){el.classList.remove('show')},2200)}
@@ -179,6 +183,37 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     (chart.paths||[]).forEach(function(line){var parts=splitPath(line);if(parts.length)addPath(root,parts,0,[])});
     return root;
   }
+  function cloneNode(node){return {key:node.key,label:node.label,path:node.path,children:(node.children||[]).map(cloneNode)}}
+  function branchOptions(chart){
+    var roots=chartTree(chart),root=roots[0];
+    if(!root||!root.children||!root.children.length)return [];
+    return root.children.map(function(child){return {path:child.path,label:child.label}});
+  }
+  function activeBranchFor(chart){
+    var options=branchOptions(chart);
+    if(!options.length)return '__all__';
+    var saved=activeBranchByChart[chart.id];
+    if(saved==='__all__'||options.some(function(option){return option.path===saved}))return saved;
+    activeBranchByChart[chart.id]=options[0].path;
+    return options[0].path;
+  }
+  function focusedTree(chart,branchPath){
+    var roots=chartTree(chart);
+    if(!branchPath||branchPath==='__all__')return roots;
+    function find(nodes){
+      for(var i=0;i<nodes.length;i++){
+        if(nodes[i].path===branchPath)return nodes[i];
+        var child=find(nodes[i].children||[]);
+        if(child)return child;
+      }
+      return null;
+    }
+    return roots.map(function(root){
+      var selected=find(root.children||[]);
+      if(!selected&&root.path===branchPath)selected=root;
+      return selected?{key:root.key,label:root.label,path:root.path,children:[cloneNode(selected)]}:cloneNode(root);
+    });
+  }
   function nodeHtml(node,depth,chart){
     var cls=depth===0?'organ':(node.children.length?'branch':'endpoint');
     var meta=(chart.nodeMeta&&chart.nodeMeta[node.path])||{};
@@ -186,10 +221,10 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var note=meta.note?'<span class="flow-node-note">'+escapeHtml(meta.note)+'</span>':'';
     var image=meta.image?'<img class="flow-node-image" src="'+escapeHtml(meta.image)+'" alt="">':'';
     var children=node.children.length?'<div class="flow-children">'+node.children.map(function(child){return nodeHtml(child,depth+1,chart)}).join('')+'</div>':'';
-    return '<div class="flow-branch"><div class="flow-node '+cls+'" style="--node-color:'+escapeHtml(color)+'"><span class="flow-node-title">'+escapeHtml(node.label)+'</span>'+note+image+'</div>'+children+'</div>';
+    return '<div class="flow-branch '+(node.children.length?'has-children':'')+'"><div class="flow-node '+cls+'" style="--node-color:'+escapeHtml(color)+'"><span class="flow-node-title">'+escapeHtml(node.label)+'</span>'+note+image+'</div>'+children+'</div>';
   }
-  function flowHtml(chart,viewScale){
-    var tree=chartTree(chart);
+  function flowHtml(chart,viewScale,branchPath){
+    var tree=focusedTree(chart,branchPath);
     if(!tree.length)return '<div class="flowchart"><p style="color:var(--muted)">No flowchart paths yet.</p></div>';
     var style=Number(viewScale)?' style="--chem-view-scale:'+Number(viewScale).toFixed(2)+'"':'';
     return '<div class="flowchart"'+style+'><div class="flow-root">'+tree.map(function(node){return nodeHtml(node,0,chart)}).join('')+'</div></div>';
@@ -323,13 +358,33 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     }).join('');
     return '<div class="outline-toolbar"><h3>Flow steps</h3><button type="button" class="mini-btn" data-action="add-branch" data-chart="'+escapeHtml(chart.id)+'">+ Branch</button></div><div class="outline-help">Use the first row as the starting organ or title. Notes print as a second line. Add images only where you want a visual on that node.</div>'+rowHtml;
   }
-  function renderFlowcharts(){
-    var html=(state.charts||[]).map(function(chart,index){
-      var paths=(chart.paths||[]).join('\n');
-      var note=chart.note?'<p>'+escapeHtml(chart.note)+'</p>':'';
-      return '<article class="flow-card" data-chart="'+escapeHtml(chart.id)+'"><div class="flow-card-head"><div><h2>'+escapeHtml(chart.title||'Untitled Flowchart')+'</h2>'+note+'</div><div class="flow-card-actions"><button type="button" class="mini-btn" data-action="export-chart" data-chart="'+escapeHtml(chart.id)+'">Export</button><button type="button" class="mini-btn danger admin-only" data-action="delete-chart" data-chart="'+escapeHtml(chart.id)+'">Delete</button></div></div><details class="flow-editor-details" open><summary>Edit flowchart</summary><div class="flow-admin"><label>Title<input data-action="chart-field" data-chart="'+escapeHtml(chart.id)+'" data-field="title" value="'+escapeHtml(chart.title||'')+'"></label><label>Optional note<input data-action="chart-field" data-chart="'+escapeHtml(chart.id)+'" data-field="note" value="'+escapeHtml(chart.note||'')+'"></label><div class="branch-builder outline-builder">'+branchOutlineHtml(chart)+'</div><details class="advanced-paths"><summary>Advanced: edit full paths</summary><textarea data-action="chart-paths" data-chart="'+escapeHtml(chart.id)+'">'+escapeHtml(paths)+'</textarea></details></div></details><div class="flow-view-tools"><button type="button" class="mini-btn" data-action="flow-zoom" data-dir="-1">-</button><span class="flow-zoom-value">'+Math.round(chemFlowZoom*100)+'%</span><button type="button" class="mini-btn" data-action="flow-zoom" data-dir="1">+</button><button type="button" class="mini-btn" data-action="flow-zoom-reset">Reset</button></div>'+flowHtml(chart,chemFlowZoom)+'</article>';
+  function chartTabsHtml(){
+    var charts=state.charts||[];
+    if(!charts.length)return '';
+    return '<div class="chem-chart-tabs">'+charts.map(function(chart){
+      return '<button type="button" class="chem-chart-tab '+(chart.id===activeChartId?'active':'')+'" data-action="select-chart" data-chart="'+escapeHtml(chart.id)+'">'+escapeHtml(chart.title||chart.organ||'Flowchart')+'</button>';
+    }).join('')+'</div>';
+  }
+  function branchTabsHtml(chart){
+    var options=branchOptions(chart);
+    if(!options.length)return '';
+    var active=activeBranchFor(chart);
+    var all='<button type="button" class="chem-branch-tab '+(active==='__all__'?'active':'')+'" data-action="select-branch" data-chart="'+escapeHtml(chart.id)+'" data-branch="__all__">All branches</button>';
+    var tabs=options.map(function(option){
+      return '<button type="button" class="chem-branch-tab '+(option.path===active?'active':'')+'" data-action="select-branch" data-chart="'+escapeHtml(chart.id)+'" data-branch="'+escapeHtml(option.path)+'">'+escapeHtml(option.label)+'</button>';
     }).join('');
-    document.getElementById('flowcharts').innerHTML=html||'<div class="panel">No organ flowcharts yet.</div>';
+    return '<div class="chem-branch-tabs">'+all+tabs+'</div>';
+  }
+  function renderFlowcharts(){
+    var charts=state.charts||[];
+    if(!charts.length){document.getElementById('flowcharts').innerHTML='<div class="panel">No organ flowcharts yet.</div>';return}
+    if(!activeChartId||!charts.some(function(chart){return chart.id===activeChartId}))activeChartId=charts[0].id;
+    var chart=charts.find(function(item){return item.id===activeChartId})||charts[0];
+    var paths=(chart.paths||[]).join('\n');
+    var note=chart.note?'<p>'+escapeHtml(chart.note)+'</p>':'';
+    var branch=activeBranchFor(chart);
+    var html=chartTabsHtml()+'<article class="flow-card" data-chart="'+escapeHtml(chart.id)+'"><div class="flow-card-head"><div><h2>'+escapeHtml(chart.title||'Untitled Flowchart')+'</h2>'+note+'</div><div class="flow-card-actions"><button type="button" class="mini-btn" data-action="export-chart" data-chart="'+escapeHtml(chart.id)+'">Export</button><button type="button" class="mini-btn danger admin-only" data-action="delete-chart" data-chart="'+escapeHtml(chart.id)+'">Delete</button></div></div>'+branchTabsHtml(chart)+'<div class="flow-view-tools"><button type="button" class="mini-btn" data-action="flow-zoom" data-dir="-1">-</button><span class="flow-zoom-value">'+Math.round(chemFlowZoom*100)+'%</span><button type="button" class="mini-btn" data-action="flow-zoom" data-dir="1">+</button><button type="button" class="mini-btn" data-action="flow-zoom-reset">Reset</button></div>'+flowHtml(chart,chemFlowZoom,branch)+'<details class="flow-editor-details"><summary>Edit flowchart</summary><div class="flow-admin"><label>Title<input data-action="chart-field" data-chart="'+escapeHtml(chart.id)+'" data-field="title" value="'+escapeHtml(chart.title||'')+'"></label><label>Optional note<input data-action="chart-field" data-chart="'+escapeHtml(chart.id)+'" data-field="note" value="'+escapeHtml(chart.note||'')+'"></label><div class="branch-builder outline-builder">'+branchOutlineHtml(chart)+'</div><details class="advanced-paths"><summary>Advanced: edit full paths</summary><textarea data-action="chart-paths" data-chart="'+escapeHtml(chart.id)+'">'+escapeHtml(paths)+'</textarea></details></div></details></article>';
+    document.getElementById('flowcharts').innerHTML=html;
   }
   function renderHormones(){
     var rows=(state.hormones||[]).map(function(item){
@@ -341,7 +396,14 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   function exportChart(chart){
     if(!chart)return;
     var area=document.getElementById('printArea');
-    area.innerHTML='<div class="print-page"><h1>'+escapeHtml(chart.title||'Organ Flowchart')+'</h1>'+flowHtml(chart)+'</div>';
+    var branch=activeBranchFor(chart);
+    var branchLabel='';
+    if(branch&&branch!=='__all__'){
+      var match=branchOptions(chart).find(function(option){return option.path===branch});
+      branchLabel=match?match.label:'';
+    }
+    var exportTitle=(chart.title||'Organ Flowchart')+(branchLabel?' - '+branchLabel:'');
+    area.innerHTML='<div class="print-page"><h1>'+escapeHtml(exportTitle)+'</h1>'+flowHtml(chart,null,branch)+'</div>';
     area.style.display='block';
     area.style.position='fixed';
     area.style.left='-10000px';
@@ -364,7 +426,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     area.innerHTML='';
     if(window.HubPdfExport){
       window.HubPdfExport.open({
-        title:chart.title||'Organ Flowchart',
+        title:exportTitle,
         orientation:'landscape',
         defaultScale:scale,
         minScale:.25,
@@ -375,7 +437,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         contentHtml:content,
         bodyClass:'printing',
         scaleVar:'--chem-print-scale',
-        hint:'Use the scale slider here; Chrome does not always show its own scale box.',
+        hint:'Preview updates with the scale. If the page edge cuts content, lower the scale before opening Save as PDF.',
         beforePrint:function(printScale,printArea){printArea.style.setProperty('--chem-print-scale',printScale.toFixed(3));},
         afterPrint:function(printArea){printArea.style.removeProperty('--chem-print-scale')}
       });
@@ -434,16 +496,28 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(ui==='admin-unlock'){attemptLogin();return}
     if(ui==='close-admin'){closeAdmin();return}
     if(act==='export-chart'){exportChart(findChart(action.dataset.chart));return}
+    if(act==='select-chart'){
+      activeChartId=action.dataset.chart||activeChartId;
+      localStorage.setItem('chemistryActiveChart',activeChartId);
+      renderAll();
+      return;
+    }
+    if(act==='select-branch'){
+      activeBranchByChart[action.dataset.chart]=action.dataset.branch||'__all__';
+      try{localStorage.setItem('chemistryActiveBranches',JSON.stringify(activeBranchByChart))}catch(e){}
+      renderAll();
+      return;
+    }
     if(act==='flow-zoom'||act==='flow-zoom-reset'){
-      if(act==='flow-zoom-reset')chemFlowZoom=.56;
+      if(act==='flow-zoom-reset')chemFlowZoom=.82;
       else chemFlowZoom=Math.max(.38,Math.min(1.1,chemFlowZoom+(Number(action.dataset.dir)||0)*.08));
-      localStorage.setItem('chemistryFlowZoom2',String(chemFlowZoom));
+      localStorage.setItem('chemistryFlowZoom3',String(chemFlowZoom));
       renderAll();
       return;
     }
     if(!isAdmin)return;
-    if(act==='add-chart'){state.charts.push({id:uid('chart'),title:'New Organ Flowchart',organ:'New Organ',note:'',nodeMeta:{},paths:['New Organ > Anatomy','New Organ > Biochemical functions','New Organ > Drug / Disease','New Organ > Tests']});renderAll();markDirty()}
-    if(act==='delete-chart'){state.charts=state.charts.filter(function(chart){return chart.id!==action.dataset.chart});renderAll();markDirty()}
+    if(act==='add-chart'){var newChart={id:uid('chart'),title:'New Organ Flowchart',organ:'New Organ',note:'',nodeMeta:{},paths:['New Organ > Anatomy','New Organ > Biochemical functions','New Organ > Drug / Disease','New Organ > Tests']};state.charts.push(newChart);activeChartId=newChart.id;localStorage.setItem('chemistryActiveChart',activeChartId);renderAll();markDirty()}
+    if(act==='delete-chart'){state.charts=state.charts.filter(function(chart){return chart.id!==action.dataset.chart});if(activeChartId===action.dataset.chart)activeChartId=(state.charts[0]&&state.charts[0].id)||'';localStorage.setItem('chemistryActiveChart',activeChartId);renderAll();markDirty()}
     if(act==='add-path'){var chart=findChart(action.dataset.chart);if(chart){chart.paths=chart.paths||[];chart.paths.push((chart.organ||chart.title||'Organ')+' > New branch > New endpoint');renderAll();markDirty()}}
     if(act==='add-branch'){var branchChart=findChart(action.dataset.chart);if(branchChart){var rows=outlineRowsFromDom(branchChart.id)||outlineRowsFromPaths(branchChart);rows.push({label:'New branch',depth:rows.length?1:0,note:'',image:'',color:defaultNodeColor('New branch',rows.length?1:0)});applyOutlineRows(branchChart,rows);renderAll();markDirty()}}
     if(act==='delete-branch'){var deleteChart=findChart(action.dataset.chart);if(deleteChart){deleteChart.paths=(deleteChart.paths||[]).filter(function(path,pathIndex){return pathIndex!==Number(action.dataset.index)});renderAll();markDirty()}}
