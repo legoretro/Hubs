@@ -777,6 +777,7 @@ button{cursor:pointer;font-family:inherit}
 </div><!-- #app -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="shared/pdf-export.js"></script>
 <script src="safe-supabase-sync.js"></script>
 <script>
 // ============================================================
@@ -4068,8 +4069,9 @@ function buildStudyExportPage() {
   return '<section class="page compact-export"><h1>Blood Group Study References</h1><div class="compact-grid">' + cards + '</div></section>';
 }
 
-function buildExportHtml(content, title, orientation) {
+function buildExportHtml(content, title, orientation, scale) {
   orientation = orientation || 'portrait';
+  var printScale = Math.max(.25, Math.min(1.25, Number(scale) || 1));
   var isLandscape = orientation === 'landscape';
   var pageSize = isLandscape ? 'letter landscape' : 'letter portrait';
   var pageMax = isLandscape ? '10.4in' : '7.45in';
@@ -4077,7 +4079,7 @@ function buildExportHtml(content, title, orientation) {
   var onePageGrid = isLandscape ? 'grid-template-columns:1.05fr 1.45fr 1.5fr;' : 'grid-template-columns:1fr 1fr;';
   var portraitTweaks = isLandscape ? '' : '.onepage-grid .system-card:last-child{grid-column:1/-1}.compact-grid{grid-template-columns:1fr}.system-page .tl-item{font-size:8px}.study-table td{font-size:6.4px;padding:1.8px 3px}.freq-export td,.freq-export th{font-size:5.6px;padding:1.8px 2px}';
   return '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>' + exportText(title || 'Bloody Brilliant Export') + '</title>' +
-    '<style>@page{size:' + pageSize + ';margin:.28in}*{box-sizing:border-box;margin:0;padding:0}body{font-family:Georgia,serif;font-size:11px;color:#1e0d10;background:#fff}' +
+    '<style>@page{size:' + pageSize + ';margin:.28in}*{box-sizing:border-box;margin:0;padding:0}body{font-family:Georgia,serif;font-size:11px;color:#1e0d10;background:#fff}.bb-export-scale-wrap{transform:scale(var(--bb-export-scale,1));transform-origin:top left;width:calc(100% / var(--bb-export-scale,1));min-height:calc(100% / var(--bb-export-scale,1))}' +
     'h1{font-size:18px;color:#5a0e20;text-align:center;margin-bottom:6px;padding:12px 0 0}' +
     'h2{font-size:13px;color:#8b0a26;margin:14px 0 6px;border-bottom:2px solid #f7c5d0;padding-bottom:3px}' +
     '.page{padding:0;page-break-after:always;max-width:' + pageMax + ';margin:0 auto}.page:last-child{page-break-after:avoid}' +
@@ -4091,10 +4093,11 @@ function buildExportHtml(content, title, orientation) {
     '.general-export-page{max-width:10.4in;height:7.12in;overflow:hidden}.general-export-page h1{text-align:left;font-size:18px;margin:0 0 .07in;padding:0;color:#5a0e20}.general-export-main{table-layout:fixed;margin-bottom:.07in;border:1px solid #f7c5d0}.general-export-main th{font-size:6.6px;line-height:1.05;text-align:center;padding:3px 2px;background:#5a0e20;color:#fff}.general-export-main th:first-child{width:.78in;text-align:left}.general-export-main td{font-size:6.5px;line-height:1.06;padding:2px 3px;border:1px solid #f7c5d0;white-space:normal;overflow-wrap:anywhere}.general-export-main tr:nth-child(even) td{background:#fff1f4}.general-export-label{font-weight:800;color:#5a0e20}.general-export-summary h2{font-size:8px;letter-spacing:1.2px;text-transform:uppercase;color:#7a6468;border:0;margin:.02in 0 .035in;padding:0}.general-export-summary table{table-layout:fixed;border:1px solid #f7c5d0}.general-export-summary th{font-size:6.4px;padding:2px 4px}.general-export-summary td{font-size:6.4px;line-height:1.05;padding:2px 4px;border:1px solid #f7c5d0}.general-export-summary th:nth-child(1){width:45%}.general-export-summary th:nth-child(2){width:20%}.lesser-export-page{max-width:10.4in;height:7.12in;overflow:hidden}.lesser-export-page h1{text-align:left;font-size:18px;margin:0 0 .08in;padding:0;color:#5a0e20}.lesser-export-table{table-layout:fixed}.lesser-export-table th{font-size:6.6px;line-height:1.05;padding:3px 3px}.lesser-export-table td{font-size:6.6px;line-height:1.07;padding:3px 3px;white-space:normal;overflow-wrap:anywhere}.lesser-export-table th:first-child{width:.85in}' +
     '.map-page{max-width:10.4in;height:7.15in;overflow:hidden}.map-page h1{font-size:16px;padding:0;margin:0 0 .06in}.map-print{height:6.86in;overflow:hidden;display:flex;align-items:center;justify-content:center}.map-print>div{width:100%!important;height:100%!important;overflow:hidden!important}.map-print svg{width:100%!important;max-width:100%!important;min-width:0!important;height:100%!important;max-height:6.78in!important}.map-rbc .map-print svg text{font-size:10px!important}.map-chrom .map-print{align-items:flex-start}svg{max-width:100%;height:auto}' +
     portraitTweaks +
-    '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style></head><body>' + content + '</body></html>';
+    '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.bb-export-scale-wrap{zoom:var(--bb-export-scale,1);transform:none;width:auto;min-height:0}}</style></head><body style="--bb-export-scale:' + printScale + '"><div class="bb-export-scale-wrap">' + content + '</div></body></html>';
 }
 
 function printExportHtml(content, title, orientation) {
+  function writeExport(scale) {
   var frame = document.getElementById('bbPrintFrame');
   if (!frame) {
     frame = document.createElement('iframe');
@@ -4114,8 +4117,24 @@ function printExportHtml(content, title, orientation) {
     setTimeout(function(){ win.focus(); win.print(); }, 120);
   };
   doc.open();
-  doc.write(buildExportHtml(content, title, orientation));
+  doc.write(buildExportHtml(content, title, orientation, scale));
   doc.close();
+  }
+  if (window.HubPdfExport) {
+    window.HubPdfExport.open({
+      title: title || 'Blood Bank Export',
+      orientation: orientation || 'portrait',
+      defaultScale: 1,
+      minScale: .35,
+      maxScale: 1.15,
+      step: .01,
+      persistKey: 'bloodbank-export-scale-' + (orientation || 'portrait'),
+      customPrint: writeExport,
+      hint: 'Use this scale before Chrome opens Save as PDF. Blood Bank exports keep their existing layout.'
+    });
+    return;
+  }
+  writeExport(1);
 }
 
 function exportCurrentSystemPage() {

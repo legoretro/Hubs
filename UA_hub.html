@@ -277,6 +277,7 @@ button,input{font-family:inherit}button{cursor:pointer}
 <div class="save-indicator" id="saveIndicator">Saved</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="shared/pdf-export.js"></script>
 <script src="safe-supabase-sync.js"></script>
 <script>
 const SUPABASE_URL='https://fjrdlasmdhqjqqlvuxwj.supabase.co';
@@ -1372,6 +1373,22 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       html+=caseHtml;
     }
     var area=document.getElementById('printArea');
+    if(window.HubPdfExport){
+      window.HubPdfExport.open({
+        title:'Urinalysis Hub Export',
+        orientation:'portrait',
+        defaultScale:1,
+        minScale:.45,
+        maxScale:1.15,
+        step:.01,
+        persistKey:'ua-hub-export-scale',
+        printArea:area,
+        contentHtml:html,
+        bodyClass:'printing',
+        hint:'Use this scale before Chrome opens Save as PDF.'
+      });
+      return;
+    }
     area.innerHTML=html;
     document.body.classList.add('printing');
     showToast('Opening PDF export');
