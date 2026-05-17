@@ -21,6 +21,7 @@ body{font-family:Georgia,'Times New Roman',serif;background:var(--cream);color:v
 h1,h2,h3,h4{font-family:Georgia,serif;font-weight:700}
 p{line-height:1.65}
 button{cursor:pointer;font-family:inherit}
+textarea{resize:none;overflow:hidden}
 
 /* INTRO DOORS */
 #intro{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:#1a080f;overflow:hidden}
@@ -108,7 +109,7 @@ button{cursor:pointer;font-family:inherit}
 .flash-top{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:14px}
 .flash-title{font-size:28px;color:#5a0e20;line-height:1.05}
 .flash-sub{font-size:13px;color:#7a6468;font-weight:700}
-.flash-card{min-height:390px;border:2px solid rgba(192,23,61,.18);border-radius:24px;background:#fff;box-shadow:0 14px 34px rgba(90,14,32,.12);padding:24px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;touch-action:pan-y}
+.flash-card{min-height:390px;border:2px solid rgba(192,23,61,.18);border-radius:24px;background:#fff;box-shadow:0 14px 34px rgba(90,14,32,.12);padding:24px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;touch-action:auto}
 .flash-card.swiping{transition:none}.flash-card.swipe-right{box-shadow:0 18px 40px rgba(26,140,92,.22);border-color:rgba(26,140,92,.45)}.flash-card.swipe-left{box-shadow:0 18px 40px rgba(192,23,61,.22);border-color:rgba(192,23,61,.45)}
 .flash-card:before{content:"";position:absolute;inset:0 0 auto;height:10px;background:linear-gradient(90deg,#c0173d,#e8a832,#1a8c5c,#1a5c8c);opacity:.9}
 .flash-tag{display:inline-flex;align-items:center;gap:6px;border-radius:999px;background:#fce8ed;color:#8b0a26;padding:5px 11px;font-size:12px;font-weight:900;width:max-content;margin-bottom:14px}
@@ -123,7 +124,7 @@ button{cursor:pointer;font-family:inherit}
 .flash-rbc svg{width:150px;height:150px;display:block}.flash-rbc .cell{transition:all .25s ease}.flash-rbc.right .cell{filter:drop-shadow(0 8px 10px rgba(26,140,92,.22))}.flash-rbc.wrong .cell{filter:drop-shadow(0 8px 10px rgba(192,23,61,.24))}
 .flash-map-title{font-size:12px;text-transform:uppercase;letter-spacing:1.5px;color:#7a6468;font-weight:900}
 .flash-map{display:flex;gap:5px;flex-wrap:wrap}
-.flash-dot{width:12px;height:12px;border-radius:50%;background:#ead4dc;border:1px solid #f7c5d0}.flash-dot.done{background:#1a8c5c;border-color:#1a8c5c}.flash-dot.wrong{background:#c0173d;border-color:#c0173d}.flash-dot.skip{background:#e8a832;border-color:#e8a832}.flash-dot.current{transform:scale(1.35);background:#7bdff2;border-color:#1a5c8c}
+.flash-dot{width:13px;height:13px;border-radius:50%;background:#ead4dc;border:1px solid #f7c5d0;padding:0;cursor:pointer}.flash-dot:hover{transform:scale(1.2)}.flash-dot.done{background:#1a8c5c;border-color:#1a8c5c}.flash-dot.wrong{background:#c0173d;border-color:#c0173d}.flash-dot.skip{background:#e8a832;border-color:#e8a832}.flash-dot.current{transform:scale(1.35);background:#7bdff2;border-color:#1a5c8c}
 .flash-score{display:grid;grid-template-columns:1fr 1fr;gap:8px}.flash-score div{border-radius:14px;background:#fff;border:1px solid #f7c5d0;padding:10px;text-align:center}.flash-score strong{display:block;font-size:22px;color:#5a0e20}.flash-score span{font-size:11px;color:#7a6468;text-transform:uppercase;letter-spacing:1px;font-weight:900}
 .flash-finished{min-height:360px;display:grid;place-items:center;text-align:center}.flash-finished h3{font-size:34px;color:#5a0e20;margin-bottom:8px}.flash-finished p{font-size:17px;color:#7a6468}
 .flash-resume{min-height:330px;display:grid;place-items:center;text-align:center}.flash-resume h3{font-size:32px;color:#5a0e20;margin-bottom:8px}.flash-resume p{font-size:17px;color:#7a6468;max-width:560px;margin:0 auto 16px}
@@ -167,9 +168,9 @@ button{cursor:pointer;font-family:inherit}
 .general-table th:first-child{width:180px;text-align:left}.general-table th:last-child{width:74px}
 .general-table td{border:1px solid var(--rose);padding:5px 6px;vertical-align:top;background:#fffaf7}
 .general-table tr:nth-child(even) td{background:#fff1f4}
-.general-row-label,.general-cell{width:100%;min-height:42px;border:0;background:transparent;color:var(--dark);font-family:Georgia,serif;font-size:13px;line-height:1.35;resize:vertical;padding:4px;border-radius:6px}
+.general-row-label,.general-cell{width:100%;min-height:30px;border:0;background:transparent;color:var(--dark);font-family:Georgia,serif;font-size:13px;line-height:1.25;resize:none;overflow:hidden;padding:3px 4px;border-radius:6px}
 .general-row-label{font-weight:800;color:var(--wine)}
-.general-col-label{width:100%;border:0;border-radius:6px;background:rgba(255,255,255,.12);color:#fff;font-family:Georgia,serif;font-weight:900;font-size:12px;line-height:1.15;text-align:center;resize:vertical;min-height:28px;padding:3px}
+.general-col-label{width:100%;border:0;border-radius:6px;background:rgba(255,255,255,.12);color:#fff;font-family:Georgia,serif;font-weight:900;font-size:12px;line-height:1.15;text-align:center;resize:none;overflow:hidden;min-height:24px;padding:3px}
 .general-col-label:focus{outline:1px dashed #fff;background:rgba(255,255,255,.2)}
 .general-col-delete{margin-top:4px;border:1px solid rgba(255,255,255,.55);background:rgba(255,255,255,.1);color:#fff;border-radius:999px;padding:1px 8px;font-size:10px;font-weight:900}
 .general-cell:focus,.general-row-label:focus{outline:1px dashed var(--warn);background:#fff}
@@ -218,7 +219,7 @@ button{cursor:pointer;font-family:inherit}
 .ws-table td.ws-value{padding:4px 8px;vertical-align:middle;width:100%}
 
 /* EDITABLE FIELD */
-.edit-field{width:100%;border:none;background:transparent;font-family:Georgia,serif;font-size:13px;color:var(--dark);line-height:1.5;resize:vertical;min-height:28px;padding:4px 6px;border-radius:4px;transition:background .2s;box-sizing:border-box}
+.edit-field{width:100%;border:none;background:transparent;font-family:Georgia,serif;font-size:13px;color:var(--dark);line-height:1.35;resize:none;overflow:hidden;min-height:26px;padding:4px 6px;border-radius:4px;transition:background .2s;box-sizing:border-box}
 .edit-field:focus{outline:none;background:rgba(192,23,61,.06)}
 .admin-mode .edit-field{background:rgba(232,168,50,.08);border:1px dashed rgba(232,168,50,.5);cursor:text}
 .admin-mode .edit-field:focus{background:rgba(232,168,50,.15);border-color:#d4860a}
@@ -324,7 +325,7 @@ button{cursor:pointer;font-family:inherit}
 .lesser-table th{background:var(--wine);color:#fff;padding:7px 10px;text-align:left;font-size:10px;letter-spacing:.5px;vertical-align:top}
 .lesser-table td{padding:7px 10px;border-bottom:1px solid var(--rose);vertical-align:top}
 .lesser-table tr:nth-child(even) td{background:rgba(252,232,237,.3)}
-.lesser-edit,.lesser-system-edit,.lesser-col-label{width:100%;border:none;background:transparent;font-size:12px;font-family:Georgia,serif;color:var(--dark);resize:vertical;min-height:28px;padding:3px 4px;border-radius:5px}
+.lesser-edit,.lesser-system-edit,.lesser-col-label{width:100%;border:none;background:transparent;font-size:12px;font-family:Georgia,serif;color:var(--dark);resize:none;overflow:hidden;min-height:26px;padding:3px 4px;border-radius:5px}
 .lesser-system-edit{font-weight:900;color:var(--wine);min-width:130px}
 .lesser-col-label{color:#fff;font-weight:900;background:rgba(255,255,255,.12);text-align:left;min-height:30px}
 .admin-mode .lesser-edit,.admin-mode .lesser-system-edit{background:rgba(232,168,50,.08);border:1px dashed rgba(232,168,50,.4)}
@@ -615,7 +616,7 @@ button{cursor:pointer;font-family:inherit}
     <div class="flash-top">
       <div>
         <div class="flash-title">Flashcard Lab</div>
-        <div class="flash-sub">Swipe right if it clicked. Swipe left if it needs another spin. Skip is allowed.</div>
+        <div class="flash-sub">Reveal, then mark it right or wrong. Tap the tiny circles to revisit a card.</div>
       </div>
       <button class="btn btn-ghost" onclick="closeFlashcardPractice()">Close</button>
     </div>
@@ -1484,6 +1485,7 @@ function setNote(sysKey, field, value) {
   if (!isAdmin) return;
   if (!notesData[sysKey]) notesData[sysKey] = {};
   notesData[sysKey][field] = value;
+  syncGeneralComparisonFromEncyclopedia({silent:true});
   scheduleSave();
 }
 
@@ -1491,8 +1493,19 @@ function makeField(sysKey, field, rows) {
   const val = getNote(sysKey, field);
   const r = rows || 1;
   return `<textarea class="edit-field" rows="${r}" ${isAdmin?'':'disabled'} 
-    oninput="setNote('${sysKey}','${field}',this.value)"
+    oninput="autoGrowTextArea(this);setNote('${sysKey}','${field}',this.value)"
     placeholder="${isAdmin ? 'Click to add...' : ''}">${val}</textarea>`;
+}
+
+function autoGrowTextArea(el) {
+  if (!el || !el.tagName || el.tagName.toLowerCase() !== 'textarea') return;
+  el.style.height = 'auto';
+  el.style.height = Math.max(el.scrollHeight, 26) + 'px';
+}
+
+function autoGrowTextAreas(root) {
+  if (!root) return;
+  root.querySelectorAll('textarea').forEach(autoGrowTextArea);
 }
 
 function makeFreqRow(sysKey, idx) {
@@ -1520,6 +1533,7 @@ function updateFreqRow(sysKey, idx, field, val) {
   const baseRows = getFreqRows(sysKey);
   if (!notesData[sysKey].freqRows[idx]) notesData[sysKey].freqRows[idx] = Object.assign({}, baseRows[idx] || {});
   notesData[sysKey].freqRows[idx][field] = val;
+  syncGeneralComparisonFromEncyclopedia({silent:true});
   scheduleSave();
 }
 
@@ -1529,6 +1543,7 @@ function addFreqRow(sysKey) {
   if (!notesData[sysKey].freqRows) notesData[sysKey].freqRows = [];
   const idx = notesData[sysKey].freqRows.length;
   notesData[sysKey].freqRows.push({ag:'',c:'',b:'',a:'',i:'',h:'',memo:'',pop:'',hiLo:''});
+  syncGeneralComparisonFromEncyclopedia({silent:true});
   const tbody = document.getElementById('freq-tbody-' + sysKey);
   if (tbody) {
     tbody.insertAdjacentHTML('beforeend', makeFreqRow(sysKey, idx));
@@ -1539,6 +1554,7 @@ function addFreqRow(sysKey) {
 function delFreqRow(sysKey, idx) {
   if (!notesData[sysKey]?.freqRows) return;
   notesData[sysKey].freqRows.splice(idx, 1);
+  syncGeneralComparisonFromEncyclopedia({silent:true});
   scheduleSave();
   renderSystem(currentSystemKey);
 }
@@ -1863,149 +1879,121 @@ function defaultGeneralColumns() {
   });
 }
 
+const GENERAL_COMPARE_SYNC_VERSION = 2;
+const GENERAL_COMPARE_SOURCE_ROWS = [
+  {id:'general_antigens', label:'Antigens', type:'field', field:'antigen_names'},
+  {id:'general_antibody_temp', label:'Antibody Temp', type:'antibody_temp'},
+  {id:'general_dosage', label:'Dosage', type:'field', field:'dosage'},
+  {id:'general_chemicals', label:'Chemicals/Enzymes', type:'chemicals'},
+  {id:'general_complement', label:'Complement', type:'field', field:'complement'},
+  {id:'general_hdn', label:'HDN', type:'field', field:'hdn'},
+  {id:'general_htr', label:'HTRXN', type:'field', field:'htr'},
+  {id:'general_immunogenic', label:'Immunogenic', type:'field', field:'immunogenic'},
+  {id:'general_baby_cells', label:'Baby Cells', type:'field', field:'cord_cells'},
+  {id:'general_naturally_occurring', label:'Naturally Occurring', type:'field', field:'naturally_occurring'},
+  {id:'general_gene_location', label:'Gene Location', type:'field', field:'chromosome'},
+  {id:'general_freq_memo', label:'Frequency to Memorize', type:'freq_memo'},
+  {id:'general_other', label:'Other', type:'field', field:'lab_notes'}
+];
+
+function generalSourceForColumn(colId) {
+  const map = {
+    abo:{key:'abo'},
+    rh:{key:'rh'},
+    kell:{key:'kell'},
+    duffy:{key:'duffy'},
+    kidd:{key:'kidd'},
+    mns_mn:{key:'mns', split:'mn'},
+    mns_ss:{key:'mns', split:'ss'},
+    lewis:{key:'lewis'},
+    p1pk:{key:'p1pk'},
+    lutheran_lua:{key:'lutheran', split:'lua'},
+    lutheran_lub:{key:'lutheran', split:'lub'}
+  };
+  return map[colId] || null;
+}
+
+function currentWorksheetData(sysKey) {
+  return Object.assign({}, WORKSHEET_NOTE_DEFAULTS[sysKey] || {}, notesData[sysKey] || {});
+}
+
+function compactBloodBankPhrase(value) {
+  return String(value == null ? '' : value)
+    .replace(/\r/g, '\n')
+    .replace(/[ \t]+\n/g, '\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
+function fieldForGeneralSource(rowDef, source) {
+  if (!source) return '';
+  if (source.split === 'ss' && rowDef.field && WORKSHEET_NOTE_DEFAULTS[source.key] && (rowDef.field + '_ss') in WORKSHEET_NOTE_DEFAULTS[source.key]) {
+    return rowDef.field + '_ss';
+  }
+  return rowDef.field || '';
+}
+
+function compactIgTemp(ig, temp) {
+  ig = String(ig || '');
+  temp = String(temp || '');
+  const hasIgG = /IgG/i.test(ig);
+  const hasIgM = /IgM/i.test(ig);
+  const hasWarm = /Warm/i.test(temp);
+  const hasCold = /Cold/i.test(temp);
+  if (hasIgG && !hasIgM && hasWarm && !hasCold) return 'IgG: Warm';
+  if (hasIgM && !hasIgG && hasCold && !hasWarm) return 'IgM: Cold';
+  if (hasIgG && !hasIgM && !hasWarm && !hasCold) return 'IgG';
+  if (hasIgM && !hasIgG && !hasWarm && !hasCold) return 'IgM';
+  const joined = [ig, temp].filter(Boolean).join(': ');
+  return compactBloodBankPhrase(joined);
+}
+
+function generalCellFromEncyclopedia(rowDef, colId) {
+  const source = generalSourceForColumn(colId);
+  if (!source) return '';
+  const data = currentWorksheetData(source.key);
+  if (source.split === 'lua') {
+    if (rowDef.id === 'general_antigens') return 'Lua';
+    if (rowDef.id === 'general_antibody_temp') return 'IgM: Cold';
+  }
+  if (source.split === 'lub') {
+    if (rowDef.id === 'general_antigens') return 'Lub';
+    if (rowDef.id === 'general_antibody_temp') return 'IgG: Warm';
+  }
+  if (source.split === 'mn') {
+    if (rowDef.id === 'general_antibody_temp') return 'IgM: Cold';
+  }
+  if (source.split === 'ss') {
+    if (rowDef.id === 'general_antibody_temp') return 'IgG: Warm';
+  }
+  if (rowDef.type === 'antibody_temp') {
+    return compactIgTemp(data.ig_class, data.temp);
+  }
+  if (rowDef.type === 'chemicals') {
+    const destroyedField = source.split === 'ss' ? 'destroyed_ss' : 'destroyed';
+    const enhancedField = source.split === 'ss' ? 'enhanced_ss' : 'enhanced';
+    const parts = [];
+    if (data[destroyedField]) parts.push('Destroyed: ' + data[destroyedField]);
+    if (data[enhancedField]) parts.push('Enhanced: ' + data[enhancedField]);
+    return compactBloodBankPhrase(parts.join('\n'));
+  }
+  if (rowDef.type === 'freq_memo') {
+    return getFreqRows(source.key).map(function(row) {
+      const label = compactBloodBankPhrase(row.ag);
+      const memo = compactBloodBankPhrase(row.memo);
+      return label && memo ? label + ': ' + memo : '';
+    }).filter(Boolean).join('\n');
+  }
+  const field = fieldForGeneralSource(rowDef, source);
+  return compactBloodBankPhrase(field ? data[field] : '');
+}
+
 function defaultGeneralRows() {
   const cols = defaultGeneralColumns();
-  return [
-    {
-      id:'general_antigens',
-      label:'Antigens',
-      cells:{
-        abo:'A, B, O, AB',
-        rh:'D, C/c, E/e',
-        kell:'K/k\nJsa/Jsb\nKpa/Kpb',
-        duffy:'Fya/Fyb',
-        kidd:'Jka/Jkb',
-        mns_mn:'M/N',
-        mns_ss:'S/s',
-        lewis:'Lea\nLeb',
-        p1pk:'P1\np\npk',
-        lutheran_lua:'Lua',
-        lutheran_lub:'Lub'
-      }
-    },
-    {
-      id:'general_antibody_temp',
-      label:'Antibody Temp',
-      cells:{
-        abo:'IgM: Cold',
-        rh:'IgG: Warm',
-        kell:'IgG: Warm',
-        duffy:'IgG: Warm',
-        kidd:'IgG: Warm',
-        mns_mn:'IgM: Cold',
-        mns_ss:'IgG: Warm',
-        lewis:'IgM: Cold',
-        p1pk:'IgM: Cold',
-        lutheran_lua:'IgM: Cold',
-        lutheran_lub:'IgG: Warm'
-      }
-    },
-    {
-      id:'general_dosage',
-      label:'Dosage',
-      cells:{
-        abo:'No',
-        rh:'Yes',
-        kell:'No',
-        duffy:'Variable',
-        kidd:'Yes',
-        mns_mn:'No',
-        mns_ss:'No',
-        lewis:'No',
-        p1pk:'No',
-        lutheran_lua:'No',
-        lutheran_lub:'No'
-      }
-    },
-    {
-      id:'general_chemicals',
-      label:'Chemicals/Enzymes',
-      cells:{
-        abo:'Enzymes',
-        rh:'Enzyme Stronger',
-        kell:'DTT susceptible',
-        duffy:'Enzyme susceptible',
-        kidd:'Enzyme Stronger',
-        mns_mn:'Enzyme susceptible',
-        mns_ss:'Enzyme susceptible',
-        lewis:'Enzyme enhanced',
-        p1pk:'Enzyme: No Change',
-        lutheran_lua:'DTT susceptible; enzyme resistant',
-        lutheran_lub:'DTT susceptible; enzyme resistant'
-      }
-    },
-    {
-      id:'general_complement',
-      label:'Complement',
-      cells:{
-        abo:'Yes',
-        rh:'No',
-        kell:'No',
-        duffy:'No',
-        kidd:'Does Fix',
-        mns_mn:'No',
-        mns_ss:'No',
-        lewis:'No',
-        p1pk:'No, except IgG Donath-Landsteiner (anti-P)',
-        lutheran_lua:'No',
-        lutheran_lub:'No'
-      }
-    },
-    {
-      id:'general_hdn',
-      label:'HDN',
-      cells:{
-        abo:'Yes Mild',
-        rh:'Yes',
-        kell:'Yes',
-        duffy:'Yes',
-        kidd:'Yes',
-        mns_mn:'No',
-        mns_ss:'Only S/s',
-        lewis:'No',
-        p1pk:'No',
-        lutheran_lua:'No',
-        lutheran_lub:'No'
-      }
-    },
-    {
-      id:'general_other',
-      label:'Other',
-      cells:{
-        abo:'Naturally occurring',
-        rh:'',
-        kell:'',
-        duffy:'Null more common\nRelated to Malaria/Protection',
-        kidd:'Titer high/low fast (Hide/Seek)\nSignificant for HTRXN (delayed)',
-        mns_mn:'Anti-N seen in dialysis patients transient',
-        mns_ss:'',
-        lewis:'Anti-Lea seen in pregnancy transient',
-        p1pk:'Naturally occurring',
-        lutheran_lua:'Mixed Field',
-        lutheran_lub:'Mixed Field'
-      }
-    },
-    {
-      id:'general_plasma_clue',
-      label:'Plasma antibody clue / neutralization',
-      cells:{
-        abo:'expected naturally occurring ABO antibodies in plasma; clinically severe if incompatible transfusion.',
-        rh:'AHG reactions; enzyme enhanced; history of pregnancy/transfusion supports immune antibody.',
-        kell:'AHG IgG; DTT destroys Kell antigens; K is highly immunogenic.',
-        duffy:'AHG IgG; enzyme-treated cells weaken/destroy Fya/Fyb reactions.',
-        kidd:'dosage + disappearing; enzyme enhancement separate mixtures.',
-        mns_mn:'enzyme treatment helps separate MNS from enzyme-resistant/enhanced antibodies.',
-        mns_ss:'enzyme treatment helps separate MNS from enzyme-resistant/enhanced antibodies.',
-        lewis:'enzyme enhanced, often neutralizable by soluble Lewis substance/plasma; not clinically significant.',
-        p1pk:'anti-P1 is naturally occurring; PCH is Donath-Landsteiner anti-P.',
-        lutheran_lua:'characteristic mf reactivity; poor immunogen; not clinically significant.',
-        lutheran_lub:'characteristic mf reactivity; poor immunogen; not clinically significant.'
-      }
-    }
-  ].map(function(row) {
+  return GENERAL_COMPARE_SOURCE_ROWS.map(function(row) {
     const cells = {};
     cols.forEach(function(col) {
-      cells[col.id] = row.cells[col.id] || '';
+      cells[col.id] = generalCellFromEncyclopedia(row, col.id);
     });
     return { id: row.id, label: row.label, cells: cells };
   });
@@ -2013,23 +2001,19 @@ function defaultGeneralRows() {
 
 function applyBloodGroupWorksheetDefaults() {
   if (!notesData || typeof notesData !== 'object') notesData = {};
-  if (Number(notesData.__bbWorksheetVersion || 0) >= BB_WORKSHEET_DEFAULT_VERSION) return;
-  Object.keys(WORKSHEET_NOTE_DEFAULTS).forEach(function(key) {
-    const existing = notesData[key] && typeof notesData[key] === 'object' ? notesData[key] : {};
-    const defaults = Object.assign({}, WORKSHEET_NOTE_DEFAULTS[key]);
-    if (Array.isArray(defaults.freqRows)) defaults.freqRows = defaults.freqRows.map(function(row) { return Object.assign({}, row); });
-    notesData[key] = Object.assign({}, existing, defaults);
-  });
-  const defaultRows = defaultGeneralRows();
-  const defaultIds = {};
-  defaultRows.forEach(function(row) { defaultIds[row.id] = true; });
-  const currentGeneral = normalizeGeneralComparison(notesData[GENERAL_COMPARE_KEY]);
-  const customRows = currentGeneral.rows.filter(function(row) {
-    const hasContent = row.label || Object.values(row.cells || {}).some(function(value) { return String(value || '').trim(); });
-    return hasContent && !defaultIds[row.id];
-  });
-  notesData[GENERAL_COMPARE_KEY] = { columns: defaultGeneralColumns(), rows: defaultRows.concat(customRows) };
-  notesData.__bbWorksheetVersion = BB_WORKSHEET_DEFAULT_VERSION;
+  if (Number(notesData.__bbWorksheetVersion || 0) < BB_WORKSHEET_DEFAULT_VERSION) {
+    Object.keys(WORKSHEET_NOTE_DEFAULTS).forEach(function(key) {
+      const existing = notesData[key] && typeof notesData[key] === 'object' ? notesData[key] : {};
+      const defaults = Object.assign({}, WORKSHEET_NOTE_DEFAULTS[key]);
+      if (Array.isArray(defaults.freqRows)) defaults.freqRows = defaults.freqRows.map(function(row) { return Object.assign({}, row); });
+      notesData[key] = Object.assign({}, defaults, existing);
+    });
+    notesData.__bbWorksheetVersion = BB_WORKSHEET_DEFAULT_VERSION;
+  }
+  if (Number(notesData.__generalComparisonSyncVersion || 0) < GENERAL_COMPARE_SYNC_VERSION) {
+    syncGeneralComparisonFromEncyclopedia({silent:true});
+    notesData.__generalComparisonSyncVersion = GENERAL_COMPARE_SYNC_VERSION;
+  }
 }
 
 function makeGeneralRowId() {
@@ -2125,6 +2109,34 @@ function getGeneralComparison() {
 
 function ensureGeneralComparison() {
   notesData[GENERAL_COMPARE_KEY] = getGeneralComparison();
+  return notesData[GENERAL_COMPARE_KEY];
+}
+
+function syncGeneralComparisonFromEncyclopedia(options) {
+  options = options || {};
+  const table = normalizeGeneralComparison(notesData[GENERAL_COMPARE_KEY]);
+  const generated = GENERAL_COMPARE_SOURCE_ROWS.map(function(sourceRow) {
+    const existing = table.rows.find(function(row) { return row.id === sourceRow.id; }) || {};
+    const cells = {};
+    table.columns.forEach(function(col) {
+      const generatedValue = generalCellFromEncyclopedia(sourceRow, col.id);
+      cells[col.id] = generalSourceForColumn(col.id) ? generatedValue : (existing.cells && existing.cells[col.id] || '');
+    });
+    return { id: sourceRow.id, label: sourceRow.label, cells: cells };
+  });
+  const generatedIds = {};
+  generated.forEach(function(row) { generatedIds[row.id] = true; });
+  const customRows = table.rows.filter(function(row) {
+    const hasContent = row.label || Object.values(row.cells || {}).some(function(value) { return String(value || '').trim(); });
+    return hasContent && !generatedIds[row.id];
+  });
+  notesData[GENERAL_COMPARE_KEY] = { columns: table.columns, rows: generated.concat(customRows) };
+  notesData.__generalComparisonSyncVersion = GENERAL_COMPARE_SYNC_VERSION;
+  if (!options.silent) {
+    scheduleSave();
+    renderSystem('general');
+    showToast('General comparison synced from encyclopedia');
+  }
   return notesData[GENERAL_COMPARE_KEY];
 }
 
@@ -2311,12 +2323,12 @@ function renderGeneral(area) {
   const table = getGeneralComparison();
   const head = '<tr><th>Row</th>' + table.columns.map(function(col) {
     if (!isAdmin) return '<th>' + escText(col.label) + '</th>';
-    return '<th><textarea class="general-col-label" rows="1" oninput="updateGeneralColumn(\'' + col.id + '\',this.value)">' + escText(col.label) + '</textarea><button class="general-col-delete" onclick="deleteGeneralComparisonColumn(\'' + col.id + '\')">x</button></th>';
+    return '<th><textarea class="general-col-label" rows="1" oninput="autoGrowTextArea(this);updateGeneralColumn(\'' + col.id + '\',this.value)">' + escText(col.label) + '</textarea><button class="general-col-delete" onclick="deleteGeneralComparisonColumn(\'' + col.id + '\')">x</button></th>';
   }).join('') + (isAdmin ? '<th>Row</th>' : '') + '</tr>';
   const body = table.rows.map(function(row) {
-    const label = '<td><textarea class="general-row-label" rows="2" ' + (isAdmin ? '' : 'disabled') + ' placeholder="' + (isAdmin ? 'Row label' : '') + '" oninput="updateGeneralComparison(\'' + row.id + '\',\'label\',this.value)">' + escText(row.label) + '</textarea></td>';
+    const label = '<td><textarea class="general-row-label" rows="1" ' + (isAdmin ? '' : 'disabled') + ' placeholder="' + (isAdmin ? 'Row label' : '') + '" oninput="autoGrowTextArea(this);updateGeneralComparison(\'' + row.id + '\',\'label\',this.value)">' + escText(row.label) + '</textarea></td>';
     const cells = table.columns.map(function(col) {
-      return '<td><textarea class="general-cell" rows="3" ' + (isAdmin ? '' : 'disabled') + ' placeholder="' + (isAdmin ? 'Add notes...' : '') + '" oninput="updateGeneralComparison(\'' + row.id + '\',\'' + col.id + '\',this.value)">' + escText(row.cells && row.cells[col.id] || '') + '</textarea></td>';
+      return '<td><textarea class="general-cell" rows="1" ' + (isAdmin ? '' : 'disabled') + ' placeholder="' + (isAdmin ? 'Add notes...' : '') + '" oninput="autoGrowTextArea(this);updateGeneralComparison(\'' + row.id + '\',\'' + col.id + '\',this.value)">' + escText(row.cells && row.cells[col.id] || '') + '</textarea></td>';
     }).join('');
     const del = isAdmin ? '<td><button class="del-btn" style="display:inline-block" onclick="deleteGeneralComparisonRow(\'' + row.id + '\')">x</button></td>' : '';
     return '<tr>' + label + cells + del + '</tr>';
@@ -2329,9 +2341,12 @@ function renderGeneral(area) {
       <div class="general-actions">
         ${isAdmin ? '<button class="add-row-btn" onclick="addGeneralComparisonRow()">+ Add comparison row</button>' : ''}
         ${isAdmin ? '<button class="add-row-btn" onclick="addGeneralComparisonColumn()">+ Add comparison column</button>' : ''}
+        ${isAdmin ? '<button class="add-row-btn" onclick="syncGeneralComparisonFromEncyclopedia()">Sync from encyclopedia</button>' : ''}
         <button class="add-row-btn" onclick="exportGeneralComparisonPage()">Export General Comparison</button>
+        <button class="add-row-btn" onclick="exportGeneralComparisonBlankPage()">Export Blank Practice Sheet</button>
       </div>
     </div>`;
+  autoGrowTextAreas(area);
 }
 
 function renderSystem(key) {
@@ -2408,16 +2423,17 @@ function renderSystem(key) {
       <div class="sec-label" style="margin-bottom:10px">Study Reference</div>
       ${worksheetHTML}
       <div class="sec-label" style="margin:14px 0 8px">Transfusion Notes</div>
-      <textarea class="edit-field" rows="5" style="width:100%" ${isAdmin?'':'disabled'}
-        oninput="setNote('${skey}','lab_notes',this.value)"
+      <textarea class="edit-field" rows="1" style="width:100%" ${isAdmin?'':'disabled'}
+        oninput="autoGrowTextArea(this);setNote('${skey}','lab_notes',this.value)"
         placeholder="${isAdmin ? 'Add transfusion notes, mnemonics, clinical pearls...' : 'Transfusion notes will appear here.'}">${labNoteVal}</textarea>
     </div>
 
     <!-- HISTORY CARD -->
     <div class="sys-card history-card" style="border-top:3px solid ${sys.color}">
       <div class="sec-label">History</div>
-      <div class="timeline">${histHTML}</div>
-    </div>`;
+	      <div class="timeline">${histHTML}</div>
+	    </div>`;
+  autoGrowTextAreas(area);
   setTimeout(function(){ initRbcDrag(area); }, 0);
 }
 
@@ -2635,14 +2651,14 @@ function renderLesser(area) {
   var table = getLesserTable();
   var head = '<tr><th>System</th>' + table.columns.map(function(col) {
     if (!isAdmin) return '<th>' + escText(col.label) + '</th>';
-    return '<th><textarea class="lesser-col-label" rows="1" oninput="updateLesserColumn(\'' + col.id + '\',this.value)">' + escText(col.label) + '</textarea><button class="lesser-col-delete" onclick="deleteLesserColumn(\'' + col.id + '\')">x</button></th>';
+    return '<th><textarea class="lesser-col-label" rows="1" oninput="autoGrowTextArea(this);updateLesserColumn(\'' + col.id + '\',this.value)">' + escText(col.label) + '</textarea><button class="lesser-col-delete" onclick="deleteLesserColumn(\'' + col.id + '\')">x</button></th>';
   }).join('') + (isAdmin ? '<th>Row</th>' : '') + '</tr>';
   var rows = table.rows.map(function(row) {
     var label = isAdmin
-      ? '<textarea class="lesser-system-edit" rows="2" oninput="updateLesserRow(\'' + row.id + '\',this.value)">' + escText(row.label) + '</textarea>'
+      ? '<textarea class="lesser-system-edit" rows="1" oninput="autoGrowTextArea(this);updateLesserRow(\'' + row.id + '\',this.value)">' + escText(row.label) + '</textarea>'
       : '<strong>' + escText(row.label) + '</strong>';
     var cells = table.columns.map(function(col) {
-      return '<td><textarea class="lesser-edit" rows="3" ' + (isAdmin ? '' : 'disabled') + ' oninput="updateLesserCell(\'' + row.id + '\',\'' + col.id + '\',this.value)">' + escText(row.cells && row.cells[col.id] || '') + '</textarea></td>';
+      return '<td><textarea class="lesser-edit" rows="1" ' + (isAdmin ? '' : 'disabled') + ' oninput="autoGrowTextArea(this);updateLesserCell(\'' + row.id + '\',\'' + col.id + '\',this.value)">' + escText(row.cells && row.cells[col.id] || '') + '</textarea></td>';
     }).join('');
     var del = isAdmin ? '<td><button class="lesser-row-delete" onclick="deleteLesserRow(\'' + row.id + '\')">x</button></td>' : '';
     return '<tr><td>' + label + '</td>' + cells + del + '</tr>';
@@ -2667,8 +2683,9 @@ function renderLesser(area) {
       '<div class="general-actions">' +
         (isAdmin ? '<button class="add-row-btn" onclick="addLesserRow()">+ Add row</button><button class="add-row-btn" onclick="addLesserColumn()">+ Add column</button>' : '') +
         '<button class="add-row-btn" onclick="exportLesserSystemsPage()">Export Lesser Systems</button>' +
-      '</div>' +
-    '</div>';
+	      '</div>' +
+	    '</div>';
+  autoGrowTextAreas(area);
 }
 
 // ============================================================
@@ -3734,6 +3751,26 @@ function buildGeneralComparisonExportPage() {
   return '<section class="page general-export-page"><h1>General Comparison</h1><table class="general-export-main"><thead>' + head + '</thead><tbody>' + body + '</tbody></table>' + summary + '</section>';
 }
 
+function buildGeneralComparisonBlankExportPage() {
+  var table = getGeneralComparison();
+  var summaryRows = buildGeneralSharedSummaryRows();
+  var head = '<tr><th>Question / Row</th>' + table.columns.map(function(col) {
+    return '<th>' + exportText(col.label) + '</th>';
+  }).join('') + '</tr>';
+  var body = table.rows.map(function(row) {
+    return '<tr><td class="general-export-label">' + exportText(row.label || '') + '</td>' +
+      table.columns.map(function() { return '<td class="general-blank-cell">&nbsp;</td>'; }).join('') + '</tr>';
+  }).join('');
+  var summary = summaryRows.length
+    ? '<div class="general-export-summary"><h2>Shared Patterns Practice</h2><table><thead><tr><th>Question</th><th>Shared Answer</th><th>Antigens</th></tr></thead><tbody>' +
+      summaryRows.map(function(row) {
+        return '<tr><td>' + exportText(row.question) + '</td><td class="general-blank-cell">&nbsp;</td><td class="general-blank-cell">&nbsp;</td></tr>';
+      }).join('') +
+      '</tbody></table></div>'
+    : '';
+  return '<section class="page general-export-page general-blank-page"><h1>General Comparison Blank Practice</h1><table class="general-export-main"><thead>' + head + '</thead><tbody>' + body + '</tbody></table>' + summary + '</section>';
+}
+
 function flashPlain(value) {
   var text = String(value == null ? '' : value)
     .replace(/<br\s*\/?>/gi, '\n')
@@ -3770,6 +3807,20 @@ function addFlashcard(cards, question, answer, meta) {
     category: meta.category || 'Study',
     color: meta.color || '#c0173d'
   });
+}
+
+function buildFrequencyFlashAnswer(freqRow) {
+  freqRow = normalizeFreqRow(freqRow || {});
+  const parts = [];
+  if (freqRow.memo) parts.push('Frequency to memorize: ' + freqRow.memo);
+  const demo = [];
+  ['c','b','a','i','h'].forEach(function(key) {
+    if (freqRow[key]) demo.push(key.toUpperCase() + ': ' + freqRow[key]);
+  });
+  if (demo.length) parts.push('C/B/A/I/H: ' + demo.join(' / '));
+  if (freqRow.pop) parts.push('Population different in: ' + freqRow.pop);
+  if (freqRow.hiLo) parts.push('Higher or lower: ' + freqRow.hiLo);
+  return parts.join('\n');
 }
 
 function buildFlashcardDeck() {
@@ -3811,8 +3862,8 @@ function buildFlashcardDeck() {
     });
     getFreqRows(skey).forEach(function(freqRow, idx) {
       addFlashcard(cards,
-        sys.name + ': frequency to memorize for ' + (freqRow.ag || 'this antigen'),
-        freqRow.memo || '',
+        sys.name + ': frequency row for ' + (freqRow.ag || 'this antigen'),
+        buildFrequencyFlashAnswer(freqRow),
         {id:key + '-freq-' + idx, system:sys.name.replace(' System',''), category:'Antigen Frequency', color:sys.color}
       );
     });
@@ -3944,8 +3995,18 @@ function renderFlashMap() {
   return flashQueue.map(function(card, i) {
     var state = flashResults[card.id] || '';
     var cls = 'flash-dot' + (i === flashIndex ? ' current' : '') + (state ? ' ' + state : '');
-    return '<span class="' + cls + '" title="' + (i + 1) + '"></span>';
+    return '<button type="button" class="' + cls + '" title="Card ' + (i + 1) + '" onclick="goToFlashcard(' + i + ')"></button>';
   }).join('');
+}
+
+function goToFlashcard(index) {
+  index = Number(index);
+  if (!Number.isFinite(index) || index < 0 || index >= flashQueue.length || flashAdvancing) return;
+  flashIndex = index;
+  flashRevealed = false;
+  flashMood = flashResults[flashQueue[index].id] === 'done' ? 'right' : (flashResults[flashQueue[index].id] === 'wrong' ? 'wrong' : 'neutral');
+  saveFlashSession();
+  renderFlashcardPractice();
 }
 
 function renderFlashcardPractice() {
@@ -3953,15 +4014,14 @@ function renderFlashcardPractice() {
   if (!root) return;
   var rightCount = Object.keys(flashResults).filter(function(id){ return flashResults[id] === 'done'; }).length;
   var wrongCount = Object.keys(flashResults).filter(function(id){ return flashResults[id] === 'wrong'; }).length;
-  var skipCount = Object.keys(flashResults).filter(function(id){ return flashResults[id] === 'skip'; }).length;
   var card = currentFlashcard();
   if (!card) {
-    root.innerHTML = '<div class="flash-shell"><div class="flash-card flash-finished"><div><h3>Round complete.</h3><p>' + rightCount + ' right, ' + wrongCount + ' to review, ' + skipCount + ' skipped.</p><div class="flash-actions">' + (flashWrongCards.length ? '<button class="flash-action flash-reveal" onclick="studyMissedFlashcards()">Study missed cards</button><button class="flash-action flash-skip" onclick="exportMissedFlashcardsPdf()">Export missed as PDF</button>' : '<button class="flash-action flash-right" onclick="openFlashcardPractice()">Start a fresh shuffle</button>') + '</div></div></div><aside class="flash-side"><div class="flash-rbc-wrap"><div class="flash-rbc right">' + flashRbcSvg('right') + '</div></div><div class="flash-map-title">Deck map</div><div class="flash-map">' + renderFlashMap() + '</div></aside></div>';
+    root.innerHTML = '<div class="flash-shell"><div class="flash-card flash-finished"><div><h3>Round complete.</h3><p>' + rightCount + ' right, ' + wrongCount + ' to review.</p><div class="flash-actions">' + (flashWrongCards.length ? '<button class="flash-action flash-reveal" onclick="studyMissedFlashcards()">Study missed cards</button><button class="flash-action flash-skip" onclick="exportMissedFlashcardsPdf()">Export missed as PDF</button>' : '<button class="flash-action flash-right" onclick="openFlashcardPractice()">Start a fresh shuffle</button>') + '</div></div></div><aside class="flash-side"><div class="flash-rbc-wrap"><div class="flash-rbc right">' + flashRbcSvg('right') + '</div></div><div class="flash-map-title">Deck map</div><div class="flash-map">' + renderFlashMap() + '</div></aside></div>';
     return;
   }
-  var answerHtml = flashRevealed ? exportText(card.answer) : 'Tap Reveal, then swipe or use the buttons.';
+  var answerHtml = flashRevealed ? exportText(card.answer) : 'Tap Reveal, then mark the card.';
   var cardMoodClass = flashMood === 'right' ? ' swipe-right' : (flashMood === 'wrong' ? ' swipe-left' : '');
-  root.innerHTML = '<div class="flash-shell"><main id="flashCardSwipe" class="flash-card' + cardMoodClass + '" onpointerdown="beginFlashSwipe(event)" onpointermove="moveFlashSwipe(event)" onpointerup="endFlashSwipe(event)" onpointercancel="endFlashSwipe(event)"><div><div class="flash-tag" style="border:1px solid ' + card.color + ';color:' + card.color + '">' + exportText(card.system) + ' / ' + exportText(card.category) + '</div><div class="flash-question">' + exportText(card.question) + '</div></div><div class="flash-answer ' + (flashRevealed ? '' : 'hidden') + '">' + answerHtml + '</div><div class="flash-actions"><button class="flash-action flash-wrong" onclick="markFlashcard(&quot;wrong&quot;)">Swipe left / missed it</button><button class="flash-action flash-reveal" onclick="flashRevealed=true;flashMood=&quot;neutral&quot;;renderFlashcardPractice();saveFlashSession()">Reveal answer</button><button class="flash-action flash-skip" onclick="markFlashcard(&quot;skip&quot;)">Skip</button><button class="flash-action flash-right" onclick="markFlashcard(&quot;done&quot;)">Swipe right / got it</button></div></main><aside class="flash-side"><div class="flash-rbc-wrap"><div class="flash-rbc ' + flashMood + '">' + flashRbcSvg(flashMood) + '</div></div><div class="flash-score"><div><strong>' + (flashIndex + 1) + '</strong><span>Current</span></div><div><strong>' + flashQueue.length + '</strong><span>Total</span></div><div><strong>' + rightCount + '</strong><span>Right</span></div><div><strong>' + wrongCount + '</strong><span>Missed</span></div></div><div><div class="flash-map-title">Deck map</div><div class="flash-map">' + renderFlashMap() + '</div></div></aside></div>';
+  root.innerHTML = '<div class="flash-shell"><main id="flashCardSwipe" class="flash-card' + cardMoodClass + '"><div><div class="flash-tag" style="border:1px solid ' + card.color + ';color:' + card.color + '">' + exportText(card.system) + ' / ' + exportText(card.category) + '</div><div class="flash-question">' + exportText(card.question) + '</div></div><div class="flash-answer ' + (flashRevealed ? '' : 'hidden') + '">' + answerHtml + '</div><div class="flash-actions"><button class="flash-action flash-wrong" onclick="markFlashcard(&quot;wrong&quot;)">Got it wrong</button><button class="flash-action flash-reveal" onclick="flashRevealed=true;flashMood=&quot;neutral&quot;;renderFlashcardPractice();saveFlashSession()">Reveal answer</button><button class="flash-action flash-right" onclick="markFlashcard(&quot;done&quot;)">Got it right</button></div></main><aside class="flash-side"><div class="flash-rbc-wrap"><div class="flash-rbc ' + flashMood + '">' + flashRbcSvg(flashMood) + '</div></div><div class="flash-score"><div><strong>' + (flashIndex + 1) + '</strong><span>Current</span></div><div><strong>' + flashQueue.length + '</strong><span>Total</span></div><div><strong>' + rightCount + '</strong><span>Right</span></div><div><strong>' + wrongCount + '</strong><span>Missed</span></div></div><div><div class="flash-map-title">Deck map</div><div class="flash-map">' + renderFlashMap() + '</div></div></aside></div>';
 }
 
 function beginFlashSwipe(e) {
@@ -4005,7 +4065,11 @@ function markFlashcard(result) {
   if (!card) return;
   flashResults[card.id] = result;
   flashMood = result === 'done' ? 'right' : (result === 'wrong' ? 'wrong' : 'neutral');
-  if (result === 'wrong' && !flashWrongCards.some(function(c){ return c.id === card.id; })) flashWrongCards.push(card);
+  if (result === 'wrong' && !flashWrongCards.some(function(c){ return c.id === card.id; })) {
+    flashWrongCards.push(card);
+  } else if (result === 'done') {
+    flashWrongCards = flashWrongCards.filter(function(item) { return item.id !== card.id; });
+  }
   flashAdvancing = true;
   renderFlashcardPractice();
   setTimeout(function() {
@@ -4090,7 +4154,7 @@ function buildExportHtml(content, title, orientation, scale) {
     '.binder-system{height:10.25in;overflow:hidden;font-size:10px;padding-top:.03in}.binder-system table{margin-bottom:0}.binder-card{border-top:2.5px solid #5a0e20;border-left:1px solid #f7c5d0;border-right:1px solid #f7c5d0;border-bottom:1px solid #f7c5d0;border-radius:12px;background:#fffaf7;margin-bottom:.07in;break-inside:avoid;page-break-inside:avoid}.binder-hero{min-height:1.08in;padding:5px 10px 6px}.binder-head{gap:8px;align-items:flex-start;margin-bottom:2px}.binder-head .system-dot{width:28px;height:28px;font-size:14px}.binder-head h1{text-align:left;font-size:22px;line-height:.95;margin:0 0 2px;padding:0}.binder-head .isbt{font-size:7px;letter-spacing:2.1px}.binder-head .pun{font-size:9.5px;line-height:1.08;margin-top:2px}.binder-system .card-label{font-size:8.6px;letter-spacing:3px;text-transform:uppercase;color:#7a6468;font-weight:700;margin:0 0 5px}.binder-history .tl{padding-left:8px;border-left:2px solid #f7c5d0}.binder-history .tl-item{font-size:6px;line-height:1.03;margin-bottom:1px}.binder-history .yr{display:inline-block;width:.5in;font-size:6.2px;color:#c0173d;font-weight:700}.binder-membrane-card{height:1.32in;padding:5px 8px}.binder-membrane-print{height:1.08in;display:flex;align-items:center;justify-content:center;overflow:hidden}.binder-membrane-print>div{width:5.25in!important;overflow:hidden!important}.binder-membrane-print svg{width:5.25in!important;min-width:0!important;height:1.05in!important}.binder-membrane-print text{font-size:9px!important}.binder-study{height:auto;max-height:4.9in;padding:8px 10px 9px;overflow:hidden}.binder-system .study-table{font-size:10.2px;line-height:1.18;table-layout:fixed}.binder-system .study-table tr:nth-child(even) td{background:#fff3f0}.binder-system .study-table td{font-size:10.2px;padding:4px 5px;white-space:normal;overflow-wrap:anywhere}.binder-system .study-table td.lbl{width:1.55in;font-size:8.7px;letter-spacing:.5px;color:#7a6468}.binder-system .study-table .muted{font-size:8.2px;color:#b69aa0}.binder-freq{min-height:0;padding:8px 10px}.binder-system .freq-export{font-size:8.8px;line-height:1.08;table-layout:fixed}.binder-system .freq-export th{font-size:7.7px;padding:3px 3px}.binder-system .freq-export td{font-size:8.4px;padding:3px 3px;white-space:normal;overflow-wrap:anywhere}.binder-system .freq-export th:nth-child(1){width:.7in}.binder-system .freq-export th:nth-child(2),.binder-system .freq-export th:nth-child(3),.binder-system .freq-export th:nth-child(4),.binder-system .freq-export th:nth-child(5),.binder-system .freq-export th:nth-child(6){width:.28in}.binder-system .freq-export th:nth-child(7){width:.45in}.binder-notes{min-height:0;padding:6px 10px;margin-bottom:0}.binder-system .note-box{font-size:8.4px;line-height:1.16;padding:4px 6px;background:#fff;border-left:3px solid #f7c5d0}' +
     '.antigram-export-page{max-width:10.4in;height:7.1in;overflow:hidden}.antigram-export-page h1{font-size:15px;margin:0 0 .04in;padding:0}.antigram-export-note{font-size:8px;color:#7a6468;margin-bottom:.05in}.antigram-export-page .antigram-panel-wrap{overflow:hidden;border:1px solid #5a0e20;border-radius:4px;background:#fff}.antigram-export-page .antigram-table{width:100%;min-width:0;border-collapse:collapse;table-layout:fixed;font-size:5.4px}.antigram-export-page .antigram-table th{position:static;background:#5a0e20;color:#fff;font-size:5.2px;padding:2px 1px;text-align:center}.antigram-export-page .antigram-table td{border:1px solid #d9a9b4;padding:2px 1px;text-align:center;font-size:5.6px;min-width:0}.antigram-export-page .antigram-table td.cell-id{position:static;background:#fffaf7;font-weight:bold;color:#5a0e20;font-size:5.5px}.antigram-export-page .antigram-table td.ruled-out{background:#dff4eb!important}.antigram-export-page .antigram-table td.suspect-hit{background:#fff1b8!important}.antigram-answer-key,.antigram-practice-lines{font-size:8px;line-height:1.25;margin-top:.06in;border:1px solid #f7c5d0;border-radius:6px;padding:.06in;background:#fffaf7}' +
     '.flash-print-page{max-width:7.9in;height:10.4in;overflow:hidden}.flash-print-page h1{font-size:15px;color:#000;text-align:left;margin:0 0 .12in;padding:0}.flash-print-grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:.18in;height:9.9in}.flash-print-card{border:2px solid #000;background:#fff;color:#000;border-radius:0;padding:.18in;display:flex;flex-direction:column;justify-content:center;text-align:center;break-inside:avoid;page-break-inside:avoid}.flash-print-meta{font-size:12px;text-transform:uppercase;letter-spacing:.7px;margin-bottom:.12in;color:#000;font-weight:700}.flash-print-q{font-size:24px;line-height:1.18;font-weight:900}.flash-print-a{font-size:22px;line-height:1.2;font-weight:900;white-space:pre-wrap}' +
-    '.general-export-page{max-width:10.4in;height:7.12in;overflow:hidden}.general-export-page h1{text-align:left;font-size:18px;margin:0 0 .07in;padding:0;color:#5a0e20}.general-export-main{table-layout:fixed;margin-bottom:.07in;border:1px solid #f7c5d0}.general-export-main th{font-size:6.6px;line-height:1.05;text-align:center;padding:3px 2px;background:#5a0e20;color:#fff}.general-export-main th:first-child{width:.78in;text-align:left}.general-export-main td{font-size:6.5px;line-height:1.06;padding:2px 3px;border:1px solid #f7c5d0;white-space:normal;overflow-wrap:anywhere}.general-export-main tr:nth-child(even) td{background:#fff1f4}.general-export-label{font-weight:800;color:#5a0e20}.general-export-summary h2{font-size:8px;letter-spacing:1.2px;text-transform:uppercase;color:#7a6468;border:0;margin:.02in 0 .035in;padding:0}.general-export-summary table{table-layout:fixed;border:1px solid #f7c5d0}.general-export-summary th{font-size:6.4px;padding:2px 4px}.general-export-summary td{font-size:6.4px;line-height:1.05;padding:2px 4px;border:1px solid #f7c5d0}.general-export-summary th:nth-child(1){width:45%}.general-export-summary th:nth-child(2){width:20%}.lesser-export-page{max-width:10.4in;height:7.12in;overflow:hidden}.lesser-export-page h1{text-align:left;font-size:18px;margin:0 0 .08in;padding:0;color:#5a0e20}.lesser-export-table{table-layout:fixed}.lesser-export-table th{font-size:6.6px;line-height:1.05;padding:3px 3px}.lesser-export-table td{font-size:6.6px;line-height:1.07;padding:3px 3px;white-space:normal;overflow-wrap:anywhere}.lesser-export-table th:first-child{width:.85in}' +
+    '.general-export-page{max-width:10.4in;height:7.12in;overflow:hidden}.general-export-page h1{text-align:left;font-size:18px;margin:0 0 .07in;padding:0;color:#5a0e20}.general-export-main{table-layout:fixed;margin-bottom:.07in;border:1px solid #f7c5d0}.general-export-main th{font-size:6.6px;line-height:1.05;text-align:center;padding:3px 2px;background:#5a0e20;color:#fff}.general-export-main th:first-child{width:.78in;text-align:left}.general-export-main td{font-size:6.5px;line-height:1.06;padding:2px 3px;border:1px solid #f7c5d0;white-space:normal;overflow-wrap:anywhere}.general-export-main tr:nth-child(even) td{background:#fff1f4}.general-export-label{font-weight:800;color:#5a0e20}.general-export-summary h2{font-size:8px;letter-spacing:1.2px;text-transform:uppercase;color:#7a6468;border:0;margin:.02in 0 .035in;padding:0}.general-export-summary table{table-layout:fixed;border:1px solid #f7c5d0}.general-export-summary th{font-size:6.4px;padding:2px 4px}.general-export-summary td{font-size:6.4px;line-height:1.05;padding:2px 4px;border:1px solid #f7c5d0}.general-export-summary th:nth-child(1){width:45%}.general-export-summary th:nth-child(2){width:20%}.general-blank-page td.general-blank-cell{height:.27in;background:#fff!important;color:#fff}.general-blank-page .general-export-summary td.general-blank-cell{height:.2in}.lesser-export-page{max-width:10.4in;height:7.12in;overflow:hidden}.lesser-export-page h1{text-align:left;font-size:18px;margin:0 0 .08in;padding:0;color:#5a0e20}.lesser-export-table{table-layout:fixed}.lesser-export-table th{font-size:6.6px;line-height:1.05;padding:3px 3px}.lesser-export-table td{font-size:6.6px;line-height:1.07;padding:3px 3px;white-space:normal;overflow-wrap:anywhere}.lesser-export-table th:first-child{width:.85in}' +
     '.map-page{max-width:10.4in;height:7.15in;overflow:hidden}.map-page h1{font-size:16px;padding:0;margin:0 0 .06in}.map-print{height:6.86in;overflow:hidden;display:flex;align-items:center;justify-content:center}.map-print>div{width:100%!important;height:100%!important;overflow:hidden!important}.map-print svg{width:100%!important;max-width:100%!important;min-width:0!important;height:100%!important;max-height:6.78in!important}.map-rbc .map-print svg text{font-size:10px!important}.map-chrom .map-print{align-items:flex-start}svg{max-width:100%;height:auto}' +
     portraitTweaks +
     '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.bb-export-scale-wrap{zoom:var(--bb-export-scale,1);transform:none;width:auto;min-height:0}}</style></head><body style="--bb-export-scale:' + printScale + '"><div class="bb-export-scale-wrap">' + content + '</div></body></html>';
@@ -4149,6 +4213,10 @@ function exportCurrentSystemPage() {
 
 function exportGeneralComparisonPage() {
   printExportHtml(buildGeneralComparisonExportPage(), 'Blood Bank General Comparison', 'landscape');
+}
+
+function exportGeneralComparisonBlankPage() {
+  printExportHtml(buildGeneralComparisonBlankExportPage(), 'Blood Bank General Comparison Blank Practice', 'landscape');
 }
 
 function exportLesserSystemsPage() {
