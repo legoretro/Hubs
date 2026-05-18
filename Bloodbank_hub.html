@@ -224,6 +224,8 @@ textarea{resize:none;overflow:hidden}
 .admin-mode .edit-field{background:rgba(232,168,50,.08);border:1px dashed rgba(232,168,50,.5);cursor:text}
 .admin-mode .edit-field:focus{background:rgba(232,168,50,.15);border-color:#d4860a}
 .edit-field:disabled{cursor:default}
+.read-field{display:block;height:auto!important;min-height:0;overflow:visible!important;white-space:pre-wrap;background:transparent!important;border:0!important;padding:2px 4px}
+.read-field .muted-text{color:#9a8588;font-style:italic}
 
 /* FREQ TABLE - editable cells */
 .freq-table{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed}
@@ -1156,7 +1158,7 @@ abo: {
     substance:'H antigen precursor; ABH substances in secretions'
   },
   notes_key:'abo',
-  fields:['antigen_names','null_phenotype','antithetical_pairs','chromosome','disease_assoc','antigen_structure','cord_cells','destroyed','enhanced','dosage','ig_class','temp','naturally_occurring','complement','hdn','htr','immunogenic'],
+  fields:['antigen_names','null_phenotype','antithetical_pairs','chromosome','disease_assoc','antigen_structure','related_substance','cord_cells','destroyed','enhanced','dosage','ig_class','temp','naturally_occurring','complement','hdn','htr','immunogenic'],
   mns_split:false
 },
 rh: {
@@ -1178,7 +1180,7 @@ rh: {
     substance:'None (no soluble form; no neutralizing substance)'
   },
   notes_key:'rh',
-  fields:['antigen_names','null_phenotype','antithetical_pairs','chromosome','disease_assoc','antigen_structure','cord_cells','destroyed','enhanced','dosage','ig_class','temp','naturally_occurring','complement','hdn','htr','immunogenic'],
+  fields:['antigen_names','null_phenotype','antithetical_pairs','chromosome','disease_assoc','antigen_structure','related_substance','cord_cells','destroyed','enhanced','dosage','ig_class','temp','naturally_occurring','complement','hdn','htr','immunogenic'],
   mns_split:false
 },
 kell: {
@@ -1200,7 +1202,7 @@ kell: {
     substance:'None'
   },
   notes_key:'kell',
-  fields:['antigen_names','null_phenotype','antithetical_pairs','chromosome','disease_assoc','antigen_structure','cord_cells','destroyed','enhanced','dosage','ig_class','temp','naturally_occurring','complement','hdn','htr','immunogenic'],
+  fields:['antigen_names','null_phenotype','antithetical_pairs','chromosome','disease_assoc','antigen_structure','related_substance','cord_cells','destroyed','enhanced','dosage','ig_class','temp','naturally_occurring','complement','hdn','htr','immunogenic'],
   mns_split:false
 },
 duffy: {
@@ -1221,7 +1223,7 @@ duffy: {
     substance:'None'
   },
   notes_key:'duffy',
-  fields:['antigen_names','null_phenotype','antithetical_pairs','chromosome','disease_assoc','antigen_structure','cord_cells','destroyed','enhanced','dosage','ig_class','temp','naturally_occurring','complement','hdn','htr','immunogenic'],
+  fields:['antigen_names','null_phenotype','antithetical_pairs','chromosome','disease_assoc','antigen_structure','related_substance','cord_cells','destroyed','enhanced','dosage','ig_class','temp','naturally_occurring','complement','hdn','htr','immunogenic'],
   mns_split:false
 },
 kidd: {
@@ -1241,7 +1243,7 @@ kidd: {
     substance:'Jk(a-b-) RBCs resist lysis by 2M urea (diagnostic)'
   },
   notes_key:'kidd',
-  fields:['antigen_names','null_phenotype','antithetical_pairs','chromosome','disease_assoc','antigen_structure','cord_cells','destroyed','enhanced','dosage','ig_class','temp','naturally_occurring','complement','hdn','htr','immunogenic'],
+  fields:['antigen_names','null_phenotype','antithetical_pairs','chromosome','disease_assoc','antigen_structure','related_substance','cord_cells','destroyed','enhanced','dosage','ig_class','temp','naturally_occurring','complement','hdn','htr','immunogenic'],
   mns_split:false
 },
 mns: {
@@ -1264,8 +1266,8 @@ mns: {
   },
   notes_key:'mns',
   mns_split:true,
-  fields_mn:['antigen_names','null_phenotype','antithetical_pairs','chromosome','disease_assoc','antigen_structure','cord_cells','destroyed','enhanced','dosage','ig_class','temp','naturally_occurring','complement','hdn','htr','immunogenic'],
-  fields_ss:['antigen_names_ss','null_phenotype_ss','antithetical_pairs_ss','cord_cells_ss','destroyed_ss','enhanced_ss','dosage_ss','ig_class_ss','temp_ss','naturally_occurring_ss','complement_ss','hdn_ss','htr_ss','immunogenic_ss']
+  fields_mn:['antigen_names','null_phenotype','antithetical_pairs','chromosome','disease_assoc','antigen_structure','related_substance','cord_cells','destroyed','enhanced','dosage','ig_class','temp','naturally_occurring','complement','hdn','htr','immunogenic'],
+  fields_ss:['antigen_names_ss','null_phenotype_ss','antithetical_pairs_ss','related_substance_ss','cord_cells_ss','destroyed_ss','enhanced_ss','dosage_ss','ig_class_ss','temp_ss','naturally_occurring_ss','complement_ss','hdn_ss','htr_ss','immunogenic_ss']
 },
 p1pk: {
   name:'P1PK / Globoside System', isbt:'ISBT P1PK 003, Globoside 028 - Chr 22 / Chr 3', icon:'⚫', color:'#555',
@@ -1284,7 +1286,7 @@ p1pk: {
     substance:'Anti-P1 neutralized by pigeon egg white and hydatid cyst fluid'
   },
   notes_key:'p1pk',
-  fields:['antigen_names','null_phenotype','antithetical_pairs','chromosome','disease_assoc','antigen_structure','cord_cells','destroyed','enhanced','dosage','ig_class','temp','naturally_occurring','complement','hdn','htr','immunogenic'],
+  fields:['antigen_names','null_phenotype','antithetical_pairs','chromosome','disease_assoc','antigen_structure','related_substance','cord_cells','destroyed','enhanced','dosage','ig_class','temp','naturally_occurring','complement','hdn','htr','immunogenic'],
   mns_split:false
 },
 lewis: {
@@ -1305,7 +1307,7 @@ lewis: {
     substance:'Isotonic saliva from Lewis-positive secretors (also plasma)'
   },
   notes_key:'lewis',
-  fields:['antigen_names','null_phenotype','antithetical_pairs','chromosome','disease_assoc','antigen_structure','cord_cells','destroyed','enhanced','dosage','ig_class','temp','naturally_occurring','complement','hdn','htr','immunogenic'],
+  fields:['antigen_names','null_phenotype','antithetical_pairs','chromosome','disease_assoc','antigen_structure','related_substance','cord_cells','destroyed','enhanced','dosage','ig_class','temp','naturally_occurring','complement','hdn','htr','immunogenic'],
   mns_split:false
 },
 lutheran: {
@@ -1326,7 +1328,7 @@ lutheran: {
     substance:'None'
   },
   notes_key:'lutheran',
-  fields:['antigen_names','null_phenotype','antithetical_pairs','chromosome','disease_assoc','antigen_structure','cord_cells','destroyed','enhanced','dosage','ig_class','temp','naturally_occurring','complement','hdn','htr','immunogenic'],
+  fields:['antigen_names','null_phenotype','antithetical_pairs','chromosome','disease_assoc','antigen_structure','related_substance','cord_cells','destroyed','enhanced','dosage','ig_class','temp','naturally_occurring','complement','hdn','htr','immunogenic'],
   mns_split:false
 }
 };
@@ -1338,6 +1340,7 @@ const FIELD_LABELS = {
   chromosome:          'Gene Location',
   disease_assoc:       'Disease Association',
   antigen_structure:   'Antigen Structure',
+  related_substance:    'Related Substance',
   cord_cells:          'Expressed on Baby Cells',
   destroyed:           'Destroyed By',
   enhanced:            'Enhanced By',
@@ -1352,6 +1355,7 @@ const FIELD_LABELS = {
   antigen_names_ss:       'Antigen Names (S/s/U)',
   null_phenotype_ss:      'Null',
   antithetical_pairs_ss:  'Antithetical Pairs',
+  related_substance_ss:   'Related Substance',
   cord_cells_ss:          'Expressed on Baby Cells',
   destroyed_ss:           'Destroyed By',
   enhanced_ss:            'Enhanced By',
@@ -1492,9 +1496,12 @@ function setNote(sysKey, field, value) {
 function makeField(sysKey, field, rows) {
   const val = getNote(sysKey, field);
   const r = rows || 1;
+  if (!isAdmin) {
+    return '<div class="edit-field read-field">' + (val ? exportText(val) : '<span class="muted-text">blank</span>') + '</div>';
+  }
   return `<textarea class="edit-field" rows="${r}" ${isAdmin?'':'disabled'} 
     oninput="autoGrowTextArea(this);setNote('${sysKey}','${field}',this.value)"
-    placeholder="${isAdmin ? 'Click to add...' : ''}">${val}</textarea>`;
+    placeholder="${isAdmin ? 'Click to add...' : ''}">${escText(val)}</textarea>`;
 }
 
 function autoGrowTextArea(el) {
@@ -1574,6 +1581,7 @@ const FREQ_DEFAULT_ROWS = {
 };
 
 const BB_WORKSHEET_DEFAULT_VERSION = 1;
+const BB_RELATED_SUBSTANCE_VERSION = 1;
 
 const WORKSHEET_FREQ_ROWS = {
   abo: [
@@ -1637,7 +1645,8 @@ const WORKSHEET_NOTE_DEFAULTS = {
     antithetical_pairs:'None',
     chromosome:'Chromosome 9',
     disease_assoc:'HTRXN, HDN Mild',
-    antigen_structure:'Transferase attaches oligosaccharide to Glycoprotein and Glycosphingolipid.\nIt is Extrinsic.\nRelated Substance: Type 2 Chains (FUT1)',
+    antigen_structure:'Transferase attaches oligosaccharide to Glycoprotein and Glycosphingolipid.\nIt is Extrinsic.',
+    related_substance:'Type 2 Chains (FUT1)',
     cord_cells:'Yes',
     destroyed:'N/Ap',
     enhanced:'Enzymes',
@@ -1658,7 +1667,8 @@ const WORKSHEET_NOTE_DEFAULTS = {
     antithetical_pairs:'D/- (no antithetical pair for D), C/c and E/e',
     chromosome:'Chromosome 1',
     disease_assoc:'HDN',
-    antigen_structure:'Intrinsic Glycoprotein.\nRelated Substance: RhAG',
+    antigen_structure:'Intrinsic Glycoprotein.',
+    related_substance:'RhAG',
     cord_cells:'Yes',
     destroyed:'N/Ap',
     enhanced:'Enzymes',
@@ -1679,7 +1689,8 @@ const WORKSHEET_NOTE_DEFAULTS = {
     antithetical_pairs:'K/k, Kpa/Kpb and Jsa/Jsb',
     chromosome:'Chromosome 7',
     disease_assoc:'McLeod Syndrome when absence. X Linked.',
-    antigen_structure:'Glycoprotein with cystine bond with Kx (intrinsic).\nRelated Substance: XK / Kx',
+    antigen_structure:'Glycoprotein with cystine bond with Kx (intrinsic).',
+    related_substance:'XK / Kx',
     cord_cells:'Yes',
     destroyed:'Susceptible to DTT not Enzymes.',
     enhanced:'Enzymes (ficin and papain)',
@@ -1700,7 +1711,8 @@ const WORKSHEET_NOTE_DEFAULTS = {
     antithetical_pairs:'Fya and Fyb',
     chromosome:'Chromosome 1',
     disease_assoc:'Protection from Plasmodium vivax malaria',
-    antigen_structure:'Multipass Intrinsic membrane Glycoprotein.\nRelated Substance: ACKR1',
+    antigen_structure:'Multipass Intrinsic membrane Glycoprotein.',
+    related_substance:'ACKR1',
     cord_cells:'Yes',
     destroyed:'Susceptible Enzymes',
     enhanced:'',
@@ -1721,7 +1733,8 @@ const WORKSHEET_NOTE_DEFAULTS = {
     antithetical_pairs:'Jka/Jkb',
     chromosome:'Chromosome 18',
     disease_assoc:'Urea transport / urine concentration; delayed HTRXN',
-    antigen_structure:'Multipass Glycoprotein Intrinsic.\nRelated Substance: HUT11 urea transporter',
+    antigen_structure:'Multipass Glycoprotein Intrinsic.',
+    related_substance:'HUT11 urea transporter',
     cord_cells:'Yes',
     destroyed:'N/Ap',
     enhanced:'Enzymes',
@@ -1742,7 +1755,8 @@ const WORKSHEET_NOTE_DEFAULTS = {
     antithetical_pairs:'M/N',
     chromosome:'Chromosome 4',
     disease_assoc:'GYPA receptor for complement, bacteria, and viruses. Involved in Plasmodium falciparum invasion of RBCs. Anti-N found in dialysis patients.',
-    antigen_structure:'GYPA and GYPB are Glycoprotein. MNS antigen structure is Intrinsic.\nRelated Substance: GYPA (MN). GYPB (Ss).',
+    antigen_structure:'GYPA and GYPB are Glycoprotein. MNS antigen structure is Intrinsic.',
+    related_substance:'GYPA (MN)',
     cord_cells:'Yes for MNSs.',
     destroyed:'MN are susceptible to enzymes and chemicals.',
     enhanced:'',
@@ -1757,6 +1771,7 @@ const WORKSHEET_NOTE_DEFAULTS = {
     antigen_names_ss:'S, s, U',
     null_phenotype_ss:'U is absence of GYPB (S-,s-).',
     antithetical_pairs_ss:'S/s. U is NOT antithetical.',
+    related_substance_ss:'GYPB (S/s)',
     cord_cells_ss:'Yes for MNSs.',
     destroyed_ss:'S/s variable due to location. U less likely due to location resistance due to being close to RBC membrane.',
     enhanced_ss:'',
@@ -1777,7 +1792,8 @@ const WORKSHEET_NOTE_DEFAULTS = {
     antithetical_pairs:'None',
     chromosome:'Chromosome 22 P1PK gene and Chromosome 03 Glob.',
     disease_assoc:'P antigen receptor for parvovirus; anti-P linked to PCH IgG.',
-    antigen_structure:'Extrinsic Glycosphingolipid.\nRelated Substance: Type 2 Chain',
+    antigen_structure:'Extrinsic Glycosphingolipid.',
+    related_substance:'Type 2 Chain',
     cord_cells:'P1 poorly expressed at birth (takes up to 7 years to express).',
     destroyed:'N/Ap',
     enhanced:'Anti-P1 enhanced by enzyme treated RBCs',
@@ -1798,7 +1814,8 @@ const WORKSHEET_NOTE_DEFAULTS = {
     antithetical_pairs:'None. Lea and Leb are not antithetical.',
     chromosome:'Chromosome 19',
     disease_assoc:'Secretor Status',
-    antigen_structure:'Extrinsic Glycosphingolipid.\nRelated Substance: Type 1 Chains (FUT3)',
+    antigen_structure:'Extrinsic Glycosphingolipid.',
+    related_substance:'Type 1 Chains (FUT3)',
     cord_cells:'No',
     destroyed:'N/Ap',
     enhanced:'Enzymes',
@@ -1819,7 +1836,8 @@ const WORKSHEET_NOTE_DEFAULTS = {
     antithetical_pairs:'Lua/Lub',
     chromosome:'Chromosome 19',
     disease_assoc:'Sickle cells overexpression causes vasoocclusion.',
-    antigen_structure:'BCAM Intrinsic Glycoprotein.\nRelated Substance: genetically linked to H and Lewis',
+    antigen_structure:'BCAM Intrinsic Glycoprotein.',
+    related_substance:'genetically linked to H and Lewis',
     cord_cells:'Poorly developed',
     destroyed:'DTT',
     enhanced:'Not Enhanced but Resistant to enzyme treatment but not DTT',
@@ -1925,6 +1943,42 @@ function compactBloodBankPhrase(value) {
     .trim();
 }
 
+function splitRelatedSubstanceText(value) {
+  const text = String(value == null ? '' : value);
+  const match = text.match(/(?:^|\n)\s*Related Substance\s*:\s*([\s\S]*)$/i);
+  if (!match) return { structure: text, related: '' };
+  return {
+    structure: text.slice(0, match.index).trim(),
+    related: compactBloodBankPhrase(match[1])
+  };
+}
+
+function migrateRelatedSubstanceField(sysKey, structureField, relatedField) {
+  const row = notesData[sysKey];
+  if (!row || typeof row !== 'object') return;
+  const split = splitRelatedSubstanceText(row[structureField]);
+  if (!split.related) return;
+  row[structureField] = split.structure;
+  if (!row[relatedField]) row[relatedField] = split.related;
+}
+
+function applyRelatedSubstanceMigration() {
+  if (Number(notesData.__bbRelatedSubstanceVersion || 0) >= BB_RELATED_SUBSTANCE_VERSION) return;
+  ['abo','rh','kell','duffy','kidd','mns','p1pk','lewis','lutheran'].forEach(function(key) {
+    migrateRelatedSubstanceField(key, 'antigen_structure', 'related_substance');
+  });
+  const mns = notesData.mns;
+  if (mns && mns.related_substance && !mns.related_substance_ss) {
+    const mn = String(mns.related_substance).match(/GYPA\s*\([^)]*\)/i);
+    const ss = String(mns.related_substance).match(/GYPB\s*\([^)]*\)/i);
+    if (mn && ss) {
+      mns.related_substance = mn[0].replace(/\bSs\b/g, 'S/s');
+      mns.related_substance_ss = ss[0].replace(/\bSs\b/g, 'S/s');
+    }
+  }
+  notesData.__bbRelatedSubstanceVersion = BB_RELATED_SUBSTANCE_VERSION;
+}
+
 function fieldForGeneralSource(rowDef, source) {
   if (!source) return '';
   if (source.split === 'ss' && rowDef.field && WORKSHEET_NOTE_DEFAULTS[source.key] && (rowDef.field + '_ss') in WORKSHEET_NOTE_DEFAULTS[source.key]) {
@@ -2010,6 +2064,7 @@ function applyBloodGroupWorksheetDefaults() {
     });
     notesData.__bbWorksheetVersion = BB_WORKSHEET_DEFAULT_VERSION;
   }
+  applyRelatedSubstanceMigration();
   if (Number(notesData.__generalComparisonSyncVersion || 0) < GENERAL_COMPARE_SYNC_VERSION) {
     syncGeneralComparisonFromEncyclopedia({silent:true});
     notesData.__generalComparisonSyncVersion = GENERAL_COMPARE_SYNC_VERSION;
@@ -2368,6 +2423,11 @@ function renderSystem(key) {
 
   // Lab Notes (formerly Clinical Pearls) -- stored as editable notes
   const labNoteVal = getNote(skey, 'lab_notes');
+  const labNotesHTML = isAdmin
+    ? `<textarea class="edit-field" rows="1" style="width:100%"
+        oninput="autoGrowTextArea(this);setNote('${skey}','lab_notes',this.value)"
+        placeholder="Add transfusion notes, mnemonics, clinical pearls...">${escText(labNoteVal)}</textarea>`
+    : '<div class="edit-field read-field">' + (labNoteVal ? exportText(labNoteVal) : '<span class="muted-text">Transfusion notes will appear here.</span>') + '</div>';
 
   let worksheetHTML;
   if (sys.mns_split) {
@@ -2423,9 +2483,7 @@ function renderSystem(key) {
       <div class="sec-label" style="margin-bottom:10px">Study Reference</div>
       ${worksheetHTML}
       <div class="sec-label" style="margin:14px 0 8px">Transfusion Notes</div>
-      <textarea class="edit-field" rows="1" style="width:100%" ${isAdmin?'':'disabled'}
-        oninput="autoGrowTextArea(this);setNote('${skey}','lab_notes',this.value)"
-        placeholder="${isAdmin ? 'Add transfusion notes, mnemonics, clinical pearls...' : 'Transfusion notes will appear here.'}">${labNoteVal}</textarea>
+      ${labNotesHTML}
     </div>
 
     <!-- HISTORY CARD -->
@@ -4193,6 +4251,9 @@ function printExportHtml(content, title, orientation) {
       maxScale: 1.15,
       step: .01,
       persistKey: 'bloodbank-export-scale-' + (orientation || 'portrait'),
+      buildPreviewHtml: function(scale) {
+        return buildExportHtml(content, title, orientation, scale);
+      },
       customPrint: writeExport,
       hint: 'Use this scale before Chrome opens Save as PDF. Blood Bank exports keep their existing layout.'
     });
