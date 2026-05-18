@@ -167,6 +167,9 @@
         previewIframe.removeAttribute('srcdoc');
       }
       if(previewPage)previewPage.style.display='block';
+      if(previewContent){
+        previewContent.className='hub-pdf-preview-content'+(options.previewClass?' '+String(options.previewClass):'');
+      }
       previewPage.classList.toggle('portrait',options.orientation==='portrait');
       previewPage.classList.toggle('landscape',options.orientation!=='portrait');
       previewPage.style.setProperty('--hub-preview-scale',String(scale));
