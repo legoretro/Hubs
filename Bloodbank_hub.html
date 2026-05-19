@@ -187,6 +187,14 @@ textarea{resize:none;overflow:hidden}
 .general-summary-table tr:nth-child(even) td{background:#fff1f4}
 .general-summary-question{font-weight:900;color:var(--wine)}
 .general-summary-answer{font-weight:800;color:var(--dark)}
+.general-summary-edit{width:100%;min-height:34px;border:0;background:transparent;color:var(--dark);font-family:Georgia,serif;font-size:13px;line-height:1.28;resize:none;overflow:hidden;padding:3px 4px;border-radius:6px}
+.general-summary-edit.question{font-weight:900;color:var(--wine)}
+.general-summary-edit.answer{font-weight:800;color:var(--dark)}
+.general-summary-edit:focus{outline:1px dashed var(--warn);background:#fff}
+.general-summary-actions{display:flex;gap:8px;flex-wrap:wrap;padding:10px 12px;border-top:1px solid var(--rose);background:#fffaf7}
+.general-summary-delete{border:1.5px solid #d9a0ac;background:#fff;color:var(--wine);border-radius:999px;font-weight:900;font-size:11px;padding:4px 9px}
+.general-export-group{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.general-export-group-label{width:100%;font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--warm-grey);font-weight:900;margin-top:4px}
 
 /* SYS HEADER */
 .sys-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;flex-wrap:wrap}
@@ -604,6 +612,7 @@ textarea{resize:none;overflow:hidden}
       <label><input type="radio" name="encExportKind" value="histories"><span><strong>All histories</strong><br><small>Condensed history cards.</small></span></label>
       <label><input type="radio" name="encExportKind" value="study"><span><strong>All study references</strong><br><small>Condensed worksheet fields.</small></span></label>
       <label><input type="radio" name="encExportKind" value="frequencies"><span><strong>All frequencies</strong><br><small>C/B/A/I/H plus notes table.</small></span></label>
+      <label><input type="radio" name="encExportKind" value="freqShortBlank"><span><strong>Short freq. to memorize</strong><br><small>Blank practice sheet with antigen + memo only.</small></span></label>
       <label><input type="radio" name="encExportKind" value="lesser"><span><strong>Lesser systems</strong><br><small>The lesser-known system table.</small></span></label>
     </div>
     <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
@@ -1878,6 +1887,7 @@ function getFreqRows(sysKey) {
 }
 
 const GENERAL_COMPARE_KEY = '__generalComparison';
+const GENERAL_SHARED_KEY = '__generalSharedPatterns';
 const GENERAL_COMPARE_DEFAULT_COLUMNS = [
   {id:'abo', label:'ABO'},
   {id:'rh', label:'Rh'},
@@ -2085,6 +2095,10 @@ function makeGeneralRowId() {
 
 function makeGeneralColumnId() {
   return 'general_col_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+}
+
+function makeGeneralSharedRowId() {
+  return 'general_shared_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
 }
 
 function normalizeGeneralColumns(cols) {
@@ -2391,7 +2405,7 @@ function antigenAnswerForSharedPiece(col, rawPart, sharedValue, antigenLabels) {
   return cleanGeneralAntigenAnswer(antigenLabels[col.id] || col.label || '');
 }
 
-function buildGeneralSharedSummaryRows() {
+function buildAutoGeneralSharedSummaryRows() {
   var rows = [];
   var table = getGeneralComparison();
   var antigenLabels = getGeneralAntigenLabels();
@@ -2425,16 +2439,99 @@ function buildGeneralSharedSummaryRows() {
   return rows;
 }
 
+function defaultGeneralSharedPatterns() {
+  return [];
+}
+
+function normalizeGeneralSharedPatterns(raw) {
+  var saved = raw && typeof raw === 'object' ? raw : null;
+  var sourceRows = saved && Array.isArray(saved.rows) ? saved.rows : null;
+  if (!sourceRows) sourceRows = defaultGeneralSharedPatterns();
+  return {
+    rows: sourceRows.map(function(row, index) {
+      row = row || {};
+      return {
+        id: row.id || (makeGeneralSharedRowId() + '_' + index),
+        question: String(row.question || ''),
+        answer: String(row.answer || row.shared || '')
+      };
+    })
+  };
+}
+
+function getGeneralSharedPatterns() {
+  return normalizeGeneralSharedPatterns(notesData[GENERAL_SHARED_KEY]);
+}
+
+function ensureGeneralSharedPatterns() {
+  notesData[GENERAL_SHARED_KEY] = getGeneralSharedPatterns();
+  return notesData[GENERAL_SHARED_KEY];
+}
+
+function buildGeneralSharedSummaryRows() {
+  return getGeneralSharedPatterns().rows.filter(function(row) {
+    return String(row.question || '').trim() || String(row.answer || '').trim();
+  }).map(function(row) {
+    return {
+      id: row.id,
+      question: row.question,
+      answer: row.answer,
+      shared: row.answer
+    };
+  });
+}
+
+function updateGeneralSharedPattern(rowId, field, value) {
+  if (!isAdmin) return;
+  var table = ensureGeneralSharedPatterns();
+  var row = table.rows.find(function(item) { return item.id === rowId; });
+  if (!row) return;
+  if (field === 'question') row.question = value;
+  if (field === 'answer') row.answer = value;
+  notesData[GENERAL_SHARED_KEY] = table;
+  scheduleSave();
+}
+
+function addGeneralSharedPatternRow() {
+  if (!isAdmin) return;
+  var table = ensureGeneralSharedPatterns();
+  table.rows.push({ id: makeGeneralSharedRowId(), question: '', answer: '' });
+  notesData[GENERAL_SHARED_KEY] = table;
+  scheduleSave();
+  renderGeneralSharedSummary();
+  autoGrowTextAreas(document.getElementById('generalSharedSummary'));
+}
+
+function deleteGeneralSharedPatternRow(rowId) {
+  if (!isAdmin) return;
+  var table = ensureGeneralSharedPatterns();
+  table.rows = table.rows.filter(function(row) { return row.id !== rowId; });
+  notesData[GENERAL_SHARED_KEY] = table;
+  scheduleSave();
+  renderGeneralSharedSummary();
+}
+
 function buildGeneralSharedSummaryHtml() {
-  var rows = buildGeneralSharedSummaryRows();
-  if (!rows.length) return '';
+  var table = getGeneralSharedPatterns();
+  var rows = table.rows;
+  if (!rows.length && !isAdmin) return '';
+  var body = rows.length ? rows.map(function(row) {
+    if (!isAdmin) {
+      if (!String(row.question || '').trim() && !String(row.answer || '').trim()) return '';
+      return '<tr><td class="general-summary-question">' + escText(row.question) + '</td><td class="general-summary-answer">' + escText(row.answer) + '</td></tr>';
+    }
+    return '<tr>' +
+      '<td><textarea class="general-summary-edit question" rows="1" placeholder="Question" oninput="autoGrowTextArea(this);updateGeneralSharedPattern(\'' + row.id + '\',\'question\',this.value)">' + escText(row.question) + '</textarea></td>' +
+      '<td><textarea class="general-summary-edit answer" rows="1" placeholder="Answer" oninput="autoGrowTextArea(this);updateGeneralSharedPattern(\'' + row.id + '\',\'answer\',this.value)">' + escText(row.answer) + '</textarea></td>' +
+      '<td style="width:54px;text-align:center"><button class="general-summary-delete" onclick="deleteGeneralSharedPatternRow(\'' + row.id + '\')">x</button></td>' +
+    '</tr>';
+  }).join('') : '<tr><td colspan="' + (isAdmin ? 3 : 2) + '"><span class="muted-text">Add shared-pattern practice rows when you want them.</span></td></tr>';
   return '<div class="general-summary-card">' +
-    '<div class="general-summary-head"><div class="general-summary-title">Shared Patterns</div><div class="general-summary-note">Auto-built from repeated answers in the comparison table.</div></div>' +
-    '<table class="general-summary-table"><thead><tr><th style="width:48%">Question</th><th>Antigens</th></tr></thead><tbody>' +
-      rows.map(function(row) {
-        return '<tr><td class="general-summary-question">' + escText(row.question) + '</td><td class="general-summary-answer">' + escText(row.answer) + '</td></tr>';
-      }).join('') +
+    '<div class="general-summary-head"><div class="general-summary-title">Shared Patterns</div><div class="general-summary-note">Manual practice table. Add only the patterns you want.</div></div>' +
+    '<table class="general-summary-table"><thead><tr><th style="width:48%">Question</th><th>Answer</th>' + (isAdmin ? '<th style="width:54px">Row</th>' : '') + '</tr></thead><tbody>' +
+      body +
     '</tbody></table>' +
+    (isAdmin ? '<div class="general-summary-actions"><button class="add-row-btn" onclick="addGeneralSharedPatternRow()">+ Add shared pattern row</button></div>' : '') +
   '</div>';
 }
 
@@ -2447,6 +2544,7 @@ function renderGeneral(area) {
   currentSystemKey = 'general';
   if (syncPresence) syncPresence.setSection('encyclopedia / general comparison');
   const table = getGeneralComparison();
+  ensureGeneralSharedPatterns();
   const head = '<tr><th>Row</th>' + table.columns.map(function(col) {
     if (!isAdmin) return '<th>' + escText(col.label) + '</th>';
     return '<th><textarea class="general-col-label" rows="1" oninput="autoGrowTextArea(this);updateGeneralColumn(\'' + col.id + '\',this.value)">' + escText(col.label) + '</textarea><button class="general-col-delete" onclick="deleteGeneralComparisonColumn(\'' + col.id + '\')">x</button></th>';
@@ -2468,8 +2566,16 @@ function renderGeneral(area) {
         ${isAdmin ? '<button class="add-row-btn" onclick="addGeneralComparisonRow()">+ Add comparison row</button>' : ''}
         ${isAdmin ? '<button class="add-row-btn" onclick="addGeneralComparisonColumn()">+ Add comparison column</button>' : ''}
         ${isAdmin ? '<button class="add-row-btn" onclick="syncGeneralComparisonFromEncyclopedia()">Sync from encyclopedia</button>' : ''}
-        <button class="add-row-btn" onclick="exportGeneralComparisonPage()">Export General Comparison</button>
-        <button class="add-row-btn" onclick="exportGeneralComparisonBlankPage()">Export Blank Practice Sheet</button>
+        <div class="general-export-group">
+          <div class="general-export-group-label">With answers</div>
+          <button class="add-row-btn" onclick="exportGeneralComparisonPage('main')">Export General Comparison</button>
+          <button class="add-row-btn" onclick="exportGeneralComparisonPage('shared')">Export Shared Patterns</button>
+          <button class="add-row-btn" onclick="exportGeneralComparisonPage('both')">Export Both Tables</button>
+          <div class="general-export-group-label">Blank practice</div>
+          <button class="add-row-btn" onclick="exportGeneralComparisonBlankPage('main')">Blank General Comparison</button>
+          <button class="add-row-btn" onclick="exportGeneralComparisonBlankPage('shared')">Blank Shared Patterns</button>
+          <button class="add-row-btn" onclick="exportGeneralComparisonBlankPage('both')">Blank Both Tables</button>
+        </div>
       </div>
     </div>`;
   autoGrowTextAreas(area);
@@ -3812,6 +3918,7 @@ function runEncyclopediaExport() {
   document.getElementById('encExportModal').classList.remove('visible');
   if (kind === 'current') exportCurrentSystemPage();
   else if (kind === 'lesser') exportLesserSystemsPage();
+  else if (kind === 'freqShortBlank') exportShortFrequencyMemorizeBlank();
   else exportEncyclopediaSet(kind);
 }
 
@@ -3847,6 +3954,32 @@ function buildAllFrequenciesExportPage(keys) {
       '<tbody>' + rows + '</tbody>' +
     '</table>' +
   '</div>';
+}
+
+function buildShortFrequencyMemorizeExportPage(blank) {
+  var keys = ['abo','rh','kell','duffy','kidd','mns','p1pk','lewis','lutheran'];
+  var rows = '';
+  keys.forEach(function(key) {
+    var sys = SYSTEMS[key];
+    if (!sys) return;
+    var freqs = getFreqRows(sys.notes_key);
+    freqs.forEach(function(r, i) {
+      r = normalizeFreqRow(r);
+      if (!String(r.ag || '').trim()) return;
+      rows += '<tr>' +
+        '<td>' + (i === 0 ? exportText(sys.name.replace(' System','')) : '') + '</td>' +
+        '<td>' + exportText(r.ag || '') + '</td>' +
+        '<td class="freq-short-answer">' + (blank ? '&nbsp;' : exportText(r.memo || '')) + '</td>' +
+      '</tr>';
+    });
+  });
+  return '<section class="page freq-short-page">' +
+    '<h1>Short Frequency to Memorize</h1>' +
+    '<table class="freq-short-table">' +
+      '<thead><tr><th>System</th><th>Antigen</th><th>Frequency to Memorize</th></tr></thead>' +
+      '<tbody>' + rows + '</tbody>' +
+    '</table>' +
+  '</section>';
 }
 
 function exportText(value) {
@@ -3930,9 +4063,23 @@ function buildLesserSystemsExportPage() {
   '</section>';
 }
 
-function buildGeneralComparisonExportPage() {
+function normalizeGeneralExportMode(mode) {
+  return mode === 'main' || mode === 'shared' || mode === 'both' ? mode : 'both';
+}
+
+function generalExportTitle(mode, blank) {
+  mode = normalizeGeneralExportMode(mode);
+  if (mode === 'main') return blank ? 'General Comparison Blank Practice' : 'General Comparison';
+  if (mode === 'shared') return blank ? 'Shared Patterns Blank Practice' : 'Shared Patterns';
+  return blank ? 'General Comparison + Shared Patterns Blank Practice' : 'General Comparison + Shared Patterns';
+}
+
+function buildGeneralComparisonExportPage(mode) {
+  mode = normalizeGeneralExportMode(mode);
   var table = getGeneralComparison();
   var summaryRows = buildGeneralSharedSummaryRows();
+  var includeMain = mode === 'main' || mode === 'both';
+  var includeSummary = mode === 'shared' || mode === 'both';
   var head = '<tr><th>Row</th>' + table.columns.map(function(col) {
     return '<th>' + exportText(col.label) + '</th>';
   }).join('') + '</tr>';
@@ -3943,19 +4090,24 @@ function buildGeneralComparisonExportPage() {
     }).join('');
     return '<tr><td class="general-export-label">' + label + '</td>' + cells + '</tr>';
   }).join('');
-  var summary = summaryRows.length
-    ? '<div class="general-export-summary"><h2>Shared Patterns</h2><table><thead><tr><th>Question</th><th>Antigens</th></tr></thead><tbody>' +
+  var main = includeMain ? '<table class="general-export-main"><thead>' + head + '</thead><tbody>' + body + '</tbody></table>' : '';
+  var summary = includeSummary && summaryRows.length
+    ? '<div class="general-export-summary"><h2>Shared Patterns</h2><table><thead><tr><th>Question</th><th>Answer</th></tr></thead><tbody>' +
       summaryRows.map(function(row) {
         return '<tr><td>' + exportText(row.question) + '</td><td>' + exportText(row.answer) + '</td></tr>';
       }).join('') +
       '</tbody></table></div>'
     : '';
-  return '<section class="page general-export-page"><h1>General Comparison</h1><table class="general-export-main"><thead>' + head + '</thead><tbody>' + body + '</tbody></table>' + summary + '</section>';
+  if (includeSummary && !summaryRows.length) summary = '<div class="general-export-summary"><h2>Shared Patterns</h2><table><tbody><tr><td>No shared-pattern rows yet.</td></tr></tbody></table></div>';
+  return '<section class="page general-export-page"><h1>' + exportText(generalExportTitle(mode, false)) + '</h1>' + main + summary + '</section>';
 }
 
-function buildGeneralComparisonBlankExportPage() {
+function buildGeneralComparisonBlankExportPage(mode) {
+  mode = normalizeGeneralExportMode(mode);
   var table = getGeneralComparison();
   var summaryRows = buildGeneralSharedSummaryRows();
+  var includeMain = mode === 'main' || mode === 'both';
+  var includeSummary = mode === 'shared' || mode === 'both';
   var head = '<tr><th>Question / Row</th>' + table.columns.map(function(col) {
     return '<th>' + exportText(col.label) + '</th>';
   }).join('') + '</tr>';
@@ -3963,14 +4115,16 @@ function buildGeneralComparisonBlankExportPage() {
     return '<tr><td class="general-export-label">' + exportText(row.label || '') + '</td>' +
       table.columns.map(function() { return '<td class="general-blank-cell">&nbsp;</td>'; }).join('') + '</tr>';
   }).join('');
-  var summary = summaryRows.length
+  var main = includeMain ? '<table class="general-export-main"><thead>' + head + '</thead><tbody>' + body + '</tbody></table>' : '';
+  var summary = includeSummary && summaryRows.length
     ? '<div class="general-export-summary"><h2>Shared Patterns Practice</h2><table><thead><tr><th>Question</th><th>Answer</th></tr></thead><tbody>' +
       summaryRows.map(function(row) {
         return '<tr><td>' + exportText(row.question) + '</td><td class="general-blank-cell">&nbsp;</td></tr>';
       }).join('') +
       '</tbody></table></div>'
     : '';
-  return '<section class="page general-export-page general-blank-page"><h1>General Comparison Blank Practice</h1><table class="general-export-main"><thead>' + head + '</thead><tbody>' + body + '</tbody></table>' + summary + '</section>';
+  if (includeSummary && !summaryRows.length) summary = '<div class="general-export-summary"><h2>Shared Patterns Practice</h2><table><tbody><tr><td class="general-blank-cell">&nbsp;</td><td class="general-blank-cell">&nbsp;</td></tr></tbody></table></div>';
+  return '<section class="page general-export-page general-blank-page"><h1>' + exportText(generalExportTitle(mode, true)) + '</h1>' + main + summary + '</section>';
 }
 
 function flashPlain(value) {
@@ -4046,7 +4200,7 @@ function buildFlashcardDeck() {
     addFlashcard(cards,
       row.question,
       row.answer,
-      {id:'general-shared-' + idx + '-' + row.shared.toLowerCase().replace(/[^a-z0-9]+/g,'-'), system:'General', category:'Shared Patterns', color:'#8b0a26'}
+      {id:'general-shared-' + (row.id || idx), system:'General', category:'Shared Patterns', color:'#8b0a26'}
     );
   });
   var usualKeys = ['abo','rh','kell','duffy','kidd','mns','p1pk','lewis','lutheran'];
@@ -4356,7 +4510,7 @@ function buildExportHtml(content, title, orientation, scale) {
     '.binder-system{height:10.25in;overflow:hidden;font-size:10px;padding-top:.03in}.binder-system table{margin-bottom:0}.binder-card{border-top:2.5px solid #5a0e20;border-left:1px solid #f7c5d0;border-right:1px solid #f7c5d0;border-bottom:1px solid #f7c5d0;border-radius:12px;background:#fffaf7;margin-bottom:.07in;break-inside:avoid;page-break-inside:avoid}.binder-hero{min-height:1.08in;padding:5px 10px 6px}.binder-head{gap:8px;align-items:flex-start;margin-bottom:2px}.binder-head .system-dot{width:28px;height:28px;font-size:14px}.binder-head h1{text-align:left;font-size:22px;line-height:.95;margin:0 0 2px;padding:0}.binder-head .isbt{font-size:7px;letter-spacing:2.1px}.binder-head .pun{font-size:9.5px;line-height:1.08;margin-top:2px}.binder-system .card-label{font-size:8.6px;letter-spacing:3px;text-transform:uppercase;color:#7a6468;font-weight:700;margin:0 0 5px}.binder-history .tl{padding-left:8px;border-left:2px solid #f7c5d0}.binder-history .tl-item{font-size:6px;line-height:1.03;margin-bottom:1px}.binder-history .yr{display:inline-block;width:.5in;font-size:6.2px;color:#c0173d;font-weight:700}.binder-membrane-card{height:1.32in;padding:5px 8px}.binder-membrane-print{height:1.08in;display:flex;align-items:center;justify-content:center;overflow:hidden}.binder-membrane-print>div{width:5.25in!important;overflow:hidden!important}.binder-membrane-print svg{width:5.25in!important;min-width:0!important;height:1.05in!important}.binder-membrane-print text{font-size:9px!important}.binder-study{height:auto;max-height:4.9in;padding:8px 10px 9px;overflow:hidden}.binder-system .study-table{font-size:10.2px;line-height:1.18;table-layout:fixed}.binder-system .study-table tr:nth-child(even) td{background:#fff3f0}.binder-system .study-table td{font-size:10.2px;padding:4px 5px;white-space:normal;overflow-wrap:anywhere}.binder-system .study-table td.lbl{width:1.55in;font-size:8.7px;letter-spacing:.5px;color:#7a6468}.binder-system .study-table .muted{font-size:8.2px;color:#b69aa0}.binder-freq{min-height:0;padding:8px 10px}.binder-system .freq-export{font-size:8.8px;line-height:1.08;table-layout:fixed}.binder-system .freq-export th{font-size:7.7px;padding:3px 3px}.binder-system .freq-export td{font-size:8.4px;padding:3px 3px;white-space:normal;overflow-wrap:anywhere}.binder-system .freq-export th:nth-child(1){width:.7in}.binder-system .freq-export th:nth-child(2),.binder-system .freq-export th:nth-child(3),.binder-system .freq-export th:nth-child(4),.binder-system .freq-export th:nth-child(5),.binder-system .freq-export th:nth-child(6){width:.28in}.binder-system .freq-export th:nth-child(7){width:.45in}.binder-notes{min-height:0;padding:6px 10px;margin-bottom:0}.binder-system .note-box{font-size:8.4px;line-height:1.16;padding:4px 6px;background:#fff;border-left:3px solid #f7c5d0}' +
     '.antigram-export-page{max-width:10.4in;height:7.1in;overflow:hidden}.antigram-export-page h1{font-size:15px;margin:0 0 .04in;padding:0}.antigram-export-note{font-size:8px;color:#7a6468;margin-bottom:.05in}.antigram-export-page .antigram-panel-wrap{overflow:hidden;border:1px solid #5a0e20;border-radius:4px;background:#fff}.antigram-export-page .antigram-table{width:100%;min-width:0;border-collapse:collapse;table-layout:fixed;font-size:5.4px}.antigram-export-page .antigram-table th{position:static;background:#5a0e20;color:#fff;font-size:5.2px;padding:2px 1px;text-align:center}.antigram-export-page .antigram-table td{border:1px solid #d9a9b4;padding:2px 1px;text-align:center;font-size:5.6px;min-width:0}.antigram-export-page .antigram-table td.cell-id{position:static;background:#fffaf7;font-weight:bold;color:#5a0e20;font-size:5.5px}.antigram-export-page .antigram-table td.ruled-out{background:#dff4eb!important}.antigram-export-page .antigram-table td.suspect-hit{background:#fff1b8!important}.antigram-answer-key,.antigram-practice-lines{font-size:8px;line-height:1.25;margin-top:.06in;border:1px solid #f7c5d0;border-radius:6px;padding:.06in;background:#fffaf7}' +
     '.flash-print-page{max-width:7.9in;height:10.4in;overflow:hidden}.flash-print-page h1{font-size:15px;color:#000;text-align:left;margin:0 0 .12in;padding:0}.flash-print-grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:.18in;height:9.9in}.flash-print-card{border:2px solid #000;background:#fff;color:#000;border-radius:0;padding:.18in;display:flex;flex-direction:column;justify-content:center;text-align:center;break-inside:avoid;page-break-inside:avoid}.flash-print-meta{font-size:12px;text-transform:uppercase;letter-spacing:.7px;margin-bottom:.12in;color:#000;font-weight:700}.flash-print-q{font-size:24px;line-height:1.18;font-weight:900}.flash-print-a{font-size:22px;line-height:1.2;font-weight:900;white-space:pre-wrap}' +
-    '.general-export-page{max-width:10.4in;height:7.12in;overflow:hidden}.general-export-page h1{text-align:left;font-size:18px;margin:0 0 .07in;padding:0;color:#5a0e20}.general-export-main{table-layout:fixed;margin-bottom:.07in;border:1px solid #f7c5d0}.general-export-main th{font-size:6.6px;line-height:1.05;text-align:center;padding:3px 2px;background:#5a0e20;color:#fff}.general-export-main th:first-child{width:.78in;text-align:left}.general-export-main td{font-size:6.5px;line-height:1.06;padding:2px 3px;border:1px solid #f7c5d0;white-space:normal;overflow-wrap:anywhere}.general-export-main tr:nth-child(even) td{background:#fff1f4}.general-export-label{font-weight:800;color:#5a0e20}.general-export-summary h2{font-size:8px;letter-spacing:1.2px;text-transform:uppercase;color:#7a6468;border:0;margin:.02in 0 .035in;padding:0}.general-export-summary table{table-layout:fixed;border:1px solid #f7c5d0}.general-export-summary th{font-size:6.4px;padding:2px 4px}.general-export-summary td{font-size:6.4px;line-height:1.05;padding:2px 4px;border:1px solid #f7c5d0}.general-export-summary th:nth-child(1){width:44%}.general-blank-page td.general-blank-cell{height:.27in;background:#fff!important;color:#fff}.general-blank-page .general-export-summary td.general-blank-cell{height:.2in}.lesser-export-page{max-width:10.4in;height:7.12in;overflow:hidden}.lesser-export-page h1{text-align:left;font-size:18px;margin:0 0 .08in;padding:0;color:#5a0e20}.lesser-export-table{table-layout:fixed}.lesser-export-table th{font-size:6.6px;line-height:1.05;padding:3px 3px}.lesser-export-table td{font-size:6.6px;line-height:1.07;padding:3px 3px;white-space:normal;overflow-wrap:anywhere}.lesser-export-table th:first-child{width:.85in}' +
+    '.general-export-page{max-width:10.4in;height:7.12in;overflow:hidden}.general-export-page h1{text-align:left;font-size:18px;margin:0 0 .07in;padding:0;color:#5a0e20}.general-export-main{table-layout:fixed;margin-bottom:.07in;border:1px solid #f7c5d0}.general-export-main th{font-size:6.6px;line-height:1.05;text-align:center;padding:3px 2px;background:#5a0e20;color:#fff}.general-export-main th:first-child{width:.78in;text-align:left}.general-export-main td{font-size:6.5px;line-height:1.06;padding:2px 3px;border:1px solid #f7c5d0;white-space:normal;overflow-wrap:anywhere}.general-export-main tr:nth-child(even) td{background:#fff1f4}.general-export-label{font-weight:800;color:#5a0e20}.general-export-summary h2{font-size:8px;letter-spacing:1.2px;text-transform:uppercase;color:#7a6468;border:0;margin:.02in 0 .035in;padding:0}.general-export-summary table{table-layout:fixed;border:1px solid #f7c5d0}.general-export-summary th{font-size:6.4px;padding:2px 4px}.general-export-summary td{font-size:6.4px;line-height:1.05;padding:2px 4px;border:1px solid #f7c5d0}.general-export-summary th:nth-child(1){width:44%}.general-blank-page td.general-blank-cell{height:.27in;background:#fff!important;color:#fff}.general-blank-page .general-export-summary td.general-blank-cell{height:.2in}.lesser-export-page{max-width:10.4in;height:7.12in;overflow:hidden}.lesser-export-page h1{text-align:left;font-size:18px;margin:0 0 .08in;padding:0;color:#5a0e20}.lesser-export-table{table-layout:fixed}.lesser-export-table th{font-size:6.6px;line-height:1.05;padding:3px 3px}.lesser-export-table td{font-size:6.6px;line-height:1.07;padding:3px 3px;white-space:normal;overflow-wrap:anywhere}.lesser-export-table th:first-child{width:.85in}.freq-short-page{max-width:10.4in;height:7.12in;overflow:hidden}.freq-short-page h1{text-align:left;font-size:18px;margin:0 0 .08in;padding:0;color:#5a0e20}.freq-short-table{table-layout:fixed;border:1px solid #f7c5d0}.freq-short-table th{font-size:8.4px;padding:4px 5px}.freq-short-table td{font-size:8.2px;line-height:1.04;padding:3px 5px;border:1px solid #f7c5d0;white-space:normal;overflow-wrap:anywhere}.freq-short-table th:nth-child(1){width:1.05in}.freq-short-table th:nth-child(2){width:2.2in}.freq-short-answer{height:.18in;background:#fff!important}' +
     '.map-page{max-width:10.4in;height:7.15in;overflow:hidden}.map-page h1{font-size:16px;padding:0;margin:0 0 .06in}.map-print{height:6.86in;overflow:hidden;display:flex;align-items:center;justify-content:center}.map-print>div{width:100%!important;height:100%!important;overflow:hidden!important}.map-print svg{width:100%!important;max-width:100%!important;min-width:0!important;height:100%!important;max-height:6.78in!important}.map-rbc .map-print svg text{font-size:10px!important}.map-chrom .map-print{align-items:flex-start}svg{max-width:100%;height:auto}' +
     portraitTweaks +
     '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.bb-export-scale-wrap{zoom:var(--bb-export-scale,1);transform:none;width:auto;min-height:0}}</style></head><body style="--bb-export-scale:' + printScale + '"><div class="bb-export-scale-wrap">' + content + '</div></body></html>';
@@ -4416,16 +4570,22 @@ function exportCurrentSystemPage() {
   }
 }
 
-function exportGeneralComparisonPage() {
-  printExportHtml(buildGeneralComparisonExportPage(), 'Blood Bank General Comparison', 'landscape');
+function exportGeneralComparisonPage(mode) {
+  mode = normalizeGeneralExportMode(mode);
+  printExportHtml(buildGeneralComparisonExportPage(mode), 'Blood Bank ' + generalExportTitle(mode, false), 'landscape');
 }
 
-function exportGeneralComparisonBlankPage() {
-  printExportHtml(buildGeneralComparisonBlankExportPage(), 'Blood Bank General Comparison Blank Practice', 'landscape');
+function exportGeneralComparisonBlankPage(mode) {
+  mode = normalizeGeneralExportMode(mode);
+  printExportHtml(buildGeneralComparisonBlankExportPage(mode), 'Blood Bank ' + generalExportTitle(mode, true), 'landscape');
 }
 
 function exportLesserSystemsPage() {
   printExportHtml(buildLesserSystemsExportPage(), 'Lesser Systems Export', 'landscape');
+}
+
+function exportShortFrequencyMemorizeBlank() {
+  printExportHtml(buildShortFrequencyMemorizeExportPage(true), 'Blood Bank Short Frequency to Memorize Blank', 'landscape');
 }
 
 function exportEncyclopediaSet(kind) {
