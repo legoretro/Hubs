@@ -1582,6 +1582,7 @@ const FREQ_DEFAULT_ROWS = {
 
 const BB_WORKSHEET_DEFAULT_VERSION = 1;
 const BB_RELATED_SUBSTANCE_VERSION = 1;
+const LESSER_WORKSHEET_DEFAULT_VERSION = 2;
 
 const WORKSHEET_FREQ_ROWS = {
   abo: [
@@ -1883,12 +1884,10 @@ const GENERAL_COMPARE_DEFAULT_COLUMNS = [
   {id:'kell', label:'Kell'},
   {id:'duffy', label:'Duffy'},
   {id:'kidd', label:'Kidd'},
-  {id:'mns_mn', label:'MN'},
-  {id:'mns_ss', label:'S/s'},
+  {id:'mns', label:'MNS'},
   {id:'lewis', label:'Lewis'},
   {id:'p1pk', label:'P'},
-  {id:'lutheran_lua', label:'Lua'},
-  {id:'lutheran_lub', label:'Lub'}
+  {id:'lutheran', label:'Lutheran'}
 ];
 
 function defaultGeneralColumns() {
@@ -1897,7 +1896,7 @@ function defaultGeneralColumns() {
   });
 }
 
-const GENERAL_COMPARE_SYNC_VERSION = 2;
+const GENERAL_COMPARE_SYNC_VERSION = 4;
 const GENERAL_COMPARE_SOURCE_ROWS = [
   {id:'general_antigens', label:'Antigens', type:'field', field:'antigen_names'},
   {id:'general_antibody_temp', label:'Antibody Temp', type:'antibody_temp'},
@@ -1911,7 +1910,7 @@ const GENERAL_COMPARE_SOURCE_ROWS = [
   {id:'general_naturally_occurring', label:'Naturally Occurring', type:'field', field:'naturally_occurring'},
   {id:'general_gene_location', label:'Gene Location', type:'field', field:'chromosome'},
   {id:'general_freq_memo', label:'Frequency to Memorize', type:'freq_memo'},
-  {id:'general_other', label:'Other', type:'field', field:'lab_notes'}
+  {id:'general_other', label:'Key Notes*', type:'key_notes', field:'lab_notes'}
 ];
 
 function generalSourceForColumn(colId) {
@@ -1921,12 +1920,10 @@ function generalSourceForColumn(colId) {
     kell:{key:'kell'},
     duffy:{key:'duffy'},
     kidd:{key:'kidd'},
-    mns_mn:{key:'mns', split:'mn'},
-    mns_ss:{key:'mns', split:'ss'},
+    mns:{key:'mns', split:'mns'},
     lewis:{key:'lewis'},
     p1pk:{key:'p1pk'},
-    lutheran_lua:{key:'lutheran', split:'lua'},
-    lutheran_lub:{key:'lutheran', split:'lub'}
+    lutheran:{key:'lutheran', split:'lutheran'}
   };
   return map[colId] || null;
 }
@@ -2006,29 +2003,39 @@ function generalCellFromEncyclopedia(rowDef, colId) {
   const source = generalSourceForColumn(colId);
   if (!source) return '';
   const data = currentWorksheetData(source.key);
-  if (source.split === 'lua') {
-    if (rowDef.id === 'general_antigens') return 'Lua';
-    if (rowDef.id === 'general_antibody_temp') return 'IgM: Cold';
+  if (source.split === 'mns') {
+    if (rowDef.id === 'general_antigens') return 'M, N\nS, s, U';
+    if (rowDef.id === 'general_antibody_temp') return 'M/N IgM: Cold\nS/s/U IgG: Warm';
+    if (rowDef.field && (rowDef.field + '_ss') in data) {
+      const mnValue = compactBloodBankPhrase(data[rowDef.field]);
+      const ssValue = compactBloodBankPhrase(data[rowDef.field + '_ss']);
+      if (mnValue && ssValue && normalizeGeneralSharedValue(mnValue).toLowerCase() === normalizeGeneralSharedValue(ssValue).toLowerCase()) return mnValue;
+      return ['M/N: ' + mnValue, 'S/s/U: ' + ssValue].filter(function(part) {
+        return !/:\s*$/.test(part);
+      }).join('\n');
+    }
   }
-  if (source.split === 'lub') {
-    if (rowDef.id === 'general_antigens') return 'Lub';
-    if (rowDef.id === 'general_antibody_temp') return 'IgG: Warm';
-  }
-  if (source.split === 'mn') {
-    if (rowDef.id === 'general_antibody_temp') return 'IgM: Cold';
-  }
-  if (source.split === 'ss') {
-    if (rowDef.id === 'general_antibody_temp') return 'IgG: Warm';
+  if (source.split === 'lutheran') {
+    if (rowDef.id === 'general_antigens') return 'Lua\nLub';
+    if (rowDef.id === 'general_antibody_temp') return 'Lua IgM: Cold\nLub IgG: Warm';
   }
   if (rowDef.type === 'antibody_temp') {
     return compactIgTemp(data.ig_class, data.temp);
   }
+  if (rowDef.type === 'key_notes') {
+    return compactBloodBankPhrase(data.lab_notes || '');
+  }
   if (rowDef.type === 'chemicals') {
-    const destroyedField = source.split === 'ss' ? 'destroyed_ss' : 'destroyed';
-    const enhancedField = source.split === 'ss' ? 'enhanced_ss' : 'enhanced';
     const parts = [];
-    if (data[destroyedField]) parts.push('Destroyed: ' + data[destroyedField]);
-    if (data[enhancedField]) parts.push('Enhanced: ' + data[enhancedField]);
+    if (source.split === 'mns') {
+      if (data.destroyed) parts.push('MN Destroyed: ' + data.destroyed);
+      if (data.enhanced) parts.push('MN Enhanced: ' + data.enhanced);
+      if (data.destroyed_ss) parts.push('S/s/U Destroyed: ' + data.destroyed_ss);
+      if (data.enhanced_ss) parts.push('S/s/U Enhanced: ' + data.enhanced_ss);
+    } else {
+      if (data.destroyed) parts.push('Destroyed: ' + data.destroyed);
+      if (data.enhanced) parts.push('Enhanced: ' + data.enhanced);
+    }
     return compactBloodBankPhrase(parts.join('\n'));
   }
   if (rowDef.type === 'freq_memo') {
@@ -2065,6 +2072,7 @@ function applyBloodGroupWorksheetDefaults() {
     notesData.__bbWorksheetVersion = BB_WORKSHEET_DEFAULT_VERSION;
   }
   applyRelatedSubstanceMigration();
+  applyLesserWorksheetDefaults();
   if (Number(notesData.__generalComparisonSyncVersion || 0) < GENERAL_COMPARE_SYNC_VERSION) {
     syncGeneralComparisonFromEncyclopedia({silent:true});
     notesData.__generalComparisonSyncVersion = GENERAL_COMPARE_SYNC_VERSION;
@@ -2093,12 +2101,10 @@ function normalizeGeneralColumns(cols) {
     col = col || {};
     var id = String(col.id || '');
     var label = String(col.label || col.id || 'Column');
-    if (id === 'mns') {
-      addColumn('mns_mn', 'MN');
-      addColumn('mns_ss', 'S/s');
-    } else if (id === 'lutheran') {
-      addColumn('lutheran_lua', 'Lua');
-      addColumn('lutheran_lub', 'Lub');
+    if (id === 'mns' || id === 'mns_mn' || id === 'mns_ss') {
+      addColumn('mns', 'MNS');
+    } else if (id === 'lutheran' || id === 'lutheran_lua' || id === 'lutheran_lub') {
+      addColumn('lutheran', 'Lutheran');
     } else {
       addColumn(id || makeGeneralColumnId(), label);
     }
@@ -2110,6 +2116,26 @@ function legacyGeneralCell(row, colId) {
   var cells = row && row.cells ? row.cells : {};
   if (cells[colId] != null) return cells[colId];
   var label = String(row && row.label || '').toLowerCase();
+  if (colId === 'mns') {
+    var mnsParts = [];
+    if (cells.mns) mnsParts.push(cells.mns);
+    if (cells.mns_mn) mnsParts.push(cells.mns_mn);
+    if (cells.mns_ss) mnsParts.push(cells.mns_ss);
+    if (mnsParts.length) return mnsParts.filter(Boolean).join('\n');
+    if (/antigen/.test(label)) return 'M, N\nS, s, U';
+    if (/antibody/.test(label)) return 'M/N IgM: Cold\nS/s/U IgG: Warm';
+    return '';
+  }
+  if (colId === 'lutheran') {
+    var luParts = [];
+    if (cells.lutheran) luParts.push(cells.lutheran);
+    if (cells.lutheran_lua) luParts.push(cells.lutheran_lua);
+    if (cells.lutheran_lub) luParts.push(cells.lutheran_lub);
+    if (luParts.length) return luParts.filter(Boolean).join('\n');
+    if (/antigen/.test(label)) return 'Lua\nLub';
+    if (/antibody/.test(label)) return 'Lua IgM: Cold\nLub IgG: Warm';
+    return '';
+  }
   if (colId === 'mns_mn') {
     if (/antigen/.test(label)) return 'M/N';
     if (/antibody/.test(label)) return 'IgM: Cold';
@@ -2183,7 +2209,7 @@ function syncGeneralComparisonFromEncyclopedia(options) {
   generated.forEach(function(row) { generatedIds[row.id] = true; });
   const customRows = table.rows.filter(function(row) {
     const hasContent = row.label || Object.values(row.cells || {}).some(function(value) { return String(value || '').trim(); });
-    return hasContent && !generatedIds[row.id];
+    return hasContent && !generatedIds[row.id] && !isObsoleteGeneralComparisonRow(row);
   });
   notesData[GENERAL_COMPARE_KEY] = { columns: table.columns, rows: generated.concat(customRows) };
   notesData.__generalComparisonSyncVersion = GENERAL_COMPARE_SYNC_VERSION;
@@ -2193,6 +2219,11 @@ function syncGeneralComparisonFromEncyclopedia(options) {
     showToast('General comparison synced from encyclopedia');
   }
   return notesData[GENERAL_COMPARE_KEY];
+}
+
+function isObsoleteGeneralComparisonRow(row) {
+  var label = String(row && row.label || '').trim().toLowerCase();
+  return label === 'other' || /plasma antibody clue|neutralization/.test(label);
 }
 
 function updateGeneralComparison(rowId, field, value) {
@@ -2294,13 +2325,13 @@ function normalizeGeneralSharedValue(value) {
 
 function generalSharedQuestion(rowLabel, value) {
   var label = String(rowLabel || '').replace(/[?:]+$/g, '').trim() || 'this row';
-  if (/antibody temp/i.test(label)) return 'What antigen groups have antibodies that are ' + value + '?';
-  if (/dosage/i.test(label)) return 'Which antigen groups show dosage = ' + value + '?';
-  if (/chemicals|enzymes/i.test(label)) return 'Which antigen groups share chemicals/enzymes = ' + value + '?';
-  if (/complement/i.test(label)) return 'Which antigen groups have complement = ' + value + '?';
-  if (/^hdn$/i.test(label)) return 'Which antigen groups have HDN = ' + value + '?';
-  if (/^other$/i.test(label)) return 'Which antigen groups share this note: ' + value + '?';
-  return 'Which antigen groups share ' + label + ' = ' + value + '?';
+  if (/antibody temp/i.test(label)) return 'What antigens have antibodies that are ' + value + '?';
+  if (/dosage/i.test(label)) return 'Which antigens show dosage = ' + value + '?';
+  if (/chemicals|enzymes/i.test(label)) return 'Which antigens share chemicals/enzymes = ' + value + '?';
+  if (/complement/i.test(label)) return 'Which antigens have complement = ' + value + '?';
+  if (/^hdn$/i.test(label)) return 'Which antigens have HDN = ' + value + '?';
+  if (/key notes|other/i.test(label)) return 'Which antigens share this note: ' + value + '?';
+  return 'Which antigens share ' + label + ' = ' + value + '?';
 }
 
 function getGeneralAntigenLabels() {
@@ -2316,9 +2347,48 @@ function getGeneralAntigenLabels() {
   return labels;
 }
 
+function splitGeneralAntigenTokens(value) {
+  return String(value || '')
+    .replace(/\b[A-Za-z0-9/ ]+\s*:\s*/g, '')
+    .replace(/\band\b/gi, ',')
+    .replace(/\s*\/\s*/g, ', ')
+    .split(/[,;\n]+/)
+    .map(function(part) { return part.replace(/\s+/g, ' ').trim(); })
+    .filter(Boolean);
+}
+
+function cleanGeneralAntigenAnswer(value) {
+  var seen = {};
+  return splitGeneralAntigenTokens(value).filter(function(token) {
+    var key = token.toLowerCase();
+    if (seen[key]) return false;
+    seen[key] = true;
+    return true;
+  }).join(', ');
+}
+
+function addAntigenAnswerTokens(target, value) {
+  splitGeneralAntigenTokens(value).forEach(function(token) {
+    var key = token.toLowerCase();
+    if (!target.keys[key]) {
+      target.keys[key] = true;
+      target.items.push(token);
+    }
+  });
+}
+
 function antigenAnswerForSharedPiece(col, rawPart, sharedValue, antigenLabels) {
-  var antigens = antigenLabels[col.id] || col.label || '';
-  return col.label + (antigens && antigens !== col.label ? ': ' + antigens : '');
+  var raw = String(rawPart || '');
+  var shared = String(sharedValue || '');
+  if (col.id === 'mns') {
+    if (/M\/N|Anti-M|Anti-N/i.test(raw) || (/IgM/i.test(shared) && /Cold/i.test(shared))) return 'M, N';
+    if (/S\/s|\/U|Anti-S|Anti-s|Anti-U/i.test(raw) || (/IgG/i.test(shared) && /Warm/i.test(shared))) return 'S, s, U';
+  }
+  if (col.id === 'lutheran') {
+    if (/Lua|Anti-Lua/i.test(raw) || (/IgM/i.test(shared) && /Cold/i.test(shared))) return 'Lua';
+    if (/Lub|Anti-Lub/i.test(raw) || (/IgG/i.test(shared) && /Warm/i.test(shared))) return 'Lub';
+  }
+  return cleanGeneralAntigenAnswer(antigenLabels[col.id] || col.label || '');
 }
 
 function buildGeneralSharedSummaryRows() {
@@ -2327,7 +2397,7 @@ function buildGeneralSharedSummaryRows() {
   var antigenLabels = getGeneralAntigenLabels();
   table.rows.forEach(function(row) {
     var label = String(row.label || '').trim();
-    if (!label || /^antigens?$/i.test(label)) return;
+    if (!label || /^antigens?$/i.test(label) || /frequency to memorize/i.test(label)) return;
     var groups = {};
     table.columns.forEach(function(col) {
       var cell = row.cells && row.cells[col.id];
@@ -2335,19 +2405,20 @@ function buildGeneralSharedSummaryRows() {
         var normalized = normalizeGeneralSharedValue(piece.value);
         if (!normalized) return;
         var groupKey = normalized.toLowerCase();
-        if (!groups[groupKey]) groups[groupKey] = { value: normalized, antigens: [] };
+        if (!groups[groupKey]) groups[groupKey] = { value: normalized, antigens: {items: [], keys: {}}, columns: [] };
         var answer = antigenAnswerForSharedPiece(col, piece.raw, normalized, antigenLabels);
-        if (answer && groups[groupKey].antigens.indexOf(answer) === -1) groups[groupKey].antigens.push(answer);
+        if (answer) addAntigenAnswerTokens(groups[groupKey].antigens, answer);
+        if (groups[groupKey].columns.indexOf(col.id) === -1) groups[groupKey].columns.push(col.id);
       });
     });
     Object.keys(groups).forEach(function(groupKey) {
       var group = groups[groupKey];
-      if (group.antigens.length < 2) return;
+      if (group.columns.length < 2) return;
       rows.push({
         source: label,
         shared: group.value,
         question: generalSharedQuestion(label, group.value),
-        answer: group.antigens.join(', ')
+        answer: group.antigens.items.join(', ')
       });
     });
   });
@@ -2359,9 +2430,9 @@ function buildGeneralSharedSummaryHtml() {
   if (!rows.length) return '';
   return '<div class="general-summary-card">' +
     '<div class="general-summary-head"><div class="general-summary-title">Shared Patterns</div><div class="general-summary-note">Auto-built from repeated answers in the comparison table.</div></div>' +
-    '<table class="general-summary-table"><thead><tr><th style="width:42%">Question</th><th style="width:18%">Shared Answer</th><th>Antigens</th></tr></thead><tbody>' +
+    '<table class="general-summary-table"><thead><tr><th style="width:48%">Question</th><th>Antigens</th></tr></thead><tbody>' +
       rows.map(function(row) {
-        return '<tr><td class="general-summary-question">' + escText(row.question) + '</td><td>' + escText(row.shared) + '</td><td class="general-summary-answer">' + escText(row.answer) + '</td></tr>';
+        return '<tr><td class="general-summary-question">' + escText(row.question) + '</td><td class="general-summary-answer">' + escText(row.answer) + '</td></tr>';
       }).join('') +
     '</tbody></table>' +
   '</div>';
@@ -2516,22 +2587,25 @@ function switchMNS(panel, el) {
 // LESSER-KNOWN SYSTEMS
 // ============================================================
 const LESSER_SYSTEMS = [
-  {key:'ge',name:'Gerbich (GE)',isbt:'ISBT 020',ags:'Ge2, Ge3, Ge4 (high); Wb, Ls, An, Dh (low)',carrier:'Glycophorin C and D (single-pass)'},
   {key:'di',name:'Diego (DI)',isbt:'ISBT 010',ags:'Dia (low), Dib (high), Wra (low), Wrb (high)',carrier:'Band 3 (AE1) -- major anion exchanger (multi-pass)'},
-  {key:'co',name:'Colton (CO)',isbt:'ISBT 015',ags:'Coa (high), Cob (low), Co3 (high)',carrier:'Aquaporin 1 (AQP1) -- water channel'},
-  {key:'do',name:'Dombrock (DO)',isbt:'ISBT 014',ags:'Doa, Dob (polymorphic); Gy, Hy, Jo (high)',carrier:'GPI-linked glycoprotein (ADP-ribosyltransferase)'},
   {key:'yt',name:'Cartwright (YT)',isbt:'ISBT 011',ags:'Yta (high), Ytb (low)',carrier:'Acetylcholinesterase (AChE) -- GPI-linked'},
-  {key:'chrg',name:'Chido/Rodgers (CH/RG)',isbt:'ISBT 017',ags:'Ch1-Ch6, Rg1, Rg2 (all high frequency)',carrier:'Complement C4d -- adsorbed from plasma (not intrinsic; like Lewis)'},
+  {key:'co',name:'Colton (CO)',isbt:'ISBT 015',ags:'Coa (high), Cob (low), Co3 (high)',carrier:'Aquaporin 1 (AQP1) -- water channel'},
+  {key:'ge',name:'Gerbich (GE)',isbt:'ISBT 020',ags:'Ge2, Ge3, Ge4 (high); Wb, Ls, An, Dh (low)',carrier:'Glycophorin C and D (single-pass)'},
   {key:'crom',name:'Cromer (CROM)',isbt:'ISBT 021',ags:'Cra, Tca, Tcb, Dra, Esa (mostly high)',carrier:'Decay Accelerating Factor (DAF/CD55) -- GPI-linked'},
-  {key:'kn',name:'Knops (KN)',isbt:'ISBT 022',ags:'Kna, Knb, McCa (mostly high frequency)',carrier:'Complement Receptor 1 (CR1/CD35) -- single-pass'},
   {key:'in',name:'Indian (IN)',isbt:'ISBT 023',ags:'Ina (low), Inb (high)',carrier:'CD44 -- single-pass hyaluronic acid receptor'},
-  {key:'lw',name:'Landsteiner-Wiener (LW)',isbt:'ISBT 016',ags:'LWa (high), LWb (low)',carrier:'ICAM-4 -- single-pass glycoprotein (Ig superfamily)'},
-  {key:'sc',name:'Scianna (SC)',isbt:'ISBT 013',ags:'Sc1 (high), Sc2 (low), Sc3 (high)',carrier:'ERMAP -- single-pass adhesion molecule'},
-  {key:'sda',name:'Sda (SD)',isbt:'Collection 207',ags:'Sda -- highly variable expression',carrier:'Carbohydrate on glycoproteins and glycolipids'},
-  {key:'xg',name:'Xga (XG)',isbt:'ISBT 012',ags:'Xga -- X-linked (males 66%, females 89%)',carrier:'Single-pass glycoprotein on X chromosome'},
-  {key:'raph',name:'RAPH (MER2)',isbt:'ISBT 025',ags:'MER2 -- high frequency',carrier:'CD151 -- tetraspanin (4-pass)'},
+  {key:'vel',name:'Vel (VEL)',isbt:'ISBT 034',ags:'Vel -- variable expression',carrier:'SMIM1 -- small membrane protein'},
+  {key:'jra',name:'Jra (JR)',isbt:'ISBT 032',ags:'Jra -- high frequency',carrier:'ABCG2 -- transporter protein'},
+  {key:'do',name:'Dombrock (DO)',isbt:'ISBT 014',ags:'Doa, Dob (polymorphic); Gy, Hy, Jo (high)',carrier:'GPI-linked glycoprotein (ADP-ribosyltransferase)'},
   {key:'ok',name:'OK',isbt:'ISBT 024',ags:'Oka -- high frequency',carrier:'CD147 (Basigin) -- single-pass; P. falciparum invasion receptor'},
+  {key:'raph',name:'RAPH (MER2)',isbt:'ISBT 025',ags:'MER2 -- high frequency',carrier:'CD151 -- tetraspanin (4-pass)'},
+  {key:'xg',name:'Xga (XG)',isbt:'ISBT 012',ags:'Xga -- X-linked (males 66%, females 89%)',carrier:'Single-pass glycoprotein on X chromosome'},
+  {key:'sc',name:'Scianna (SC)',isbt:'ISBT 013',ags:'Sc1 (high), Sc2 (low), Sc3 (high)',carrier:'ERMAP -- single-pass adhesion molecule'},
+  {key:'lw',name:'Landsteiner-Wiener (LW)',isbt:'ISBT 016',ags:'LWa (high), LWb (low)',carrier:'ICAM-4 -- single-pass glycoprotein (Ig superfamily)'},
+  {key:'chrg',name:'Chido/Rodgers (CH/RG)',isbt:'ISBT 017',ags:'Ch1-Ch6, Rg1, Rg2 (all high frequency)',carrier:'Complement C4d -- adsorbed from plasma (not intrinsic; like Lewis)'},
+  {key:'kn',name:'Knops (KN)',isbt:'ISBT 022',ags:'Kna, Knb, McCa (mostly high frequency)',carrier:'Complement Receptor 1 (CR1/CD35) -- single-pass'},
   {key:'jmh',name:'JMH',isbt:'ISBT 026',ags:'JMH -- high frequency',carrier:'SEMA7A (Semaphorin 7A) -- GPI-linked'},
+  {key:'sda',name:'Sda (SD)',isbt:'Collection 207',ags:'Sda -- highly variable expression',carrier:'Carbohydrate on glycoproteins and glycolipids'},
+  {key:'anwj',name:'AnWJ',isbt:'Collection 901',ags:'AnWJ -- high frequency',carrier:'CD44-related antigen'},
   {key:'hla',name:'HLA',isbt:'Not ISBT red cell',ags:'HLA-A, B, C, DR, DQ, DP -- many alleles; Bg antigens on RBCs',carrier:'HLA glycoproteins (WBC/platelet); trace on RBCs via adsorption'},
 ];
 
@@ -2543,6 +2617,29 @@ const LESSER_DEFAULT_COLUMNS = [
   {id:'hdn_htr', label:'HDN / HTR'},
   {id:'notable', label:'Notable'}
 ];
+
+const LESSER_WORKSHEET_DEFAULTS = {
+  di:{antigens:'Dia/Dib; Wra/Wrb', why_not:'1. High incidence / low incidence pair category.', hdn_htr:'Clinically significant HDFN.', notable:'Dia higher in South American Indians.'},
+  yt:{antigens:'Yta/Ytb', why_not:'1. High incidence / low incidence pair category.', hdn_htr:'Variable significance. Some HTR; no HDN.', notable:'Ytb common in Israelis.'},
+  co:{antigens:'Coa/Cob; Co3 (null)', why_not:'1. High incidence / low incidence pair category.', hdn_htr:'Clinically significant for HTR and HDN.', notable:''},
+  ge:{antigens:'Ge1, Ge2, Ge3, Ge4', why_not:'1. High/low incidence antigens, not antithetical pairs.', hdn_htr:'Mild HDN/HTR.', notable:'Can show clinical elliptocytosis; membrane charge clue.'},
+  crom:{antigens:'Cra; Tca/Tcb/Tcc; Dra', why_not:'1. High/low incidence antigens with more than one antithetical pair.', hdn_htr:'Some HTR; no HDN.', notable:'DAF in placenta protects.'},
+  in:{antigens:'Ina/Inb', why_not:'1. High incidence / low incidence pair category.', hdn_htr:'HTR possible; no clinical HDN.', notable:'Sensitive to enzymes.'},
+  vel:{antigens:'Vel', why_not:'1. Variable or weak expression.', hdn_htr:'Causes HTR and HDN.', notable:'Activates complement; resistant to enzymes/chemicals.'},
+  jra:{antigens:'Jra', why_not:'1. Rare clinically significant antibody.', hdn_htr:'Severe HDN reported.', notable:'Most common in Japan.'},
+  do:{antigens:'Doa/Dob; Gya', why_not:'2. Poor immunogens; antibodies disappear quickly.', hdn_htr:'Some clinically significant HTR; no HDFN.', notable:''},
+  ok:{antigens:'Oka', why_not:'2. Not a strong immunogen.', hdn_htr:'Probable HDN/HTR.', notable:'Receptor for Plasmodium falciparum.'},
+  raph:{antigens:'MER2', why_not:'2. Poor immunogen and poorly expressed.', hdn_htr:'Usually not clinically significant.', notable:'Abundant on platelets and RBC precursors more than mature RBCs.'},
+  xg:{antigens:'Xga', why_not:'3. Not clinically significant.', hdn_htr:'Does not cause HDN or HTRXN.', notable:'X-linked; more common in females.'},
+  sc:{antigens:'Sc1/Sc2; Sc3 (null)', why_not:'3. Unknown clinical significance.', hdn_htr:'Does not cause HTRXN or HDN.', notable:'Rare to make these antibodies.'},
+  lw:{antigens:'Lwa/Lwb', why_not:'3. High/low incidence pair; not clinically significant.', hdn_htr:'Does not cause HDN or HTRXN.', notable:'Variable incidence relationship to D antigen.'},
+  chrg:{antigens:'Ch1-Ch6; Rg1-Rg2', why_not:'3. Not clinically significant.', hdn_htr:'Does not cause HDN or HTRXN.', notable:'HTLA; variable reactivity; neutralized by plasma.'},
+  kn:{antigens:'Kna/Knb; McCa/McCb; Sla/Vil', why_not:'3. Not clinically significant.', hdn_htr:'Does not cause HDN or HTRXN.', notable:'HTLA; weak serologic expression; not neutralized by plasma.'},
+  jmh:{antigens:'JMH', why_not:'3. Not clinically significant.', hdn_htr:'Usually no HDN or HTRXN.', notable:'HTLA; usually elderly patients; not neutralized by plasma.'},
+  sda:{antigens:'Sda', why_not:'3. Not clinically significant.', hdn_htr:'Usually no HDN or HTRXN.', notable:'High prevalence; neutralized by urine.'},
+  anwj:{antigens:'AnWJ', why_not:'3. Rare clinically significant antibody.', hdn_htr:'No known clinically significant pattern due to rarity.', notable:'Hemophilus influenza receptor; autoantibody and rare alloantibody.'},
+  hla:{antigens:'Bga, Bgb, Bgc', why_not:'3. Not clinically significant.', hdn_htr:'Usually no HDN or HTRXN.', notable:'Resistant to enzymes/DTT; neutralized by platelets.'}
+};
 
 function makeLesserColumnId() {
   return 'lesser_col_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
@@ -2557,7 +2654,8 @@ function lesserDisplayName(sys) {
   var names = {
     ge:'Gerbich', di:'Diego', co:'Colton', do:'Dombrock', yt:'Cartwright',
     chrg:'Chido/Rodgers', crom:'Cromer', kn:'Knops', in:'Indian', lw:'LW',
-    sc:'Scianna', sda:'Sda', xg:'Xga', raph:'RAPH', ok:'OK', jmh:'JMH', hla:'HLA'
+    sc:'Scianna', sda:'Sda', xg:'Xga', raph:'RAPH', ok:'OK', jmh:'JMH',
+    vel:'Vel', jra:'Jra', anwj:'AnWJ', hla:'HLA'
   };
   return names[sys.key] || sys.name || sys.key;
 }
@@ -2575,12 +2673,13 @@ function defaultLesserRows() {
   return LESSER_SYSTEMS.map(function(sys) {
     var label = lesserDisplayName(sys);
     var legacy = notesData[lesserLegacyKey(label)] || {};
+    var worksheet = LESSER_WORKSHEET_DEFAULTS[sys.key] || {};
     var cells = {
-      antigens: legacy.antigens || sys.ags || '',
+      antigens: legacy.antigens || worksheet.antigens || sys.ags || '',
       carrier: legacy.carrier || sys.carrier || '',
-      why_not: legacy.why_not || '',
-      hdn_htr: legacy.hdn_htr || '',
-      notable: legacy.notable || ''
+      why_not: legacy.why_not || worksheet.why_not || '',
+      hdn_htr: legacy.hdn_htr || worksheet.hdn_htr || '',
+      notable: legacy.notable || worksheet.notable || ''
     };
     var cleanCells = {};
     cols.forEach(function(col) { cleanCells[col.id] = cells[col.id] || ''; });
@@ -2621,6 +2720,51 @@ function normalizeLesserTable(raw) {
     };
   });
   return { columns: columns, rows: rows };
+}
+
+function lesserSystemKeyFromRow(row) {
+  var text = String((row && row.id) || '') + ' ' + String((row && row.label) || '');
+  text = text.toLowerCase();
+  var match = LESSER_SYSTEMS.find(function(sys) {
+    var display = lesserDisplayName(sys).toLowerCase();
+    var name = String(sys.name || '').toLowerCase();
+    return text.indexOf(sys.key.toLowerCase()) !== -1 ||
+      text.indexOf(display) !== -1 ||
+      (name && text.indexOf(name.split(/\s|\(/)[0]) !== -1);
+  });
+  return match ? match.key : '';
+}
+
+function applyLesserWorksheetDefaults() {
+  if (Number(notesData.__lesserWorksheetVersion || 0) >= LESSER_WORKSHEET_DEFAULT_VERSION) return;
+  var table = normalizeLesserTable(notesData[LESSER_TABLE_KEY]);
+  var columnIds = {};
+  table.columns.forEach(function(col) { columnIds[col.id] = true; });
+  defaultLesserColumns().forEach(function(col) {
+    if (!columnIds[col.id]) {
+      columnIds[col.id] = true;
+      table.columns.push(col);
+      table.rows.forEach(function(row) { row.cells[col.id] = row.cells[col.id] || ''; });
+    }
+  });
+  LESSER_SYSTEMS.forEach(function(sys) {
+    var label = lesserDisplayName(sys);
+    var key = sys.key;
+    var row = table.rows.find(function(item) { return lesserSystemKeyFromRow(item) === key; });
+    if (!row) {
+      row = { id: lesserLegacyKey(label), label: label, cells: {} };
+      table.columns.forEach(function(col) { row.cells[col.id] = ''; });
+      table.rows.push(row);
+    }
+    var worksheet = LESSER_WORKSHEET_DEFAULTS[key] || {};
+    if (worksheet.antigens && columnIds.antigens) row.cells.antigens = worksheet.antigens;
+    if (sys.carrier && columnIds.carrier && !String(row.cells.carrier || '').trim()) row.cells.carrier = sys.carrier;
+    ['why_not','hdn_htr','notable'].forEach(function(colId) {
+      if (columnIds[colId] && worksheet[colId]) row.cells[colId] = worksheet[colId];
+    });
+  });
+  notesData[LESSER_TABLE_KEY] = table;
+  notesData.__lesserWorksheetVersion = LESSER_WORKSHEET_DEFAULT_VERSION;
 }
 
 function getLesserTable() {
@@ -3800,9 +3944,9 @@ function buildGeneralComparisonExportPage() {
     return '<tr><td class="general-export-label">' + label + '</td>' + cells + '</tr>';
   }).join('');
   var summary = summaryRows.length
-    ? '<div class="general-export-summary"><h2>Shared Patterns</h2><table><thead><tr><th>Question</th><th>Shared Answer</th><th>Antigens</th></tr></thead><tbody>' +
+    ? '<div class="general-export-summary"><h2>Shared Patterns</h2><table><thead><tr><th>Question</th><th>Antigens</th></tr></thead><tbody>' +
       summaryRows.map(function(row) {
-        return '<tr><td>' + exportText(row.question) + '</td><td>' + exportText(row.shared) + '</td><td>' + exportText(row.answer) + '</td></tr>';
+        return '<tr><td>' + exportText(row.question) + '</td><td>' + exportText(row.answer) + '</td></tr>';
       }).join('') +
       '</tbody></table></div>'
     : '';
@@ -3820,9 +3964,9 @@ function buildGeneralComparisonBlankExportPage() {
       table.columns.map(function() { return '<td class="general-blank-cell">&nbsp;</td>'; }).join('') + '</tr>';
   }).join('');
   var summary = summaryRows.length
-    ? '<div class="general-export-summary"><h2>Shared Patterns Practice</h2><table><thead><tr><th>Question</th><th>Shared Answer</th><th>Antigens</th></tr></thead><tbody>' +
+    ? '<div class="general-export-summary"><h2>Shared Patterns Practice</h2><table><thead><tr><th>Question</th><th>Answer</th></tr></thead><tbody>' +
       summaryRows.map(function(row) {
-        return '<tr><td>' + exportText(row.question) + '</td><td class="general-blank-cell">&nbsp;</td><td class="general-blank-cell">&nbsp;</td></tr>';
+        return '<tr><td>' + exportText(row.question) + '</td><td class="general-blank-cell">&nbsp;</td></tr>';
       }).join('') +
       '</tbody></table></div>'
     : '';
@@ -4212,7 +4356,7 @@ function buildExportHtml(content, title, orientation, scale) {
     '.binder-system{height:10.25in;overflow:hidden;font-size:10px;padding-top:.03in}.binder-system table{margin-bottom:0}.binder-card{border-top:2.5px solid #5a0e20;border-left:1px solid #f7c5d0;border-right:1px solid #f7c5d0;border-bottom:1px solid #f7c5d0;border-radius:12px;background:#fffaf7;margin-bottom:.07in;break-inside:avoid;page-break-inside:avoid}.binder-hero{min-height:1.08in;padding:5px 10px 6px}.binder-head{gap:8px;align-items:flex-start;margin-bottom:2px}.binder-head .system-dot{width:28px;height:28px;font-size:14px}.binder-head h1{text-align:left;font-size:22px;line-height:.95;margin:0 0 2px;padding:0}.binder-head .isbt{font-size:7px;letter-spacing:2.1px}.binder-head .pun{font-size:9.5px;line-height:1.08;margin-top:2px}.binder-system .card-label{font-size:8.6px;letter-spacing:3px;text-transform:uppercase;color:#7a6468;font-weight:700;margin:0 0 5px}.binder-history .tl{padding-left:8px;border-left:2px solid #f7c5d0}.binder-history .tl-item{font-size:6px;line-height:1.03;margin-bottom:1px}.binder-history .yr{display:inline-block;width:.5in;font-size:6.2px;color:#c0173d;font-weight:700}.binder-membrane-card{height:1.32in;padding:5px 8px}.binder-membrane-print{height:1.08in;display:flex;align-items:center;justify-content:center;overflow:hidden}.binder-membrane-print>div{width:5.25in!important;overflow:hidden!important}.binder-membrane-print svg{width:5.25in!important;min-width:0!important;height:1.05in!important}.binder-membrane-print text{font-size:9px!important}.binder-study{height:auto;max-height:4.9in;padding:8px 10px 9px;overflow:hidden}.binder-system .study-table{font-size:10.2px;line-height:1.18;table-layout:fixed}.binder-system .study-table tr:nth-child(even) td{background:#fff3f0}.binder-system .study-table td{font-size:10.2px;padding:4px 5px;white-space:normal;overflow-wrap:anywhere}.binder-system .study-table td.lbl{width:1.55in;font-size:8.7px;letter-spacing:.5px;color:#7a6468}.binder-system .study-table .muted{font-size:8.2px;color:#b69aa0}.binder-freq{min-height:0;padding:8px 10px}.binder-system .freq-export{font-size:8.8px;line-height:1.08;table-layout:fixed}.binder-system .freq-export th{font-size:7.7px;padding:3px 3px}.binder-system .freq-export td{font-size:8.4px;padding:3px 3px;white-space:normal;overflow-wrap:anywhere}.binder-system .freq-export th:nth-child(1){width:.7in}.binder-system .freq-export th:nth-child(2),.binder-system .freq-export th:nth-child(3),.binder-system .freq-export th:nth-child(4),.binder-system .freq-export th:nth-child(5),.binder-system .freq-export th:nth-child(6){width:.28in}.binder-system .freq-export th:nth-child(7){width:.45in}.binder-notes{min-height:0;padding:6px 10px;margin-bottom:0}.binder-system .note-box{font-size:8.4px;line-height:1.16;padding:4px 6px;background:#fff;border-left:3px solid #f7c5d0}' +
     '.antigram-export-page{max-width:10.4in;height:7.1in;overflow:hidden}.antigram-export-page h1{font-size:15px;margin:0 0 .04in;padding:0}.antigram-export-note{font-size:8px;color:#7a6468;margin-bottom:.05in}.antigram-export-page .antigram-panel-wrap{overflow:hidden;border:1px solid #5a0e20;border-radius:4px;background:#fff}.antigram-export-page .antigram-table{width:100%;min-width:0;border-collapse:collapse;table-layout:fixed;font-size:5.4px}.antigram-export-page .antigram-table th{position:static;background:#5a0e20;color:#fff;font-size:5.2px;padding:2px 1px;text-align:center}.antigram-export-page .antigram-table td{border:1px solid #d9a9b4;padding:2px 1px;text-align:center;font-size:5.6px;min-width:0}.antigram-export-page .antigram-table td.cell-id{position:static;background:#fffaf7;font-weight:bold;color:#5a0e20;font-size:5.5px}.antigram-export-page .antigram-table td.ruled-out{background:#dff4eb!important}.antigram-export-page .antigram-table td.suspect-hit{background:#fff1b8!important}.antigram-answer-key,.antigram-practice-lines{font-size:8px;line-height:1.25;margin-top:.06in;border:1px solid #f7c5d0;border-radius:6px;padding:.06in;background:#fffaf7}' +
     '.flash-print-page{max-width:7.9in;height:10.4in;overflow:hidden}.flash-print-page h1{font-size:15px;color:#000;text-align:left;margin:0 0 .12in;padding:0}.flash-print-grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:.18in;height:9.9in}.flash-print-card{border:2px solid #000;background:#fff;color:#000;border-radius:0;padding:.18in;display:flex;flex-direction:column;justify-content:center;text-align:center;break-inside:avoid;page-break-inside:avoid}.flash-print-meta{font-size:12px;text-transform:uppercase;letter-spacing:.7px;margin-bottom:.12in;color:#000;font-weight:700}.flash-print-q{font-size:24px;line-height:1.18;font-weight:900}.flash-print-a{font-size:22px;line-height:1.2;font-weight:900;white-space:pre-wrap}' +
-    '.general-export-page{max-width:10.4in;height:7.12in;overflow:hidden}.general-export-page h1{text-align:left;font-size:18px;margin:0 0 .07in;padding:0;color:#5a0e20}.general-export-main{table-layout:fixed;margin-bottom:.07in;border:1px solid #f7c5d0}.general-export-main th{font-size:6.6px;line-height:1.05;text-align:center;padding:3px 2px;background:#5a0e20;color:#fff}.general-export-main th:first-child{width:.78in;text-align:left}.general-export-main td{font-size:6.5px;line-height:1.06;padding:2px 3px;border:1px solid #f7c5d0;white-space:normal;overflow-wrap:anywhere}.general-export-main tr:nth-child(even) td{background:#fff1f4}.general-export-label{font-weight:800;color:#5a0e20}.general-export-summary h2{font-size:8px;letter-spacing:1.2px;text-transform:uppercase;color:#7a6468;border:0;margin:.02in 0 .035in;padding:0}.general-export-summary table{table-layout:fixed;border:1px solid #f7c5d0}.general-export-summary th{font-size:6.4px;padding:2px 4px}.general-export-summary td{font-size:6.4px;line-height:1.05;padding:2px 4px;border:1px solid #f7c5d0}.general-export-summary th:nth-child(1){width:45%}.general-export-summary th:nth-child(2){width:20%}.general-blank-page td.general-blank-cell{height:.27in;background:#fff!important;color:#fff}.general-blank-page .general-export-summary td.general-blank-cell{height:.2in}.lesser-export-page{max-width:10.4in;height:7.12in;overflow:hidden}.lesser-export-page h1{text-align:left;font-size:18px;margin:0 0 .08in;padding:0;color:#5a0e20}.lesser-export-table{table-layout:fixed}.lesser-export-table th{font-size:6.6px;line-height:1.05;padding:3px 3px}.lesser-export-table td{font-size:6.6px;line-height:1.07;padding:3px 3px;white-space:normal;overflow-wrap:anywhere}.lesser-export-table th:first-child{width:.85in}' +
+    '.general-export-page{max-width:10.4in;height:7.12in;overflow:hidden}.general-export-page h1{text-align:left;font-size:18px;margin:0 0 .07in;padding:0;color:#5a0e20}.general-export-main{table-layout:fixed;margin-bottom:.07in;border:1px solid #f7c5d0}.general-export-main th{font-size:6.6px;line-height:1.05;text-align:center;padding:3px 2px;background:#5a0e20;color:#fff}.general-export-main th:first-child{width:.78in;text-align:left}.general-export-main td{font-size:6.5px;line-height:1.06;padding:2px 3px;border:1px solid #f7c5d0;white-space:normal;overflow-wrap:anywhere}.general-export-main tr:nth-child(even) td{background:#fff1f4}.general-export-label{font-weight:800;color:#5a0e20}.general-export-summary h2{font-size:8px;letter-spacing:1.2px;text-transform:uppercase;color:#7a6468;border:0;margin:.02in 0 .035in;padding:0}.general-export-summary table{table-layout:fixed;border:1px solid #f7c5d0}.general-export-summary th{font-size:6.4px;padding:2px 4px}.general-export-summary td{font-size:6.4px;line-height:1.05;padding:2px 4px;border:1px solid #f7c5d0}.general-export-summary th:nth-child(1){width:44%}.general-blank-page td.general-blank-cell{height:.27in;background:#fff!important;color:#fff}.general-blank-page .general-export-summary td.general-blank-cell{height:.2in}.lesser-export-page{max-width:10.4in;height:7.12in;overflow:hidden}.lesser-export-page h1{text-align:left;font-size:18px;margin:0 0 .08in;padding:0;color:#5a0e20}.lesser-export-table{table-layout:fixed}.lesser-export-table th{font-size:6.6px;line-height:1.05;padding:3px 3px}.lesser-export-table td{font-size:6.6px;line-height:1.07;padding:3px 3px;white-space:normal;overflow-wrap:anywhere}.lesser-export-table th:first-child{width:.85in}' +
     '.map-page{max-width:10.4in;height:7.15in;overflow:hidden}.map-page h1{font-size:16px;padding:0;margin:0 0 .06in}.map-print{height:6.86in;overflow:hidden;display:flex;align-items:center;justify-content:center}.map-print>div{width:100%!important;height:100%!important;overflow:hidden!important}.map-print svg{width:100%!important;max-width:100%!important;min-width:0!important;height:100%!important;max-height:6.78in!important}.map-rbc .map-print svg text{font-size:10px!important}.map-chrom .map-print{align-items:flex-start}svg{max-width:100%;height:auto}' +
     portraitTweaks +
     '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.bb-export-scale-wrap{zoom:var(--bb-export-scale,1);transform:none;width:auto;min-height:0}}</style></head><body style="--bb-export-scale:' + printScale + '"><div class="bb-export-scale-wrap">' + content + '</div></body></html>';
