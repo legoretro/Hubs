@@ -865,6 +865,7 @@ async function supabaseError(response) {
 
 function hydrateNotesData(data) {
   notesData = data || {};
+  migrateGeneralSharedPatterns();
   applyBloodGroupWorksheetDefaults();
   rbcLayout = notesData.__rbcLayoutVersion === 2 ? (notesData.__rbcLayout || {}) : {};
   rbcCustomItems = Array.isArray(notesData.__rbcCustomItems) ? notesData.__rbcCustomItems : [];
@@ -1887,7 +1888,8 @@ function getFreqRows(sysKey) {
 }
 
 const GENERAL_COMPARE_KEY = '__generalComparison';
-const GENERAL_SHARED_KEY = '__generalSharedPatterns';
+const GENERAL_SHARED_KEY = 'generalSharedPatterns';
+const GENERAL_SHARED_LEGACY_KEY = '__generalSharedPatterns';
 const GENERAL_COMPARE_DEFAULT_COLUMNS = [
   {id:'abo', label:'ABO'},
   {id:'rh', label:'Rh'},
@@ -2459,8 +2461,18 @@ function normalizeGeneralSharedPatterns(raw) {
   };
 }
 
+function migrateGeneralSharedPatterns() {
+  if (!notesData || typeof notesData !== 'object') notesData = {};
+  var currentRows = notesData[GENERAL_SHARED_KEY] && Array.isArray(notesData[GENERAL_SHARED_KEY].rows) ? notesData[GENERAL_SHARED_KEY].rows : [];
+  var legacyRows = notesData[GENERAL_SHARED_LEGACY_KEY] && Array.isArray(notesData[GENERAL_SHARED_LEGACY_KEY].rows) ? notesData[GENERAL_SHARED_LEGACY_KEY].rows : [];
+  if ((!notesData[GENERAL_SHARED_KEY] || !currentRows.length) && legacyRows.length) {
+    notesData[GENERAL_SHARED_KEY] = normalizeGeneralSharedPatterns(notesData[GENERAL_SHARED_LEGACY_KEY]);
+  }
+}
+
 function getGeneralSharedPatterns() {
-  return normalizeGeneralSharedPatterns(notesData[GENERAL_SHARED_KEY]);
+  migrateGeneralSharedPatterns();
+  return normalizeGeneralSharedPatterns(notesData[GENERAL_SHARED_KEY] || notesData[GENERAL_SHARED_LEGACY_KEY]);
 }
 
 function ensureGeneralSharedPatterns() {
@@ -2492,6 +2504,12 @@ function updateGeneralSharedPattern(rowId, field, value) {
   scheduleSave();
 }
 
+function saveGeneralSharedPatternNow(rowId, field, value) {
+  if (!isAdmin) return;
+  updateGeneralSharedPattern(rowId, field, value);
+  saveNotesNow('shared_patterns');
+}
+
 function addGeneralSharedPatternRow() {
   if (!isAdmin) return;
   var table = ensureGeneralSharedPatterns();
@@ -2521,8 +2539,8 @@ function buildGeneralSharedSummaryHtml() {
       return '<tr><td class="general-summary-question">' + escText(row.question) + '</td><td class="general-summary-answer">' + escText(row.answer) + '</td></tr>';
     }
     return '<tr>' +
-      '<td><textarea class="general-summary-edit question" rows="1" placeholder="Question" oninput="autoGrowTextArea(this);updateGeneralSharedPattern(\'' + row.id + '\',\'question\',this.value)">' + escText(row.question) + '</textarea></td>' +
-      '<td><textarea class="general-summary-edit answer" rows="1" placeholder="Answer" oninput="autoGrowTextArea(this);updateGeneralSharedPattern(\'' + row.id + '\',\'answer\',this.value)">' + escText(row.answer) + '</textarea></td>' +
+      '<td><textarea class="general-summary-edit question" rows="1" placeholder="Question" oninput="autoGrowTextArea(this);updateGeneralSharedPattern(\'' + row.id + '\',\'question\',this.value)" onchange="saveGeneralSharedPatternNow(\'' + row.id + '\',\'question\',this.value)" onblur="saveGeneralSharedPatternNow(\'' + row.id + '\',\'question\',this.value)">' + escText(row.question) + '</textarea></td>' +
+      '<td><textarea class="general-summary-edit answer" rows="1" placeholder="Answer" oninput="autoGrowTextArea(this);updateGeneralSharedPattern(\'' + row.id + '\',\'answer\',this.value)" onchange="saveGeneralSharedPatternNow(\'' + row.id + '\',\'answer\',this.value)" onblur="saveGeneralSharedPatternNow(\'' + row.id + '\',\'answer\',this.value)">' + escText(row.answer) + '</textarea></td>' +
       '<td style="width:54px;text-align:center"><button class="general-summary-delete" onclick="deleteGeneralSharedPatternRow(\'' + row.id + '\')">x</button></td>' +
     '</tr>';
   }).join('') : '<tr><td colspan="' + (isAdmin ? 3 : 2) + '"><span class="muted-text">Add shared-pattern practice rows when you want them.</span></td></tr>';
