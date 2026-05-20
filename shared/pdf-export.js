@@ -2,6 +2,7 @@
   var activeCleanup=null;
   var styleId='hubPdfExportStyle';
   var modalId='hubPdfExportModal';
+  var pageStyleId='hubPdfDynamicPageStyle';
 
   function clamp(value,min,max){
     value=Number(value);
@@ -36,7 +37,11 @@
       '.hub-pdf-presets{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}',
       '.hub-pdf-btn{border:1.5px solid rgba(16,40,58,.25)!important;border-radius:999px!important;background:#fff!important;color:#10283a!important;padding:8px 14px!important;font:900 14px/1 Georgia,"Times New Roman",serif!important;cursor:pointer!important;text-decoration:none!important;opacity:1!important}',
       '.hub-pdf-btn:hover{background:#f4fbff!important}',
+      '.hub-pdf-btn.active{background:#0f7b61!important;color:#fff!important;border-color:#0f7b61!important}',
       '.hub-pdf-primary{background:#0f7b61!important;color:#fff!important;border-color:#0f7b61!important;box-shadow:0 8px 20px rgba(15,123,97,.22)!important}',
+      '.hub-pdf-orientation{display:none}',
+      '.hub-pdf-orientation.visible{display:grid}',
+      '.hub-pdf-orientation .hub-pdf-presets{justify-content:flex-start}',
       '.hub-pdf-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:20px}',
       '.hub-pdf-hint{font:700 12px/1.4 Georgia,"Times New Roman",serif;color:#61717a;text-align:center;margin-top:10px}',
       '.hub-pdf-preview{display:grid;gap:8px}',
@@ -75,7 +80,15 @@
       '.hub-worksheet-table td{border:1px solid #000;padding:5px 6px;vertical-align:top;background:#fff!important;white-space:normal;overflow-wrap:anywhere}',
       '.hub-worksheet-one .hub-worksheet-page{grid-template-columns:1fr;grid-template-rows:1fr}.hub-worksheet-one .hub-worksheet-card h2{font-size:30px}.hub-worksheet-one .hub-worksheet-info{font-size:18px}.hub-worksheet-one .hub-worksheet-fact strong{font-size:14px}.hub-worksheet-one .hub-worksheet-acronym strong{font-size:54px}',
       '.hub-worksheet-two .hub-worksheet-page{grid-template-columns:1fr;grid-template-rows:1fr 1fr}.hub-worksheet-two .hub-worksheet-card h2{font-size:24px}.hub-worksheet-two .hub-worksheet-info{font-size:15px}',
-      '@media print{body.worksheet-printing #printArea{display:block!important;background:#fff;color:#000}body.worksheet-printing #printArea .hub-worksheet{width:100%}body.worksheet-printing #printArea .hub-worksheet-page{height:7.45in;overflow:hidden}body.worksheet-printing #printArea .hub-worksheet-card{box-shadow:none}.hub-pdf-modal{display:none!important}}',
+      '.hub-worksheet-portrait .hub-worksheet-four .hub-worksheet-page{grid-template-columns:1fr;grid-template-rows:repeat(4,1fr);gap:.12in;padding:.16in}',
+      '.hub-worksheet-portrait .hub-worksheet-four .hub-worksheet-card{padding:.08in;gap:.05in}',
+      '.hub-worksheet-portrait .hub-worksheet-four .hub-worksheet-card h2{font-size:16px}',
+      '.hub-worksheet-portrait .hub-worksheet-four .hub-worksheet-row{grid-template-columns:.9fr 2.1fr;gap:.09in}',
+      '.hub-worksheet-portrait .hub-worksheet-four .hub-worksheet-visual{padding:.04in}',
+      '.hub-worksheet-portrait .hub-worksheet-four .hub-worksheet-visual img{width:100%;height:100%;object-fit:cover}',
+      '.hub-worksheet-portrait .hub-worksheet-four .hub-worksheet-info{font-size:11px;line-height:1.18;padding:.07in .08in}',
+      '.hub-worksheet-portrait .hub-worksheet-four .hub-worksheet-fact strong{font-size:9px}',
+      '@media print{body.worksheet-printing #printArea{display:block!important;background:#fff;color:#000}body.worksheet-printing #printArea .hub-worksheet{width:100%}body.worksheet-printing #printArea .hub-worksheet-page{height:7.45in;overflow:hidden}body.hub-worksheet-portrait #printArea .hub-worksheet-page{height:10.45in}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-page{grid-template-columns:1fr;grid-template-rows:repeat(4,1fr);gap:.12in;padding:.16in}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-card{padding:.08in;gap:.05in}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-card h2{font-size:16px}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-row{grid-template-columns:.9fr 2.1fr;gap:.09in}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-visual{padding:.04in}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-visual img{width:100%;height:100%;object-fit:cover}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-info{font-size:11px;line-height:1.18;padding:.07in .08in}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-fact strong{font-size:9px}body.worksheet-printing #printArea .hub-worksheet-card{box-shadow:none}.hub-pdf-modal{display:none!important}}',
       '.hub-pdf-no-preview .hub-pdf-box{width:min(520px,94vw)}',
       '.hub-pdf-no-preview .hub-pdf-layout{display:block}',
       '.hub-pdf-no-preview .hub-pdf-preview{display:none}',
@@ -98,6 +111,13 @@
           '<div class="hub-pdf-row">'+
             '<div class="hub-pdf-label"><span>Scale</span><span class="hub-pdf-value" data-pdf-value>100%</span></div>'+
             '<input class="hub-pdf-slider" data-pdf-scale type="range" min="40" max="120" step="1" value="100">'+
+          '</div>'+
+          '<div class="hub-pdf-row hub-pdf-orientation" data-pdf-orientation-row>'+
+            '<div class="hub-pdf-label"><span>Orientation</span><span class="hub-pdf-value" data-pdf-orientation-value>Landscape</span></div>'+
+            '<div class="hub-pdf-presets">'+
+              '<button type="button" class="hub-pdf-btn" data-pdf-orientation="landscape">Landscape</button>'+
+              '<button type="button" class="hub-pdf-btn" data-pdf-orientation="portrait">Portrait</button>'+
+            '</div>'+
           '</div>'+
           '<div class="hub-pdf-presets">'+
             '<button type="button" class="hub-pdf-btn" data-pdf-preset="0.55">Tiny fit</button>'+
@@ -129,6 +149,19 @@
       fn();
     }
   }
+  function setDynamicPageStyle(orientation,margin){
+    var style=document.getElementById(pageStyleId);
+    if(!style){
+      style=document.createElement('style');
+      style.id=pageStyleId;
+      document.head.appendChild(style);
+    }
+    style.textContent='@media print{@page{size:letter '+(orientation==='portrait'?'portrait':'landscape')+';margin:'+(margin||'.22in')+'}}';
+    return function(){
+      var live=document.getElementById(pageStyleId);
+      if(live)live.remove();
+    };
+  }
   function open(options){
     options=options||{};
     cleanup();
@@ -140,19 +173,42 @@
     var saved=null;
     try{saved=localStorage.getItem(persistKey)}catch(e){}
     var defaultScale=clamp(saved||options.defaultScale||1,min,max);
+    var allowOrientation=!!options.allowOrientationToggle;
+    var orientationPrefix=options.orientationClassPrefix||'';
+    var orientationPersistKey=options.orientationPersistKey||(persistKey+'-orientation');
+    var currentOrientation=options.orientation==='portrait'?'portrait':'landscape';
+    if(allowOrientation){
+      try{
+        var savedOrientation=localStorage.getItem(orientationPersistKey);
+        if(savedOrientation==='portrait'||savedOrientation==='landscape')currentOrientation=savedOrientation;
+      }catch(e){}
+    }
     var slider=modal.querySelector('[data-pdf-scale]');
     var value=modal.querySelector('[data-pdf-value]');
     var title=modal.querySelector('#hubPdfTitle');
     var subtitle=modal.querySelector('#hubPdfSubtitle');
     var hint=modal.querySelector('[data-pdf-hint]');
+    var orientationRow=modal.querySelector('[data-pdf-orientation-row]');
+    var orientationValue=modal.querySelector('[data-pdf-orientation-value]');
     var preview=modal.querySelector('[data-pdf-preview]');
     var previewFrame=modal.querySelector('[data-pdf-preview-frame]');
     var previewIframe=modal.querySelector('[data-pdf-preview-iframe]');
     var previewPage=modal.querySelector('[data-pdf-preview-page]');
     var previewContent=modal.querySelector('[data-pdf-preview-content]');
     title.textContent=options.modalTitle||'Export PDF Settings';
-    subtitle.textContent=(options.title?options.title+' · ':'')+(options.orientation==='portrait'?'Portrait':'Landscape')+' export';
     hint.textContent=options.hint||'Chrome may not show a scale box, so this slider scales the page before the print dialog opens.';
+    function orientationLabel(){
+      return currentOrientation==='portrait'?'Portrait':'Landscape';
+    }
+    function updateOrientationUi(){
+      subtitle.textContent=(options.title?options.title+' · ':'')+orientationLabel()+' export';
+      if(orientationRow)orientationRow.classList.toggle('visible',allowOrientation);
+      if(orientationValue)orientationValue.textContent=orientationLabel();
+      modal.querySelectorAll('[data-pdf-orientation]').forEach(function(btn){
+        btn.classList.toggle('active',btn.dataset.pdfOrientation===currentOrientation);
+      });
+    }
+    updateOrientationUi();
     slider.min=String(Math.round(min*100));
     slider.max=String(Math.round(max*100));
     slider.step=String(Math.max(1,Math.round(step*100)));
@@ -182,8 +238,8 @@
       if(hasIframePreview()){
         if(previewPage)previewPage.style.display='none';
         previewIframe.style.display='block';
-        previewIframe.srcdoc=typeof options.buildPreviewHtml==='function' ? (options.buildPreviewHtml(scale)||'') : (options.previewHtml||'');
-        if(typeof options.previewReady==='function')options.previewReady(scale,previewIframe);
+        previewIframe.srcdoc=typeof options.buildPreviewHtml==='function' ? (options.buildPreviewHtml(scale,currentOrientation)||'') : (options.previewHtml||'');
+        if(typeof options.previewReady==='function')options.previewReady(scale,previewIframe,currentOrientation);
         return;
       }
       if(previewIframe){
@@ -192,15 +248,15 @@
       }
       if(previewPage)previewPage.style.display='block';
       if(previewContent){
-        previewContent.className='hub-pdf-preview-content'+(options.previewClass?' '+String(options.previewClass):'');
+        previewContent.className='hub-pdf-preview-content'+(options.previewClass?' '+String(options.previewClass):'')+(orientationPrefix?' '+orientationPrefix+'-'+currentOrientation:'');
       }
-      previewPage.classList.toggle('portrait',options.orientation==='portrait');
-      previewPage.classList.toggle('landscape',options.orientation!=='portrait');
+      previewPage.classList.toggle('portrait',currentOrientation==='portrait');
+      previewPage.classList.toggle('landscape',currentOrientation!=='portrait');
       previewPage.style.setProperty('--hub-preview-scale',String(scale));
       previewPage.style.setProperty(options.scaleVar||'--hub-print-scale',String(scale));
-      if(typeof options.buildContent==='function')previewContent.innerHTML=options.buildContent(scale)||'';
+      if(typeof options.buildContent==='function')previewContent.innerHTML=options.buildContent(scale,currentOrientation)||'';
       else previewContent.innerHTML=options.contentHtml||'';
-      if(typeof options.previewReady==='function')options.previewReady(scale,previewContent);
+      if(typeof options.previewReady==='function')options.previewReady(scale,previewContent,currentOrientation);
       requestAnimationFrame(fitPreview);
     }
     function setScale(scale){
@@ -220,6 +276,14 @@
     function onInput(){setScale(Number(slider.value)/100)}
     function onKey(event){if(event.key==='Escape')close()}
     function onClick(event){
+      var orientationButton=event.target.closest('[data-pdf-orientation]');
+      if(orientationButton){
+        currentOrientation=orientationButton.dataset.pdfOrientation==='portrait'?'portrait':'landscape';
+        try{if(allowOrientation)localStorage.setItem(orientationPersistKey,currentOrientation)}catch(e){}
+        updateOrientationUi();
+        renderPreview(Number(slider.value)/100);
+        return;
+      }
       var preset=event.target.closest('[data-pdf-preset]');
       if(preset){setScale(Number(preset.dataset.pdfPreset));return}
       if(event.target.closest('[data-pdf-cancel]')){close();return}
@@ -228,22 +292,25 @@
       try{localStorage.setItem(persistKey,String(scale))}catch(e){}
       close();
       if(typeof options.customPrint==='function'){
-        options.customPrint(scale);
+        options.customPrint(scale,currentOrientation);
         return;
       }
       var area=options.printArea||document.getElementById(options.printAreaId||'printArea');
       if(!area)return;
-      if(typeof options.buildContent==='function')area.innerHTML=options.buildContent(scale)||'';
+      if(typeof options.buildContent==='function')area.innerHTML=options.buildContent(scale,currentOrientation)||'';
       else if(Object.prototype.hasOwnProperty.call(options,'contentHtml'))area.innerHTML=options.contentHtml||'';
       var classList=classes(options.bodyClass||'printing');
+      if(orientationPrefix)classList.push(orientationPrefix+'-'+currentOrientation);
       classList.forEach(function(cls){document.body.classList.add(cls)});
       area.style.setProperty(options.scaleVar||'--hub-print-scale',String(scale));
       document.documentElement.style.setProperty(options.scaleVar||'--hub-print-scale',String(scale));
-      if(typeof options.beforePrint==='function')options.beforePrint(scale,area);
+      var removePageStyle=options.dynamicPageStyle===false?null:setDynamicPageStyle(currentOrientation,options.pageMargin||'.22in');
+      if(typeof options.beforePrint==='function')options.beforePrint(scale,area,currentOrientation);
       activeCleanup=function(){
         classList.forEach(function(cls){document.body.classList.remove(cls)});
         area.style.removeProperty(options.scaleVar||'--hub-print-scale');
         document.documentElement.style.removeProperty(options.scaleVar||'--hub-print-scale');
+        if(removePageStyle)removePageStyle();
         if(options.clearAfterPrint!==false)area.innerHTML='';
         if(typeof options.afterPrint==='function')options.afterPrint(area);
       };
@@ -342,7 +409,7 @@
     tables=Array.isArray(tables)?tables:[tables];
     tables=tables.map(normalizeWorksheetTable).filter(function(table){return table.columns.length});
     var perPage=Math.max(1,Math.min(4,Number(options.itemsPerPage)||4));
-    var modeClass=perPage===1?' hub-worksheet-one':(perPage===2?' hub-worksheet-two':'');
+    var modeClass=perPage===1?' hub-worksheet-one':(perPage===2?' hub-worksheet-two':' hub-worksheet-four');
     var items=[];
     tables.forEach(function(table){
       items=items.concat(worksheetItemsFromTable(table));

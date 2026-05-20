@@ -1659,6 +1659,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       window.HubPdfExport.open({
         title:chart.title||'Renal Diseases',
         orientation:'landscape',
+        allowOrientationToggle:true,
+        orientationClassPrefix:'hub-worksheet',
         defaultScale:1,
         minScale:.35,
         maxScale:1.15,
@@ -1669,7 +1671,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         previewClass:'worksheet-print-preview',
         bodyClass:['printing','worksheet-printing'],
         scaleVar:'--hub-print-scale',
-        hint:'Worksheet mode uses bigger black text and image-friendly table sections.'
+        hint:'Worksheet mode uses bigger black text. Landscape keeps the 2x2 sheet; portrait stacks the cards across the page.'
       });
       return;
     }
@@ -1735,6 +1737,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       window.HubPdfExport.open({
         title:'Urinalysis Worksheet Export',
         orientation:'landscape',
+        allowOrientationToggle:true,
+        orientationClassPrefix:'hub-worksheet',
         defaultScale:1,
         minScale:.45,
         maxScale:1.15,
@@ -1745,7 +1749,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         previewClass:'worksheet-print-preview',
         bodyClass:['printing','worksheet-printing'],
         scaleVar:'--hub-print-scale',
-        hint:'Worksheet form prints bigger black text. Four table sections fit per landscape page by default.'
+        hint:'Worksheet form prints bigger black text. Landscape keeps the 2x2 sheet; portrait stacks the four cards across the page.'
       });
       return;
     }

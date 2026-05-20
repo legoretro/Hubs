@@ -4591,6 +4591,7 @@ function buildExportHtml(content, title, orientation, scale) {
   var onePageHeight = isLandscape ? '7.9in' : '10.25in';
   var onePageGrid = isLandscape ? 'grid-template-columns:1.05fr 1.45fr 1.5fr;' : 'grid-template-columns:1fr 1fr;';
   var portraitTweaks = isLandscape ? '' : '.onepage-grid .system-card:last-child{grid-column:1/-1}.compact-grid{grid-template-columns:1fr}.system-page .tl-item{font-size:8px}.study-table td{font-size:6.4px;padding:1.8px 3px}.freq-export td,.freq-export th{font-size:5.6px;padding:1.8px 2px}';
+  var worksheetPortraitTweaks = isLandscape ? '' : '.bb-worksheet-system{max-width:7.45in;height:10.25in}.bb-worksheet-system h1{font-size:24px}.bb-worksheet-study-grid{grid-template-columns:1fr;grid-template-rows:repeat(4,1fr);height:9.5in;gap:.12in}.bb-worksheet-study-block{padding:.08in;gap:.05in}.bb-worksheet-study-block h2{font-size:16px}.bb-worksheet-study-body{grid-template-columns:.9fr 2.1fr;gap:.09in}.bb-worksheet-study-visual{padding:.04in}.bb-worksheet-study-visual strong{font-size:24px}.bb-worksheet-study-facts{font-size:11px;line-height:1.18;padding:.07in .08in}.bb-worksheet-study-facts strong{font-size:9px}';
   return '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>' + exportText(title || 'Bloody Brilliant Export') + '</title>' +
     '<style>@page{size:' + pageSize + ';margin:.28in}*{box-sizing:border-box;margin:0;padding:0}body{font-family:Georgia,serif;font-size:11px;color:#1e0d10;background:#fff}.bb-export-scale-wrap{transform:scale(var(--bb-export-scale,1));transform-origin:top left;width:calc(100% / var(--bb-export-scale,1));min-height:calc(100% / var(--bb-export-scale,1))}' +
     'h1{font-size:18px;color:#5a0e20;text-align:center;margin-bottom:6px;padding:12px 0 0}' +
@@ -4606,12 +4607,13 @@ function buildExportHtml(content, title, orientation, scale) {
     '.flash-print-page{max-width:7.9in;height:10.4in;overflow:hidden}.flash-print-page h1{font-size:15px;color:#000;text-align:left;margin:0 0 .12in;padding:0}.flash-print-grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:.18in;height:9.9in}.flash-print-card{border:2px solid #000;background:#fff;color:#000;border-radius:0;padding:.18in;display:flex;flex-direction:column;justify-content:center;text-align:center;break-inside:avoid;page-break-inside:avoid}.flash-print-meta{font-size:12px;text-transform:uppercase;letter-spacing:.7px;margin-bottom:.12in;color:#000;font-weight:700}.flash-print-q{font-size:24px;line-height:1.18;font-weight:900}.flash-print-a{font-size:22px;line-height:1.2;font-weight:900;white-space:pre-wrap}' +
     '.general-export-page{max-width:10.4in;height:7.12in;overflow:hidden}.general-export-page h1{text-align:left;font-size:18px;margin:0 0 .07in;padding:0;color:#5a0e20}.general-export-main{table-layout:fixed;margin-bottom:.07in;border:1px solid #f7c5d0}.general-export-main th{font-size:6.6px;line-height:1.05;text-align:center;padding:3px 2px;background:#5a0e20;color:#fff}.general-export-main th:first-child{width:.78in;text-align:left}.general-export-main td{font-size:6.5px;line-height:1.06;padding:2px 3px;border:1px solid #f7c5d0;white-space:normal;overflow-wrap:anywhere}.general-export-main tr:nth-child(even) td{background:#fff1f4}.general-export-label{font-weight:800;color:#5a0e20}.general-export-summary h2{font-size:8px;letter-spacing:1.2px;text-transform:uppercase;color:#7a6468;border:0;margin:.02in 0 .035in;padding:0}.general-export-summary table{table-layout:fixed;border:1px solid #f7c5d0}.general-export-summary th{font-size:6.4px;padding:2px 4px}.general-export-summary td{font-size:6.4px;line-height:1.05;padding:2px 4px;border:1px solid #f7c5d0}.general-export-summary th:nth-child(1){width:44%}.general-blank-page td.general-blank-cell{height:.27in;background:#fff!important;color:#fff}.general-blank-page .general-export-summary td.general-blank-cell{height:.2in}.lesser-export-page{max-width:10.4in;height:7.12in;overflow:hidden}.lesser-export-page h1{text-align:left;font-size:18px;margin:0 0 .08in;padding:0;color:#5a0e20}.lesser-export-table{table-layout:fixed}.lesser-export-table th{font-size:6.6px;line-height:1.05;padding:3px 3px}.lesser-export-table td{font-size:6.6px;line-height:1.07;padding:3px 3px;white-space:normal;overflow-wrap:anywhere}.lesser-export-table th:first-child{width:.85in}.freq-short-page{max-width:10.4in;height:7.12in;overflow:hidden}.freq-short-page h1{text-align:left;font-size:18px;margin:0 0 .08in;padding:0;color:#5a0e20}.freq-short-table{table-layout:fixed;border:1px solid #f7c5d0}.freq-short-table th{font-size:8.4px;padding:4px 5px}.freq-short-table td{font-size:8.2px;line-height:1.04;padding:3px 5px;border:1px solid #f7c5d0;white-space:normal;overflow-wrap:anywhere}.freq-short-table th:nth-child(1){width:1.05in}.freq-short-table th:nth-child(2){width:2.2in}.freq-short-answer{height:.18in;background:#fff!important}' +
     '.map-page{max-width:10.4in;height:7.15in;overflow:hidden}.map-page h1{font-size:16px;padding:0;margin:0 0 .06in}.map-print{height:6.86in;overflow:hidden;display:flex;align-items:center;justify-content:center}.map-print>div{width:100%!important;height:100%!important;overflow:hidden!important}.map-print svg{width:100%!important;max-width:100%!important;min-width:0!important;height:100%!important;max-height:6.78in!important}.map-rbc .map-print svg text{font-size:10px!important}.map-chrom .map-print{align-items:flex-start}svg{max-width:100%;height:auto}' +
-    portraitTweaks +
+    worksheetPortraitTweaks + portraitTweaks +
     '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.bb-export-scale-wrap{zoom:var(--bb-export-scale,1);transform:none;width:auto;min-height:0}}</style></head><body style="--bb-export-scale:' + printScale + '"><div class="bb-export-scale-wrap">' + content + '</div></body></html>';
 }
 
-function printExportHtml(content, title, orientation) {
-  function writeExport(scale) {
+function printExportHtml(content, title, orientation, exportOptions) {
+  exportOptions = exportOptions || {};
+  function writeExport(scale, chosenOrientation) {
   var frame = document.getElementById('bbPrintFrame');
   if (!frame) {
     frame = document.createElement('iframe');
@@ -4631,23 +4633,25 @@ function printExportHtml(content, title, orientation) {
     setTimeout(function(){ win.focus(); win.print(); }, 120);
   };
   doc.open();
-  doc.write(buildExportHtml(content, title, orientation, scale));
+  doc.write(buildExportHtml(content, title, chosenOrientation || orientation, scale));
   doc.close();
   }
   if (window.HubPdfExport) {
+    var initialOrientation = orientation || 'portrait';
     window.HubPdfExport.open({
       title: title || 'Blood Bank Export',
-      orientation: orientation || 'portrait',
+      orientation: initialOrientation,
+      allowOrientationToggle: !!exportOptions.allowOrientationToggle,
       defaultScale: 1,
       minScale: .35,
       maxScale: 1.15,
       step: .01,
-      persistKey: 'bloodbank-export-scale-' + (orientation || 'portrait'),
-      buildPreviewHtml: function(scale) {
-        return buildExportHtml(content, title, orientation, scale);
+      persistKey: exportOptions.persistKey || ('bloodbank-export-scale-' + initialOrientation),
+      buildPreviewHtml: function(scale, chosenOrientation) {
+        return buildExportHtml(content, title, chosenOrientation || initialOrientation, scale);
       },
       customPrint: writeExport,
-      hint: 'Use this scale before Chrome opens Save as PDF. Blood Bank exports keep their existing layout.'
+      hint: exportOptions.hint || 'Use this scale before Chrome opens Save as PDF. Blood Bank exports keep their existing layout.'
     });
     return;
   }
@@ -4669,7 +4673,16 @@ function exportCurrentSystemWorksheetPage() {
     exportCurrentSystemPage();
     return;
   }
-  printExportHtml(buildCurrentSystemWorksheetExportPage(currentSystemKey), 'Blood Bank ' + currentSystemKey + ' Worksheet Export', 'landscape');
+  printExportHtml(
+    buildCurrentSystemWorksheetExportPage(currentSystemKey),
+    'Blood Bank ' + currentSystemKey + ' Worksheet Export',
+    'landscape',
+    {
+      allowOrientationToggle: true,
+      persistKey: 'bloodbank-current-system-worksheet-scale',
+      hint: 'Worksheet form prints bigger black text. Landscape keeps the 2x2 sheet; portrait stacks the four study cards across the page.'
+    }
+  );
 }
 
 function exportGeneralComparisonPage(mode) {
