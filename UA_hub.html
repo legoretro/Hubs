@@ -160,6 +160,7 @@ button,input{font-family:inherit}button{cursor:pointer}
       <label><input type="checkbox" class="export-check" value="renal" checked> Renal Diseases</label>
       <label><input type="checkbox" class="export-check" value="resources" checked> Resources</label>
       <label><input type="checkbox" class="export-check" value="cases" checked> Simulation Case Reports</label>
+      <label><input type="checkbox" id="worksheetExportMode"> Worksheet form: bigger black text, up to 4 tables per page</label>
     </div>
     <div id="caseExportOptions"></div>
     <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
@@ -209,7 +210,7 @@ button,input{font-family:inherit}button{cursor:pointer}
           <div class="lab-quick-grid">
             <button type="button" class="lab-quick" onclick="showSection('screening')"><strong>Macroscopic</strong><span>Color, clarity, specific gravity, and reagent strip chemistry.</span></button>
             <button type="button" class="lab-quick" onclick="showSection('microscope')"><strong>Microscopic</strong><span>Cells, casts, crystals, organisms, stains, and microscope methods.</span></button>
-            <button type="button" class="lab-quick" onclick="showSection('renal')"><strong>Renal Diseases</strong><span>Editable disease flowcharts, tables, images, and exports.</span></button>
+            <button type="button" class="lab-quick" onclick="showSection('renal')"><strong>Renal Diseases</strong><span>Editable disease tables, images, and worksheet exports.</span></button>
             <button type="button" class="lab-quick" onclick="showSection('simulation')"><strong>Simulation Lab</strong><span>Move through sample selection, dipstick, refractometer, microscopy, and reveal.</span></button>
           </div>
         </article>
@@ -261,10 +262,10 @@ button,input{font-family:inherit}button{cursor:pointer}
   </section>
 
   <section class="section" id="renal">
-    <div class="hero"><h1>Renal Diseases</h1><p>Create renal disease flowcharts and matching tables with optional images. Start with the three starter sections, then add your own as admin.</p></div>
+    <div class="hero"><h1>Renal Diseases</h1><p>Create renal disease tables with optional images. Start with the three starter sections, then add your own as admin.</p></div>
     <div class="renal-tabs" id="renalTabs"></div>
     <div class="renal-admin-actions">
-      <button type="button" class="mini-btn" data-renal-action="add-chart">Add Renal Section</button>
+      <button type="button" class="mini-btn" data-renal-action="add-chart">Add Renal Table Section</button>
     </div>
     <div id="renalContent"></div>
   </section>
@@ -829,33 +830,14 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function renalEditorHtml(chart){
     if(!chart)return '';
-    var rows=(chart.nodes||[]).map(function(node,i){
-      return '<div class="renal-node-editor" data-renal-node-index="'+i+'">'+
-        '<div class="renal-level-dot">'+(i+1)+'</div>'+
-        '<label>Node text<input value="'+escapeHtml(node.label||'')+'" data-renal-chart="'+chart.id+'" data-chart="'+chart.id+'" data-node-index="'+i+'" data-renal-node-field="label"></label>'+
-        '<label>Second line / note<textarea data-renal-chart="'+chart.id+'" data-chart="'+chart.id+'" data-node-index="'+i+'" data-renal-node-field="note">'+escapeHtml(node.note||'')+'</textarea></label>'+
-        '<div class="renal-node-controls">'+
-          '<input class="renal-color-input" type="color" value="'+escapeHtml(node.color||'#1a8c5c')+'" data-chart="'+chart.id+'" data-node-index="'+i+'" data-renal-node-field="color" title="Node color">'+
-          '<label class="mini-btn">Image<input class="renal-file" type="file" accept="image/*" data-action="upload-renal-node-image" data-chart="'+chart.id+'" data-node-index="'+i+'"></label>'+
-          '<button type="button" class="mini-btn" data-renal-action="add-child" data-chart="'+chart.id+'" data-node-index="'+i+'">Child</button>'+
-          '<button type="button" class="mini-btn" data-renal-action="add-same" data-chart="'+chart.id+'" data-node-index="'+i+'">Same</button>'+
-          '<button type="button" class="mini-btn" data-renal-action="outdent" data-chart="'+chart.id+'" data-node-index="'+i+'">&larr;</button>'+
-          '<button type="button" class="mini-btn" data-renal-action="indent" data-chart="'+chart.id+'" data-node-index="'+i+'">&rarr;</button>'+
-          '<button type="button" class="mini-btn" data-renal-action="move-up" data-chart="'+chart.id+'" data-node-index="'+i+'">&uarr;</button>'+
-          '<button type="button" class="mini-btn" data-renal-action="move-down" data-chart="'+chart.id+'" data-node-index="'+i+'">&darr;</button>'+
-          '<button type="button" class="mini-btn danger" data-renal-action="delete-node" data-chart="'+chart.id+'" data-node-index="'+i+'">x</button>'+
-        '</div>'+
-      '</div>';
-    }).join('');
-    return '<details class="renal-editor" open><summary>Edit Renal Chart</summary>'+
+    return '<details class="renal-editor" open><summary>Edit Renal Table Section</summary>'+
       '<div class="renal-edit-top">'+
         '<label>Section title<input value="'+escapeHtml(chart.title||'')+'" data-chart="'+chart.id+'" data-renal-chart-field="title"></label>'+
         '<label>Section note<textarea data-chart="'+chart.id+'" data-renal-chart-field="note">'+escapeHtml(chart.note||'')+'</textarea></label>'+
       '</div>'+
       '<div class="renal-node-controls" style="justify-content:flex-start;margin-bottom:8px">'+
-        '<button type="button" class="mini-btn" data-renal-action="add-node" data-chart="'+chart.id+'">Add Node</button>'+
         '<button type="button" class="mini-btn danger" data-renal-action="delete-chart" data-chart="'+chart.id+'">Delete Section</button>'+
-      '</div>'+rows+
+      '</div>'+
     '</details>';
   }
   function renderRenal(){
@@ -868,8 +850,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       return '<button type="button" class="renal-tab '+(item.id===chart.id?'active':'')+'" data-renal-action="select-chart" data-chart="'+item.id+'">'+escapeHtml(item.title||'Renal Section')+'</button>';
     }).join('');
     content.innerHTML='<article class="card renal-card">'+
-      '<div class="renal-card-head"><div><h2>'+escapeHtml(chart.title||'Renal Section')+'</h2><p class="renal-note">'+cellDisplayHtml(chart.note||'Editable renal disease flowchart. Add branches, notes, tables, and images in admin mode.')+'</p></div><button type="button" class="mini-btn" data-renal-action="export-chart" data-chart="'+chart.id+'">Export Current Renal Section</button></div>'+
-      renalFlowHtml(chart)+
+      '<div class="renal-card-head"><div><h2>'+escapeHtml(chart.title||'Renal Section')+'</h2><p class="renal-note">'+cellDisplayHtml(chart.note||'Editable renal disease table. Add rows, columns, notes, and images in admin mode.')+'</p></div><button type="button" class="mini-btn" data-renal-action="export-chart" data-chart="'+chart.id+'">Export Current Renal Table</button></div>'+
       '<article class="card renal-table-card"><div class="card-title"><h2>'+escapeHtml((state.tables[chart.tableId]&&state.tables[chart.tableId].title)||chart.title+' Table')+'</h2><span class="tag">Table</span></div><div class="table-tools" data-tools-for="'+chart.tableId+'"></div><div class="table-slot" data-table-id="'+chart.tableId+'"></div></article>'+
       renalEditorHtml(chart)+
     '</article>';
@@ -1624,6 +1605,34 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     }).join('');
     return '<div class="print-card print-table-card"><table class="print-table '+(hasImages?'has-images':'')+'"><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div>';
   }
+  function worksheetTableFromId(id,title,note){
+    var table=state.tables&&state.tables[id];
+    if(!table)return null;
+    return {
+      title:title||table.title||'Worksheet Table',
+      note:note||'',
+      columns:table.columns||[],
+      rows:table.rows||[]
+    };
+  }
+  function selectedWorksheetTables(selected){
+    var tables=[];
+    selected.forEach(function(id){
+      if(id==='renal'){
+        ensureRenalDefaults(state);
+        (state.renal.charts||[]).forEach(function(chart){
+          var item=worksheetTableFromId(chart.tableId,chart.title||'Renal Diseases',chart.note||'');
+          if(item)tables.push(item);
+        });
+        return;
+      }
+      if(id!=='cases'){
+        var item=worksheetTableFromId(id,state.tables[id]&&state.tables[id].title,'');
+        if(item)tables.push(item);
+      }
+    });
+    return tables;
+  }
   function printSection(title,ids){
     return '<div class="print-page print-table-page"><h1 class="print-section-title">'+escapeHtml(title)+'</h1>'+ids.map(tablePrintHtml).join('')+'</div>';
   }
@@ -1633,7 +1642,6 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     return '<div class="print-page renal-print-page">'+
       '<h1 class="print-section-title">'+escapeHtml(chart.title||'Renal Diseases')+'</h1>'+
       (chart.note?'<p class="renal-note">'+cellDisplayHtml(chart.note)+'</p>':'')+
-      renalFlowHtml(chart)+
       (table?'<div class="renal-print-table">'+tablePrintHtml(chart.tableId)+'</div>':'')+
     '</div>';
   }
@@ -1643,30 +1651,33 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var chart=findRenalChart(chartId);
     if(!chart)return;
     var area=document.getElementById('printArea');
-    var html=renalChartPrintHtml(chart);
+    var worksheetTable=worksheetTableFromId(chart.tableId,chart.title||'Renal Diseases',chart.note||'');
+    var html=window.HubPdfExport&&window.HubPdfExport.tableWorksheetHtml&&worksheetTable
+      ? window.HubPdfExport.tableWorksheetHtml([worksheetTable],{itemsPerPage:1})
+      : renalChartPrintHtml(chart);
     if(window.HubPdfExport){
       window.HubPdfExport.open({
         title:chart.title||'Renal Diseases',
         orientation:'landscape',
-        defaultScale:.82,
+        defaultScale:1,
         minScale:.35,
         maxScale:1.15,
         step:.01,
         persistKey:'ua-renal-export-scale',
         printArea:area,
         contentHtml:html,
-        previewClass:'renal-print-preview',
-        bodyClass:['printing','renal-printing'],
-        scaleVar:'--ua-renal-print-scale',
-        hint:'Preview updates with the scale. Lower the scale if the renal chart reaches the page edge.'
+        previewClass:'worksheet-print-preview',
+        bodyClass:['printing','worksheet-printing'],
+        scaleVar:'--hub-print-scale',
+        hint:'Worksheet mode uses bigger black text and image-friendly table sections.'
       });
       return;
     }
     area.innerHTML=html;
-    document.body.classList.add('printing','renal-printing');
+    document.body.classList.add('printing','worksheet-printing');
     showToast('Opening renal PDF export');
     window.print();
-    setTimeout(function(){document.body.classList.remove('printing','renal-printing');area.innerHTML=''},1200);
+    setTimeout(function(){document.body.classList.remove('printing','worksheet-printing');area.innerHTML=''},1200);
   }
   function casePrintHtml(item,i){
     item=normalizeCase(item,i);
@@ -1710,6 +1721,34 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var selected=Array.from(document.querySelectorAll('#exportModal .export-check:checked')).map(function(box){return box.value});
     if(!selected.length){showToast('Choose at least one section',true);return}
     closeExportModal();
+    var worksheetMode=!!(document.getElementById('worksheetExportMode')&&document.getElementById('worksheetExportMode').checked&&window.HubPdfExport&&window.HubPdfExport.tableWorksheetHtml);
+    if(worksheetMode){
+      var worksheetTables=selectedWorksheetTables(selected);
+      var worksheetHtml=worksheetTables.length?window.HubPdfExport.tableWorksheetHtml(worksheetTables,{itemsPerPage:4}):'';
+      if(selected.indexOf('cases')>-1){
+        var caseWorksheetHtml=printCases();
+        if(!caseWorksheetHtml&&!worksheetHtml){showToast('Choose at least one case or table',true);openExportModal();return}
+        worksheetHtml+=caseWorksheetHtml;
+      }
+      if(!worksheetHtml){showToast('Choose at least one table section',true);openExportModal();return}
+      var worksheetArea=document.getElementById('printArea');
+      window.HubPdfExport.open({
+        title:'Urinalysis Worksheet Export',
+        orientation:'landscape',
+        defaultScale:1,
+        minScale:.45,
+        maxScale:1.15,
+        step:.01,
+        persistKey:'ua-worksheet-export-scale',
+        printArea:worksheetArea,
+        contentHtml:worksheetHtml,
+        previewClass:'worksheet-print-preview',
+        bodyClass:['printing','worksheet-printing'],
+        scaleVar:'--hub-print-scale',
+        hint:'Worksheet form prints bigger black text. Four table sections fit per landscape page by default.'
+      });
+      return;
+    }
     var html='';
     var includesRenal=selected.indexOf('renal')>-1;
     selected.forEach(function(id){
@@ -1750,7 +1789,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     window.print();
     setTimeout(function(){document.body.classList.remove('printing');area.innerHTML=''},1200);
   };
-  window.addEventListener('afterprint',function(){document.body.classList.remove('printing','renal-printing');document.getElementById('printArea').innerHTML=''});
+  window.addEventListener('afterprint',function(){document.body.classList.remove('printing','renal-printing','worksheet-printing');document.getElementById('printArea').innerHTML=''});
   window.addEventListener('beforeunload',function(){collectVisibleState();saveLocal()});
   window.addEventListener('load',function(){
     setTimeout(function(){
