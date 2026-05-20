@@ -609,7 +609,7 @@ textarea{resize:none;overflow:hidden}
     <p style="margin-bottom:10px">Choose one export, then confirm. This prevents accidental print windows.</p>
     <div class="export-choice-list">
       <label><input type="radio" name="encExportKind" value="current" checked><span><strong>Current system, one page</strong><br><small>Compact binder page for the selected usual suspect.</small></span></label>
-      <label><input type="radio" name="encExportKind" value="currentWorksheet"><span><strong>Current system worksheet</strong><br><small>Bigger black-ink page. No RBC membrane drawing.</small></span></label>
+      <label><input type="radio" name="encExportKind" value="currentWorksheet"><span><strong>Current system worksheet</strong><br><small>Bigger black-ink study blocks. History stays separate.</small></span></label>
       <label><input type="radio" name="encExportKind" value="histories"><span><strong>All histories</strong><br><small>Condensed history cards.</small></span></label>
       <label><input type="radio" name="encExportKind" value="study"><span><strong>All study references</strong><br><small>Condensed worksheet fields.</small></span></label>
       <label><input type="radio" name="encExportKind" value="frequencies"><span><strong>All frequencies</strong><br><small>C/B/A/I/H plus notes table.</small></span></label>
@@ -4075,19 +4075,70 @@ function buildCurrentSystemWorksheetExportPage(key) {
   if (!sys) return '';
   var skey = sys.notes_key;
   var data = notesData[skey] || {};
-  var history = (sys.history || []).map(function(h) {
-    return '<div class="bb-worksheet-line"><strong>' + exportText(h.year) + '</strong> ' + exportText(h.text) + '</div>';
+  function fact(label, value) {
+    if (!value) return '';
+    return '<p><strong>' + exportText(label) + ':</strong> ' + exportText(value) + '</p>';
+  }
+  function block(title, tag, html) {
+    return '<article class="bb-worksheet-study-block">' +
+      '<h2>' + exportText(title) + '</h2>' +
+      '<div class="bb-worksheet-study-body">' +
+        '<div class="bb-worksheet-study-visual"><strong>' + exportText(tag || sys.icon || key.toUpperCase()) + '</strong><span>' + exportText(sys.name || '') + '</span></div>' +
+        '<div class="bb-worksheet-study-facts">' + (html || '<p class="muted">Blank</p>') + '</div>' +
+      '</div>' +
+    '</article>';
+  }
+  var identity = [
+    fact('Antigens', data.antigen_names),
+    fact('Antigens (S/s/U)', data.antigen_names_ss),
+    fact('Null', data.null_phenotype),
+    fact('Null (S/s/U)', data.null_phenotype_ss),
+    fact('Antithetical pairs', data.antithetical_pairs),
+    fact('Antithetical pairs (S/s/U)', data.antithetical_pairs_ss),
+    fact('Gene location', data.chromosome),
+    fact('Related substance', data.related_substance),
+    fact('Related substance (S/s/U)', data.related_substance_ss),
+    fact('Structure', data.antigen_structure)
+  ].join('');
+  var antibody = [
+    fact('IgG / IgM', data.ig_class),
+    fact('IgG / IgM (S/s/U)', data.ig_class_ss),
+    fact('Warm / Cold', data.temp),
+    fact('Warm / Cold (S/s/U)', data.temp_ss),
+    fact('Naturally occurring', data.naturally_occurring),
+    fact('Naturally occurring (S/s/U)', data.naturally_occurring_ss),
+    fact('Dosage', data.dosage),
+    fact('Dosage (S/s/U)', data.dosage_ss),
+    fact('Destroyed by', data.destroyed),
+    fact('Destroyed by (S/s/U)', data.destroyed_ss),
+    fact('Enhanced by', data.enhanced),
+    fact('Enhanced by (S/s/U)', data.enhanced_ss),
+    fact('Complement', data.complement),
+    fact('Complement (S/s/U)', data.complement_ss)
+  ].join('');
+  var clinical = [
+    fact('Disease association', data.disease_assoc),
+    fact('Baby cells', data.cord_cells),
+    fact('Baby cells (S/s/U)', data.cord_cells_ss),
+    fact('HDN', data.hdn),
+    fact('HDN (S/s/U)', data.hdn_ss),
+    fact('HTRXN', data.htr),
+    fact('HTRXN (S/s/U)', data.htr_ss),
+    fact('Immunogenic', data.immunogenic),
+    fact('Immunogenic (S/s/U)', data.immunogenic_ss),
+    fact('Key notes', data.lab_notes)
+  ].join('');
+  var freqs = getFreqRows(skey).filter(function(row){return row.ag || row.memo || row.c || row.b || row.a || row.i || row.h}).map(function(row) {
+    return '<p><strong>' + exportText(row.ag || 'Antigen') + ':</strong> C ' + exportText(row.c || '-') + ' / B ' + exportText(row.b || '-') + ' / A ' + exportText(row.a || '-') + ' / I ' + exportText(row.i || '-') + ' / H ' + exportText(row.h || '-') + (row.memo ? ' / Memo ' + exportText(row.memo) : '') + (row.pop ? ' / ' + exportText(row.pop) : '') + '</p>';
   }).join('');
-  var noteRows = '';
-  if (data.lab_notes) noteRows += '<p>' + exportText(data.lab_notes) + '</p>';
-  if (!noteRows && history) noteRows = history;
   return '<section class="page bb-worksheet-system">' +
     '<h1>' + exportText(sys.name) + '</h1>' +
     '<div class="bb-worksheet-sub">' + exportText(sys.isbt || '') + '</div>' +
-    '<div class="bb-worksheet-grid">' +
-      '<article class="bb-worksheet-box bb-worksheet-wide"><h2>Antigen Frequencies</h2><table class="freq-export"><thead><tr><th>Antigen</th><th>C</th><th>B</th><th>A</th><th>I</th><th>H</th><th>Memo</th><th>Population Different In</th><th>Higher or Lower?</th></tr></thead><tbody>' + buildExportFrequencyRows(skey) + '</tbody></table></article>' +
-      '<article class="bb-worksheet-box"><h2>Study Reference</h2><table class="study-table"><tbody>' + buildExportWsRows(sys, skey) + '</tbody></table></article>' +
-      '<article class="bb-worksheet-box"><h2>Notes / History</h2>' + (noteRows || '<p class="muted">No notes yet.</p>') + '</article>' +
+    '<div class="bb-worksheet-study-grid">' +
+      block(sys.name, sys.icon || key.toUpperCase(), identity) +
+      block('Antibody Pattern', 'Ab', antibody) +
+      block('Clinical Notes', 'MLS', clinical) +
+      block('Frequencies', '%', freqs) +
     '</div>' +
   '</section>';
 }
@@ -4546,7 +4597,7 @@ function buildExportHtml(content, title, orientation, scale) {
     'h2{font-size:13px;color:#8b0a26;margin:14px 0 6px;border-bottom:2px solid #f7c5d0;padding-bottom:3px}' +
     '.page{padding:0;page-break-after:always;max-width:' + pageMax + ';margin:0 auto}.page:last-child{page-break-after:avoid}' +
     'table{width:100%;border-collapse:collapse;margin-bottom:8px}th{background:#5a0e20;color:#fff;padding:5px 8px;text-align:left;font-size:10px;letter-spacing:.5px}td{padding:5px 8px;border-bottom:1px solid #f7c5d0;vertical-align:top;font-size:11px}td.lbl{font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#7a6468;width:220px}tr:nth-child(even) td{background:#fef4f0}' +
-    '.bb-worksheet-system{max-width:10.4in;height:7.12in;overflow:hidden;color:#000;font-family:Arial,Helvetica,sans-serif}.bb-worksheet-system h1{text-align:left;font:900 28px/1 Arial,Helvetica,sans-serif;color:#000;margin:0 0 2px;padding:0}.bb-worksheet-sub{font:800 11px/1.2 Arial,Helvetica,sans-serif;color:#111;margin:0 0 .08in;text-transform:uppercase;letter-spacing:.9px}.bb-worksheet-grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr;gap:.12in;height:6.48in}.bb-worksheet-box{border:2px solid #000;background:#fff;color:#000;padding:.1in;overflow:hidden}.bb-worksheet-wide{grid-column:1/-1}.bb-worksheet-box h2{text-align:left;font:900 15px/1 Arial,Helvetica,sans-serif;color:#000;border-bottom:2px solid #000;margin:0 0 .07in;padding:0 0 .045in}.bb-worksheet-box table{table-layout:fixed;margin:0;border-collapse:collapse}.bb-worksheet-box th{background:#fff!important;color:#000!important;border:1px solid #000;border-bottom:2px solid #000;font:900 8.5px/1.1 Arial,Helvetica,sans-serif;padding:4px 4px}.bb-worksheet-box td{background:#fff!important;color:#000;border:1px solid #000;font:700 9.5px/1.18 Arial,Helvetica,sans-serif;padding:4px 5px;white-space:normal;overflow-wrap:anywhere}.bb-worksheet-box td.lbl{font:900 8.6px/1.12 Arial,Helvetica,sans-serif;color:#000;width:1.25in;text-transform:uppercase;letter-spacing:.35px}.bb-worksheet-box p,.bb-worksheet-line{font:700 11px/1.3 Arial,Helvetica,sans-serif;color:#000;margin:0 0 5px}' +
+    '.bb-worksheet-system{max-width:10.4in;height:7.12in;overflow:hidden;color:#000;font-family:Arial,Helvetica,sans-serif}.bb-worksheet-system h1{text-align:left;font:900 26px/1 Arial,Helvetica,sans-serif;color:#000;margin:0 0 2px;padding:0}.bb-worksheet-sub{font:800 10px/1.2 Arial,Helvetica,sans-serif;color:#111;margin:0 0 .08in;text-transform:uppercase;letter-spacing:.9px}.bb-worksheet-study-grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:.16in;height:6.52in}.bb-worksheet-study-block{border:2px solid #000;background:#fff;color:#000;padding:.1in;overflow:hidden;display:grid;grid-template-rows:auto 1fr;gap:.08in;break-inside:avoid;page-break-inside:avoid}.bb-worksheet-study-block h2{text-align:center;font:900 18px/1 Arial,Helvetica,sans-serif;color:#000;border-bottom:2px solid #000;margin:0;padding:0 0 .055in}.bb-worksheet-study-body{display:grid;grid-template-columns:1fr 2fr;gap:.12in;min-height:0}.bb-worksheet-study-visual,.bb-worksheet-study-facts{border:2px solid #000;background:#fff;color:#000;overflow:hidden}.bb-worksheet-study-visual{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:.08in}.bb-worksheet-study-visual strong{font:900 30px/1 Arial,Helvetica,sans-serif;color:#000}.bb-worksheet-study-visual span{font:800 10px/1.15 Arial,Helvetica,sans-serif;color:#111;text-transform:uppercase;margin-top:.05in}.bb-worksheet-study-facts{padding:.1in .12in;font:700 11.8px/1.2 Arial,Helvetica,sans-serif}.bb-worksheet-study-facts p{margin:0 0 .05in}.bb-worksheet-study-facts strong{font-weight:900;text-transform:uppercase;font-size:9.8px;letter-spacing:.02em}.bb-worksheet-study-facts .muted{color:#555;font-style:italic}' +
     '.tl{padding-left:12px;border-left:2px solid #f7c5d0}.tl-item{margin-bottom:7px;font-size:11px}.yr{font-weight:700;color:#c0173d;font-size:10px;display:block}' +
     '.system-page{padding:0;font-size:9px}.system-card{border-top:2.5px solid #5a0e20;border-left:1px solid #f7c5d0;border-right:1px solid #f7c5d0;border-bottom:1px solid #f7c5d0;border-radius:10px;padding:6px 8px;margin:0;background:#fffaf7;break-inside:avoid;page-break-inside:avoid}.hero-card{padding-bottom:10px}.system-head{display:flex;gap:8px;align-items:flex-start;margin-bottom:5px}.system-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;line-height:1;box-shadow:inset 0 2px 5px rgba(0,0,0,.22)}.system-head h1{text-align:left;font-size:20px;line-height:1;margin:0 0 2px;padding:0}.isbt{font-size:8px;letter-spacing:2px;color:#7a6468;text-transform:uppercase}.pun{font-size:9px;color:#c0173d;font-style:italic;font-weight:700;margin-top:2px}.card-label{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#7a6468;font-weight:700;margin:0 0 4px}.system-page .tl{padding-left:8px}.system-page .tl-item{font-size:8.4px;line-height:1.13;margin-bottom:3px}.system-page .yr{font-size:8px;display:inline-block;width:45px}.onepage-system{height:' + onePageHeight + ';overflow:hidden}.onepage-head{border-top:2.5px solid #5a0e20;border-left:1px solid #f7c5d0;border-right:1px solid #f7c5d0;border-bottom:1px solid #f7c5d0;border-radius:10px;background:#fffaf7;padding:5px 8px;margin-bottom:5px}.compact-head{align-items:center;margin-bottom:0}.onepage-grid{display:grid;' + onePageGrid + 'gap:5px;align-items:start}.compact-export h1{padding:0;margin:0 0 7px}.compact-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.compact-card h1{font-size:13px;text-align:left;padding:0;margin:0 0 5px}.compact-card .tl-item{font-size:9px;line-height:1.16;margin-bottom:3px}.compact-card .yr{display:inline-block;width:45px;font-size:9px}.compact-card .card-label{font-size:8px;margin-bottom:4px}.compact-card .study-table td{font-size:6.8px!important;padding:2px 3px!important}.compact-card .study-table td.lbl{font-size:6.5px!important;width:1.15in!important}' +
     '.membrane-card{padding-bottom:7px}.membrane-print{height:1.18in;overflow:hidden;margin:-4px 0 0}.membrane-print div{overflow:hidden!important}.membrane-print svg{width:100%!important;min-width:0!important;height:1.18in!important}.membrane-print text{font-size:14px!important}.mini-table td{font-size:8px;padding:2px 4px}.study-table{font-size:6.8px;line-height:1.08}.study-table td{font-size:6.8px;padding:2px 3px}.study-table td.lbl{width:1.15in;font-size:6.3px}.freq-export{font-size:6.2px;line-height:1.02;table-layout:fixed}.freq-export th{font-size:5.8px;padding:2px 2px}.freq-export td{font-size:5.8px;padding:2px 2px}.freq-export th:nth-child(1){width:.52in}.freq-export th:nth-child(2),.freq-export th:nth-child(3),.freq-export th:nth-child(4),.freq-export th:nth-child(5),.freq-export th:nth-child(6){width:.2in}.freq-export th:nth-child(7){width:.4in}.freq-export .center{text-align:center}.freq-export .memo{background:#dce6f4}.note-box{font-size:6.6px;line-height:1.1;padding:4px;background:#fff;border-left:3px solid #f7c5d0}.muted{color:#9a8588}' +

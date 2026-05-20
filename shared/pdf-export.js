@@ -54,19 +54,27 @@
       '.hub-pdf-preview-content .hub-worksheet{width:100%;height:100%;overflow:hidden}',
       '.hub-pdf-preview-content .hub-worksheet-page{height:100%;break-after:auto;page-break-after:auto}',
       '.hub-worksheet{font-family:Arial,Helvetica,sans-serif;color:#000;background:#fff}',
-      '.hub-worksheet-page{break-after:page;page-break-after:always;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:14px;padding:12px;background:#fff}',
+      '.hub-worksheet-page{break-after:page;page-break-after:always;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:.16in;padding:.18in;background:#fff}',
       '.hub-worksheet-page:last-child{break-after:auto;page-break-after:auto}',
-      '.hub-worksheet-card{border:2px solid #000;background:#fff;color:#000;padding:12px;min-height:0;break-inside:avoid;page-break-inside:avoid;overflow:hidden}',
-      '.hub-worksheet-card h2{font:900 20px/1.05 Arial,Helvetica,sans-serif;color:#000;margin:0 0 7px;border-bottom:2px solid #000;padding-bottom:5px}',
-      '.hub-worksheet-note{font:700 11px/1.35 Arial,Helvetica,sans-serif;color:#222;margin:0 0 7px}',
+      '.hub-worksheet-card{border:2px solid #000;background:#fff;color:#000;padding:.1in;min-height:0;break-inside:avoid;page-break-inside:avoid;overflow:hidden;display:grid;grid-template-rows:auto 1fr;gap:.08in}',
+      '.hub-worksheet-card h2{font:900 18px/1.05 Arial,Helvetica,sans-serif;color:#000;margin:0;border-bottom:2px solid #000;padding:0 0 .055in;text-align:center}',
+      '.hub-worksheet-note{font:700 10px/1.25 Arial,Helvetica,sans-serif;color:#111;margin:0;text-align:center}',
+      '.hub-worksheet-row{display:grid;grid-template-columns:1fr 2fr;gap:.12in;min-height:0;height:100%}',
+      '.hub-worksheet-visual,.hub-worksheet-info{border:2px solid #000;background:#fff;color:#000;min-height:0;overflow:hidden}',
+      '.hub-worksheet-visual{display:flex;align-items:center;justify-content:center;text-align:center;padding:.08in}',
+      '.hub-worksheet-visual img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;border:0;margin:0 auto}',
+      '.hub-worksheet-acronym{display:grid;gap:.05in;justify-items:center;color:#000}',
+      '.hub-worksheet-acronym strong{font:900 28px/1 Arial,Helvetica,sans-serif;color:#000}',
+      '.hub-worksheet-acronym span{font:800 11px/1.15 Arial,Helvetica,sans-serif;color:#111;text-transform:uppercase;letter-spacing:.04em}',
+      '.hub-worksheet-info{padding:.1in .12in;font:700 12.5px/1.25 Arial,Helvetica,sans-serif}',
+      '.hub-worksheet-fact{margin:0 0 .055in;break-inside:avoid}',
+      '.hub-worksheet-fact strong{font-weight:900;color:#000;text-transform:uppercase;font-size:10.5px;letter-spacing:.025em}',
+      '.hub-worksheet-empty{color:#555;font-style:italic}',
       '.hub-worksheet-table{width:100%;border-collapse:collapse;table-layout:fixed;font:700 11px/1.22 Arial,Helvetica,sans-serif;color:#000}',
       '.hub-worksheet-table th{background:#fff!important;color:#000!important;border:1px solid #000;border-bottom:2px solid #000;padding:5px 6px;text-align:left;font:900 10px/1.12 Arial,Helvetica,sans-serif;text-transform:uppercase;letter-spacing:.3px}',
       '.hub-worksheet-table td{border:1px solid #000;padding:5px 6px;vertical-align:top;background:#fff!important;white-space:normal;overflow-wrap:anywhere}',
-      '.hub-worksheet-table .hub-worksheet-image-cell{width:30%;text-align:center}',
-      '.hub-worksheet-table img{display:block;max-width:1.9in;max-height:1.45in;width:auto;height:auto;margin:0 auto;border:1px solid #000;object-fit:contain}',
-      '.hub-worksheet-empty{color:#555;font-style:italic}',
-      '.hub-worksheet-one .hub-worksheet-page{grid-template-columns:1fr;grid-template-rows:1fr}',
-      '.hub-worksheet-two .hub-worksheet-page{grid-template-columns:1fr 1fr;grid-template-rows:1fr}',
+      '.hub-worksheet-one .hub-worksheet-page{grid-template-columns:1fr;grid-template-rows:1fr}.hub-worksheet-one .hub-worksheet-card h2{font-size:30px}.hub-worksheet-one .hub-worksheet-info{font-size:18px}.hub-worksheet-one .hub-worksheet-fact strong{font-size:14px}.hub-worksheet-one .hub-worksheet-acronym strong{font-size:54px}',
+      '.hub-worksheet-two .hub-worksheet-page{grid-template-columns:1fr;grid-template-rows:1fr 1fr}.hub-worksheet-two .hub-worksheet-card h2{font-size:24px}.hub-worksheet-two .hub-worksheet-info{font-size:15px}',
       '@media print{body.worksheet-printing #printArea{display:block!important;background:#fff;color:#000}body.worksheet-printing #printArea .hub-worksheet{width:100%}body.worksheet-printing #printArea .hub-worksheet-page{height:7.45in;overflow:hidden}body.worksheet-printing #printArea .hub-worksheet-card{box-shadow:none}.hub-pdf-modal{display:none!important}}',
       '.hub-pdf-no-preview .hub-pdf-box{width:min(520px,94vw)}',
       '.hub-pdf-no-preview .hub-pdf-layout{display:block}',
@@ -257,6 +265,17 @@
       .map(function(part){return escapeHtml(part)})
       .join('<br>');
   }
+  function plainText(value){
+    return String(value==null?'':value).replace(/<br\s*\/?>/gi,'\n').replace(/<[^>]+>/g,'').trim();
+  }
+  function initials(value){
+    var text=plainText(value);
+    if(!text)return 'Item';
+    var words=text.replace(/[^A-Za-z0-9\s/.-]/g,' ').split(/\s+/).filter(Boolean);
+    if(!words.length)return text.slice(0,6);
+    if(words.length===1)return words[0].slice(0,8);
+    return words.slice(0,3).map(function(word){return word.charAt(0)}).join('').toUpperCase();
+  }
   function normalizeWorksheetTable(table){
     table=table||{};
     var columns=Array.isArray(table.columns)?table.columns:[];
@@ -268,32 +287,70 @@
       rows:rows
     };
   }
+  function worksheetItemsFromTable(table){
+    var columns=table.columns.map(function(col,index){
+      col=col||{};
+      return {id:col.id||String(index),label:col.label||'',type:col.type||'text',index:index};
+    });
+    var imageColumn=columns.find(function(col){return col.type==='image'});
+    var rows=table.rows.length?table.rows:[{cells:{}}];
+    return rows.map(function(row,index){
+      var cells=(row&&row.cells)||{};
+      var titleColumn=columns.find(function(col){
+        if(col.type==='image')return false;
+        return plainText(Object.prototype.hasOwnProperty.call(cells,col.id)?cells[col.id]:'');
+      }) || columns.find(function(col){return col.type!=='image'});
+      var title=titleColumn ? plainText(cells[titleColumn.id]) : '';
+      if(!title)title=table.title+(rows.length>1?' '+(index+1):'');
+      var imageValue=imageColumn&&Object.prototype.hasOwnProperty.call(cells,imageColumn.id)?cells[imageColumn.id]:'';
+      var facts=columns.filter(function(col){
+        if(imageColumn&&col.id===imageColumn.id)return false;
+        if(titleColumn&&col.id===titleColumn.id)return false;
+        return true;
+      }).map(function(col){
+        var value=Object.prototype.hasOwnProperty.call(cells,col.id)?cells[col.id]:'';
+        return {label:col.label||'Notes',value:value};
+      }).filter(function(fact){return plainText(fact.value);});
+      if(table.note)facts.unshift({label:'Section',value:table.note});
+      if(!facts.length)facts.push({label:'Notes',value:''});
+      return {
+        title:title,
+        source:table.title,
+        image:imageValue,
+        imageLabel:imageColumn&&imageColumn.label?imageColumn.label:'',
+        facts:facts
+      };
+    });
+  }
+  function worksheetItemHtml(item){
+    var visual=item.image
+      ? '<img src="'+escapeHtml(item.image)+'" alt="'+escapeHtml(item.imageLabel||item.title)+'">'
+      : '<div class="hub-worksheet-acronym"><strong>'+escapeHtml(initials(item.title))+'</strong><span>'+escapeHtml(item.source||'Worksheet')+'</span></div>';
+    var facts=item.facts.map(function(fact){
+      return '<p class="hub-worksheet-fact"><strong>'+escapeHtml(fact.label||'Notes')+':</strong> '+(plainText(fact.value)?worksheetCell(fact.value,'text'):'<span class="hub-worksheet-empty">Write notes here</span>')+'</p>';
+    }).join('');
+    return '<article class="hub-worksheet-card">'+
+      '<h2>'+escapeHtml(item.title||'Worksheet Item')+'</h2>'+
+      '<div class="hub-worksheet-row">'+
+        '<div class="hub-worksheet-visual">'+visual+'</div>'+
+        '<div class="hub-worksheet-info">'+facts+'</div>'+
+      '</div>'+
+    '</article>';
+  }
   function tableWorksheetHtml(tables,options){
     options=options||{};
     tables=Array.isArray(tables)?tables:[tables];
     tables=tables.map(normalizeWorksheetTable).filter(function(table){return table.columns.length});
     var perPage=Math.max(1,Math.min(4,Number(options.itemsPerPage)||4));
     var modeClass=perPage===1?' hub-worksheet-one':(perPage===2?' hub-worksheet-two':'');
+    var items=[];
+    tables.forEach(function(table){
+      items=items.concat(worksheetItemsFromTable(table));
+    });
     var pages='';
-    for(var i=0;i<tables.length;i+=perPage){
-      var group=tables.slice(i,i+perPage);
-      pages+='<section class="hub-worksheet-page">'+group.map(function(table){
-        var head='<tr>'+table.columns.map(function(col){
-          return '<th class="'+(col.type==='image'?'hub-worksheet-image-head':'')+'">'+escapeHtml(col.label||'')+'</th>';
-        }).join('')+'</tr>';
-        var body=table.rows.length?table.rows.map(function(row){
-          var cells=row.cells||{};
-          return '<tr>'+table.columns.map(function(col){
-            var value=Object.prototype.hasOwnProperty.call(cells,col.id)?cells[col.id]:'';
-            return '<td class="'+(col.type==='image'?'hub-worksheet-image-cell':'')+'">'+worksheetCell(value,col.type)+'</td>';
-          }).join('')+'</tr>';
-        }).join(''):'<tr><td colspan="'+table.columns.length+'"><span class="hub-worksheet-empty">Blank table</span></td></tr>';
-        return '<article class="hub-worksheet-card">'+
-          '<h2>'+escapeHtml(table.title||'Worksheet Table')+'</h2>'+
-          (table.note?'<p class="hub-worksheet-note">'+worksheetCell(table.note,'text')+'</p>':'')+
-          '<table class="hub-worksheet-table"><thead>'+head+'</thead><tbody>'+body+'</tbody></table>'+
-        '</article>';
-      }).join('')+'</section>';
+    for(var i=0;i<items.length;i+=perPage){
+      var group=items.slice(i,i+perPage);
+      pages+='<section class="hub-worksheet-page">'+group.map(worksheetItemHtml).join('')+'</section>';
     }
     return '<div class="hub-worksheet'+modeClass+'">'+pages+'</div>';
   }
