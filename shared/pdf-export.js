@@ -43,6 +43,8 @@
       '.hub-pdf-orientation.visible{display:grid}',
       '.hub-pdf-orientation .hub-pdf-presets{justify-content:flex-start}',
       '.hub-pdf-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:20px}',
+      '.hub-pdf-word{display:none!important}',
+      '.hub-pdf-word.visible{display:inline-flex!important;align-items:center}',
       '.hub-pdf-hint{font:700 12px/1.4 Georgia,"Times New Roman",serif;color:#61717a;text-align:center;margin-top:10px}',
       '.hub-pdf-preview{display:grid;gap:8px}',
       '.hub-pdf-preview-title{font:900 12px/1 Georgia,"Times New Roman",serif;color:#10283a;text-transform:uppercase;letter-spacing:.08em}',
@@ -64,10 +66,12 @@
       '.hub-worksheet-card{border:2px solid #000;background:#fff;color:#000;padding:.1in;min-height:0;break-inside:avoid;page-break-inside:avoid;overflow:hidden;display:grid;grid-template-rows:auto 1fr;gap:.08in}',
       '.hub-worksheet-card h2{font:900 18px/1.05 Arial,Helvetica,sans-serif;color:#000;margin:0;border-bottom:2px solid #000;padding:0 0 .055in;text-align:center}',
       '.hub-worksheet-note{font:700 10px/1.25 Arial,Helvetica,sans-serif;color:#111;margin:0;text-align:center}',
-      '.hub-worksheet-row{display:grid;grid-template-columns:1fr 2fr;gap:.12in;min-height:0;height:100%}',
+      '.hub-worksheet-row{display:grid;grid-template-columns:minmax(1.1in,max-content) 1fr;gap:.1in;min-height:0;height:100%;align-items:start}',
       '.hub-worksheet-visual,.hub-worksheet-info{border:2px solid #000;background:#fff;color:#000;min-height:0;overflow:hidden}',
-      '.hub-worksheet-visual{display:flex;align-items:center;justify-content:center;text-align:center;padding:.08in}',
-      '.hub-worksheet-visual img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;border:0;margin:0 auto}',
+      '.hub-worksheet-visual{display:flex;align-items:center;justify-content:center;text-align:center;padding:.06in;width:max-content;min-width:1.1in;max-width:2in;align-self:start}',
+      '.hub-worksheet-visual img{display:block;max-width:1.85in;max-height:1.25in;width:auto;height:auto;object-fit:contain;border:0;margin:0 auto}',
+      '.hub-worksheet-no-image .hub-worksheet-row{grid-template-columns:1fr}',
+      '.hub-worksheet-no-image .hub-worksheet-visual{display:none}',
       '.hub-worksheet-acronym{display:grid;gap:.05in;justify-items:center;color:#000}',
       '.hub-worksheet-acronym strong{font:900 28px/1 Arial,Helvetica,sans-serif;color:#000}',
       '.hub-worksheet-acronym span{font:800 11px/1.15 Arial,Helvetica,sans-serif;color:#111;text-transform:uppercase;letter-spacing:.04em}',
@@ -80,6 +84,15 @@
       '.hub-worksheet-table td{border:1px solid #000;padding:5px 6px;vertical-align:top;background:#fff!important;white-space:normal;overflow-wrap:anywhere}',
       '.hub-worksheet-one .hub-worksheet-page{grid-template-columns:1fr;grid-template-rows:1fr}.hub-worksheet-one .hub-worksheet-card h2{font-size:30px}.hub-worksheet-one .hub-worksheet-info{font-size:18px}.hub-worksheet-one .hub-worksheet-fact strong{font-size:14px}.hub-worksheet-one .hub-worksheet-acronym strong{font-size:54px}',
       '.hub-worksheet-two .hub-worksheet-page{grid-template-columns:1fr;grid-template-rows:1fr 1fr}.hub-worksheet-two .hub-worksheet-card h2{font-size:24px}.hub-worksheet-two .hub-worksheet-info{font-size:15px}',
+      '.hub-worksheet-six .hub-worksheet-page{grid-template-columns:1fr;grid-template-rows:repeat(6,minmax(0,1fr));gap:.07in;padding:.12in}',
+      '.hub-worksheet-six .hub-worksheet-card{padding:.055in;gap:.035in}',
+      '.hub-worksheet-six .hub-worksheet-card h2{font-size:13px;line-height:1;padding-bottom:.025in}',
+      '.hub-worksheet-six .hub-worksheet-row{grid-template-columns:minmax(.85in,max-content) 1fr;gap:.06in}',
+      '.hub-worksheet-six .hub-worksheet-visual{padding:.025in;min-width:.85in;max-width:1.3in}',
+      '.hub-worksheet-six .hub-worksheet-visual img{max-width:1.2in;max-height:.72in}',
+      '.hub-worksheet-six .hub-worksheet-info{font-size:8.9px;line-height:1.1;padding:.045in .055in}',
+      '.hub-worksheet-six .hub-worksheet-fact{margin-bottom:.025in}',
+      '.hub-worksheet-six .hub-worksheet-fact strong{font-size:7.6px}',
       '.hub-worksheet-portrait .hub-worksheet-four .hub-worksheet-page{grid-template-columns:1fr;grid-template-rows:repeat(4,1fr);gap:.12in;padding:.16in}',
       '.hub-worksheet-portrait .hub-worksheet-four .hub-worksheet-card{padding:.08in;gap:.05in}',
       '.hub-worksheet-portrait .hub-worksheet-four .hub-worksheet-card h2{font-size:16px}',
@@ -88,7 +101,7 @@
       '.hub-worksheet-portrait .hub-worksheet-four .hub-worksheet-visual img{width:100%;height:100%;object-fit:cover}',
       '.hub-worksheet-portrait .hub-worksheet-four .hub-worksheet-info{font-size:11px;line-height:1.18;padding:.07in .08in}',
       '.hub-worksheet-portrait .hub-worksheet-four .hub-worksheet-fact strong{font-size:9px}',
-      '@media print{body.worksheet-printing #printArea{display:block!important;background:#fff;color:#000}body.worksheet-printing #printArea .hub-worksheet{width:100%}body.worksheet-printing #printArea .hub-worksheet-page{height:7.45in;overflow:hidden}body.hub-worksheet-portrait #printArea .hub-worksheet-page{height:10.45in}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-page{grid-template-columns:1fr;grid-template-rows:repeat(4,1fr);gap:.12in;padding:.16in}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-card{padding:.08in;gap:.05in}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-card h2{font-size:16px}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-row{grid-template-columns:.9fr 2.1fr;gap:.09in}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-visual{padding:.04in}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-visual img{width:100%;height:100%;object-fit:cover}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-info{font-size:11px;line-height:1.18;padding:.07in .08in}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-fact strong{font-size:9px}body.worksheet-printing #printArea .hub-worksheet-card{box-shadow:none}.hub-pdf-modal{display:none!important}}',
+      '@media print{body.worksheet-printing #printArea{display:block!important;background:#fff;color:#000}body.worksheet-printing #printArea .hub-worksheet{width:100%}body.worksheet-printing #printArea .hub-worksheet-page{height:7.45in;overflow:hidden}body.hub-worksheet-portrait #printArea .hub-worksheet-page{height:10.45in}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-page{grid-template-columns:1fr;grid-template-rows:repeat(4,1fr);gap:.12in;padding:.16in}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-card{padding:.08in;gap:.05in}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-card h2{font-size:16px}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-row{grid-template-columns:minmax(1in,max-content) 1fr;gap:.09in}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-visual{padding:.04in}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-visual img{max-width:1.5in;max-height:1in;object-fit:contain}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-info{font-size:11px;line-height:1.18;padding:.07in .08in}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-fact strong{font-size:9px}body.hub-worksheet-portrait #printArea .hub-worksheet-six .hub-worksheet-page{grid-template-columns:1fr;grid-template-rows:repeat(6,minmax(0,1fr));gap:.07in;padding:.12in}body.hub-worksheet-portrait #printArea .hub-worksheet-six .hub-worksheet-card{padding:.055in;gap:.035in}body.hub-worksheet-portrait #printArea .hub-worksheet-six .hub-worksheet-card h2{font-size:13px;line-height:1;padding-bottom:.025in}body.hub-worksheet-portrait #printArea .hub-worksheet-six .hub-worksheet-row{grid-template-columns:minmax(.85in,max-content) 1fr;gap:.06in}body.hub-worksheet-portrait #printArea .hub-worksheet-six .hub-worksheet-visual{padding:.025in;min-width:.85in;max-width:1.3in}body.hub-worksheet-portrait #printArea .hub-worksheet-six .hub-worksheet-visual img{max-width:1.2in;max-height:.72in;object-fit:contain}body.hub-worksheet-portrait #printArea .hub-worksheet-six .hub-worksheet-info{font-size:8.9px;line-height:1.1;padding:.045in .055in}body.hub-worksheet-portrait #printArea .hub-worksheet-six .hub-worksheet-fact strong{font-size:7.6px}body.worksheet-printing #printArea .hub-worksheet-card{box-shadow:none}.hub-pdf-modal{display:none!important}}',
       '.hub-pdf-no-preview .hub-pdf-box{width:min(520px,94vw)}',
       '.hub-pdf-no-preview .hub-pdf-layout{display:block}',
       '.hub-pdf-no-preview .hub-pdf-preview{display:none}',
@@ -127,6 +140,7 @@
           '<div class="hub-pdf-hint" data-pdf-hint>Tip: use Chrome margins “None” or “Minimum” when you need every inch.</div>'+
           '<div class="hub-pdf-actions">'+
             '<button type="button" class="hub-pdf-btn hub-pdf-primary" data-pdf-print>Open Save as PDF</button>'+
+            '<button type="button" class="hub-pdf-btn hub-pdf-word" data-pdf-word>Download Word worksheet</button>'+
             '<button type="button" class="hub-pdf-btn" data-pdf-cancel>Cancel</button>'+
           '</div>'+
         '</div>'+
@@ -162,6 +176,50 @@
       if(live)live.remove();
     };
   }
+  function fileSafeName(value){
+    return String(value||'Worksheet Export').replace(/[\\/:*?"<>|]+/g,' ').replace(/\s+/g,' ').trim()||'Worksheet Export';
+  }
+  function downloadWordDocument(title,html,scale,orientationClass){
+    var css=document.getElementById(styleId)?document.getElementById(styleId).textContent:'';
+    var bodyClass='worksheet-printing hub-worksheet-portrait '+(orientationClass||'');
+    var doc='<!DOCTYPE html><html><head><meta charset="utf-8">'+
+      '<title>'+escapeHtml(title||'Worksheet Export')+'</title>'+
+      '<style>@page{size:8.5in 11in;margin:.25in}body{margin:0;background:#fff;color:#000}'+css+
+      '.hub-pdf-modal,.hub-pdf-box,.hub-pdf-preview{display:none!important}.hub-worksheet-page{height:10.45in;overflow:hidden}.hub-worksheet{width:100%}</style>'+
+      '</head><body class="'+bodyClass+'" style="--hub-print-scale:'+escapeHtml(scale||1)+'"><div id="printArea">'+(html||'')+'</div></body></html>';
+    var blob=new Blob(['\ufeff',doc],{type:'application/msword;charset=utf-8'});
+    var url=URL.createObjectURL(blob);
+    var link=document.createElement('a');
+    link.href=url;
+    link.download=fileSafeName(title)+'.doc';
+    document.body.appendChild(link);
+    link.click();
+    setTimeout(function(){URL.revokeObjectURL(url);link.remove()},500);
+  }
+  function fitWorksheetCards(root){
+    if(!root)return;
+    root.querySelectorAll('.hub-worksheet-card').forEach(function(card){
+      var info=card.querySelector('.hub-worksheet-info');
+      var title=card.querySelector('h2');
+      if(!info||!card.clientHeight)return;
+      info.style.fontSize='';
+      info.style.lineHeight='';
+      if(title)title.style.fontSize='';
+      var infoSize=parseFloat(getComputedStyle(info).fontSize)||11;
+      var titleSize=title?(parseFloat(getComputedStyle(title).fontSize)||16):16;
+      var tries=0;
+      while(tries<18&&(card.scrollHeight>card.clientHeight+1||info.scrollHeight>info.clientHeight+1)&&infoSize>7){
+        infoSize-=.45;
+        info.style.fontSize=infoSize.toFixed(2)+'px';
+        info.style.lineHeight='1.08';
+        if(title&&titleSize>10){
+          titleSize-=.35;
+          title.style.fontSize=titleSize.toFixed(2)+'px';
+        }
+        tries+=1;
+      }
+    });
+  }
   function open(options){
     options=options||{};
     cleanup();
@@ -188,6 +246,7 @@
     var title=modal.querySelector('#hubPdfTitle');
     var subtitle=modal.querySelector('#hubPdfSubtitle');
     var hint=modal.querySelector('[data-pdf-hint]');
+    var wordBtn=modal.querySelector('[data-pdf-word]');
     var orientationRow=modal.querySelector('[data-pdf-orientation-row]');
     var orientationValue=modal.querySelector('[data-pdf-orientation-value]');
     var preview=modal.querySelector('[data-pdf-preview]');
@@ -197,6 +256,7 @@
     var previewContent=modal.querySelector('[data-pdf-preview-content]');
     title.textContent=options.modalTitle||'Export PDF Settings';
     hint.textContent=options.hint||'Chrome may not show a scale box, so this slider scales the page before the print dialog opens.';
+    if(wordBtn)wordBtn.classList.toggle('visible',!!options.allowDocDownload);
     function orientationLabel(){
       return currentOrientation==='portrait'?'Portrait':'Landscape';
     }
@@ -257,6 +317,7 @@
       if(typeof options.buildContent==='function')previewContent.innerHTML=options.buildContent(scale,currentOrientation)||'';
       else previewContent.innerHTML=options.contentHtml||'';
       if(typeof options.previewReady==='function')options.previewReady(scale,previewContent,currentOrientation);
+      fitWorksheetCards(previewContent);
       requestAnimationFrame(fitPreview);
     }
     function setScale(scale){
@@ -287,8 +348,14 @@
       var preset=event.target.closest('[data-pdf-preset]');
       if(preset){setScale(Number(preset.dataset.pdfPreset));return}
       if(event.target.closest('[data-pdf-cancel]')){close();return}
-      if(!event.target.closest('[data-pdf-print]'))return;
       var scale=setScale(Number(slider.value)/100);
+      if(event.target.closest('[data-pdf-word]')){
+        try{localStorage.setItem(persistKey,String(scale))}catch(e){}
+        var wordHtml=typeof options.buildContent==='function' ? (options.buildContent(scale,'portrait')||'') : (options.contentHtml||'');
+        downloadWordDocument(options.title||'Worksheet Export',wordHtml,scale,orientationPrefix?orientationPrefix+'-portrait':'');
+        return;
+      }
+      if(!event.target.closest('[data-pdf-print]'))return;
       try{localStorage.setItem(persistKey,String(scale))}catch(e){}
       close();
       if(typeof options.customPrint==='function'){
@@ -306,6 +373,7 @@
       document.documentElement.style.setProperty(options.scaleVar||'--hub-print-scale',String(scale));
       var removePageStyle=options.dynamicPageStyle===false?null:setDynamicPageStyle(currentOrientation,options.pageMargin||'.22in');
       if(typeof options.beforePrint==='function')options.beforePrint(scale,area,currentOrientation);
+      fitWorksheetCards(area);
       activeCleanup=function(){
         classList.forEach(function(cls){document.body.classList.remove(cls)});
         area.style.removeProperty(options.scaleVar||'--hub-print-scale');
@@ -359,7 +427,7 @@
       col=col||{};
       return {id:col.id||String(index),label:col.label||'',type:col.type||'text',index:index};
     });
-    var imageColumn=columns.find(function(col){return col.type==='image'});
+    var imageColumns=columns.filter(function(col){return col.type==='image'});
     var rows=table.rows.length?table.rows:[{cells:{}}];
     return rows.map(function(row,index){
       var cells=(row&&row.cells)||{};
@@ -369,9 +437,12 @@
       }) || columns.find(function(col){return col.type!=='image'});
       var title=titleColumn ? plainText(cells[titleColumn.id]) : '';
       if(!title)title=table.title+(rows.length>1?' '+(index+1):'');
+      var imageColumn=imageColumns.find(function(col){
+        return Object.prototype.hasOwnProperty.call(cells,col.id)&&plainText(cells[col.id]);
+      });
       var imageValue=imageColumn&&Object.prototype.hasOwnProperty.call(cells,imageColumn.id)?cells[imageColumn.id]:'';
       var facts=columns.filter(function(col){
-        if(imageColumn&&col.id===imageColumn.id)return false;
+        if(col.type==='image')return false;
         if(titleColumn&&col.id===titleColumn.id)return false;
         return true;
       }).map(function(col){
@@ -396,7 +467,7 @@
     var facts=item.facts.map(function(fact){
       return '<p class="hub-worksheet-fact"><strong>'+escapeHtml(fact.label||'Notes')+':</strong> '+(plainText(fact.value)?worksheetCell(fact.value,'text'):'<span class="hub-worksheet-empty">Write notes here</span>')+'</p>';
     }).join('');
-    return '<article class="hub-worksheet-card">'+
+    return '<article class="hub-worksheet-card'+(item.image?'':' hub-worksheet-no-image')+'">'+
       '<h2>'+escapeHtml(item.title||'Worksheet Item')+'</h2>'+
       '<div class="hub-worksheet-row">'+
         '<div class="hub-worksheet-visual">'+visual+'</div>'+
@@ -408,8 +479,8 @@
     options=options||{};
     tables=Array.isArray(tables)?tables:[tables];
     tables=tables.map(normalizeWorksheetTable).filter(function(table){return table.columns.length});
-    var perPage=Math.max(1,Math.min(4,Number(options.itemsPerPage)||4));
-    var modeClass=perPage===1?' hub-worksheet-one':(perPage===2?' hub-worksheet-two':' hub-worksheet-four');
+    var perPage=Math.max(1,Math.min(6,Number(options.itemsPerPage)||4));
+    var modeClass=perPage===1?' hub-worksheet-one':(perPage===2?' hub-worksheet-two':(perPage>=6?' hub-worksheet-six':' hub-worksheet-four'));
     var items=[];
     tables.forEach(function(table){
       items=items.concat(worksheetItemsFromTable(table));

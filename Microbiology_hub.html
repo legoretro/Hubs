@@ -1641,7 +1641,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function renderExportOptions(){
     var box=document.getElementById('exportOptions');if(!box)return;
-    box.innerHTML=EXPORT_ITEMS.map(function(item){return '<label><input type="checkbox" class="export-check" value="'+item[0]+'" checked> '+escapeHtml(item[1])+'</label>'}).join('')+'<label><input type="checkbox" id="worksheetExportMode"> Worksheet form: bigger black text, up to 4 tables per page</label>';
+    box.innerHTML=EXPORT_ITEMS.map(function(item){return '<label><input type="checkbox" class="export-check" value="'+item[0]+'" checked> '+escapeHtml(item[1])+'</label>'}).join('')+'<label><input type="checkbox" id="worksheetExportMode"> Worksheet form: bigger black text, portrait can fit 6 per page</label>';
   }
   function renderAll(){Object.keys(state.tables).forEach(renderTable);renderCharts();renderExportOptions();document.body.classList.toggle('admin-mode',editMode)}
   function setEditMode(on){if(on&&!isAdmin){toggleAdminLogin();return}if(!on)collectVisibleState();editMode=!!on;document.body.classList.toggle('admin-mode',editMode);renderAll()}
@@ -2042,7 +2042,54 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   window.closeExportModal=function(){document.getElementById('exportModal').classList.remove('visible')};
   window.selectAllExport=function(on){document.querySelectorAll('#exportModal .export-check').forEach(function(box){box.checked=!!on})};
   function worksheetTablesFromSelection(selected){return selected.filter(function(id){return state.tables[id]}).map(function(id){var table=state.tables[id];return{title:table.title||id,note:'',columns:table.columns||[],rows:table.rows||[]}})}
-  window.doExport=function(){collectVisibleState();saveLocal();if(isAdmin&&safeDoc)safeDoc.saveNow({reason:'manual'}).catch(function(e){console.warn(e)});var selected=Array.from(document.querySelectorAll('#exportModal .export-check:checked')).map(function(box){return box.value});if(!selected.length){showToast('Choose at least one section',true);return}var worksheetMode=!!(document.getElementById('worksheetExportMode')&&document.getElementById('worksheetExportMode').checked&&window.HubPdfExport&&window.HubPdfExport.tableWorksheetHtml);closeExportModal();var html='';if(worksheetMode){html=window.HubPdfExport.tableWorksheetHtml(worksheetTablesFromSelection(selected),{itemsPerPage:4});if(selected.indexOf('charts')>-1)html+=(state.simpleCharts||defaultSimpleCharts()).map(simpleChartPrintHtml).join('');var worksheetArea=document.getElementById('printArea');window.HubPdfExport.open({title:'Microbiology Worksheet Export',orientation:'landscape',allowOrientationToggle:true,orientationClassPrefix:'hub-worksheet',defaultScale:1,minScale:.45,maxScale:1.15,step:.01,persistKey:'micro-worksheet-export-scale',printArea:worksheetArea,contentHtml:html,previewClass:'worksheet-print-preview',bodyClass:['printing','worksheet-printing'].concat(selected.indexOf('charts')>-1?['micro-simple-printing']:[]),scaleVar:'--hub-print-scale',hint:'Worksheet form prints bigger black text. Landscape keeps the 2x2 sheet; portrait stacks the four cards across the page.'});return}selected.forEach(function(id){if(state.tables[id])html+='<div class="print-page">'+tablePrintHtml(id)+'</div>';if(id==='charts')html+=(state.simpleCharts||defaultSimpleCharts()).map(simpleChartPrintHtml).join('')});var area=document.getElementById('printArea');var classes=['printing'];if(selected.indexOf('charts')>-1)classes.push('micro-simple-printing');if(window.HubPdfExport){window.HubPdfExport.open({title:'Microbiology Hub Export',orientation:'landscape',defaultScale:selected.indexOf('charts')>-1?.7:1,minScale:.35,maxScale:1.1,step:.01,persistKey:'micro-hub-export-scale',printArea:area,contentHtml:html,bodyClass:classes,scaleVar:'--micro-simple-print-scale'});return}area.innerHTML=html;document.body.classList.add('printing');if(selected.indexOf('charts')>-1)document.body.classList.add('micro-simple-printing');showToast('Opening PDF export');window.print();setTimeout(function(){document.body.classList.remove('printing','micro-flow-printing','micro-simple-printing');area.innerHTML=''},1200)};
+  window.doExport=function(){
+    collectVisibleState();
+    saveLocal();
+    if(isAdmin&&safeDoc)safeDoc.saveNow({reason:'manual'}).catch(function(e){console.warn(e)});
+    var selected=Array.from(document.querySelectorAll('#exportModal .export-check:checked')).map(function(box){return box.value});
+    if(!selected.length){showToast('Choose at least one section',true);return}
+    var worksheetMode=!!(document.getElementById('worksheetExportMode')&&document.getElementById('worksheetExportMode').checked&&window.HubPdfExport&&window.HubPdfExport.tableWorksheetHtml);
+    closeExportModal();
+    var html='';
+    if(worksheetMode){
+      function buildWorksheetExport(orientation){
+        var out=window.HubPdfExport.tableWorksheetHtml(worksheetTablesFromSelection(selected),{itemsPerPage:orientation==='portrait'?6:4});
+        if(selected.indexOf('charts')>-1)out+=(state.simpleCharts||defaultSimpleCharts()).map(simpleChartPrintHtml).join('');
+        return out;
+      }
+      var worksheetArea=document.getElementById('printArea');
+      window.HubPdfExport.open({
+        title:'Microbiology Worksheet Export',
+        orientation:'landscape',
+        allowOrientationToggle:true,
+        orientationClassPrefix:'hub-worksheet',
+        defaultScale:1,
+        minScale:.45,
+        maxScale:1.15,
+        step:.01,
+        persistKey:'micro-worksheet-export-scale',
+        printArea:worksheetArea,
+        buildContent:function(scale,orientation){return buildWorksheetExport(orientation)},
+        previewClass:'worksheet-print-preview',
+        bodyClass:['printing','worksheet-printing'].concat(selected.indexOf('charts')>-1?['micro-simple-printing']:[]),
+        scaleVar:'--hub-print-scale',
+        allowDocDownload:true,
+        hint:'Worksheet form prints bigger black text. Landscape keeps the 2x2 sheet; portrait stacks six compact cards per page.'
+      });
+      return;
+    }
+    selected.forEach(function(id){if(state.tables[id])html+='<div class="print-page">'+tablePrintHtml(id)+'</div>';if(id==='charts')html+=(state.simpleCharts||defaultSimpleCharts()).map(simpleChartPrintHtml).join('')});
+    var area=document.getElementById('printArea');
+    var classes=['printing'];
+    if(selected.indexOf('charts')>-1)classes.push('micro-simple-printing');
+    if(window.HubPdfExport){window.HubPdfExport.open({title:'Microbiology Hub Export',orientation:'landscape',defaultScale:selected.indexOf('charts')>-1?.7:1,minScale:.35,maxScale:1.1,step:.01,persistKey:'micro-hub-export-scale',printArea:area,contentHtml:html,bodyClass:classes,scaleVar:'--micro-simple-print-scale'});return}
+    area.innerHTML=html;
+    document.body.classList.add('printing');
+    if(selected.indexOf('charts')>-1)document.body.classList.add('micro-simple-printing');
+    showToast('Opening PDF export');
+    window.print();
+    setTimeout(function(){document.body.classList.remove('printing','micro-flow-printing','micro-simple-printing');area.innerHTML=''},1200)
+  };
   window.addEventListener('afterprint',function(){document.body.classList.remove('printing','worksheet-printing','micro-flow-printing','micro-simple-printing');document.getElementById('printArea').innerHTML=''});
   window.addEventListener('beforeunload',function(){collectVisibleState();saveLocal()});
   window.addEventListener('load',function(){setTimeout(function(){var left=document.getElementById('doorLeft');var right=document.getElementById('doorRight');if(left)left.classList.add('open');if(right)right.classList.add('open');setTimeout(function(){var intro=document.getElementById('intro');document.body.classList.remove('intro-active');if(intro){intro.style.opacity='0';intro.style.transition='opacity .5s';setTimeout(function(){intro.style.display='none'},500)}},1100)},1500)});

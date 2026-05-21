@@ -160,7 +160,7 @@ button,input{font-family:inherit}button{cursor:pointer}
       <label><input type="checkbox" class="export-check" value="renal" checked> Renal Diseases</label>
       <label><input type="checkbox" class="export-check" value="resources" checked> Resources</label>
       <label><input type="checkbox" class="export-check" value="cases" checked> Simulation Case Reports</label>
-      <label><input type="checkbox" id="worksheetExportMode"> Worksheet form: bigger black text, up to 4 tables per page</label>
+      <label><input type="checkbox" id="worksheetExportMode"> Worksheet form: bigger black text, portrait can fit 6 per page</label>
     </div>
     <div id="caseExportOptions"></div>
     <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
@@ -1652,9 +1652,12 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(!chart)return;
     var area=document.getElementById('printArea');
     var worksheetTable=worksheetTableFromId(chart.tableId,chart.title||'Renal Diseases',chart.note||'');
-    var html=window.HubPdfExport&&window.HubPdfExport.tableWorksheetHtml&&worksheetTable
-      ? window.HubPdfExport.tableWorksheetHtml([worksheetTable],{itemsPerPage:1})
-      : renalChartPrintHtml(chart);
+    function buildWorksheet(orientation){
+      if(window.HubPdfExport&&window.HubPdfExport.tableWorksheetHtml&&worksheetTable){
+        return window.HubPdfExport.tableWorksheetHtml([worksheetTable],{itemsPerPage:orientation==='portrait'?6:4});
+      }
+      return renalChartPrintHtml(chart);
+    }
     if(window.HubPdfExport){
       window.HubPdfExport.open({
         title:chart.title||'Renal Diseases',
@@ -1667,15 +1670,16 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         step:.01,
         persistKey:'ua-renal-export-scale',
         printArea:area,
-        contentHtml:html,
+        buildContent:function(scale,orientation){return buildWorksheet(orientation)},
         previewClass:'worksheet-print-preview',
         bodyClass:['printing','worksheet-printing'],
         scaleVar:'--hub-print-scale',
-        hint:'Worksheet mode uses bigger black text. Landscape keeps the 2x2 sheet; portrait stacks the cards across the page.'
+        allowDocDownload:true,
+        hint:'Worksheet mode prints bigger black text. Landscape keeps the 2x2 sheet; portrait stacks six compact cards per page.'
       });
       return;
     }
-    area.innerHTML=html;
+    area.innerHTML=buildWorksheet('landscape');
     document.body.classList.add('printing','worksheet-printing');
     showToast('Opening renal PDF export');
     window.print();
@@ -1726,11 +1730,14 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var worksheetMode=!!(document.getElementById('worksheetExportMode')&&document.getElementById('worksheetExportMode').checked&&window.HubPdfExport&&window.HubPdfExport.tableWorksheetHtml);
     if(worksheetMode){
       var worksheetTables=selectedWorksheetTables(selected);
-      var worksheetHtml=worksheetTables.length?window.HubPdfExport.tableWorksheetHtml(worksheetTables,{itemsPerPage:4}):'';
+      function buildWorksheetExport(orientation){
+        var worksheetHtml=worksheetTables.length?window.HubPdfExport.tableWorksheetHtml(worksheetTables,{itemsPerPage:orientation==='portrait'?6:4}):'';
+        if(selected.indexOf('cases')>-1)worksheetHtml+=printCases();
+        return worksheetHtml;
+      }
+      var worksheetHtml=buildWorksheetExport('landscape');
       if(selected.indexOf('cases')>-1){
-        var caseWorksheetHtml=printCases();
-        if(!caseWorksheetHtml&&!worksheetHtml){showToast('Choose at least one case or table',true);openExportModal();return}
-        worksheetHtml+=caseWorksheetHtml;
+        if(!worksheetHtml){showToast('Choose at least one case or table',true);openExportModal();return}
       }
       if(!worksheetHtml){showToast('Choose at least one table section',true);openExportModal();return}
       var worksheetArea=document.getElementById('printArea');
@@ -1745,11 +1752,12 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         step:.01,
         persistKey:'ua-worksheet-export-scale',
         printArea:worksheetArea,
-        contentHtml:worksheetHtml,
+        buildContent:function(scale,orientation){return buildWorksheetExport(orientation)},
         previewClass:'worksheet-print-preview',
         bodyClass:['printing','worksheet-printing'],
         scaleVar:'--hub-print-scale',
-        hint:'Worksheet form prints bigger black text. Landscape keeps the 2x2 sheet; portrait stacks the four cards across the page.'
+        allowDocDownload:true,
+        hint:'Worksheet form prints bigger black text. Landscape keeps the 2x2 sheet; portrait stacks six compact cards per page.'
       });
       return;
     }
