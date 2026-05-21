@@ -240,7 +240,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   function mergeState(remote){if(!remote||!remote.tables)return;state=remote;Object.keys(defaultState().tables).forEach(function(id){if(!state.tables[id])state.tables[id]=defaultState().tables[id]})}
   function findTable(id){return state.tables[id]}
   function renderTable(id){var table=findTable(id);var mount=document.getElementById('table-'+id);if(!table||!mount)return;var tools='<div class="table-tools"><button class="mini-btn" data-action="add-row" data-table="'+id+'">Add Row</button><button class="mini-btn" data-action="add-col" data-table="'+id+'">Add Column</button></div>';var thead='<thead><tr>'+table.columns.map(function(col){return'<th><span class="col-label">'+escapeHtml(col.label)+'</span><input class="col-input" value="'+escapeHtml(col.label)+'" data-table="'+id+'" data-col="'+col.id+'" data-action="edit-col"><button class="mini-btn danger admin-only" data-action="delete-col" data-table="'+id+'" data-col="'+col.id+'">Delete</button></th>'}).join('')+'<th class="admin-only">Rows</th></tr></thead>';var rows=table.rows.map(function(row){var cells=table.columns.map(function(col){var value=row.cells[col.id]||'';if(col.type==='image'){return'<td><div class="image-cell">'+(value?'<img class="image-preview" src="'+escapeHtml(value)+'" alt="">':'<span class="empty-image">No image yet</span>')+'<input class="file-input" type="file" accept="image/*" data-action="image-upload" data-table="'+id+'" data-row="'+row.id+'" data-col="'+col.id+'"></div></td>'}return'<td><div class="cell-text" contenteditable="'+(isAdmin?'true':'false')+'" data-action="edit-cell" data-table="'+id+'" data-row="'+row.id+'" data-col="'+col.id+'">'+cellDisplayHtml(value)+'</div></td>'}).join('');return'<tr>'+cells+'<td class="admin-only"><button class="mini-btn danger" data-action="delete-row" data-table="'+id+'" data-row="'+row.id+'">Delete Row</button></td></tr>'}).join('');mount.innerHTML='<div class="panel"><h3>'+escapeHtml(table.title)+'</h3>'+tools+'<div class="table-wrap"><table>'+thead+'<tbody>'+rows+'</tbody></table></div></div>'}
-  function renderExportOptions(){var box=document.getElementById('exportOptions');box.innerHTML=EXPORT_ITEMS.map(function(item){return'<label><input type="checkbox" class="export-check" value="'+item[0]+'" checked> '+item[1]+'</label>'}).join('')+'<label><input type="checkbox" id="worksheetExportMode"> Worksheet form: bigger black text, portrait can fit 6 per page</label>'}
+  function renderExportOptions(){var box=document.getElementById('exportOptions');box.innerHTML=EXPORT_ITEMS.map(function(item){return'<label><input type="checkbox" class="export-check" value="'+item[0]+'" checked> '+item[1]+'</label>'}).join('')+'<label><input type="checkbox" id="worksheetExportMode"> Worksheet form: bigger black text, landscape PDF only</label>'}
   function renderAll(){Object.keys(state.tables).forEach(renderTable);renderExportOptions();document.body.classList.toggle('admin-mode',editMode)}
   function setEditMode(on){if(on&&!isAdmin){toggleAdminLogin();return}if(!on)collectVisibleState();editMode=!!on;document.body.classList.toggle('admin-mode',editMode);renderAll()}
   function hasBlockedSave(){return !!(safeDoc&&safeDoc.isBlocked&&safeDoc.isBlocked())}
@@ -269,8 +269,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
 	    closeExportModal();
 	    var html='';
 	    if(worksheetMode){
-	      function buildWorksheetExport(orientation){
-	        var out=window.HubPdfExport.tableWorksheetHtml(worksheetTablesFromSelection(selected),{itemsPerPage:orientation==='portrait'?6:4});
+	      function buildWorksheetExport(){
+	        var out=window.HubPdfExport.tableWorksheetHtml(worksheetTablesFromSelection(selected),{itemsPerPage:6});
 	        if(selected.indexOf('resources')>-1)out+='<div class="print-page"><h1 class="print-section-title">Resources</h1><div class="print-card"><h2>Hematology: Clinical Principles and Applications, 6th ed.</h2><p>Primary reference for this student-created introductory hematology hub.</p></div></div>';
 	        return out;
 	      }
@@ -278,7 +278,6 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
 	      window.HubPdfExport.open({
 	        title:'Hematology Worksheet Export',
 	        orientation:'landscape',
-	        allowOrientationToggle:true,
 	        orientationClassPrefix:'hub-worksheet',
 	        defaultScale:1,
 	        minScale:.45,
@@ -286,12 +285,11 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
 	        step:.01,
 	        persistKey:'hematology-worksheet-export-scale',
 	        printArea:worksheetArea,
-	        buildContent:function(scale,orientation){return buildWorksheetExport(orientation)},
+	        buildContent:function(){return buildWorksheetExport()},
 	        previewClass:'worksheet-print-preview',
 	        bodyClass:['printing','worksheet-printing'],
 	        scaleVar:'--hub-print-scale',
-	        allowDocDownload:true,
-	        hint:'Worksheet form prints bigger black text. Landscape keeps the 2x2 sheet; portrait stacks six compact cards per page.'
+	        hint:'Worksheet form prints bigger black text in landscape. Use the scale slider before saving as PDF.'
 	      });
 	      return;
 	    }

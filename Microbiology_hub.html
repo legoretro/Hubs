@@ -1641,7 +1641,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function renderExportOptions(){
     var box=document.getElementById('exportOptions');if(!box)return;
-    box.innerHTML=EXPORT_ITEMS.map(function(item){return '<label><input type="checkbox" class="export-check" value="'+item[0]+'" checked> '+escapeHtml(item[1])+'</label>'}).join('')+'<label><input type="checkbox" id="worksheetExportMode"> Worksheet form: bigger black text, portrait can fit 6 per page</label>';
+    box.innerHTML=EXPORT_ITEMS.map(function(item){return '<label><input type="checkbox" class="export-check" value="'+item[0]+'" checked> '+escapeHtml(item[1])+'</label>'}).join('')+'<label><input type="checkbox" id="worksheetExportMode"> Worksheet form: bigger black text, landscape PDF only</label>';
   }
   function renderAll(){Object.keys(state.tables).forEach(renderTable);renderCharts();renderExportOptions();document.body.classList.toggle('admin-mode',editMode)}
   function setEditMode(on){if(on&&!isAdmin){toggleAdminLogin();return}if(!on)collectVisibleState();editMode=!!on;document.body.classList.toggle('admin-mode',editMode);renderAll()}
@@ -2052,8 +2052,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     closeExportModal();
     var html='';
     if(worksheetMode){
-      function buildWorksheetExport(orientation){
-        var out=window.HubPdfExport.tableWorksheetHtml(worksheetTablesFromSelection(selected),{itemsPerPage:orientation==='portrait'?6:4});
+      function buildWorksheetExport(){
+        var out=window.HubPdfExport.tableWorksheetHtml(worksheetTablesFromSelection(selected),{itemsPerPage:6});
         if(selected.indexOf('charts')>-1)out+=(state.simpleCharts||defaultSimpleCharts()).map(simpleChartPrintHtml).join('');
         return out;
       }
@@ -2061,7 +2061,6 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       window.HubPdfExport.open({
         title:'Microbiology Worksheet Export',
         orientation:'landscape',
-        allowOrientationToggle:true,
         orientationClassPrefix:'hub-worksheet',
         defaultScale:1,
         minScale:.45,
@@ -2069,12 +2068,11 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         step:.01,
         persistKey:'micro-worksheet-export-scale',
         printArea:worksheetArea,
-        buildContent:function(scale,orientation){return buildWorksheetExport(orientation)},
+        buildContent:function(){return buildWorksheetExport()},
         previewClass:'worksheet-print-preview',
         bodyClass:['printing','worksheet-printing'].concat(selected.indexOf('charts')>-1?['micro-simple-printing']:[]),
         scaleVar:'--hub-print-scale',
-        allowDocDownload:true,
-        hint:'Worksheet form prints bigger black text. Landscape keeps the 2x2 sheet; portrait stacks six compact cards per page.'
+        hint:'Worksheet form prints bigger black text in landscape. Use the scale slider before saving as PDF.'
       });
       return;
     }

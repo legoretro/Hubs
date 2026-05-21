@@ -160,7 +160,7 @@ button,input{font-family:inherit}button{cursor:pointer}
       <label><input type="checkbox" class="export-check" value="renal" checked> Renal Diseases</label>
       <label><input type="checkbox" class="export-check" value="resources" checked> Resources</label>
       <label><input type="checkbox" class="export-check" value="cases" checked> Simulation Case Reports</label>
-      <label><input type="checkbox" id="worksheetExportMode"> Worksheet form: bigger black text, portrait can fit 6 per page</label>
+      <label><input type="checkbox" id="worksheetExportMode"> Worksheet form: bigger black text, landscape PDF only</label>
     </div>
     <div id="caseExportOptions"></div>
     <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
@@ -1652,9 +1652,9 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(!chart)return;
     var area=document.getElementById('printArea');
     var worksheetTable=worksheetTableFromId(chart.tableId,chart.title||'Renal Diseases',chart.note||'');
-    function buildWorksheet(orientation){
+    function buildWorksheet(){
       if(window.HubPdfExport&&window.HubPdfExport.tableWorksheetHtml&&worksheetTable){
-        return window.HubPdfExport.tableWorksheetHtml([worksheetTable],{itemsPerPage:orientation==='portrait'?6:4});
+        return window.HubPdfExport.tableWorksheetHtml([worksheetTable],{itemsPerPage:6});
       }
       return renalChartPrintHtml(chart);
     }
@@ -1662,7 +1662,6 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       window.HubPdfExport.open({
         title:chart.title||'Renal Diseases',
         orientation:'landscape',
-        allowOrientationToggle:true,
         orientationClassPrefix:'hub-worksheet',
         defaultScale:1,
         minScale:.35,
@@ -1670,16 +1669,15 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         step:.01,
         persistKey:'ua-renal-export-scale',
         printArea:area,
-        buildContent:function(scale,orientation){return buildWorksheet(orientation)},
+        buildContent:function(){return buildWorksheet()},
         previewClass:'worksheet-print-preview',
         bodyClass:['printing','worksheet-printing'],
         scaleVar:'--hub-print-scale',
-        allowDocDownload:true,
-        hint:'Worksheet mode prints bigger black text. Landscape keeps the 2x2 sheet; portrait stacks six compact cards per page.'
+        hint:'Worksheet mode prints bigger black text in landscape. Use the scale slider before saving as PDF.'
       });
       return;
     }
-    area.innerHTML=buildWorksheet('landscape');
+    area.innerHTML=buildWorksheet();
     document.body.classList.add('printing','worksheet-printing');
     showToast('Opening renal PDF export');
     window.print();
@@ -1730,8 +1728,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var worksheetMode=!!(document.getElementById('worksheetExportMode')&&document.getElementById('worksheetExportMode').checked&&window.HubPdfExport&&window.HubPdfExport.tableWorksheetHtml);
     if(worksheetMode){
       var worksheetTables=selectedWorksheetTables(selected);
-      function buildWorksheetExport(orientation){
-        var worksheetHtml=worksheetTables.length?window.HubPdfExport.tableWorksheetHtml(worksheetTables,{itemsPerPage:orientation==='portrait'?6:4}):'';
+      function buildWorksheetExport(){
+        var worksheetHtml=worksheetTables.length?window.HubPdfExport.tableWorksheetHtml(worksheetTables,{itemsPerPage:6}):'';
         if(selected.indexOf('cases')>-1)worksheetHtml+=printCases();
         return worksheetHtml;
       }
@@ -1744,7 +1742,6 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       window.HubPdfExport.open({
         title:'Urinalysis Worksheet Export',
         orientation:'landscape',
-        allowOrientationToggle:true,
         orientationClassPrefix:'hub-worksheet',
         defaultScale:1,
         minScale:.45,
@@ -1752,12 +1749,11 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         step:.01,
         persistKey:'ua-worksheet-export-scale',
         printArea:worksheetArea,
-        buildContent:function(scale,orientation){return buildWorksheetExport(orientation)},
+        buildContent:function(){return buildWorksheetExport()},
         previewClass:'worksheet-print-preview',
         bodyClass:['printing','worksheet-printing'],
         scaleVar:'--hub-print-scale',
-        allowDocDownload:true,
-        hint:'Worksheet form prints bigger black text. Landscape keeps the 2x2 sheet; portrait stacks six compact cards per page.'
+        hint:'Worksheet form prints bigger black text in landscape. Use the scale slider before saving as PDF.'
       });
       return;
     }

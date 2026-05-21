@@ -43,8 +43,6 @@
       '.hub-pdf-orientation.visible{display:grid}',
       '.hub-pdf-orientation .hub-pdf-presets{justify-content:flex-start}',
       '.hub-pdf-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:20px}',
-      '.hub-pdf-word{display:none!important}',
-      '.hub-pdf-word.visible{display:inline-flex!important;align-items:center}',
       '.hub-pdf-hint{font:700 12px/1.4 Georgia,"Times New Roman",serif;color:#61717a;text-align:center;margin-top:10px}',
       '.hub-pdf-preview{display:grid;gap:8px}',
       '.hub-pdf-preview-title{font:900 12px/1 Georgia,"Times New Roman",serif;color:#10283a;text-transform:uppercase;letter-spacing:.08em}',
@@ -75,8 +73,8 @@
       '.hub-worksheet-acronym{display:grid;gap:.05in;justify-items:center;color:#000}',
       '.hub-worksheet-acronym strong{font:900 28px/1 Arial,Helvetica,sans-serif;color:#000}',
       '.hub-worksheet-acronym span{font:800 11px/1.15 Arial,Helvetica,sans-serif;color:#111;text-transform:uppercase;letter-spacing:.04em}',
-      '.hub-worksheet-info{padding:.1in .12in;font:700 12.5px/1.25 Arial,Helvetica,sans-serif}',
-      '.hub-worksheet-fact{margin:0 0 .055in;break-inside:avoid}',
+      '.hub-worksheet-info{padding:.1in .12in;font:700 12.5px/1.25 Arial,Helvetica,sans-serif;text-align:left!important;word-break:normal;overflow-wrap:anywhere;hyphens:auto}',
+      '.hub-worksheet-fact{margin:0 0 .055in;break-inside:avoid;text-align:left!important}',
       '.hub-worksheet-fact strong{font-weight:900;color:#000;text-transform:uppercase;font-size:10.5px;letter-spacing:.025em}',
       '.hub-worksheet-empty{color:#555;font-style:italic}',
       '.hub-worksheet-table{width:100%;border-collapse:collapse;table-layout:fixed;font:700 11px/1.22 Arial,Helvetica,sans-serif;color:#000}',
@@ -90,9 +88,9 @@
       '.hub-worksheet-six .hub-worksheet-row{grid-template-columns:minmax(.85in,max-content) 1fr;gap:.06in}',
       '.hub-worksheet-six .hub-worksheet-visual{padding:.025in;min-width:.85in;max-width:1.3in}',
       '.hub-worksheet-six .hub-worksheet-visual img{max-width:1.2in;max-height:.72in}',
-      '.hub-worksheet-six .hub-worksheet-info{font-size:8.9px;line-height:1.1;padding:.045in .055in}',
+      '.hub-worksheet-six .hub-worksheet-info{font-size:8.2px;line-height:1.08;padding:.045in .055in;text-align:left!important;word-break:normal;overflow-wrap:anywhere}',
       '.hub-worksheet-six .hub-worksheet-fact{margin-bottom:.025in}',
-      '.hub-worksheet-six .hub-worksheet-fact strong{font-size:7.6px}',
+      '.hub-worksheet-six .hub-worksheet-fact strong{font-size:7px;letter-spacing:0}',
       '.hub-worksheet-portrait .hub-worksheet-four .hub-worksheet-page{grid-template-columns:1fr;grid-template-rows:repeat(4,1fr);gap:.12in;padding:.16in}',
       '.hub-worksheet-portrait .hub-worksheet-four .hub-worksheet-card{padding:.08in;gap:.05in}',
       '.hub-worksheet-portrait .hub-worksheet-four .hub-worksheet-card h2{font-size:16px}',
@@ -140,7 +138,6 @@
           '<div class="hub-pdf-hint" data-pdf-hint>Tip: use Chrome margins “None” or “Minimum” when you need every inch.</div>'+
           '<div class="hub-pdf-actions">'+
             '<button type="button" class="hub-pdf-btn hub-pdf-primary" data-pdf-print>Open Save as PDF</button>'+
-            '<button type="button" class="hub-pdf-btn hub-pdf-word" data-pdf-word>Download Word worksheet</button>'+
             '<button type="button" class="hub-pdf-btn" data-pdf-cancel>Cancel</button>'+
           '</div>'+
         '</div>'+
@@ -175,26 +172,6 @@
       var live=document.getElementById(pageStyleId);
       if(live)live.remove();
     };
-  }
-  function fileSafeName(value){
-    return String(value||'Worksheet Export').replace(/[\\/:*?"<>|]+/g,' ').replace(/\s+/g,' ').trim()||'Worksheet Export';
-  }
-  function downloadWordDocument(title,html,scale,orientationClass){
-    var css=document.getElementById(styleId)?document.getElementById(styleId).textContent:'';
-    var bodyClass='worksheet-printing hub-worksheet-portrait '+(orientationClass||'');
-    var doc='<!DOCTYPE html><html><head><meta charset="utf-8">'+
-      '<title>'+escapeHtml(title||'Worksheet Export')+'</title>'+
-      '<style>@page{size:8.5in 11in;margin:.25in}body{margin:0;background:#fff;color:#000}'+css+
-      '.hub-pdf-modal,.hub-pdf-box,.hub-pdf-preview{display:none!important}.hub-worksheet-page{height:10.45in;overflow:hidden}.hub-worksheet{width:100%}</style>'+
-      '</head><body class="'+bodyClass+'" style="--hub-print-scale:'+escapeHtml(scale||1)+'"><div id="printArea">'+(html||'')+'</div></body></html>';
-    var blob=new Blob(['\ufeff',doc],{type:'application/msword;charset=utf-8'});
-    var url=URL.createObjectURL(blob);
-    var link=document.createElement('a');
-    link.href=url;
-    link.download=fileSafeName(title)+'.doc';
-    document.body.appendChild(link);
-    link.click();
-    setTimeout(function(){URL.revokeObjectURL(url);link.remove()},500);
   }
   function fitWorksheetCards(root){
     if(!root)return;
@@ -246,7 +223,6 @@
     var title=modal.querySelector('#hubPdfTitle');
     var subtitle=modal.querySelector('#hubPdfSubtitle');
     var hint=modal.querySelector('[data-pdf-hint]');
-    var wordBtn=modal.querySelector('[data-pdf-word]');
     var orientationRow=modal.querySelector('[data-pdf-orientation-row]');
     var orientationValue=modal.querySelector('[data-pdf-orientation-value]');
     var preview=modal.querySelector('[data-pdf-preview]');
@@ -256,7 +232,6 @@
     var previewContent=modal.querySelector('[data-pdf-preview-content]');
     title.textContent=options.modalTitle||'Export PDF Settings';
     hint.textContent=options.hint||'Chrome may not show a scale box, so this slider scales the page before the print dialog opens.';
-    if(wordBtn)wordBtn.classList.toggle('visible',!!options.allowDocDownload);
     function orientationLabel(){
       return currentOrientation==='portrait'?'Portrait':'Landscape';
     }
@@ -349,12 +324,6 @@
       if(preset){setScale(Number(preset.dataset.pdfPreset));return}
       if(event.target.closest('[data-pdf-cancel]')){close();return}
       var scale=setScale(Number(slider.value)/100);
-      if(event.target.closest('[data-pdf-word]')){
-        try{localStorage.setItem(persistKey,String(scale))}catch(e){}
-        var wordHtml=typeof options.buildContent==='function' ? (options.buildContent(scale,'portrait')||'') : (options.contentHtml||'');
-        downloadWordDocument(options.title||'Worksheet Export',wordHtml,scale,orientationPrefix?orientationPrefix+'-portrait':'');
-        return;
-      }
       if(!event.target.closest('[data-pdf-print]'))return;
       try{localStorage.setItem(persistKey,String(scale))}catch(e){}
       close();
