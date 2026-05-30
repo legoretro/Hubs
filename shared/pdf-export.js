@@ -41,6 +41,8 @@
       '.hub-pdf-label{display:flex;align-items:center;justify-content:space-between;gap:12px;font:900 13px/1.2 Georgia,"Times New Roman",serif;color:#10283a;letter-spacing:.04em;text-transform:uppercase}',
       '.hub-pdf-value{font-size:18px;color:#0f7b61;text-transform:none;letter-spacing:0}',
       '.hub-pdf-slider{width:100%;accent-color:#0f7b61}',
+      '.hub-pdf-custom{display:none;margin:0 0 14px}',
+      '.hub-pdf-custom.visible{display:block}',
       '.hub-pdf-presets{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}',
       '.hub-pdf-btn{border:1.5px solid rgba(16,40,58,.25)!important;border-radius:999px!important;background:#fff!important;color:#10283a!important;padding:8px 14px!important;font:900 14px/1 Georgia,"Times New Roman",serif!important;cursor:pointer!important;text-decoration:none!important;opacity:1!important}',
       '.hub-pdf-btn:hover{background:#f4fbff!important}',
@@ -138,6 +140,7 @@
               '<button type="button" class="hub-pdf-btn" data-pdf-orientation="portrait">Portrait</button>'+
             '</div>'+
           '</div>'+
+          '<div class="hub-pdf-custom" data-pdf-custom></div>'+
           '<div class="hub-pdf-presets">'+
             '<button type="button" class="hub-pdf-btn" data-pdf-preset="0.55">Tiny fit</button>'+
             '<button type="button" class="hub-pdf-btn" data-pdf-preset="0.75">Compact</button>'+
@@ -256,10 +259,11 @@
     try{saved=localStorage.getItem(persistKey)}catch(e){}
     var defaultScale=clamp(saved||options.defaultScale||1,min,max);
     var allowOrientation=!!options.allowOrientationToggle;
+    var rememberOrientation=options.rememberOrientation!==false;
     var orientationPrefix=options.orientationClassPrefix||'';
     var orientationPersistKey=options.orientationPersistKey||(persistKey+'-orientation');
     var currentOrientation=options.orientation==='portrait'?'portrait':'landscape';
-    if(allowOrientation){
+    if(allowOrientation&&rememberOrientation){
       try{
         var savedOrientation=localStorage.getItem(orientationPersistKey);
         if(savedOrientation==='portrait'||savedOrientation==='landscape')currentOrientation=savedOrientation;
@@ -270,6 +274,7 @@
     var title=modal.querySelector('#hubPdfTitle');
     var subtitle=modal.querySelector('#hubPdfSubtitle');
     var hint=modal.querySelector('[data-pdf-hint]');
+    var custom=modal.querySelector('[data-pdf-custom]');
     var orientationRow=modal.querySelector('[data-pdf-orientation-row]');
     var orientationValue=modal.querySelector('[data-pdf-orientation-value]');
     var preview=modal.querySelector('[data-pdf-preview]');
@@ -279,6 +284,11 @@
     var previewContent=modal.querySelector('[data-pdf-preview-content]');
     title.textContent=options.modalTitle||'Export PDF Settings';
     hint.textContent=Object.prototype.hasOwnProperty.call(options,'hint')?options.hint:'Chrome may not show a scale box, so this slider scales the page before the print dialog opens.';
+    modal.className='hub-pdf-modal'+(options.modalClass?' '+String(options.modalClass):'');
+    if(custom){
+      custom.innerHTML=options.controlsHtml||'';
+      custom.classList.toggle('visible',!!options.controlsHtml);
+    }
     function orientationLabel(){
       return currentOrientation==='portrait'?'Portrait':'Landscape';
     }
@@ -349,20 +359,33 @@
       renderPreview(scale);
       return scale;
     }
+    function refreshFromControls(){
+      if(typeof options.onControlsChange==='function')options.onControlsChange(modal);
+      renderPreview(Number(slider.value)/100);
+    }
+    if(typeof options.onControlsChange==='function')options.onControlsChange(modal);
     setScale(defaultScale);
     function close(){
       modal.classList.remove('visible');
       modal.removeEventListener('click',onClick);
+      if(custom)custom.removeEventListener('change',onCustomChange);
       slider.removeEventListener('input',onInput);
       document.removeEventListener('keydown',onKey);
     }
     function onInput(){setScale(Number(slider.value)/100)}
+    function onCustomChange(){refreshFromControls()}
     function onKey(event){if(event.key==='Escape')close()}
     function onClick(event){
+      if(custom&&custom.contains(event.target)&&typeof options.onControlsClick==='function'){
+        if(options.onControlsClick(event,modal)){
+          refreshFromControls();
+          return;
+        }
+      }
       var orientationButton=event.target.closest('[data-pdf-orientation]');
       if(orientationButton){
         currentOrientation=orientationButton.dataset.pdfOrientation==='portrait'?'portrait':'landscape';
-        try{if(allowOrientation)localStorage.setItem(orientationPersistKey,currentOrientation)}catch(e){}
+        try{if(allowOrientation&&rememberOrientation)localStorage.setItem(orientationPersistKey,currentOrientation)}catch(e){}
         updateOrientationUi();
         renderPreview(Number(slider.value)/100);
         return;
@@ -404,6 +427,7 @@
       setTimeout(cleanup,1400);
     }
     modal.addEventListener('click',onClick);
+    if(custom)custom.addEventListener('change',onCustomChange);
     slider.addEventListener('input',onInput);
     document.addEventListener('keydown',onKey);
     modal.classList.add('visible');

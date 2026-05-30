@@ -40,6 +40,21 @@ button,input{font-family:inherit}button{cursor:pointer}
 .dip-pad{background:var(--pad-bg,var(--pad))}.print-strip-pad span:first-child{background:var(--pad-bg,var(--pad))}.case-export-box{border:1px solid var(--gold);border-radius:12px;background:#fff8ef;padding:10px;margin:0 0 14px;text-align:left;max-height:160px;overflow:auto}.case-export-box strong{display:block;color:var(--wine);font-size:12px;text-transform:uppercase;letter-spacing:.7px;margin-bottom:7px}.case-export-box label{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink);padding:4px 0}.sediment-choice-row{grid-column:1/-1;display:flex;align-items:center;gap:8px;flex-wrap:wrap;border:1px solid var(--gold);border-radius:9px;background:#fffdf8;padding:8px}.sediment-choice-row span{font-size:11px;font-weight:900;text-transform:uppercase;color:var(--wine)}.sediment-choice{border:1.5px solid var(--gold);border-radius:999px;background:#fff;color:var(--wine);font-size:12px;font-weight:900;padding:7px 14px}.sediment-choice.active{background:var(--gold);color:#3d1f00}.sample-stage{position:relative;width:150px;min-height:170px;margin:0 auto;display:grid;place-items:center}.sample-stage:before{content:"";position:absolute;width:112px;height:148px;left:50%;top:18px;transform:translateX(-50%);background:#fff;border:1px solid rgba(122,61,0,.14);border-radius:6px;box-shadow:0 8px 22px rgba(122,61,0,.12);background-image:repeating-linear-gradient(0deg,transparent 0 15px,rgba(38,22,4,.08) 15px 17px)}.sample-stage:after{content:"CLARITY";position:absolute;left:50%;top:70px;transform:translateX(-50%) rotate(-90deg);font:900 10px/1 Arial,sans-serif;letter-spacing:2px;color:rgba(122,61,0,.18)}.tube{width:104px;height:132px;margin:22px auto 10px;border:2px solid rgba(120,105,75,.32);border-top:none;border-radius:8px 8px 24px 24px;background:linear-gradient(90deg,rgba(255,255,255,.78),rgba(255,255,255,.35) 48%,rgba(255,255,255,.68));overflow:visible;z-index:1}.tube:before{left:-9px;right:-9px;top:-15px;height:29px;border-width:2px;border-radius:50% 50% 18% 18%;background:repeating-linear-gradient(90deg,#78c957 0 6px,#93dc70 6px 11px)}.tube:after{left:13px;right:13px;top:-8px;height:13px;background:rgba(104,183,65,.48)}.cup-bg{inset:23px 12px 13px;font-size:0;background:repeating-linear-gradient(0deg,rgba(38,22,4,.11) 0 1px,transparent 1px 13px);opacity:.38}.cup-bg:before{content:"";position:absolute;left:18px;right:18px;top:10px;height:2px;background:rgba(38,22,4,.12);box-shadow:0 20px 0 rgba(38,22,4,.1),0 40px 0 rgba(38,22,4,.1),0 60px 0 rgba(38,22,4,.1)}.urine-fill{height:66%;border-radius:40% 40% 10px 10px / 7% 7% 10px 10px;z-index:2}.urine-sediment{height:7%;opacity:.72}.urine-foam{height:6%;bottom:64%;opacity:.84}.urine-sim{grid-template-columns:170px 1fr;gap:12px}.refractometer{background:#fffdf8;color:var(--ink);border:1px solid var(--gold);box-shadow:0 8px 20px rgba(122,61,0,.08);grid-template-columns:minmax(180px,280px) 150px}.refract-device{height:104px;transform:rotate(-16deg);margin:6px auto;width:270px}.refract-prism{top:57px;width:88px;height:30px;background:linear-gradient(135deg,rgba(123,184,239,.86),rgba(255,255,255,.66));border-color:#b8b8b8}.refract-body{left:72px;top:31px;width:168px;height:44px;background:linear-gradient(90deg,#cfd3d7 0 19%,#101214 20% 78%,#030303 79% 100%)}.refract-grip{left:116px;top:33px;width:86px;height:40px;background:repeating-linear-gradient(45deg,#111 0 3px,#303336 3px 6px)}.refract-eye{right:5px;top:24px;width:44px;height:56px}.refract-readout{width:142px;height:142px;border-width:9px;box-shadow:0 8px 18px rgba(38,22,4,.16)}.refract-scale{inset:17px 48px 15px}.micro-stage{max-width:390px}.micro-field{width:min(100%,330px);border-width:16px;background:radial-gradient(circle at 45% 42%,#fffef7 0 42%,#eee9d8 72%,#c9c3ae 100%);box-shadow:0 0 0 3px rgba(3,5,10,.9),0 0 0 5px rgba(38,22,4,.1),inset 0 0 38px rgba(78,68,52,.2)}.micro-field:before{background:radial-gradient(circle at 35% 28%,rgba(255,255,255,.34),transparent 34%),radial-gradient(circle,transparent 54%,rgba(0,0,0,.16));}.case-object-row{grid-template-columns:minmax(130px,1fr) 96px 70px 58px 118px minmax(150px,1.2fr) 126px auto}.case-object-row .mini-btn{padding:6px 9px;white-space:nowrap}@media(max-width:900px){.case-object-row{grid-template-columns:1fr}.urine-sim{grid-template-columns:1fr}.sample-stage{width:150px}.tube{width:104px;height:132px}.refractometer{grid-template-columns:1fr}.refract-device{width:270px}}
 .save-indicator{position:fixed;right:18px;bottom:18px;background:var(--green);color:#fff;border-radius:999px;padding:9px 15px;font-size:13px;font-weight:800;opacity:0;pointer-events:none;transition:.2s;z-index:50}.save-indicator.show{opacity:1}
 .modal-overlay{position:fixed;inset:0;background:rgba(38,22,4,.72);z-index:1000;display:none;align-items:center;justify-content:center}.modal-overlay.visible{display:flex}.modal-box{background:var(--ivory);border-radius:18px;padding:30px;max-width:380px;width:90%;box-shadow:0 20px 60px rgba(122,61,0,.32);text-align:center;border:1px solid var(--gold)}.modal-box h3{font-size:20px;color:var(--wine);margin-bottom:6px}.modal-box p{font-size:13px;color:var(--muted);margin-bottom:18px}.modal-input{width:100%;border:1.5px solid var(--gold);border-radius:10px;padding:10px 14px;font-size:15px;text-align:center;background:#fff;margin-bottom:12px;letter-spacing:3px}.modal-input:focus{outline:none;border-color:var(--orange)}.modal-error{color:var(--danger);font-size:12px;margin-bottom:10px;min-height:16px}.btn{border:none;border-radius:999px;background:var(--orange);color:#fff;padding:8px 16px;font-size:12px;font-weight:900}.btn.ghost{background:transparent;color:var(--muted);border:1.5px solid var(--gold)}.section-print-actions{display:flex;justify-content:flex-end;margin:0 0 14px}.section-print-actions .btn{padding:8px 14px}
+.hub-pdf-modal.ua-export-modal{background:rgba(38,22,4,.72)!important}.hub-pdf-modal.ua-export-modal .hub-pdf-box{background:var(--ivory)!important;color:var(--ink)!important;border:2px solid var(--gold)!important;border-radius:18px!important;box-shadow:0 22px 70px rgba(122,61,0,.32)!important}.hub-pdf-modal.ua-export-modal .hub-pdf-box h2{color:var(--wine)!important}.hub-pdf-modal.ua-export-modal .hub-pdf-box p,.hub-pdf-modal.ua-export-modal .hub-pdf-hint{color:var(--muted)!important}.hub-pdf-modal.ua-export-modal .hub-pdf-label,.hub-pdf-modal.ua-export-modal .hub-pdf-preview-title{color:var(--wine)!important}.hub-pdf-modal.ua-export-modal .hub-pdf-value{color:var(--orange)!important}.hub-pdf-modal.ua-export-modal .hub-pdf-slider{accent-color:var(--orange)!important}.hub-pdf-modal.ua-export-modal .hub-pdf-btn{border-color:var(--gold)!important;color:var(--wine)!important;background:#fffdf8!important}.hub-pdf-modal.ua-export-modal .hub-pdf-btn.active,.hub-pdf-modal.ua-export-modal .hub-pdf-primary{background:var(--orange)!important;border-color:var(--orange)!important;color:#fff!important}.hub-pdf-modal.ua-export-modal .hub-pdf-preview-frame{background:#fff8ef!important;border-color:var(--gold)!important}.ua-export-picker{border:1px solid var(--gold);border-radius:14px;background:#fff8ef;padding:12px;text-align:left}.ua-export-picker-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}.ua-export-picker strong{color:var(--wine);font-size:12px;text-transform:uppercase;letter-spacing:.08em}.ua-export-picker-actions{display:flex;gap:6px;flex-wrap:wrap}.ua-export-picker-actions button{border:1px solid var(--gold);border-radius:999px;background:#fff;color:var(--wine);font-size:11px;font-weight:900;padding:5px 9px}.ua-export-list{display:grid;gap:6px;max-height:170px;overflow:auto;padding-right:4px}.ua-export-list label{display:flex;align-items:center;gap:8px;color:var(--ink);font-size:14px;font-weight:800;line-height:1.2}.ua-export-list input{accent-color:var(--orange);width:16px;height:16px}.ua-export-empty{display:none;color:var(--danger);font-size:12px;font-weight:900;margin-top:8px}.ua-export-empty.visible{display:block}.hub-pdf-modal.ua-export-modal [data-pdf-print]:disabled{opacity:.45!important;cursor:not-allowed!important}
+#printArea .print-section-title,.hub-pdf-preview-content .print-section-title{font-size:20px;color:var(--wine);margin:0 0 8px;line-height:1.05}
+#printArea .print-table-card h2,.hub-pdf-preview-content .print-table-card h2{display:block!important;font-size:18px;color:var(--wine);text-align:center;margin:0 0 6px;line-height:1.05}
+#printArea .print-card,.hub-pdf-preview-content .print-card{background:#fff;border:0;margin:0 0 10px;padding:0}
+#printArea .print-table,.hub-pdf-preview-content .print-table{width:100%;border-collapse:collapse}
+#printArea .print-table th,.hub-pdf-preview-content .print-table th{background:var(--wine)!important;color:#fff!important;border:1px solid var(--wine);text-align:left}
+#printArea .print-table td,.hub-pdf-preview-content .print-table td{border:1px solid #d8b374;vertical-align:top;background:#fffdf8}
+#printArea .print-table tr:nth-child(even) td,.hub-pdf-preview-content .print-table tr:nth-child(even) td{background:#fff8ef}
+#printArea .wide-print-table,.hub-pdf-preview-content .wide-print-table{table-layout:fixed}
+#printArea .wide-print-table th,.hub-pdf-preview-content .wide-print-table th{font-size:8.5px;line-height:1.05;padding:4px}
+#printArea .wide-print-table td,.hub-pdf-preview-content .wide-print-table td{font-size:10.5px;line-height:1.12;padding:4px;overflow-wrap:anywhere}
+#printArea .wide-print-table th:first-child,#printArea .wide-print-table td:first-child,.hub-pdf-preview-content .wide-print-table th:first-child,.hub-pdf-preview-content .wide-print-table td:first-child{width:.78in}
+#printArea .wide-print-table .print-image-col,#printArea .wide-print-table .print-image-cell,.hub-pdf-preview-content .wide-print-table .print-image-col,.hub-pdf-preview-content .wide-print-table .print-image-cell{width:1.28in}
+#printArea .wide-print-table img,.hub-pdf-preview-content .wide-print-table img{max-width:1.18in;max-height:.9in}
+#printArea .print-subsection-row td,.hub-pdf-preview-content .print-subsection-row td{background:#fff7c9!important;border-top:3px solid var(--orange)!important;border-bottom:2px solid var(--gold)!important;color:var(--wine)!important;font-weight:900!important;font-size:16px!important;text-align:left!important;padding:8px 12px!important}
 #printArea{display:none}
 @media print{
   @page{size:letter landscape;margin:.22in}
@@ -48,10 +63,10 @@ button,input{font-family:inherit}button{cursor:pointer}
   body.printing #printArea{display:block!important}
   #printArea{font-family:Georgia,"Times New Roman",serif;color:#261604;padding:0;width:100%}
   .print-page{break-after:page;width:100%;overflow:visible}.print-page:last-child{break-after:auto}
-  .print-section-title{font-size:16px;color:#7a3d00;margin:0 0 5px;line-height:1.05}
+  .print-section-title{font-size:20px;color:#7a3d00;margin:0 0 8px;line-height:1.05}
   .print-card{border:0;margin:0 0 8px;padding:0;break-inside:auto;background:#fff}
-  .print-card h2{font-size:12px;color:#7a3d00;margin:0 0 5px}
-  .print-table-card h2{display:none}
+  .print-card h2{font-size:18px;color:#7a3d00;margin:0 0 6px;text-align:center}
+  .print-table-card h2{display:block}
   #printArea table{width:100%;border-collapse:collapse;table-layout:auto}
   #printArea th,#printArea td{min-width:0;overflow-wrap:anywhere;word-break:normal}
   #printArea th{background:#7a3d00!important;color:#fff;padding:5px 6px;text-align:left;font-size:11px;line-height:1.1;border:1px solid #7a3d00;letter-spacing:.2px}
@@ -97,7 +112,7 @@ button,input{font-family:inherit}button{cursor:pointer}
 .lab-rack{position:absolute;right:14%;bottom:27%;width:27%;height:18%;border:1px solid rgba(255,255,255,.2);border-radius:10px;background:rgba(255,255,255,.1);box-shadow:inset 0 -18px 0 rgba(212,134,10,.18)}
 .lab-rack:before{content:"";position:absolute;left:8%;right:8%;top:-54%;height:70%;background:linear-gradient(90deg,rgba(247,226,142,.76) 0 10%,transparent 10% 18%,rgba(116,181,155,.66) 18% 28%,transparent 28% 38%,rgba(219,99,75,.66) 38% 49%,transparent 49% 59%,rgba(244,235,199,.7) 59% 70%,transparent 70% 80%,rgba(107,177,215,.65) 80% 92%,transparent 92%);border-bottom:22px solid rgba(255,255,255,.16)}
 .lab-flask{position:absolute;left:49%;bottom:30%;width:11%;height:22%;border-radius:50% 50% 20% 20%;background:linear-gradient(180deg,rgba(255,255,255,.24),rgba(212,134,10,.34));box-shadow:0 -36px 0 -25px rgba(255,255,255,.3),0 0 0 1px rgba(255,255,255,.12)}
-.table-subsection-row td{background:#fff7c9!important;border-top:3px solid var(--orange);border-bottom:2px solid var(--gold);font-weight:900;color:var(--wine);font-size:18px}.subsection-tools{display:flex;align-items:center;justify-content:space-between;gap:10px}.subsection-cell{min-height:28px;outline:none}.subsection-cell[contenteditable=true]{border:1px solid var(--gold);border-radius:8px;background:#fff9db;padding:7px 10px}.subsection-cell[contenteditable=false]{padding:4px 0}.print-subsection-row td{font-weight:900;color:#111;background:#fff!important;border-top:2px solid #111!important;border-bottom:2px solid #111!important;text-align:left!important}
+.table-subsection-row td{background:#fff7c9!important;border-top:3px solid var(--orange);border-bottom:2px solid var(--gold);font-weight:900;color:var(--wine);font-size:18px}.subsection-tools{display:flex;align-items:center;justify-content:space-between;gap:10px}.subsection-cell{min-height:28px;outline:none}.subsection-cell[contenteditable=true]{border:1px solid var(--gold);border-radius:8px;background:#fff9db;padding:7px 10px}.subsection-cell[contenteditable=false]{padding:4px 0}.print-subsection-row td{font-weight:900;color:var(--wine)!important;background:#fff7c9!important;border-top:3px solid var(--orange)!important;border-bottom:2px solid var(--gold)!important;text-align:left!important}
 </style>
 </head>
 <body class="intro-active">
@@ -417,14 +432,37 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       makeRenalChart('renal_interstitial','Interstitial','renal_table_interstitial')
     ];
   }
+  function tableSearchText(id,table){
+    table=table||{};
+    var parts=[id,table.title||'',table.note||''];
+    (table.columns||[]).forEach(function(col){parts.push(col.label||'')});
+    (table.rows||[]).forEach(function(row){
+      if(!row)return;
+      if(row.type==='subsection')parts.push(row.title||'');
+      Object.keys(row.cells||{}).forEach(function(key){parts.push(row.cells[key]||'')});
+    });
+    return normalizeCellText(parts.join(' '));
+  }
+  function looksLikeAminoAcidDisorderTable(id,table){
+    return /amino\s*acid|aa\s*disorder|metabolic\s*disorder|phenylalanine|tyrosyluria|alkaptonuria|melanuria|phenylketonuria|\bPKU\b/i.test(tableSearchText(id,table));
+  }
   function broadTermsTableId(data){
     var ids=Object.keys((data&&data.tables)||{});
     var matches=ids.filter(function(id){
       var table=data.tables[id]||{};
       var text=(id+' '+(table.title||'')).toLowerCase();
-      return /(general\s+broad|broad\s+(terms|definitions)|broad_terms|broad_definitions)/i.test(text);
+      return /(general\s+broad|broad\s+(terms|definitions)|broad_terms|broad_definitions)/i.test(text)&&!looksLikeAminoAcidDisorderTable(id,table);
     });
     return matches.find(function(id){return tableSection(id,data.tables[id])==='renal'})||matches[0]||'renal_table_general_broad_terms';
+  }
+  function removeAminoAcidRowsFromBroadTerms(table){
+    if(!table||!Array.isArray(table.rows))return;
+    table.rows=table.rows.filter(function(row){
+      if(!row)return false;
+      if(row.type==='subsection')return !/amino\s*acid|aa\s*disorder|metabolic\s*disorder/i.test(normalizeCellText(row.title||''));
+      return !/amino\s*acid|aa\s*disorder|metabolic\s*disorder|phenylalanine|tyrosyluria|alkaptonuria|melanuria|phenylketonuria|\bPKU\b/i.test(tableSearchText('',{columns:table.columns,rows:[row]}));
+    });
+    if(!table.rows.length)table.rows=blankRows(table.columns||defaultColumns(false),3);
   }
   function ensureBroadTermsRenalTab(data){
     if(!data.tables)data.tables={};
@@ -432,10 +470,17 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       return chart.id==='renal_general_broad_terms'||/general\s+broad|broad\s+(terms|definitions)/i.test(chart.title||'')||/general_broad_terms/.test(chart.tableId||'');
     });
     var tableId=broadTermsTableId(data);
+    if(existing&&existing.tableId&&data.tables[existing.tableId]&&looksLikeAminoAcidDisorderTable(existing.tableId,data.tables[existing.tableId])){
+      var oldId=existing.tableId;
+      var reusedByOtherChart=(data.renal.charts||[]).some(function(chart){return chart!==existing&&chart.tableId===oldId});
+      if(!reusedByOtherChart)data.tables[oldId].custom=true;
+      tableId='renal_table_general_broad_terms';
+    }
     if(!data.tables[tableId])data.tables[tableId]=makeRenalDiseaseTable('General Broad Terms');
     data.tables[tableId].section='renal';
     data.tables[tableId].custom=false;
     if(!data.tables[tableId].title||/new table/i.test(data.tables[tableId].title))data.tables[tableId].title='General Broad Terms Table';
+    removeAminoAcidRowsFromBroadTerms(data.tables[tableId]);
     if(existing){
       existing.tableId=tableId;
       if(!existing.title||/new renal section/i.test(existing.title))existing.title='General Broad Terms';
@@ -1747,6 +1792,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var table=state.tables[id];
     if(!table)return '';
     var hasImages=table.columns.some(function(col){return col.type==='image'});
+    var isWide=table.columns.length>5;
     var head='<tr>'+table.columns.map(function(col){return '<th class="'+(col.type==='image'?'print-image-col':'')+'">'+escapeHtml(col.label||'')+'</th>'}).join('')+'</tr>';
     var body=table.rows.map(function(row){
       if(row&&row.type==='subsection')return '<tr class="print-subsection-row"><td colspan="'+table.columns.length+'">'+cellDisplayHtml(row.title||'Subsection')+'</td></tr>';
@@ -1756,7 +1802,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         return '<td>'+cellDisplayHtml(value)+'</td>';
       }).join('')+'</tr>';
     }).join('');
-    return '<div class="print-card print-table-card"><h2>'+escapeHtml(table.title||id)+'</h2><table class="print-table '+(hasImages?'has-images':'')+'"><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div>';
+    return '<div class="print-card print-table-card"><h2>'+escapeHtml(table.title||id)+'</h2><table class="print-table '+(hasImages?'has-images ':'')+(isWide?'wide-print-table':'')+'"><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div>';
   }
   function printSection(title,ids){
     var body=ids.map(tablePrintHtml).join('');
@@ -1814,6 +1860,82 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(extraIds.length)html+=printSection('Renal Custom Tables',extraIds);
     return html;
   }
+  function exportChoicesForSection(section){
+    if(section==='renal'){
+      ensureRenalDefaults(state);
+      var chartChoices=(state.renal.charts||[]).map(function(chart){
+        return {key:'chart::'+chart.id,kind:'chart',id:chart.id,label:chart.title||'Renal Table'};
+      });
+      var chartIds=renalChartTableIds();
+      var extraChoices=sectionTableIds('renal').filter(function(id){return chartIds.indexOf(id)===-1}).map(function(id){
+        return {key:'table::'+id,kind:'table',id:id,label:(state.tables[id]&&state.tables[id].title)||id};
+      });
+      return chartChoices.concat(extraChoices);
+    }
+    if(section==='simulation'){
+      return (state.simCases||[]).map(function(item,i){
+        return {key:'case::'+i,kind:'case',id:String(i),label:(item&&item.name)||('Case '+(i+1))};
+      });
+    }
+    return sectionTableIds(section).map(function(id){
+      return {key:'table::'+id,kind:'table',id:id,label:(state.tables[id]&&state.tables[id].title)||id};
+    });
+  }
+  function exportPickerHtml(section){
+    var choices=exportChoicesForSection(section);
+    var checks=choices.map(function(choice){
+      return '<label><input type="checkbox" class="ua-export-check" value="'+escapeHtml(choice.key)+'" checked> <span>'+escapeHtml(choice.label)+'</span></label>';
+    }).join('');
+    return '<div class="ua-export-picker">'+
+      '<div class="ua-export-picker-head"><strong>Export These</strong><div class="ua-export-picker-actions"><button type="button" data-ua-export-select="all">All</button><button type="button" data-ua-export-select="none">Clear</button></div></div>'+
+      '<div class="ua-export-list">'+checks+'</div>'+
+      '<div class="ua-export-empty">Pick at least one item.</div>'+
+    '</div>';
+  }
+  function selectedExportChoices(section){
+    var choices=exportChoicesForSection(section);
+    var modal=document.getElementById('hubPdfExportModal');
+    var checks=modal?[].slice.call(modal.querySelectorAll('.ua-export-check')):[];
+    if(!checks.length)return choices;
+    var selected={};
+    checks.forEach(function(check){if(check.checked)selected[check.value]=true});
+    return choices.filter(function(choice){return !!selected[choice.key]});
+  }
+  function syncExportPicker(modal){
+    var checks=[].slice.call(modal.querySelectorAll('.ua-export-check'));
+    var any=checks.some(function(check){return check.checked});
+    var print=modal.querySelector('[data-pdf-print]');
+    var empty=modal.querySelector('.ua-export-empty');
+    if(print)print.disabled=!any;
+    if(empty)empty.classList.toggle('visible',!any);
+  }
+  function handleExportPickerClick(event,modal){
+    var btn=event.target.closest('[data-ua-export-select]');
+    if(!btn)return false;
+    var checked=btn.dataset.uaExportSelect==='all';
+    modal.querySelectorAll('.ua-export-check').forEach(function(box){box.checked=checked});
+    return true;
+  }
+  function buildSelectedExportHtml(section,config){
+    var selected=selectedExportChoices(section);
+    if(!selected.length)return '<div class="print-page"><h1 class="print-section-title">'+escapeHtml((config&&config.title)||'Export')+'</h1></div>';
+    if(section==='renal'){
+      var html='';
+      var tableIds=[];
+      selected.forEach(function(choice){
+        if(choice.kind==='chart'){
+          var chart=findRenalChart(choice.id);
+          if(chart)html+=renalChartPrintHtml(chart);
+        }else if(choice.kind==='table')tableIds.push(choice.id);
+      });
+      if(tableIds.length)html+=printSection('Renal Tables',tableIds);
+      return html;
+    }
+    if(section==='simulation'){
+      return printCases(selected.map(function(choice){return Number(choice.id)}));
+    }
+    return printSection((config&&config.title)||'Export',selected.map(function(choice){return choice.id}));
+  }
   function clearPrintArea(){
     var area=document.getElementById('printArea');
     if(area)area.innerHTML='';
@@ -1823,14 +1945,17 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     options=options||{};
     var area=clearPrintArea();
     if(!area)return;
-    if(!html){showToast('Nothing to export yet',true);return}
+    var hasBuilder=typeof options.buildContent==='function';
+    if(!html&&!hasBuilder){showToast('Nothing to export yet',true);return}
     var bodyClass=options.bodyClass||'printing';
     if(window.HubPdfExport){
       window.HubPdfExport.open({
         title:title,
         orientation:options.orientation||'portrait',
         allowOrientationToggle:true,
+        rememberOrientation:options.rememberOrientation,
         orientationPersistKey:options.orientationPersistKey||((options.persistKey||'ua-print-export')+'-orientation'),
+        orientationClassPrefix:options.orientationClassPrefix||'ua-export',
         defaultScale:options.defaultScale||1,
         minScale:.45,
         maxScale:1.15,
@@ -1838,13 +1963,19 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         persistKey:options.persistKey||'ua-tab-export-scale',
         printArea:area,
         contentHtml:html,
+        buildContent:options.buildContent,
         previewClass:options.previewClass||'',
         bodyClass:bodyClass,
         scaleVar:options.scaleVar||'--hub-print-scale',
-        hint:options.hint||''
+        hint:options.hint||'',
+        modalClass:options.modalClass||'ua-export-modal',
+        controlsHtml:options.controlsHtml||'',
+        onControlsChange:options.onControlsChange,
+        onControlsClick:options.onControlsClick
       });
       return;
     }
+    if(hasBuilder)html=options.buildContent(1,options.orientation||'portrait');
     area.innerHTML=html;
     (Array.isArray(bodyClass)?bodyClass:String(bodyClass).split(/\s+/)).filter(Boolean).forEach(function(cls){document.body.classList.add(cls)});
     showToast('Opening PDF export');
@@ -1893,10 +2024,13 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     section=section||((document.querySelector('.section.active')||{}).id)||'overview';
     var config=UA_TAB_EXPORTS[section]||UA_TAB_EXPORTS.overview;
     var html='';
-    if(section==='renal')html=printRenalSection();
-    else if(section==='simulation')html=printCases();
-    else html=printSection(config.title,sectionTableIds(section));
-    openRegularPrintExport(config.title,html,config);
+    openRegularPrintExport(config.title,html,Object.assign({},config,{
+      rememberOrientation:false,
+      controlsHtml:exportPickerHtml(section),
+      buildContent:function(){return buildSelectedExportHtml(section,config)},
+      onControlsChange:syncExportPicker,
+      onControlsClick:handleExportPickerClick
+    }));
   };
   window.openExportModal=window.exportUaTab;
   window.closeExportModal=function(){clearPrintArea()};
