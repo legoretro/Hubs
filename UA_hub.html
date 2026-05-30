@@ -39,7 +39,7 @@ button,input{font-family:inherit}button{cursor:pointer}
 .tube{width:210px;height:245px;border:4px solid rgba(120,105,75,.32);border-top:none;border-radius:18px 18px 36px 36px;background:rgba(255,255,255,.52);overflow:visible;box-shadow:inset 0 0 18px rgba(80,65,40,.14),0 10px 22px rgba(122,61,0,.11)}.tube:before{content:"";position:absolute;left:-18px;right:-18px;top:-28px;height:54px;border-radius:50% 50% 20% 20%;background:repeating-linear-gradient(90deg,#76c74f 0 8px,#8bda65 8px 14px);border:3px solid #60ad3d;box-shadow:inset 0 8px 0 rgba(255,255,255,.22);z-index:6}.tube:after{content:"";position:absolute;left:18px;right:18px;top:-14px;height:25px;border-radius:50%;background:rgba(112,190,75,.62);z-index:7}.cup-bg{position:absolute;inset:42px 26px 26px;display:grid;place-items:center;text-align:center;font:900 20px/1.35 Arial,sans-serif;letter-spacing:1px;color:rgba(38,22,4,.24);background:repeating-linear-gradient(0deg,rgba(38,22,4,.08) 0 2px,transparent 2px 17px);z-index:1}.urine-fill{height:68%;border-radius:42% 42% 14px 14px / 9% 9% 14px 14px;opacity:var(--urine-opacity,.72);z-index:2}.urine-fill.clear{filter:none}.urine-fill.slightly-cloudy{filter:blur(.45px) saturate(.9)}.urine-fill.cloudy{filter:blur(1.1px) saturate(.8);opacity:calc(var(--urine-opacity,.72) + .1)}.urine-fill.turbid,.urine-fill.milky{filter:blur(1.8px) saturate(.55);opacity:.92}.urine-fill.bloody{filter:saturate(1.2)}.urine-sediment{height:10%;z-index:3}.urine-foam{bottom:66%;height:8%;z-index:4}.refractometer{background:#4d4f51;border:1px solid #2f3133;border-radius:12px;padding:12px;color:#fff}.refract-device{filter:drop-shadow(0 8px 12px rgba(0,0,0,.3))}.refract-body{background:linear-gradient(90deg,#d7d9dc 0 18%,#1b1d20 19% 78%,#050505 79% 100%)}.refract-readout{box-shadow:0 10px 22px rgba(0,0,0,.3)}.strip-admin-grid{display:grid;gap:9px}.strip-admin-row{display:grid;grid-template-columns:150px 1fr 54px;gap:8px;align-items:center}.strip-admin-row strong{color:var(--wine);font-size:12px}.strip-color-swatch{width:44px;height:30px;border:1px solid rgba(38,22,4,.24);border-radius:5px;background:var(--strip-color)}.print-case-grid{display:grid;grid-template-columns:220px 1fr;gap:12px;align-items:start}.print-cup{width:130px;height:150px;border:2px solid #b7a98c;border-top:14px solid #75c84e;border-radius:10px 10px 24px 24px;position:relative;background:#fff;margin:auto;overflow:hidden}.print-liquid{position:absolute;left:0;right:0;bottom:0;height:68%;background:var(--urine);opacity:var(--opacity)}.print-sediment{position:absolute;left:0;right:0;bottom:0;height:10%;background:var(--sediment)}.print-foam{position:absolute;left:0;right:0;bottom:66%;height:8%;background:var(--foam)}.print-strip{display:flex;gap:5px;align-items:end;overflow:hidden;border:1px solid #999;padding:6px;background:#eee}.print-strip-pad{display:grid;gap:3px;text-align:center;font-size:7px}.print-strip-pad span:first-child{display:block;width:28px;height:22px;border:1px solid #555;background:var(--pad)}.print-micro-field{width:220px;height:220px;border:10px solid #05070c;border-radius:50%;position:relative;background:#f8f6ea;overflow:hidden;margin:8px auto}.print-micro-item{position:absolute;left:var(--x);top:var(--y);width:var(--w);height:var(--h);transform:translate(-50%,-50%) rotate(var(--rot));background:var(--item);border:1px solid #6b604f;font-size:7px;display:grid;place-items:center;text-align:center}.print-micro-item.cell{border-radius:50%}.print-micro-item.cast{border-radius:999px}.print-micro-item.crystal{clip-path:polygon(50% 0,100% 28%,82% 100%,18% 100%,0 28%)}.report-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #222;margin-top:8px}.report-cell{min-height:38px;border:1px solid #222;padding:6px;font-size:10px}.report-label{background:#ddd;font-weight:900}.report-wide{grid-column:1/-1;min-height:44px}
 .dip-pad{background:var(--pad-bg,var(--pad))}.print-strip-pad span:first-child{background:var(--pad-bg,var(--pad))}.case-export-box{border:1px solid var(--gold);border-radius:12px;background:#fff8ef;padding:10px;margin:0 0 14px;text-align:left;max-height:160px;overflow:auto}.case-export-box strong{display:block;color:var(--wine);font-size:12px;text-transform:uppercase;letter-spacing:.7px;margin-bottom:7px}.case-export-box label{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink);padding:4px 0}.sediment-choice-row{grid-column:1/-1;display:flex;align-items:center;gap:8px;flex-wrap:wrap;border:1px solid var(--gold);border-radius:9px;background:#fffdf8;padding:8px}.sediment-choice-row span{font-size:11px;font-weight:900;text-transform:uppercase;color:var(--wine)}.sediment-choice{border:1.5px solid var(--gold);border-radius:999px;background:#fff;color:var(--wine);font-size:12px;font-weight:900;padding:7px 14px}.sediment-choice.active{background:var(--gold);color:#3d1f00}.sample-stage{position:relative;width:150px;min-height:170px;margin:0 auto;display:grid;place-items:center}.sample-stage:before{content:"";position:absolute;width:112px;height:148px;left:50%;top:18px;transform:translateX(-50%);background:#fff;border:1px solid rgba(122,61,0,.14);border-radius:6px;box-shadow:0 8px 22px rgba(122,61,0,.12);background-image:repeating-linear-gradient(0deg,transparent 0 15px,rgba(38,22,4,.08) 15px 17px)}.sample-stage:after{content:"CLARITY";position:absolute;left:50%;top:70px;transform:translateX(-50%) rotate(-90deg);font:900 10px/1 Arial,sans-serif;letter-spacing:2px;color:rgba(122,61,0,.18)}.tube{width:104px;height:132px;margin:22px auto 10px;border:2px solid rgba(120,105,75,.32);border-top:none;border-radius:8px 8px 24px 24px;background:linear-gradient(90deg,rgba(255,255,255,.78),rgba(255,255,255,.35) 48%,rgba(255,255,255,.68));overflow:visible;z-index:1}.tube:before{left:-9px;right:-9px;top:-15px;height:29px;border-width:2px;border-radius:50% 50% 18% 18%;background:repeating-linear-gradient(90deg,#78c957 0 6px,#93dc70 6px 11px)}.tube:after{left:13px;right:13px;top:-8px;height:13px;background:rgba(104,183,65,.48)}.cup-bg{inset:23px 12px 13px;font-size:0;background:repeating-linear-gradient(0deg,rgba(38,22,4,.11) 0 1px,transparent 1px 13px);opacity:.38}.cup-bg:before{content:"";position:absolute;left:18px;right:18px;top:10px;height:2px;background:rgba(38,22,4,.12);box-shadow:0 20px 0 rgba(38,22,4,.1),0 40px 0 rgba(38,22,4,.1),0 60px 0 rgba(38,22,4,.1)}.urine-fill{height:66%;border-radius:40% 40% 10px 10px / 7% 7% 10px 10px;z-index:2}.urine-sediment{height:7%;opacity:.72}.urine-foam{height:6%;bottom:64%;opacity:.84}.urine-sim{grid-template-columns:170px 1fr;gap:12px}.refractometer{background:#fffdf8;color:var(--ink);border:1px solid var(--gold);box-shadow:0 8px 20px rgba(122,61,0,.08);grid-template-columns:minmax(180px,280px) 150px}.refract-device{height:104px;transform:rotate(-16deg);margin:6px auto;width:270px}.refract-prism{top:57px;width:88px;height:30px;background:linear-gradient(135deg,rgba(123,184,239,.86),rgba(255,255,255,.66));border-color:#b8b8b8}.refract-body{left:72px;top:31px;width:168px;height:44px;background:linear-gradient(90deg,#cfd3d7 0 19%,#101214 20% 78%,#030303 79% 100%)}.refract-grip{left:116px;top:33px;width:86px;height:40px;background:repeating-linear-gradient(45deg,#111 0 3px,#303336 3px 6px)}.refract-eye{right:5px;top:24px;width:44px;height:56px}.refract-readout{width:142px;height:142px;border-width:9px;box-shadow:0 8px 18px rgba(38,22,4,.16)}.refract-scale{inset:17px 48px 15px}.micro-stage{max-width:390px}.micro-field{width:min(100%,330px);border-width:16px;background:radial-gradient(circle at 45% 42%,#fffef7 0 42%,#eee9d8 72%,#c9c3ae 100%);box-shadow:0 0 0 3px rgba(3,5,10,.9),0 0 0 5px rgba(38,22,4,.1),inset 0 0 38px rgba(78,68,52,.2)}.micro-field:before{background:radial-gradient(circle at 35% 28%,rgba(255,255,255,.34),transparent 34%),radial-gradient(circle,transparent 54%,rgba(0,0,0,.16));}.case-object-row{grid-template-columns:minmax(130px,1fr) 96px 70px 58px 118px minmax(150px,1.2fr) 126px auto}.case-object-row .mini-btn{padding:6px 9px;white-space:nowrap}@media(max-width:900px){.case-object-row{grid-template-columns:1fr}.urine-sim{grid-template-columns:1fr}.sample-stage{width:150px}.tube{width:104px;height:132px}.refractometer{grid-template-columns:1fr}.refract-device{width:270px}}
 .save-indicator{position:fixed;right:18px;bottom:18px;background:var(--green);color:#fff;border-radius:999px;padding:9px 15px;font-size:13px;font-weight:800;opacity:0;pointer-events:none;transition:.2s;z-index:50}.save-indicator.show{opacity:1}
-.modal-overlay{position:fixed;inset:0;background:rgba(38,22,4,.72);z-index:1000;display:none;align-items:center;justify-content:center}.modal-overlay.visible{display:flex}.modal-box{background:var(--ivory);border-radius:18px;padding:30px;max-width:380px;width:90%;box-shadow:0 20px 60px rgba(122,61,0,.32);text-align:center;border:1px solid var(--gold)}.modal-box h3{font-size:20px;color:var(--wine);margin-bottom:6px}.modal-box p{font-size:13px;color:var(--muted);margin-bottom:18px}.modal-input{width:100%;border:1.5px solid var(--gold);border-radius:10px;padding:10px 14px;font-size:15px;text-align:center;background:#fff;margin-bottom:12px;letter-spacing:3px}.modal-input:focus{outline:none;border-color:var(--orange)}.modal-error{color:var(--danger);font-size:12px;margin-bottom:10px;min-height:16px}.btn{border:none;border-radius:999px;background:var(--orange);color:#fff;padding:8px 16px;font-size:12px;font-weight:900}.btn.ghost{background:transparent;color:var(--muted);border:1.5px solid var(--gold)}
+.modal-overlay{position:fixed;inset:0;background:rgba(38,22,4,.72);z-index:1000;display:none;align-items:center;justify-content:center}.modal-overlay.visible{display:flex}.modal-box{background:var(--ivory);border-radius:18px;padding:30px;max-width:380px;width:90%;box-shadow:0 20px 60px rgba(122,61,0,.32);text-align:center;border:1px solid var(--gold)}.modal-box h3{font-size:20px;color:var(--wine);margin-bottom:6px}.modal-box p{font-size:13px;color:var(--muted);margin-bottom:18px}.modal-input{width:100%;border:1.5px solid var(--gold);border-radius:10px;padding:10px 14px;font-size:15px;text-align:center;background:#fff;margin-bottom:12px;letter-spacing:3px}.modal-input:focus{outline:none;border-color:var(--orange)}.modal-error{color:var(--danger);font-size:12px;margin-bottom:10px;min-height:16px}.btn{border:none;border-radius:999px;background:var(--orange);color:#fff;padding:8px 16px;font-size:12px;font-weight:900}.btn.ghost{background:transparent;color:var(--muted);border:1.5px solid var(--gold)}.section-print-actions{display:flex;justify-content:flex-end;margin:0 0 14px}.section-print-actions .btn{padding:8px 14px}
 #printArea{display:none}
 @media print{
   @page{size:letter landscape;margin:.22in}
@@ -47,17 +47,18 @@ button,input{font-family:inherit}button{cursor:pointer}
   body.printing .site-header,body.printing .wrap,body.printing .save-indicator,body.printing .modal-overlay{display:none!important}
   body.printing #printArea{display:block!important}
   #printArea{font-family:Georgia,"Times New Roman",serif;color:#261604;padding:0;width:100%}
-  .print-page{break-after:page;width:100%;overflow:hidden}.print-page:last-child{break-after:auto}
+  .print-page{break-after:page;width:100%;overflow:visible}.print-page:last-child{break-after:auto}
   .print-section-title{font-size:16px;color:#7a3d00;margin:0 0 5px;line-height:1.05}
   .print-card{border:0;margin:0 0 8px;padding:0;break-inside:auto;background:#fff}
   .print-card h2{font-size:12px;color:#7a3d00;margin:0 0 5px}
   .print-table-card h2{display:none}
-  #printArea table{width:100%;border-collapse:collapse;table-layout:fixed}
+  #printArea table{width:100%;border-collapse:collapse;table-layout:auto}
   #printArea th,#printArea td{min-width:0;overflow-wrap:anywhere;word-break:normal}
-  #printArea th{background:#7a3d00!important;color:#fff;padding:3px 4px;text-align:left;font-size:7px;line-height:1.05;border:1px solid #7a3d00;letter-spacing:.2px}
-  #printArea td{padding:3px 4px;border:1px solid #d8b374;vertical-align:top;font-size:8px;line-height:1.14}
-  #printArea .print-image-col,#printArea .print-image-cell{width:1.45in}
-  #printArea img{display:block;max-width:1.35in;max-height:1.08in;width:auto;height:auto;margin:0 auto;border:1px solid #d8b374}
+  #printArea th{background:#7a3d00!important;color:#fff;padding:5px 6px;text-align:left;font-size:11px;line-height:1.1;border:1px solid #7a3d00;letter-spacing:.2px}
+  #printArea td{padding:5px 6px;border:1px solid #d8b374;vertical-align:top;font-size:14px;line-height:1.2}
+  #printArea .print-table th:first-child,#printArea .print-table td:first-child{width:1.05in;max-width:1.35in}
+  #printArea .print-image-col,#printArea .print-image-cell,#printArea .print-table.has-images th:last-child,#printArea .print-table.has-images td:last-child{width:1.65in}
+  #printArea img{display:block;max-width:1.58in;max-height:1.18in;width:auto;height:auto;margin:0 auto;border:1px solid #d8b374}
   body.renal-printing #printArea .renal-print-page{padding:.08in}
   body.renal-printing #printArea .renal-flow-shell{border:0;box-shadow:none;overflow:visible;padding:0;margin:0 0 8px;background:#fff}
   body.renal-printing #printArea .renal-flow-root{min-width:0;zoom:var(--ua-renal-print-scale,1);padding:8px 0 12px}
@@ -81,6 +82,7 @@ button,input{font-family:inherit}button{cursor:pointer}
 .micro-item.thorny-apple{border-radius:50%;clip-path:none;background:radial-gradient(circle,var(--item) 0 42%,transparent 43%),conic-gradient(from 10deg,var(--item) 0 8deg,transparent 8deg 22deg,var(--item) 22deg 30deg,transparent 30deg 48deg,var(--item) 48deg 58deg,transparent 58deg 76deg,var(--item) 76deg 86deg,transparent 86deg 100deg,var(--item) 100deg 112deg,transparent 112deg 130deg,var(--item) 130deg 142deg,transparent 142deg 160deg,var(--item) 160deg 172deg,transparent 172deg 190deg,var(--item) 190deg 202deg,transparent 202deg 220deg,var(--item) 220deg 232deg,transparent 232deg 250deg,var(--item) 250deg 262deg,transparent 262deg 280deg,var(--item) 280deg 292deg,transparent 292deg 310deg,var(--item) 310deg 322deg,transparent 322deg)}
 .micro-item.stump{border-radius:50%;clip-path:none;background:repeating-radial-gradient(circle,rgba(255,255,255,.58) 0 4px,var(--item) 5px 8px,rgba(92,65,30,.28) 9px 10px)}
 .micro-upload-input{display:none}.micro-upload-label{display:inline-flex;align-items:center;justify-content:center;border:1.5px solid var(--gold);border-radius:999px;background:#fff;color:var(--wine);font-size:12px;font-weight:900;padding:8px 12px;cursor:pointer}
+.micro-tabs{display:flex;gap:9px;flex-wrap:wrap;margin:0 0 14px}.micro-tab{border:1.5px solid var(--gold);background:#fff;color:var(--wine);border-radius:999px;padding:8px 13px;font-size:13px;font-weight:900}.micro-tab.active{background:var(--wine);color:#fff;border-color:var(--wine)}.micro-tab-panel{display:none}.micro-tab-panel.active{display:block}
 .case-result-row{grid-template-columns:1fr 1fr 1fr 1fr auto}
 .micro-field{cursor:default}
 .print-micro-item.needle{height:3px!important;border-radius:999px}
@@ -95,6 +97,7 @@ button,input{font-family:inherit}button{cursor:pointer}
 .lab-rack{position:absolute;right:14%;bottom:27%;width:27%;height:18%;border:1px solid rgba(255,255,255,.2);border-radius:10px;background:rgba(255,255,255,.1);box-shadow:inset 0 -18px 0 rgba(212,134,10,.18)}
 .lab-rack:before{content:"";position:absolute;left:8%;right:8%;top:-54%;height:70%;background:linear-gradient(90deg,rgba(247,226,142,.76) 0 10%,transparent 10% 18%,rgba(116,181,155,.66) 18% 28%,transparent 28% 38%,rgba(219,99,75,.66) 38% 49%,transparent 49% 59%,rgba(244,235,199,.7) 59% 70%,transparent 70% 80%,rgba(107,177,215,.65) 80% 92%,transparent 92%);border-bottom:22px solid rgba(255,255,255,.16)}
 .lab-flask{position:absolute;left:49%;bottom:30%;width:11%;height:22%;border-radius:50% 50% 20% 20%;background:linear-gradient(180deg,rgba(255,255,255,.24),rgba(212,134,10,.34));box-shadow:0 -36px 0 -25px rgba(255,255,255,.3),0 0 0 1px rgba(255,255,255,.12)}
+.table-subsection-row td{background:#fff7c9!important;border-top:3px solid var(--orange);border-bottom:2px solid var(--gold);font-weight:900;color:var(--wine);font-size:18px}.subsection-tools{display:flex;align-items:center;justify-content:space-between;gap:10px}.subsection-cell{min-height:28px;outline:none}.subsection-cell[contenteditable=true]{border:1px solid var(--gold);border-radius:8px;background:#fff9db;padding:7px 10px}.subsection-cell[contenteditable=false]{padding:4px 0}.print-subsection-row td{font-weight:900;color:#111;background:#fff!important;border-top:2px solid #111!important;border-bottom:2px solid #111!important;text-align:left!important}
 </style>
 </head>
 <body class="intro-active">
@@ -123,7 +126,6 @@ button,input{font-family:inherit}button{cursor:pointer}
     <button type="button" class="nav-tab" data-section="resources" onclick="event.stopPropagation();showSection('resources')">Resources</button>
     <button type="button" class="nav-tab" data-section="simulation" onclick="event.stopPropagation();showSection('simulation')">Simulation</button>
   </nav>
-  <button type="button" class="tool-btn" id="printBtn" data-ui-action="open-export" onclick="event.stopPropagation();openExportModal()">Export PDF</button>
   <button type="button" class="tool-btn" data-ui-action="admin-login" id="adminBtn" onclick="event.stopPropagation();toggleAdminLogin()">Admin</button>
   <button type="button" class="tool-btn admin-exit-btn" data-ui-action="exit-admin" id="adminExitBtn" onclick="event.stopPropagation();exitAdmin()">Exit Admin</button>
 </header>
@@ -137,37 +139,6 @@ button,input{font-family:inherit}button{cursor:pointer}
     <div style="display:flex;gap:8px;justify-content:center">
       <button class="btn" onclick="event.stopPropagation();attemptLogin()">Unlock</button>
       <button class="btn ghost" onclick="event.stopPropagation();closeModal()">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="exportModal">
-  <div class="modal-box">
-    <h3>Export PDF</h3>
-    <p>Choose sections and the exact cases to include.</p>
-    <div class="export-options">
-      <label><input type="checkbox" class="export-check" value="overview_core" checked> Big Picture</label>
-      <label><input type="checkbox" class="export-check" value="overview_specimen" checked> Specimen Handling</label>
-      <label><input type="checkbox" class="export-check" value="overview_macro_micro" checked> Macroscopic vs Microscopic</label>
-      <label><input type="checkbox" class="export-check" value="physical" checked> Physical</label>
-      <label><input type="checkbox" class="export-check" value="chemical" checked> Chemical</label>
-      <label><input type="checkbox" class="export-check" value="cells" checked> Cells</label>
-      <label><input type="checkbox" class="export-check" value="casts" checked> Casts</label>
-      <label><input type="checkbox" class="export-check" value="crystals" checked> Crystals</label>
-      <label><input type="checkbox" class="export-check" value="stains" checked> Stains</label>
-      <label><input type="checkbox" class="export-check" value="microscopes" checked> Microscopes</label>
-      <label><input type="checkbox" class="export-check" value="overview_misc" checked> Microscopic Miscellaneous</label>
-      <label><input type="checkbox" class="export-check" value="renal" checked> Renal Diseases</label>
-      <label><input type="checkbox" class="export-check" value="resources" checked> Resources</label>
-      <label><input type="checkbox" class="export-check" value="cases" checked> Simulation Case Reports</label>
-      <label><input type="checkbox" id="worksheetExportMode"> Worksheet form: bigger black text, landscape PDF only</label>
-    </div>
-    <div id="caseExportOptions"></div>
-    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-      <button type="button" class="btn" data-ui-action="export-select-all" onclick="event.stopPropagation();selectAllExport(true)">Select All</button>
-      <button type="button" class="btn ghost" data-ui-action="export-clear-all" onclick="event.stopPropagation();selectAllExport(false)">Clear All</button>
-      <button type="button" class="btn" data-ui-action="do-export" onclick="event.stopPropagation();doExport()">Export PDF</button>
-      <button type="button" class="btn ghost" data-ui-action="close-export" onclick="event.stopPropagation();closeExportModal()">Cancel</button>
     </div>
   </div>
 </div>
@@ -187,6 +158,7 @@ button,input{font-family:inherit}button{cursor:pointer}
 <main class="wrap">
   <section class="section active" id="overview">
     <div class="section-hero"><h2><span class="hero-mark">UA</span> Urinalysis Lab Hub</h2></div>
+    <div class="section-print-actions"><button type="button" class="btn" data-export-tab="overview">Print / Save Overview PDF</button></div>
     <div class="lab-layout">
       <div class="lab-menu">
         <h3>Lab Bench</h3>
@@ -206,12 +178,11 @@ button,input{font-family:inherit}button{cursor:pointer}
               <div class="lab-sub">Specimen to sediment</div>
             </div>
           </div>
-          <p class="lab-copy">A practical student lab hub for specimen handling, physical appearance, chemical screening, microscopic findings, and case practice.</p>
           <div class="lab-quick-grid">
-            <button type="button" class="lab-quick" onclick="showSection('screening')"><strong>Macroscopic</strong><span>Color, clarity, specific gravity, and reagent strip chemistry.</span></button>
-            <button type="button" class="lab-quick" onclick="showSection('microscope')"><strong>Microscopic</strong><span>Cells, casts, crystals, organisms, stains, and microscope methods.</span></button>
-            <button type="button" class="lab-quick" onclick="showSection('renal')"><strong>Renal Diseases</strong><span>Editable disease tables, images, and worksheet exports.</span></button>
-            <button type="button" class="lab-quick" onclick="showSection('simulation')"><strong>Simulation Lab</strong><span>Move through sample selection, dipstick, refractometer, microscopy, and reveal.</span></button>
+            <button type="button" class="lab-quick" onclick="showSection('screening')"><strong>Macroscopic</strong></button>
+            <button type="button" class="lab-quick" onclick="showSection('microscope')"><strong>Microscopic</strong></button>
+            <button type="button" class="lab-quick" onclick="showSection('renal')"><strong>Renal Diseases</strong></button>
+            <button type="button" class="lab-quick" onclick="showSection('simulation')"><strong>Simulation Lab</strong></button>
           </div>
         </article>
         <article class="lab-card lab-table-card">
@@ -234,7 +205,8 @@ button,input{font-family:inherit}button{cursor:pointer}
   </section>
 
   <section class="section" id="screening">
-    <div class="hero"><h1>Macroscopic</h1><p>Physical appearance and reagent-strip chemistry tables, ready for your own rows and columns.</p></div>
+    <div class="hero"><h1>Macroscopic</h1></div>
+    <div class="section-print-actions"><button type="button" class="btn" data-export-tab="screening">Print / Save Macroscopic PDF</button></div>
     <div class="grid">
       <article class="card">
         <div class="card-title"><h2>Physical</h2><span class="tag">Macroscopic</span></div>
@@ -250,19 +222,29 @@ button,input{font-family:inherit}button{cursor:pointer}
   </section>
 
   <section class="section" id="microscope">
-    <div class="hero"><h1>Microscopic</h1><p>Build your own tables for cells, casts, crystals, stains, and microscope methods.</p></div>
+    <div class="hero"><h1>Microscopic</h1></div>
+    <div class="section-print-actions"><button type="button" class="btn" data-export-tab="microscope">Print / Save Microscopic PDF</button></div>
+    <div class="micro-tabs" id="microTabs">
+      <button type="button" class="micro-tab active" data-micro-tab="cells">Cells</button>
+      <button type="button" class="micro-tab" data-micro-tab="casts">Casts</button>
+      <button type="button" class="micro-tab" data-micro-tab="crystals">Crystals</button>
+      <button type="button" class="micro-tab" data-micro-tab="stains">Stains</button>
+      <button type="button" class="micro-tab" data-micro-tab="microscopes">Microscopes</button>
+      <button type="button" class="micro-tab" data-micro-tab="overview_misc">Miscellaneous</button>
+    </div>
     <div class="grid">
-      <article class="card"><div class="card-title"><h2>Cells</h2><span class="tag">Sediment</span></div><div class="table-tools" data-tools-for="cells"></div><div class="table-slot" data-table-id="cells"></div></article>
-      <article class="card"><div class="card-title"><h2>Casts</h2><span class="tag">Sediment</span></div><div class="table-tools" data-tools-for="casts"></div><div class="table-slot" data-table-id="casts"></div></article>
-      <article class="card"><div class="card-title"><h2>Crystals</h2><span class="tag">Sediment</span></div><div class="table-tools" data-tools-for="crystals"></div><div class="table-slot" data-table-id="crystals"></div></article>
-      <article class="card"><div class="card-title"><h2>Stains</h2><span class="tag">Technique</span></div><div class="table-tools" data-tools-for="stains"></div><div class="table-slot" data-table-id="stains"></div></article>
-      <article class="card"><div class="card-title"><h2>Microscopes</h2><span class="tag">Technique</span></div><div class="table-tools" data-tools-for="microscopes"></div><div class="table-slot" data-table-id="microscopes"></div></article>
-      <article class="card"><div class="card-title"><h2>Microscopic Miscellaneous</h2><span class="tag">Chart</span></div><div class="table-tools" data-tools-for="overview_misc"></div><div class="table-slot" data-table-id="overview_misc"></div></article>
+      <article class="card micro-tab-panel active" data-micro-panel="cells"><div class="card-title"><h2>Cells</h2><span class="tag">Sediment</span></div><div class="table-tools" data-tools-for="cells"></div><div class="table-slot" data-table-id="cells"></div></article>
+      <article class="card micro-tab-panel" data-micro-panel="casts"><div class="card-title"><h2>Casts</h2><span class="tag">Sediment</span></div><div class="table-tools" data-tools-for="casts"></div><div class="table-slot" data-table-id="casts"></div></article>
+      <article class="card micro-tab-panel" data-micro-panel="crystals"><div class="card-title"><h2>Crystals</h2><span class="tag">Sediment</span></div><div class="table-tools" data-tools-for="crystals"></div><div class="table-slot" data-table-id="crystals"></div></article>
+      <article class="card micro-tab-panel" data-micro-panel="stains"><div class="card-title"><h2>Stains</h2><span class="tag">Technique</span></div><div class="table-tools" data-tools-for="stains"></div><div class="table-slot" data-table-id="stains"></div></article>
+      <article class="card micro-tab-panel" data-micro-panel="microscopes"><div class="card-title"><h2>Microscopes</h2><span class="tag">Technique</span></div><div class="table-tools" data-tools-for="microscopes"></div><div class="table-slot" data-table-id="microscopes"></div></article>
+      <article class="card micro-tab-panel" data-micro-panel="overview_misc"><div class="card-title"><h2>Microscopic Miscellaneous</h2><span class="tag">Chart</span></div><div class="table-tools" data-tools-for="overview_misc"></div><div class="table-slot" data-table-id="overview_misc"></div></article>
     </div>
   </section>
 
   <section class="section" id="renal">
-    <div class="hero"><h1>Renal Diseases</h1><p>Create renal disease tables with optional images. Start with the three starter sections, then add your own as admin.</p></div>
+    <div class="hero"><h1>Renal Diseases</h1></div>
+    <div class="section-print-actions"><button type="button" class="btn" data-export-tab="renal">Print / Save Renal PDF</button></div>
     <div class="renal-tabs" id="renalTabs"></div>
     <div class="renal-admin-actions">
       <button type="button" class="mini-btn" data-renal-action="add-chart">Add Renal Table Section</button>
@@ -271,7 +253,8 @@ button,input{font-family:inherit}button{cursor:pointer}
   </section>
 
   <section class="section" id="resources">
-    <div class="hero"><h1>Resources</h1><p>A simple place to keep the resource list you want with this hub.</p></div>
+    <div class="hero"><h1>Resources</h1></div>
+    <div class="section-print-actions"><button type="button" class="btn" data-export-tab="resources">Print / Save Resources PDF</button></div>
     <div class="resource-shell">
       <article class="card">
         <div class="card-title"><h2>Resources</h2><span class="tag">List</span></div>
@@ -282,7 +265,8 @@ button,input{font-family:inherit}button{cursor:pointer}
     </div>
   </section>
   <section class="section" id="simulation">
-    <div class="hero"><h1>Simulation</h1><p>Pick a urine sample and move through the lab workflow.</p></div>
+    <div class="hero"><h1>Simulation</h1></div>
+    <div class="section-print-actions"><button type="button" class="btn" data-export-tab="simulation">Print / Save Simulation PDF</button></div>
     <article class="card">
       <div class="card-title"><h2>Urinalysis Lab Simulation</h2><span class="tag">Practice</span></div>
       <div class="urine-sim">
@@ -378,6 +362,42 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     ];
     return {title:(title||'Renal Disease')+' Table',section:'renal',columns:columns,rows:blankRows(columns,3)};
   }
+  function renalRowHasText(row,pattern){
+    if(!row||!row.cells)return false;
+    return Object.keys(row.cells).some(function(key){return pattern.test(normalizeCellText(row.cells[key]||''))});
+  }
+  function addSubsection(table,title,index){
+    var section={id:uid('row'),type:'subsection',title:normalizeCellText(title||'New Subsection')};
+    if(typeof index==='number'&&index>=0&&index<table.rows.length)table.rows.splice(index,0,section);
+    else table.rows.push(section);
+  }
+  function sanitizeTableText(table){
+    if(!table||!Array.isArray(table.rows)||!Array.isArray(table.columns))return;
+    table.title=normalizeCellText(table.title||'');
+    table.columns.forEach(function(col){col.label=normalizeCellText(col.label||'')});
+    table.rows.forEach(function(row){
+      if(!row)return;
+      if(row.type==='subsection')row.title=normalizeCellText(row.title||'Subsection');
+      if(!row.cells)return;
+      table.columns.forEach(function(col){
+        if(col.type!=='image')row.cells[col.id]=normalizeCellText(row.cells[col.id]||'');
+      });
+    });
+  }
+  function ensureGlomerularSubsections(table){
+    if(!table||!Array.isArray(table.rows))return;
+    sanitizeTableText(table);
+    var hasGn=table.rows.some(function(row){return row&&row.type==='subsection'&&/glomerulonephritis/i.test(row.title||'')});
+    var hasNs=table.rows.some(function(row){return row&&row.type==='subsection'&&/nephrotic syndrome/i.test(row.title||'')});
+    table.rows.forEach(function(row){
+      if(row&&row.type==='subsection'&&/^nephrotic syndrome$/i.test(row.title||''))row.title='Glomerular Nephrotic Syndrome';
+    });
+    if(!hasGn)addSubsection(table,'Glomerulonephritis',0);
+    if(!hasNs){
+      var nsIndex=table.rows.findIndex(function(row){return renalRowHasText(row,/nephrotic syndrome/i)});
+      addSubsection(table,'Glomerular Nephrotic Syndrome',nsIndex>-1?nsIndex:undefined);
+    }
+  }
   function makeRenalChart(id,title,tableId){
     return {
       id:id,
@@ -396,6 +416,34 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       makeRenalChart('renal_tubular','Tubular','renal_table_tubular'),
       makeRenalChart('renal_interstitial','Interstitial','renal_table_interstitial')
     ];
+  }
+  function broadTermsTableId(data){
+    var ids=Object.keys((data&&data.tables)||{});
+    var matches=ids.filter(function(id){
+      var table=data.tables[id]||{};
+      var text=(id+' '+(table.title||'')).toLowerCase();
+      return /(general\s+broad|broad\s+(terms|definitions)|broad_terms|broad_definitions)/i.test(text);
+    });
+    return matches.find(function(id){return tableSection(id,data.tables[id])==='renal'})||matches[0]||'renal_table_general_broad_terms';
+  }
+  function ensureBroadTermsRenalTab(data){
+    if(!data.tables)data.tables={};
+    var existing=(data.renal.charts||[]).find(function(chart){
+      return chart.id==='renal_general_broad_terms'||/general\s+broad|broad\s+(terms|definitions)/i.test(chart.title||'')||/general_broad_terms/.test(chart.tableId||'');
+    });
+    var tableId=broadTermsTableId(data);
+    if(!data.tables[tableId])data.tables[tableId]=makeRenalDiseaseTable('General Broad Terms');
+    data.tables[tableId].section='renal';
+    data.tables[tableId].custom=false;
+    if(!data.tables[tableId].title||/new table/i.test(data.tables[tableId].title))data.tables[tableId].title='General Broad Terms Table';
+    if(existing){
+      existing.tableId=tableId;
+      if(!existing.title||/new renal section/i.test(existing.title))existing.title='General Broad Terms';
+      return;
+    }
+    var chart=makeRenalChart('renal_general_broad_terms','General Broad Terms',tableId);
+    chart.nodes=[{id:uid('renal_node'),label:'General Broad Terms',note:'',level:0,color:'#d4860a',image:''}];
+    data.renal.charts.push(chart);
   }
   function normalizeRenalNode(node,index){
     node=node&&typeof node==='object'?node:{};
@@ -428,9 +476,13 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(!data.renal||typeof data.renal!=='object')data.renal={activeId:'renal_glomerular',charts:defaultRenalCharts()};
     if(!Array.isArray(data.renal.charts)||!data.renal.charts.length)data.renal.charts=defaultRenalCharts();
     data.renal.charts=data.renal.charts.map(normalizeRenalChart);
+    ensureBroadTermsRenalTab(data);
+    data.renal.charts=data.renal.charts.map(normalizeRenalChart);
     data.renal.charts.forEach(function(chart){
       if(!data.tables[chart.tableId])data.tables[chart.tableId]=makeRenalDiseaseTable(chart.title);
       data.tables[chart.tableId].section='renal';
+      sanitizeTableText(data.tables[chart.tableId]);
+      if(chart.id==='renal_glomerular'||chart.tableId==='renal_table_glomerular')ensureGlomerularSubsections(data.tables[chart.tableId]);
     });
     if(!data.renal.charts.some(function(chart){return chart.id===data.renal.activeId}))data.renal.activeId=data.renal.charts[0].id;
   }
@@ -516,6 +568,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     renal_table_glomerular:'renal',
     renal_table_tubular:'renal',
     renal_table_interstitial:'renal',
+    renal_table_general_broad_terms:'renal',
     resources:'resources'
   };
   var CUSTOM_TABLE_SECTIONS=['overview','screening','microscope','renal','resources'];
@@ -544,10 +597,30 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       .replace(/&lt;br\s*\/?&gt;/gi,'\n')
       .replace(/\u00a0|&nbsp;|&amp;nbsp;/g,' ');
     text=decodeEntities(decodeEntities(text));
+    text=text
+      .replace(/<br\s*\/?>/gi,'\n')
+      .replace(/<\/(?:div|p|li|tr)>/gi,'\n')
+      .replace(/<li[^>]*>/gi,'\n')
+      .replace(/<\/?(?:b|strong|i|em|u|span|font|p|div|ul|ol|li)[^>]*>/gi,'')
+      .replace(/<\/?[^>\n]{1,60}>/g,'');
     return text.replace(/\r\n?/g,'\n').replace(/\n{3,}/g,'\n\n');
   }
   function cellDisplayHtml(value){
-    return escapeHtml(normalizeCellText(value)).replace(/\n/g,'<br>');
+    var tags=[];
+    var text=decodeEntities(decodeEntities(String(value||'')))
+      .replace(/<\s*(\/?)\s*(?:b|strong)\b[^>]*>/gi,function(_,close){
+        var token='@@UA_BOLD_'+tags.length+'@@';
+        tags.push(close?'</strong>':'<strong>');
+        return token;
+      })
+      .replace(/<br\s*\/?>/gi,'\n')
+      .replace(/<\/(?:div|p|li|tr)>/gi,'\n')
+      .replace(/<li[^>]*>/gi,'\n')
+      .replace(/<[^>\n]{1,120}>/g,'')
+      .replace(/\u00a0|&nbsp;|&amp;nbsp;/g,' ');
+    var html=escapeHtml(text).replace(/\r\n?/g,'\n').replace(/\n{3,}/g,'\n\n').replace(/\n/g,'<br>');
+    tags.forEach(function(tag,i){html=html.replace('@@UA_BOLD_'+i+'@@',tag)});
+    return html;
   }
   var STRIP_OPTIONS={
     LEU:[['negative','#e8dcc2'],['trace','#d8c0a4'],['small (1+)','#c9bab7'],['moderate (2+)','#9d6671'],['large (3+)','#8460a0']],
@@ -627,6 +700,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       };
     }
     ensureRenalDefaults(base);
+    Object.keys(base.tables||{}).forEach(function(id){sanitizeTableText(base.tables[id])});
     if(Number(incoming.version)<7)base.tables.resources=defaultState().tables.resources;
     if(resourcesBlank(base.tables.resources))base.tables.resources=defaultState().tables.resources;
     base.version=12;
@@ -649,6 +723,12 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       if(!table)return;
       var row=table.rows.find(function(item){return item.id===el.dataset.row});
       if(row){if(!row.cells)row.cells={};row.cells[el.dataset.col]=normalizeCellText(el.innerHTML)}
+    });
+    document.querySelectorAll('[data-action="edit-subsection"]').forEach(function(el){
+      var table=findTable(el.dataset.table);
+      if(!table)return;
+      var row=table.rows.find(function(item){return item.id===el.dataset.row});
+      if(row&&row.type==='subsection')row.title=normalizeCellText(el.innerHTML);
     });
     document.querySelectorAll('[data-action="edit-col"]').forEach(function(el){
       var table=findTable(el.dataset.table);
@@ -718,7 +798,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
 	    }catch(e){console.warn('remote load failed',e)}
 	    if(window.createSafeSupabasePresence)syncPresence=createSafeSupabasePresence({url:SUPABASE_URL,key:SUPABASE_KEY,hubId:'urinalysis',hubName:'Urinalysis',getSection:function(){var active=document.querySelector('.section.active');return active?active.id:'urinalysis'},toast:showToast});
 	  }
-  function scheduleSave(){clearTimeout(saveTimer);saveTimer=setTimeout(function(){saveNow('auto')},1600)}
+  function scheduleSave(){clearTimeout(saveTimer);saveTimer=setTimeout(function(){saveNow('auto')},4000)}
   async function saveNow(reason){
     if(!isAdmin){showToast('Unlock admin first',true);return false}
     clearTimeout(saveTimer);
@@ -733,7 +813,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     return '<button class="mini-btn" data-action="add-row" data-table="'+id+'">Add Row</button>'+
       '<button class="mini-btn" data-action="add-col" data-table="'+id+'">Add Column</button>'+
       '<button class="mini-btn" data-action="add-img-col" data-table="'+id+'">Add Image Column</button>'+
-      (state.tables[id]&&state.tables[id].custom?'<button class="mini-btn danger" data-action="delete-table" data-table="'+id+'">Delete Table</button>':'');
+      (tableSection(id,state.tables[id])==='renal'?'<button class="mini-btn" data-action="add-subsection" data-table="'+id+'">Add Subsection</button>':'')+
+      (state.tables[id]&&state.tables[id].custom?'<button class="mini-btn" data-action="move-custom-table" data-table="'+id+'" data-dir="-1">Move Up</button><button class="mini-btn" data-action="move-custom-table" data-table="'+id+'" data-dir="1">Move Down</button><button class="mini-btn danger" data-action="delete-table" data-table="'+id+'">Delete Table</button>':'');
   }
   function renderTable(id){
     var table=state.tables[id];
@@ -746,6 +827,10 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       return '<th><span class="col-label">'+escapeHtml(col.label)+'</span><input class="col-input" value="'+escapeHtml(col.label)+'" data-table="'+id+'" data-col="'+col.id+'" data-action="edit-col"/><button class="mini-btn danger admin-only" data-action="delete-col" data-table="'+id+'" data-col="'+col.id+'">Delete</button></th>';
     }).join('')+'<th class="admin-only">Rows</th></tr></thead>';
     var rows=table.rows.map(function(row){
+      if(row&&row.type==='subsection'){
+        var span=table.columns.length+1;
+        return '<tr class="table-subsection-row"><td colspan="'+span+'"><div class="subsection-tools"><div class="subsection-cell" contenteditable="'+editMode+'" data-action="edit-subsection" data-table="'+id+'" data-row="'+row.id+'">'+cellDisplayHtml(row.title||'Subsection')+'</div><button class="mini-btn danger admin-only" data-action="delete-row" data-table="'+id+'" data-row="'+row.id+'">Delete Subsection</button></div></td></tr>';
+      }
       var cells=table.columns.map(function(col){
         var value=row.cells&&row.cells[col.id]?row.cells[col.id]:'';
         if(col.type==='image'){
@@ -778,6 +863,30 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       }).join('');
       mount.innerHTML='<div class="custom-table-actions"><button type="button" class="mini-btn" data-action="add-custom-table" data-section="'+section+'">Add Table</button></div>'+cards;
     });
+  }
+  function moveCustomTable(tableId,dir){
+    var table=state.tables&&state.tables[tableId];
+    if(!table||!table.custom)return;
+    var section=tableSection(tableId,table);
+    var ids=Object.keys(state.tables||{}).filter(function(id){return state.tables[id]&&state.tables[id].custom&&tableSection(id,state.tables[id])===section});
+    var index=ids.indexOf(tableId);
+    var nextIndex=index+(Number(dir)||0);
+    if(index<0||nextIndex<0||nextIndex>=ids.length)return;
+    var moved=ids.slice();
+    var swap=moved[nextIndex];
+    moved[nextIndex]=moved[index];
+    moved[index]=swap;
+    var movedSet={};
+    ids.forEach(function(id){movedSet[id]=true});
+    var nextTables={};
+    var inserted=false;
+    Object.keys(state.tables).forEach(function(id){
+      if(!movedSet[id]){nextTables[id]=state.tables[id];return}
+      if(inserted)return;
+      moved.forEach(function(moveId){nextTables[moveId]=state.tables[moveId]});
+      inserted=true;
+    });
+    state.tables=nextTables;
   }
   function renderNotes(){
     document.querySelectorAll('[data-note-key]').forEach(function(el){
@@ -836,6 +945,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         '<label>Section note<textarea data-chart="'+chart.id+'" data-renal-chart-field="note">'+escapeHtml(chart.note||'')+'</textarea></label>'+
       '</div>'+
       '<div class="renal-node-controls" style="justify-content:flex-start;margin-bottom:8px">'+
+        '<button type="button" class="mini-btn" data-renal-action="move-chart" data-dir="-1" data-chart="'+chart.id+'">Move Tab Left</button>'+
+        '<button type="button" class="mini-btn" data-renal-action="move-chart" data-dir="1" data-chart="'+chart.id+'">Move Tab Right</button>'+
         '<button type="button" class="mini-btn danger" data-renal-action="delete-chart" data-chart="'+chart.id+'">Delete Section</button>'+
       '</div>'+
     '</details>';
@@ -850,7 +961,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       return '<button type="button" class="renal-tab '+(item.id===chart.id?'active':'')+'" data-renal-action="select-chart" data-chart="'+item.id+'">'+escapeHtml(item.title||'Renal Section')+'</button>';
     }).join('');
     content.innerHTML='<article class="card renal-card">'+
-      '<div class="renal-card-head"><div><h2>'+escapeHtml(chart.title||'Renal Section')+'</h2><p class="renal-note">'+cellDisplayHtml(chart.note||'Editable renal disease table. Add rows, columns, notes, and images in admin mode.')+'</p></div><button type="button" class="mini-btn" data-renal-action="export-chart" data-chart="'+chart.id+'">Export Current Renal Table</button></div>'+
+      '<div class="renal-card-head"><div><h2>'+escapeHtml(chart.title||'Renal Section')+'</h2>'+(chart.note?'<p class="renal-note">'+cellDisplayHtml(chart.note)+'</p>':'')+'</div><button type="button" class="mini-btn" data-renal-action="export-chart" data-chart="'+chart.id+'">Print / Save PDF</button></div>'+
       '<article class="card renal-table-card"><div class="card-title"><h2>'+escapeHtml((state.tables[chart.tableId]&&state.tables[chart.tableId].title)||chart.title+' Table')+'</h2><span class="tag">Table</span></div><div class="table-tools" data-tools-for="'+chart.tableId+'"></div><div class="table-slot" data-table-id="'+chart.tableId+'"></div></article>'+
       renalEditorHtml(chart)+
     '</article>';
@@ -1001,7 +1112,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   function addColumn(table,type){
     var col={id:uid('col'),label:type==='image'?'Image':'',type:type};
     table.columns.push(col);
-    table.rows.forEach(function(row){if(!row.cells)row.cells={};row.cells[col.id]=''});
+    table.rows.forEach(function(row){if(row.type==='subsection')return;if(!row.cells)row.cells={};row.cells[col.id]=''});
   }
   function addRow(table){
     var cells={};
@@ -1117,7 +1228,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         exitAdminLocally('Exited Admin. Conflict not overwritten; your edits stayed on this page.',true);
         return;
       }
-      showToast('Online save failed. Still in Admin.',true);
+      exitAdminLocally('Exited Admin. Supabase save failed; local draft kept for recovery.',true);
       return;
     }
     exitAdminLocally('Exited Admin');
@@ -1245,6 +1356,11 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       var row=table.rows.find(function(item){return item.id===el.dataset.row});
       if(row){row.cells[el.dataset.col]=normalizeCellText(el.innerHTML);saveDraft()}
     }
+    if(el.dataset.action==='edit-subsection'){
+      var sectionTable=findTable(el.dataset.table);
+      var sectionRow=sectionTable&&sectionTable.rows.find(function(item){return item.id===el.dataset.row});
+      if(sectionRow&&sectionRow.type==='subsection'){sectionRow.title=normalizeCellText(el.innerHTML);saveDraft()}
+    }
     if(el.dataset.action==='edit-col'){
       var t=findTable(el.dataset.table);
       var col=t.columns.find(function(item){return item.id===el.dataset.col});
@@ -1338,6 +1454,20 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       return;
     }
     if(!isAdmin||!editMode)return;
+    if(action==='move-chart'){
+      var charts=state.renal.charts||[];
+      var chartIndex=charts.findIndex(function(item){return item.id===btn.dataset.chart});
+      var targetIndex=chartIndex+(Number(btn.dataset.dir)||0);
+      if(chartIndex>-1&&targetIndex>-1&&targetIndex<charts.length){
+        var swapChart=charts[targetIndex];
+        charts[targetIndex]=charts[chartIndex];
+        charts[chartIndex]=swapChart;
+        state.renal.activeId=btn.dataset.chart;
+        saveDraft();
+        renderAll();
+      }
+      return;
+    }
     if(action==='add-chart'){
       var title='New Renal Section';
       var id='renal_'+uid('chart');
@@ -1396,7 +1526,22 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     saveDraft();
     renderAll();
   }
+  function selectMicroTab(id){
+    id=id||'cells';
+    document.querySelectorAll('[data-micro-tab]').forEach(function(tab){tab.classList.toggle('active',tab.dataset.microTab===id)});
+    document.querySelectorAll('[data-micro-panel]').forEach(function(panel){panel.classList.toggle('active',panel.dataset.microPanel===id)});
+  }
   document.addEventListener('click',function(e){
+    var exportBtn=e.target.closest('[data-export-tab]');
+    if(exportBtn){
+      exportUaTab(exportBtn.dataset.exportTab);
+      return;
+    }
+    var microTab=e.target.closest('[data-micro-tab]');
+    if(microTab){
+      selectMicroTab(microTab.dataset.microTab);
+      return;
+    }
     var uiBtn=e.target.closest('[data-ui-action]');
     if(uiBtn){
       var uiAction=uiBtn.dataset.uiAction;
@@ -1445,6 +1590,12 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       var section=btn.dataset.section||'overview';
       var id='custom_'+section+'_'+uid('table');
       state.tables[id]=newCustomTable(section);
+      saveDraft();
+      renderAll();
+      return;
+    }
+    if(btn.dataset.action==='move-custom-table'){
+      moveCustomTable(btn.dataset.table,btn.dataset.dir);
       saveDraft();
       renderAll();
       return;
@@ -1547,10 +1698,11 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(btn.dataset.action==='add-row')addRow(table);
     if(btn.dataset.action==='add-col')addColumn(table,'text');
     if(btn.dataset.action==='add-img-col')addColumn(table,'image');
+    if(btn.dataset.action==='add-subsection')addSubsection(table,'New Subsection');
     if(btn.dataset.action==='delete-row')table.rows=table.rows.filter(function(row){return row.id!==btn.dataset.row});
     if(btn.dataset.action==='delete-col'&&table.columns.length>1){
       table.columns=table.columns.filter(function(col){return col.id!==btn.dataset.col});
-      table.rows.forEach(function(row){delete row.cells[btn.dataset.col]});
+      table.rows.forEach(function(row){if(row.cells)delete row.cells[btn.dataset.col]});
     }
     saveDraft();
     renderAll();
@@ -1588,7 +1740,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     resizeImageFile(input.files[0],900,.78).then(function(dataUrl){
       var table=findTable(input.dataset.table);
       var row=table.rows.find(function(item){return item.id===input.dataset.row});
-      if(row){row.cells[input.dataset.col]=dataUrl;saveDraft();renderAll()}
+      if(row&&row.cells){row.cells[input.dataset.col]=dataUrl;saveDraft();renderAll()}
     }).catch(function(e){console.warn(e);showToast('Image upload failed',true)});
   });
   function tablePrintHtml(id){
@@ -1597,44 +1749,53 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var hasImages=table.columns.some(function(col){return col.type==='image'});
     var head='<tr>'+table.columns.map(function(col){return '<th class="'+(col.type==='image'?'print-image-col':'')+'">'+escapeHtml(col.label||'')+'</th>'}).join('')+'</tr>';
     var body=table.rows.map(function(row){
+      if(row&&row.type==='subsection')return '<tr class="print-subsection-row"><td colspan="'+table.columns.length+'">'+cellDisplayHtml(row.title||'Subsection')+'</td></tr>';
       return '<tr>'+table.columns.map(function(col){
         var value=row.cells&&row.cells[col.id]?row.cells[col.id]:'';
         if(col.type==='image')return '<td class="print-image-cell">'+(value?'<img src="'+escapeHtml(value)+'" alt="uploaded image"/>':'')+'</td>';
         return '<td>'+cellDisplayHtml(value)+'</td>';
       }).join('')+'</tr>';
     }).join('');
-    return '<div class="print-card print-table-card"><table class="print-table '+(hasImages?'has-images':'')+'"><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div>';
-  }
-  function worksheetTableFromId(id,title,note){
-    var table=state.tables&&state.tables[id];
-    if(!table)return null;
-    return {
-      title:title||table.title||'Worksheet Table',
-      note:note||'',
-      columns:table.columns||[],
-      rows:table.rows||[]
-    };
-  }
-  function selectedWorksheetTables(selected){
-    var tables=[];
-    selected.forEach(function(id){
-      if(id==='renal'){
-        ensureRenalDefaults(state);
-        (state.renal.charts||[]).forEach(function(chart){
-          var item=worksheetTableFromId(chart.tableId,chart.title||'Renal Diseases',chart.note||'');
-          if(item)tables.push(item);
-        });
-        return;
-      }
-      if(id!=='cases'){
-        var item=worksheetTableFromId(id,state.tables[id]&&state.tables[id].title,'');
-        if(item)tables.push(item);
-      }
-    });
-    return tables;
+    return '<div class="print-card print-table-card"><h2>'+escapeHtml(table.title||id)+'</h2><table class="print-table '+(hasImages?'has-images':'')+'"><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div>';
   }
   function printSection(title,ids){
-    return '<div class="print-page print-table-page"><h1 class="print-section-title">'+escapeHtml(title)+'</h1>'+ids.map(tablePrintHtml).join('')+'</div>';
+    var body=ids.map(tablePrintHtml).join('');
+    return body?'<div class="print-page print-table-page"><h1 class="print-section-title">'+escapeHtml(title)+'</h1>'+body+'</div>':'';
+  }
+  var UA_TAB_EXPORTS={
+    overview:{title:'Urinalysis Overview',orientation:'portrait',defaultScale:1,persistKey:'ua-overview-export-scale'},
+    screening:{title:'Macroscopic Urinalysis',orientation:'portrait',defaultScale:1,persistKey:'ua-macroscopic-export-scale'},
+    microscope:{title:'Microscopic Urinalysis',orientation:'landscape',defaultScale:.95,persistKey:'ua-microscopic-export-scale'},
+    renal:{title:'Renal Diseases',orientation:'landscape',defaultScale:.95,persistKey:'ua-renal-tab-export-scale',previewClass:'renal-print-preview',bodyClass:['printing','renal-printing'],scaleVar:'--ua-renal-print-scale'},
+    resources:{title:'Urinalysis Resources',orientation:'portrait',defaultScale:1,persistKey:'ua-resources-export-scale'},
+    simulation:{title:'Urinalysis Simulation Cases',orientation:'portrait',defaultScale:.95,persistKey:'ua-simulation-export-scale'}
+  };
+  var SECTION_EXPORT_ORDER={
+    overview:['overview_core','overview_specimen','overview_macro_micro'],
+    screening:['physical','chemical'],
+    microscope:['cells','casts','crystals','stains','microscopes','overview_misc'],
+    resources:['resources']
+  };
+  function sectionTableIds(section){
+    var order=SECTION_EXPORT_ORDER[section]||[];
+    return Object.keys(state.tables||{}).filter(function(id){
+      return state.tables[id]&&tableSection(id,state.tables[id])===section;
+    }).sort(function(a,b){
+      var ai=order.indexOf(a);
+      var bi=order.indexOf(b);
+      if(ai===-1&&bi===-1)return 0;
+      if(ai===-1)return 1;
+      if(bi===-1)return -1;
+      return ai-bi;
+    });
+  }
+  function renalChartTableIds(){
+    var ids=[];
+    ensureRenalDefaults(state);
+    (state.renal.charts||[]).forEach(function(chart){
+      if(chart&&chart.tableId&&ids.indexOf(chart.tableId)===-1)ids.push(chart.tableId);
+    });
+    return ids;
   }
   function renalChartPrintHtml(chart){
     chart=normalizeRenalChart(chart,0);
@@ -1643,45 +1804,69 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       '<h1 class="print-section-title">'+escapeHtml(chart.title||'Renal Diseases')+'</h1>'+
       (chart.note?'<p class="renal-note">'+cellDisplayHtml(chart.note)+'</p>':'')+
       (table?'<div class="renal-print-table">'+tablePrintHtml(chart.tableId)+'</div>':'')+
-    '</div>';
+      '</div>';
+  }
+  function printRenalSection(){
+    ensureRenalDefaults(state);
+    var html=(state.renal.charts||[]).map(renalChartPrintHtml).join('');
+    var chartIds=renalChartTableIds();
+    var extraIds=sectionTableIds('renal').filter(function(id){return chartIds.indexOf(id)===-1});
+    if(extraIds.length)html+=printSection('Renal Custom Tables',extraIds);
+    return html;
+  }
+  function clearPrintArea(){
+    var area=document.getElementById('printArea');
+    if(area)area.innerHTML='';
+    return area;
+  }
+  function openRegularPrintExport(title,html,options){
+    options=options||{};
+    var area=clearPrintArea();
+    if(!area)return;
+    if(!html){showToast('Nothing to export yet',true);return}
+    var bodyClass=options.bodyClass||'printing';
+    if(window.HubPdfExport){
+      window.HubPdfExport.open({
+        title:title,
+        orientation:options.orientation||'portrait',
+        allowOrientationToggle:true,
+        orientationPersistKey:options.orientationPersistKey||((options.persistKey||'ua-print-export')+'-orientation'),
+        defaultScale:options.defaultScale||1,
+        minScale:.45,
+        maxScale:1.15,
+        step:.01,
+        persistKey:options.persistKey||'ua-tab-export-scale',
+        printArea:area,
+        contentHtml:html,
+        previewClass:options.previewClass||'',
+        bodyClass:bodyClass,
+        scaleVar:options.scaleVar||'--hub-print-scale',
+        hint:options.hint||''
+      });
+      return;
+    }
+    area.innerHTML=html;
+    (Array.isArray(bodyClass)?bodyClass:String(bodyClass).split(/\s+/)).filter(Boolean).forEach(function(cls){document.body.classList.add(cls)});
+    showToast('Opening PDF export');
+    window.print();
+    setTimeout(function(){
+      document.body.classList.remove('printing','renal-printing');
+      area.innerHTML='';
+    },1200);
   }
   function exportRenalChart(chartId){
     collectVisibleState();
     saveLocal();
     var chart=findRenalChart(chartId);
     if(!chart)return;
-    var area=document.getElementById('printArea');
-    var worksheetTable=worksheetTableFromId(chart.tableId,chart.title||'Renal Diseases',chart.note||'');
-    function buildWorksheet(){
-      if(window.HubPdfExport&&window.HubPdfExport.tableWorksheetHtml&&worksheetTable){
-        return window.HubPdfExport.tableWorksheetHtml([worksheetTable],{itemsPerPage:6});
-      }
-      return renalChartPrintHtml(chart);
-    }
-    if(window.HubPdfExport){
-      window.HubPdfExport.open({
-        title:chart.title||'Renal Diseases',
-        orientation:'landscape',
-        orientationClassPrefix:'hub-worksheet',
-        defaultScale:1,
-        minScale:.35,
-        maxScale:1.15,
-        step:.01,
-        persistKey:'ua-renal-export-scale',
-        printArea:area,
-        buildContent:function(){return buildWorksheet()},
-        previewClass:'worksheet-print-preview',
-        bodyClass:['printing','worksheet-printing'],
-        scaleVar:'--hub-print-scale',
-        hint:'Worksheet mode prints bigger black text in landscape. Use the scale slider before saving as PDF.'
-      });
-      return;
-    }
-    area.innerHTML=buildWorksheet();
-    document.body.classList.add('printing','worksheet-printing');
-    showToast('Opening renal PDF export');
-    window.print();
-    setTimeout(function(){document.body.classList.remove('printing','worksheet-printing');area.innerHTML=''},1200);
+    openRegularPrintExport(chart.title||'Renal Diseases',renalChartPrintHtml(chart),{
+      orientation:'landscape',
+      defaultScale:.95,
+      persistKey:'ua-renal-chart-export-scale',
+      previewClass:'renal-print-preview',
+      bodyClass:['printing','renal-printing'],
+      scaleVar:'--ua-renal-print-scale'
+    });
   }
   function casePrintHtml(item,i){
     item=normalizeCase(item,i);
@@ -1691,113 +1876,33 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var objectRows=objects.map(function(obj){return '<tr><td>'+escapeHtml(obj.label||'')+'</td><td>'+escapeHtml(obj.type||'')+'</td><td>'+escapeHtml(obj.polarizes===false?'No':'Yes')+'</td><td>'+escapeHtml(obj.note||'')+'</td><td>'+(obj.image?'<img src="'+escapeHtml(obj.image)+'" alt="item image"/>':'')+'</td></tr>'}).join('');
     return '<div class="print-page"><h1 class="print-section-title">'+escapeHtml(item.name||('Case '+(i+1)))+'</h1>'+
       '<div class="print-card"><h2>Macroscopic</h2><div class="print-case-grid"><div><div class="print-cup"><div class="print-liquid" style="--urine:'+escapeHtml(item.urineColor||'#e8c23a')+';--opacity:'+escapeHtml(item.urineOpacity||.72)+'"></div><div class="print-sediment" style="--sediment:'+escapeHtml(item.sedimentColor||'#f7efe4')+'"></div><div class="print-foam" style="--foam:'+escapeHtml(item.foamColor||'#fff2a8')+'"></div></div></div><div><p><strong>Clarity:</strong> '+escapeHtml(item.clarity||'')+'</p><p>'+escapeHtml(item.macro||'')+'</p></div></div></div>'+
-      '<div class="print-card"><h2>Chemistry Strip</h2><div class="print-strip">'+pads.map(function(p){return '<div class="print-strip-pad"><span style="--pad-bg:'+escapeHtml(stripBackground(p.label,p.value))+'"></span><b>'+escapeHtml(p.label)+'</b><em>'+escapeHtml(p.value)+'</em></div>'}).join('')+'</div><p>'+escapeHtml(item.dipstick||'')+'</p></div>'+
+      '<div class="print-card"><h2>Chemistry Strip</h2><div class="print-strip">'+pads.map(function(p){return '<div class="print-strip-pad"><span style="--pad-bg:'+escapeHtml(stripBackground(p.label,p.value))+'"></span><strong>'+escapeHtml(p.label)+'</strong><em>'+escapeHtml(p.value)+'</em></div>'}).join('')+'</div><p>'+escapeHtml(item.dipstick||'')+'</p></div>'+
       '<div class="print-card"><h2>Specific Gravity</h2><p>'+escapeHtml(item.specificGravity||'')+'</p></div>'+
       '<div class="print-card"><h2>Microscopic</h2>'+micro+'<table><thead><tr><th>Item</th><th>Type</th><th>Polarizes</th><th>Note</th><th>Image</th></tr></thead><tbody>'+objectRows+'</tbody></table><div class="report-grid"><div class="report-cell report-label">Ep. Cells</div><div class="report-cell report-label">Yeast</div><div class="report-cell report-label">WBC</div><div class="report-cell report-label">Amorph</div><div class="report-cell report-label">RBC</div><div class="report-cell report-label">Mucus</div><div class="report-cell report-label">Bacteria</div><div class="report-cell report-label">Other</div><div class="report-cell report-wide report-label">Crystals: Type/#</div><div class="report-cell report-wide report-label">Casts: Type/#</div><div class="report-cell report-wide report-label">Additional notes:</div></div><p>'+escapeHtml(item.microscopy||'')+'</p></div>'+
       '<div class="print-card"><h2>Reveal Results</h2><p><strong>Clinical significance:</strong> '+escapeHtml(item.interpretation||'')+'</p><p><strong>Reveal:</strong> '+escapeHtml(item.reveal||'')+'</p>'+caseResultsRows(item)+'</div></div>';
   }
-  function selectedCaseIndexes(){
-    return Array.from(document.querySelectorAll('#caseExportOptions .case-export-check:checked')).map(function(box){return Number(box.value)}).filter(function(i){return state.simCases[i]});
-  }
-  function printCases(){
-    var indexes=selectedCaseIndexes();
+  function printCases(indexes){
+    indexes=Array.isArray(indexes)?indexes:(state.simCases||[]).map(function(_,i){return i});
     if(!indexes.length)return '';
     return indexes.map(function(i){return casePrintHtml(state.simCases[i],i)}).join('');
   }
-  function renderCaseExportOptions(){
-    var target=document.getElementById('caseExportOptions');
-    if(!target)return;
-    var customIds=Object.keys(state.tables||{}).filter(function(id){return state.tables[id]&&state.tables[id].custom});
-    var customHtml=customIds.length?'<div class="custom-export-box"><strong>Custom tables</strong>'+customIds.map(function(id){
-      return '<label><input type="checkbox" class="export-check" value="'+id+'" checked> '+escapeHtml(state.tables[id].title||'New Table')+'</label>';
-    }).join('')+'</div>':'';
-    target.innerHTML=customHtml+'<div class="case-export-box"><strong>Choose cases</strong>'+state.simCases.map(function(item,i){
-      return '<label><input type="checkbox" class="case-export-check" value="'+i+'" checked> '+escapeHtml(item.name||('Case '+(i+1)))+'</label>';
-    }).join('')+'</div>';
-  }
-  window.openExportModal=function(){renderCaseExportOptions();document.getElementById('exportModal').classList.add('visible')};
-  window.closeExportModal=function(){document.getElementById('exportModal').classList.remove('visible')};
-  window.selectAllExport=function(on){document.querySelectorAll('#exportModal .export-check,#caseExportOptions .case-export-check').forEach(function(box){box.checked=!!on})};
-  window.doExport=function(){
+  window.exportUaTab=function(section){
     collectVisibleState();
     saveLocal();
-	    if(isAdmin&&safeDoc)safeDoc.saveNow({reason:'manual'}).catch(function(e){console.warn(e)});
-    var selected=Array.from(document.querySelectorAll('#exportModal .export-check:checked')).map(function(box){return box.value});
-    if(!selected.length){showToast('Choose at least one section',true);return}
-    closeExportModal();
-    var worksheetMode=!!(document.getElementById('worksheetExportMode')&&document.getElementById('worksheetExportMode').checked&&window.HubPdfExport&&window.HubPdfExport.tableWorksheetHtml);
-    if(worksheetMode){
-      var worksheetTables=selectedWorksheetTables(selected);
-      function buildWorksheetExport(){
-        var worksheetHtml=worksheetTables.length?window.HubPdfExport.tableWorksheetHtml(worksheetTables,{itemsPerPage:6}):'';
-        if(selected.indexOf('cases')>-1)worksheetHtml+=printCases();
-        return worksheetHtml;
-      }
-      var worksheetHtml=buildWorksheetExport('landscape');
-      if(selected.indexOf('cases')>-1){
-        if(!worksheetHtml){showToast('Choose at least one case or table',true);openExportModal();return}
-      }
-      if(!worksheetHtml){showToast('Choose at least one table section',true);openExportModal();return}
-      var worksheetArea=document.getElementById('printArea');
-      window.HubPdfExport.open({
-        title:'Urinalysis Worksheet Export',
-        orientation:'landscape',
-        orientationClassPrefix:'hub-worksheet',
-        defaultScale:1,
-        minScale:.45,
-        maxScale:1.15,
-        step:.01,
-        persistKey:'ua-worksheet-export-scale',
-        printArea:worksheetArea,
-        buildContent:function(){return buildWorksheetExport()},
-        previewClass:'worksheet-print-preview',
-        bodyClass:['printing','worksheet-printing'],
-        scaleVar:'--hub-print-scale',
-        hint:'Worksheet form prints bigger black text in landscape. Use the scale slider before saving as PDF.'
-      });
-      return;
-    }
+    if(isAdmin&&safeDoc)safeDoc.saveNow({reason:'manual'}).catch(function(e){console.warn(e)});
+    section=section||((document.querySelector('.section.active')||{}).id)||'overview';
+    var config=UA_TAB_EXPORTS[section]||UA_TAB_EXPORTS.overview;
     var html='';
-    var includesRenal=selected.indexOf('renal')>-1;
-    selected.forEach(function(id){
-      if(id==='renal'){
-        ensureRenalDefaults(state);
-        html+=(state.renal.charts||[]).map(renalChartPrintHtml).join('');
-        return;
-      }
-      if(id!=='cases'&&state.tables[id])html+=printSection(state.tables[id].title||id,[id]);
-    });
-    if(selected.indexOf('cases')>-1){
-      var caseHtml=printCases();
-      if(!caseHtml){showToast('Choose at least one case',true);openExportModal();return}
-      html+=caseHtml;
-    }
-    var area=document.getElementById('printArea');
-    if(window.HubPdfExport){
-      window.HubPdfExport.open({
-        title:'Urinalysis Hub Export',
-        orientation:includesRenal?'landscape':'portrait',
-        defaultScale:includesRenal?.8:1,
-        minScale:.45,
-        maxScale:1.15,
-        step:.01,
-        persistKey:includesRenal?'ua-hub-renal-export-scale':'ua-hub-export-scale',
-        printArea:area,
-        contentHtml:html,
-        previewClass:includesRenal?'renal-print-preview':'',
-        bodyClass:includesRenal?['printing','renal-printing']:'printing',
-        scaleVar:includesRenal?'--ua-renal-print-scale':'--hub-print-scale',
-        hint:'Use this scale before Chrome opens Save as PDF.'
-      });
-      return;
-    }
-    area.innerHTML=html;
-    document.body.classList.add('printing');
-    showToast('Opening PDF export');
-    window.print();
-    setTimeout(function(){document.body.classList.remove('printing');area.innerHTML=''},1200);
+    if(section==='renal')html=printRenalSection();
+    else if(section==='simulation')html=printCases();
+    else html=printSection(config.title,sectionTableIds(section));
+    openRegularPrintExport(config.title,html,config);
   };
-  window.addEventListener('afterprint',function(){document.body.classList.remove('printing','renal-printing','worksheet-printing');document.getElementById('printArea').innerHTML=''});
+  window.openExportModal=window.exportUaTab;
+  window.closeExportModal=function(){clearPrintArea()};
+  window.selectAllExport=function(){};
+  window.doExport=function(){exportUaTab()};
+  window.addEventListener('afterprint',function(){document.body.classList.remove('printing','renal-printing');document.getElementById('printArea').innerHTML=''});
   window.addEventListener('beforeunload',function(){collectVisibleState();saveLocal()});
   window.addEventListener('load',function(){
     setTimeout(function(){

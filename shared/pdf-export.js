@@ -18,6 +18,13 @@
       return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch];
     });
   }
+  function decodeEntities(value){
+    var box=document.createElement('textarea');
+    box.innerHTML=String(value==null?'':value);
+    var once=box.value;
+    box.innerHTML=once;
+    return box.value;
+  }
   function ensureStyle(){
     if(document.getElementById(styleId))return;
     var style=document.createElement('style');
@@ -91,15 +98,16 @@
       '.hub-worksheet-six .hub-worksheet-info{font-size:8.2px;line-height:1.08;padding:.045in .055in;text-align:left!important;word-break:normal;overflow-wrap:anywhere}',
       '.hub-worksheet-six .hub-worksheet-fact{margin-bottom:.025in}',
       '.hub-worksheet-six .hub-worksheet-fact strong{font-size:7px;letter-spacing:0}',
-      '.hub-worksheet-portrait .hub-worksheet-four .hub-worksheet-page{grid-template-columns:1fr;grid-template-rows:repeat(4,1fr);gap:.12in;padding:.16in}',
-      '.hub-worksheet-portrait .hub-worksheet-four .hub-worksheet-card{padding:.08in;gap:.05in}',
-      '.hub-worksheet-portrait .hub-worksheet-four .hub-worksheet-card h2{font-size:16px}',
-      '.hub-worksheet-portrait .hub-worksheet-four .hub-worksheet-row{grid-template-columns:.9fr 2.1fr;gap:.09in}',
-      '.hub-worksheet-portrait .hub-worksheet-four .hub-worksheet-visual{padding:.04in}',
-      '.hub-worksheet-portrait .hub-worksheet-four .hub-worksheet-visual img{width:100%;height:100%;object-fit:cover}',
-      '.hub-worksheet-portrait .hub-worksheet-four .hub-worksheet-info{font-size:11px;line-height:1.18;padding:.07in .08in}',
-      '.hub-worksheet-portrait .hub-worksheet-four .hub-worksheet-fact strong{font-size:9px}',
-      '@media print{body.worksheet-printing #printArea{display:block!important;background:#fff;color:#000}body.worksheet-printing #printArea .hub-worksheet{width:100%}body.worksheet-printing #printArea .hub-worksheet-page{height:7.45in;overflow:hidden}body.hub-worksheet-portrait #printArea .hub-worksheet-page{height:10.45in}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-page{grid-template-columns:1fr;grid-template-rows:repeat(4,1fr);gap:.12in;padding:.16in}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-card{padding:.08in;gap:.05in}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-card h2{font-size:16px}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-row{grid-template-columns:minmax(1in,max-content) 1fr;gap:.09in}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-visual{padding:.04in}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-visual img{max-width:1.5in;max-height:1in;object-fit:contain}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-info{font-size:11px;line-height:1.18;padding:.07in .08in}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-fact strong{font-size:9px}body.hub-worksheet-portrait #printArea .hub-worksheet-six .hub-worksheet-page{grid-template-columns:1fr;grid-template-rows:repeat(6,minmax(0,1fr));gap:.07in;padding:.12in}body.hub-worksheet-portrait #printArea .hub-worksheet-six .hub-worksheet-card{padding:.055in;gap:.035in}body.hub-worksheet-portrait #printArea .hub-worksheet-six .hub-worksheet-card h2{font-size:13px;line-height:1;padding-bottom:.025in}body.hub-worksheet-portrait #printArea .hub-worksheet-six .hub-worksheet-row{grid-template-columns:minmax(.85in,max-content) 1fr;gap:.06in}body.hub-worksheet-portrait #printArea .hub-worksheet-six .hub-worksheet-visual{padding:.025in;min-width:.85in;max-width:1.3in}body.hub-worksheet-portrait #printArea .hub-worksheet-six .hub-worksheet-visual img{max-width:1.2in;max-height:.72in;object-fit:contain}body.hub-worksheet-portrait #printArea .hub-worksheet-six .hub-worksheet-info{font-size:8.9px;line-height:1.1;padding:.045in .055in}body.hub-worksheet-portrait #printArea .hub-worksheet-six .hub-worksheet-fact strong{font-size:7.6px}body.worksheet-printing #printArea .hub-worksheet-card{box-shadow:none}.hub-pdf-modal{display:none!important}}',
+      '.hub-worksheet-portrait .hub-worksheet-four .hub-worksheet-page{grid-template-columns:1fr;grid-template-rows:repeat(4,minmax(0,1fr));gap:.06in;padding:.1in}',
+      '.hub-worksheet-portrait .hub-worksheet-four .hub-worksheet-card{padding:.04in;gap:.025in}',
+      '.hub-worksheet-portrait .hub-worksheet-four .hub-worksheet-card h2{font-size:13px;line-height:1;padding-bottom:.02in}',
+      '.hub-worksheet-portrait .hub-worksheet-four .hub-worksheet-row{grid-template-columns:minmax(2.15in,2.55in) minmax(0,1fr);gap:.045in;height:100%}',
+      '.hub-worksheet-portrait .hub-worksheet-four .hub-worksheet-visual{padding:.025in;min-width:2.15in;max-width:2.55in;align-self:stretch}',
+      '.hub-worksheet-portrait .hub-worksheet-four .hub-worksheet-visual img{max-width:100%;max-height:100%;width:100%;height:100%;object-fit:contain}',
+      '.hub-worksheet-portrait .hub-worksheet-four .hub-worksheet-info{font-size:6.25px;line-height:1.01;padding:.03in .035in;text-align:left!important}',
+      '.hub-worksheet-portrait .hub-worksheet-four .hub-worksheet-fact{margin-bottom:.012in}',
+      '.hub-worksheet-portrait .hub-worksheet-four .hub-worksheet-fact strong{font-size:5.7px;letter-spacing:0}',
+      '@media print{body.worksheet-printing #printArea{display:block!important;background:#fff;color:#000}body.worksheet-printing #printArea .hub-worksheet{width:100%}body.worksheet-printing #printArea .hub-worksheet-page{height:7.45in;overflow:hidden}body.hub-worksheet-portrait #printArea .hub-worksheet-page{height:10.45in}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-page{grid-template-columns:1fr;grid-template-rows:repeat(4,minmax(0,1fr));gap:.06in;padding:.1in}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-card{padding:.04in;gap:.025in}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-card h2{font-size:13px;line-height:1;padding-bottom:.02in}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-row{grid-template-columns:minmax(2.15in,2.55in) minmax(0,1fr);gap:.045in;height:100%}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-visual{padding:.025in;min-width:2.15in;max-width:2.55in;align-self:stretch}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-visual img{max-width:100%;max-height:100%;width:100%;height:100%;object-fit:contain}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-info{font-size:6.25px;line-height:1.01;padding:.03in .035in;text-align:left!important}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-fact{margin-bottom:.012in}body.hub-worksheet-portrait #printArea .hub-worksheet-four .hub-worksheet-fact strong{font-size:5.7px;letter-spacing:0}body.hub-worksheet-portrait #printArea .hub-worksheet-six .hub-worksheet-page{grid-template-columns:1fr;grid-template-rows:repeat(6,minmax(0,1fr));gap:.06in;padding:.1in}body.hub-worksheet-portrait #printArea .hub-worksheet-six .hub-worksheet-card{padding:.045in;gap:.025in}body.hub-worksheet-portrait #printArea .hub-worksheet-six .hub-worksheet-card h2{font-size:12px;line-height:1;padding-bottom:.02in}body.hub-worksheet-portrait #printArea .hub-worksheet-six .hub-worksheet-row{grid-template-columns:minmax(.72in,.95in) minmax(0,1fr);gap:.045in}body.hub-worksheet-portrait #printArea .hub-worksheet-six .hub-worksheet-visual{padding:.02in;min-width:.72in;max-width:.95in;align-self:start}body.hub-worksheet-portrait #printArea .hub-worksheet-six .hub-worksheet-visual img{max-width:.88in;max-height:.58in;object-fit:contain}body.hub-worksheet-portrait #printArea .hub-worksheet-six .hub-worksheet-info{font-size:7.4px;line-height:1.04;padding:.035in .045in;text-align:left!important}body.hub-worksheet-portrait #printArea .hub-worksheet-six .hub-worksheet-fact{margin-bottom:.018in}body.hub-worksheet-portrait #printArea .hub-worksheet-six .hub-worksheet-fact strong{font-size:6.3px;letter-spacing:0}body.worksheet-printing #printArea .hub-worksheet-card{box-shadow:none}.hub-pdf-modal{display:none!important}}',
       '.hub-pdf-no-preview .hub-pdf-box{width:min(520px,94vw)}',
       '.hub-pdf-no-preview .hub-pdf-layout{display:block}',
       '.hub-pdf-no-preview .hub-pdf-preview{display:none}',
@@ -178,22 +186,61 @@
     root.querySelectorAll('.hub-worksheet-card').forEach(function(card){
       var info=card.querySelector('.hub-worksheet-info');
       var title=card.querySelector('h2');
+      var strongs=card.querySelectorAll('.hub-worksheet-fact strong');
+      var row=card.querySelector('.hub-worksheet-row');
+      var visual=card.querySelector('.hub-worksheet-visual');
+      var image=visual?visual.querySelector('img'):null;
       if(!info||!card.clientHeight)return;
       info.style.fontSize='';
       info.style.lineHeight='';
+      info.style.letterSpacing='';
+      if(row)row.style.gridTemplateColumns='';
+      if(visual){
+        visual.style.minWidth='';
+        visual.style.maxWidth='';
+        visual.style.padding='';
+      }
+      if(image){
+        image.style.maxWidth='';
+        image.style.maxHeight='';
+      }
       if(title)title.style.fontSize='';
+      strongs.forEach(function(strong){strong.style.fontSize='';strong.style.letterSpacing='';});
       var infoSize=parseFloat(getComputedStyle(info).fontSize)||11;
       var titleSize=title?(parseFloat(getComputedStyle(title).fontSize)||16):16;
+      var strongSize=strongs.length?(parseFloat(getComputedStyle(strongs[0]).fontSize)||8):8;
       var tries=0;
-      while(tries<18&&(card.scrollHeight>card.clientHeight+1||info.scrollHeight>info.clientHeight+1)&&infoSize>7){
-        infoSize-=.45;
+      while(tries<52&&(card.scrollHeight>card.clientHeight+1||info.scrollHeight>info.clientHeight+1)&&infoSize>4.05){
+        infoSize-=.35;
         info.style.fontSize=infoSize.toFixed(2)+'px';
-        info.style.lineHeight='1.08';
-        if(title&&titleSize>10){
-          titleSize-=.35;
+        info.style.lineHeight=infoSize<5.8?'1':'1.02';
+        info.style.letterSpacing='0';
+        if(title&&titleSize>8.7){
+          titleSize-=.25;
           title.style.fontSize=titleSize.toFixed(2)+'px';
         }
+        if(strongSize>4.05){
+          strongSize-=.25;
+          strongs.forEach(function(strong){strong.style.fontSize=strongSize.toFixed(2)+'px';strong.style.letterSpacing='0';});
+        }
         tries+=1;
+      }
+      if(card.scrollHeight>card.clientHeight+1||info.scrollHeight>info.clientHeight+1){
+        while(tries<72&&(card.scrollHeight>card.clientHeight+1||info.scrollHeight>info.clientHeight+1)&&infoSize>3.65){
+          infoSize-=.18;
+          info.style.fontSize=infoSize.toFixed(2)+'px';
+          info.style.lineHeight='1';
+          info.style.letterSpacing='0';
+          if(title&&titleSize>8.2){
+            titleSize-=.2;
+            title.style.fontSize=titleSize.toFixed(2)+'px';
+          }
+          if(strongSize>3.85){
+            strongSize-=.16;
+            strongs.forEach(function(strong){strong.style.fontSize=strongSize.toFixed(2)+'px';strong.style.letterSpacing='0';});
+          }
+          tries+=1;
+        }
       }
     });
   }
@@ -231,7 +278,7 @@
     var previewPage=modal.querySelector('[data-pdf-preview-page]');
     var previewContent=modal.querySelector('[data-pdf-preview-content]');
     title.textContent=options.modalTitle||'Export PDF Settings';
-    hint.textContent=options.hint||'Chrome may not show a scale box, so this slider scales the page before the print dialog opens.';
+    hint.textContent=Object.prototype.hasOwnProperty.call(options,'hint')?options.hint:'Chrome may not show a scale box, so this slider scales the page before the print dialog opens.';
     function orientationLabel(){
       return currentOrientation==='portrait'?'Portrait':'Landscape';
     }
@@ -333,7 +380,9 @@
       }
       var area=options.printArea||document.getElementById(options.printAreaId||'printArea');
       if(!area)return;
-      if(typeof options.buildContent==='function')area.innerHTML=options.buildContent(scale,currentOrientation)||'';
+      if(!hasIframePreview()&&hasPreview()&&previewContent&&previewContent.innerHTML){
+        area.innerHTML=previewContent.innerHTML;
+      }else if(typeof options.buildContent==='function')area.innerHTML=options.buildContent(scale,currentOrientation)||'';
       else if(Object.prototype.hasOwnProperty.call(options,'contentHtml'))area.innerHTML=options.contentHtml||'';
       var classList=classes(options.bodyClass||'printing');
       if(orientationPrefix)classList.push(orientationPrefix+'-'+currentOrientation);
@@ -360,17 +409,54 @@
     modal.classList.add('visible');
     requestAnimationFrame(fitPreview);
   }
+  function richTextHtml(value){
+    var text=decodeEntities(value);
+    var tags=[];
+    text=text
+      .replace(/<\s*(\/?)\s*(?:b|strong)\b[^>]*>/gi,function(_,close){
+        var token='@@HUB_WORKSHEET_BOLD_'+tags.length+'@@';
+        tags.push(close?'</strong>':'<strong>');
+        return token;
+      })
+      .replace(/<br\s*\/?>/gi,'\n')
+      .replace(/<\/(?:div|p|li|tr)>/gi,'\n')
+      .replace(/<li[^>]*>/gi,'\n')
+      .replace(/<[^>\n]{1,120}>/g,'');
+    var html=escapeHtml(text).replace(/\n/g,'<br>');
+    tags.forEach(function(tag,i){
+      html=html.replace('@@HUB_WORKSHEET_BOLD_'+i+'@@',tag);
+    });
+    return html;
+  }
   function worksheetCell(value,type){
     if(type==='image'){
-      return value?'<img src="'+escapeHtml(value)+'" alt="worksheet image">':'<span class="hub-worksheet-empty">Image</span>';
+      var src=imageSrc(value);
+      return src?'<img src="'+escapeHtml(src)+'" alt="worksheet image">':'<span class="hub-worksheet-empty">Image</span>';
     }
-    return String(value==null?'':value)
-      .split(/\n/)
-      .map(function(part){return escapeHtml(part)})
-      .join('<br>');
+    return richTextHtml(value);
+  }
+  function imageSrc(value){
+    var raw=String(value==null?'':value).trim();
+    if(!raw)return '';
+    var match=raw.match(/<img\b[^>]*\bsrc\s*=\s*["']?([^"'\s>]+)["']?/i);
+    if(match&&match[1])return match[1].replace(/&amp;/g,'&');
+    if(/^(data:image\/|blob:|https?:\/\/|file:\/\/)/i.test(raw))return raw;
+    return '';
+  }
+  function looksLikeImageColumn(col){
+    if(!col)return false;
+    if(col.type==='image')return true;
+    return /image|photo|picture|micrograph|plate|gram stain/i.test(String(col.label||''));
   }
   function plainText(value){
-    return String(value==null?'':value).replace(/<br\s*\/?>/gi,'\n').replace(/<[^>]+>/g,'').trim();
+    return decodeEntities(value)
+      .replace(/<br\s*\/?>/gi,'\n')
+      .replace(/<\/(?:div|p|li|tr)>/gi,'\n')
+      .replace(/<li[^>]*>/gi,'\n')
+      .replace(/<[^>]+>/g,'')
+      .replace(/\s+\n/g,'\n')
+      .replace(/\n\s+/g,'\n')
+      .trim();
   }
   function initials(value){
     var text=plainText(value);
@@ -396,8 +482,17 @@
       col=col||{};
       return {id:col.id||String(index),label:col.label||'',type:col.type||'text',index:index};
     });
-    var imageColumns=columns.filter(function(col){return col.type==='image'});
-    var rows=table.rows.length?table.rows:[{cells:{}}];
+    var imageColumns=columns.filter(looksLikeImageColumn);
+    var activeSubsection='';
+    var rows=(table.rows||[]).reduce(function(out,row){
+      if(row&&row.type==='subsection'){
+        activeSubsection=plainText(row.title||'');
+        return out;
+      }
+      if(row&&row.cells)out.push(Object.assign({},row,{_worksheetSubsection:activeSubsection}));
+      return out;
+    },[]);
+    if(!rows.length)rows=[{cells:{}}];
     return rows.map(function(row,index){
       var cells=(row&&row.cells)||{};
       var titleColumn=columns.find(function(col){
@@ -407,17 +502,23 @@
       var title=titleColumn ? plainText(cells[titleColumn.id]) : '';
       if(!title)title=table.title+(rows.length>1?' '+(index+1):'');
       var imageColumn=imageColumns.find(function(col){
-        return Object.prototype.hasOwnProperty.call(cells,col.id)&&plainText(cells[col.id]);
+        return Object.prototype.hasOwnProperty.call(cells,col.id)&&imageSrc(cells[col.id]);
+      }) || columns.find(function(col){
+        if(titleColumn&&col.id===titleColumn.id)return false;
+        return Object.prototype.hasOwnProperty.call(cells,col.id)&&imageSrc(cells[col.id]);
       });
-      var imageValue=imageColumn&&Object.prototype.hasOwnProperty.call(cells,imageColumn.id)?cells[imageColumn.id]:'';
+      var imageValue=imageColumn&&Object.prototype.hasOwnProperty.call(cells,imageColumn.id)?imageSrc(cells[imageColumn.id]):'';
       var facts=columns.filter(function(col){
-        if(col.type==='image')return false;
+        if(imageColumn&&col.id===imageColumn.id)return false;
+        if(looksLikeImageColumn(col))return false;
+        if(Object.prototype.hasOwnProperty.call(cells,col.id)&&imageSrc(cells[col.id]))return false;
         if(titleColumn&&col.id===titleColumn.id)return false;
         return true;
       }).map(function(col){
         var value=Object.prototype.hasOwnProperty.call(cells,col.id)?cells[col.id]:'';
         return {label:col.label||'Notes',value:value};
       }).filter(function(fact){return plainText(fact.value);});
+      if(row._worksheetSubsection)facts.unshift({label:'Subsection',value:row._worksheetSubsection});
       if(table.note)facts.unshift({label:'Section',value:table.note});
       if(!facts.length)facts.push({label:'Notes',value:''});
       return {
@@ -462,5 +563,5 @@
     return '<div class="hub-worksheet'+modeClass+'">'+pages+'</div>';
   }
   window.addEventListener('afterprint',cleanup);
-  window.HubPdfExport={open:open,escapeHtml:escapeHtml,tableWorksheetHtml:tableWorksheetHtml};
+  window.HubPdfExport={open:open,escapeHtml:escapeHtml};
 })();

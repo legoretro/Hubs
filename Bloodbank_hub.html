@@ -580,49 +580,6 @@ textarea{resize:none;overflow:hidden}
   </div>
 </div>
 <!-- SAVE TOAST -->
-<!-- EXPORT MODAL -->
-<div class="modal-overlay" id="exportModal">
-  <div class="modal-box" style="max-width:500px;max-height:90vh;overflow-y:auto">
-    <div style="font-size:28px;margin-bottom:8px">⬇</div>
-    <h3>Export to PDF</h3>
-    <p style="margin-bottom:16px">Choose map pages to include. Encyclopedia exports live inside the Encyclopedia tab.</p>
-    <div style="text-align:left;margin-bottom:16px">
-      <div style="font-size:11px;font-weight:700;color:var(--wine);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">Pages</div>
-      <label style="display:flex;align-items:center;gap:8px;margin-bottom:7px;font-size:13px;cursor:pointer"><input type="checkbox" id="expRbc" checked> RBC Antigen Map</label>
-      <label style="display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:13px;cursor:pointer"><input type="checkbox" id="expChrom" checked> Chromosome Map</label>
-      <div style="display:flex;gap:8px">
-        <button onclick="selectAllExport(true)" class="btn btn-ghost btn-sm">Select All</button>
-        <button onclick="selectAllExport(false)" class="btn btn-ghost btn-sm">Clear All</button>
-      </div>
-    </div>
-    <div style="display:flex;gap:8px;justify-content:center">
-      <button class="btn btn-primary" onclick="doExport()">Export PDF</button>
-      <button class="btn btn-ghost" onclick="document.getElementById('exportModal').classList.remove('visible')">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="encExportModal">
-  <div class="modal-box" style="max-width:560px;max-height:90vh;overflow-y:auto">
-    <div style="font-size:28px;margin-bottom:8px">📄</div>
-    <h3>Encyclopedia Export Options</h3>
-    <p style="margin-bottom:10px">Choose one export, then confirm. This prevents accidental print windows.</p>
-    <div class="export-choice-list">
-      <label><input type="radio" name="encExportKind" value="current" checked><span><strong>Current system, one page</strong><br><small>Compact binder page for the selected usual suspect.</small></span></label>
-      <label><input type="radio" name="encExportKind" value="currentWorksheet"><span><strong>Current system worksheet</strong><br><small>Bigger black-ink study blocks. History stays separate.</small></span></label>
-      <label><input type="radio" name="encExportKind" value="histories"><span><strong>All histories</strong><br><small>Condensed history cards.</small></span></label>
-      <label><input type="radio" name="encExportKind" value="study"><span><strong>All study references</strong><br><small>Condensed worksheet fields.</small></span></label>
-      <label><input type="radio" name="encExportKind" value="frequencies"><span><strong>All frequencies</strong><br><small>C/B/A/I/H plus notes table.</small></span></label>
-      <label><input type="radio" name="encExportKind" value="freqShortBlank"><span><strong>Short freq. to memorize</strong><br><small>Blank practice sheet with antigen + memo only.</small></span></label>
-      <label><input type="radio" name="encExportKind" value="lesser"><span><strong>Lesser systems</strong><br><small>The lesser-known system table.</small></span></label>
-    </div>
-    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-      <button class="btn btn-primary" onclick="runEncyclopediaExport()">Export Selected</button>
-      <button class="btn btn-ghost" onclick="document.getElementById('encExportModal').classList.remove('visible')">Cancel</button>
-    </div>
-  </div>
-</div>
-
 <div class="modal-overlay" id="flashcardModal">
   <div class="flash-modal">
     <div class="flash-top">
@@ -650,7 +607,6 @@ textarea{resize:none;overflow:hidden}
       <button class="nav-tab" onclick="showSection('chromosomes',this)">🧬 Chromosome Map</button>
       <button class="nav-tab" onclick="showSection('crossmatch',this)">🧪 Simulation Lab</button>
       <button class="nav-tab" onclick="showSection('resources',this)">📖 Resources</button>
-      <button class="nav-tab" onclick="openExportModal()" style="background:rgba(232,168,50,.2);border-color:rgba(232,168,50,.4);color:#e8c870">⬇ Export PDF</button>
     </nav>
     <span class="admin-badge" id="adminBadge">Admin</span>
     <button class="admin-lock-btn" onclick="toggleAdminLogin()" id="adminBtn">Admin</button>
@@ -663,11 +619,10 @@ textarea{resize:none;overflow:hidden}
       <h2><span class="hero-emoji">🩸</span> Blood Group System Encyclopedia</h2>
     </div>
     <div class="sys-card" style="border-top:3px solid var(--crimson);margin-bottom:16px">
-      <div class="sec-label" style="margin-bottom:10px">Encyclopedia Export</div>
+      <div class="sec-label" style="margin-bottom:10px">Encyclopedia PDF</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-primary btn-sm" onclick="openEncyclopediaExportModal()">Export Options</button>
+        <button class="btn btn-primary btn-sm" onclick="exportCurrentSystemPage()">Print / Save PDF</button>
         <button class="flash-launch" onclick="openFlashcardPractice()">Ready to practice flashcards? Click here.</button>
-        <span style="font-size:12px;color:var(--warm-grey);align-self:center">Exports stay under options. Flashcards pull from the editable encyclopedia.</span>
       </div>
     </div>
     <div class="enc-layout">
@@ -698,7 +653,8 @@ textarea{resize:none;overflow:hidden}
       <h2><span class="hero-emoji">🧬</span> Blood Group Chromosome Map</h2>
     </div>
     <div class="sys-card sys-card-accent">
-      <div class="sec-label" style="margin-bottom:16px">Usual suspect blood group chromosomes only.</div>
+      <div class="sec-label" style="margin-bottom:12px">Usual suspect blood group chromosomes only.</div>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:12px"><button class="btn btn-primary btn-sm" onclick="exportChromosomeMapPage()">Print / Save PDF</button></div>
       <div id="chromMapContainer"></div>
     </div>
   </div>
@@ -711,6 +667,7 @@ textarea{resize:none;overflow:hidden}
     </div>
     <div class="sys-card sys-card-accent" id="rbcDiagramCard">
       <div class="sec-label" style="margin-bottom:12px">All major blood group antigens shown in their correct membrane location</div>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:12px"><button class="btn btn-primary btn-sm" onclick="exportRbcMapPage()">Print / Save PDF</button></div>
       <div id="rbcDiagramContainer"></div>
     </div>
     <div class="sys-card" style="margin-top:14px;display:none">
@@ -1004,7 +961,7 @@ async function initApp() {
 
 function scheduleSave() {
   clearTimeout(saveTimer);
-  saveTimer = setTimeout(() => saveNotesNow('auto'), 1600);
+  saveTimer = setTimeout(() => saveNotesNow('auto'), 4000);
 }
 
 async function saveNotesNow(reason = 'auto') {
@@ -1017,7 +974,7 @@ async function saveNotesNow(reason = 'auto') {
 
 function scheduleXmSave() {
   clearTimeout(xmSaveTimer);
-  xmSaveTimer = setTimeout(() => saveXmCasesNow('auto'), 1600);
+  xmSaveTimer = setTimeout(() => saveXmCasesNow('auto'), 4000);
 }
 
 async function saveXmCasesNow(reason = 'auto') {
@@ -3922,24 +3879,17 @@ const CHROM_H = [200,192,184,178,170,162,156,150,144,136,132,128,124,120,116,112
 <script>
 // ── EXPORT MODAL ──────────────────────────────────────────────
 function openExportModal() {
-  document.getElementById('exportModal').classList.add('visible');
+  exportRbcMapPage();
 }
 function selectAllExport(val) {
   var boxes = document.querySelectorAll('#exportModal input[type="checkbox"]');
   for (var i = 0; i < boxes.length; i++) { boxes[i].checked = val; }
 }
 function openEncyclopediaExportModal() {
-  document.getElementById('encExportModal').classList.add('visible');
+  exportCurrentSystemPage();
 }
 function runEncyclopediaExport() {
-  var picked = document.querySelector('input[name="encExportKind"]:checked');
-  var kind = picked ? picked.value : 'current';
-  document.getElementById('encExportModal').classList.remove('visible');
-  if (kind === 'current') exportCurrentSystemPage();
-  else if (kind === 'currentWorksheet') exportCurrentSystemWorksheetPage();
-  else if (kind === 'lesser') exportLesserSystemsPage();
-  else if (kind === 'freqShortBlank') exportShortFrequencyMemorizeBlank();
-  else exportEncyclopediaSet(kind);
+  exportCurrentSystemPage();
 }
 
 function buildAllFrequenciesExportPage(keys) {
@@ -3994,7 +3944,7 @@ function buildShortFrequencyMemorizeExportPage(blank) {
     });
   });
   return '<section class="page freq-short-page">' +
-    '<h1>Short Frequency to Memorize</h1>' +
+    '<h1>Frequency to Memorize Only</h1>' +
     '<table class="freq-short-table">' +
       '<thead><tr><th>System</th><th>Antigen</th><th>Frequency to Memorize</th></tr></thead>' +
       '<tbody>' + rows + '</tbody>' +
@@ -4002,8 +3952,32 @@ function buildShortFrequencyMemorizeExportPage(blank) {
   '</section>';
 }
 
+function decodeExportText(value) {
+  var box = document.createElement('textarea');
+  box.innerHTML = String(value == null ? '' : value);
+  var once = box.value;
+  box.innerHTML = once;
+  return box.value;
+}
+
 function exportText(value) {
-  return escText(value).replace(/\n/g, '<br>');
+  var text = decodeExportText(value);
+  var tags = [];
+  text = text
+    .replace(/<\s*(\/?)\s*(?:b|strong)\b[^>]*>/gi, function(_, close) {
+      var token = '@@BB_EXPORT_BOLD_' + tags.length + '@@';
+      tags.push(close ? '</strong>' : '<strong>');
+      return token;
+    })
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/(?:div|p|li|tr)>/gi, '\n')
+    .replace(/<li[^>]*>/gi, '\n')
+    .replace(/<[^>\n]{1,120}>/g, '');
+  var html = escText(text).replace(/\n/g, '<br>');
+  tags.forEach(function(tag, i) {
+    html = html.replace('@@BB_EXPORT_BOLD_' + i + '@@', tag);
+  });
+  return html;
 }
 
 function buildExportWsRows(sys, skey) {
@@ -4067,79 +4041,6 @@ function buildFullSystemExportPage(key) {
     '<div class="binder-card binder-freq" style="border-top-color:' + sys.color + '"><div class="card-label">Antigen Frequencies</div><table class="freq-export"><thead><tr><th>Antigen</th><th>C</th><th>B</th><th>A</th><th>I</th><th>H</th><th>Memo</th><th>Population Different In</th><th>Higher or Lower?</th></tr></thead><tbody>' + buildExportFrequencyRows(skey) + '</tbody></table></div>' +
     '<div class="binder-card binder-study" style="border-top-color:' + sys.color + '"><div class="card-label">Study Reference</div><table class="study-table"><tbody>' + studyRows + '</tbody></table></div>' +
     '<div class="binder-card binder-notes" style="border-top-color:' + sys.color + '"><div class="card-label">History</div><div class="binder-history"><div class="tl">' + history + '</div></div></div>' +
-  '</section>';
-}
-
-function buildCurrentSystemWorksheetExportPage(key) {
-  var sys = SYSTEMS[key];
-  if (!sys) return '';
-  var skey = sys.notes_key;
-  var data = notesData[skey] || {};
-  function fact(label, value) {
-    if (!value) return '';
-    return '<p><strong>' + exportText(label) + ':</strong> ' + exportText(value) + '</p>';
-  }
-  function block(title, tag, html) {
-    return '<article class="bb-worksheet-study-block">' +
-      '<h2>' + exportText(title) + '</h2>' +
-      '<div class="bb-worksheet-study-body">' +
-        '<div class="bb-worksheet-study-visual"><strong>' + exportText(tag || sys.icon || key.toUpperCase()) + '</strong><span>' + exportText(sys.name || '') + '</span></div>' +
-        '<div class="bb-worksheet-study-facts">' + (html || '<p class="muted">Blank</p>') + '</div>' +
-      '</div>' +
-    '</article>';
-  }
-  var identity = [
-    fact('Antigens', data.antigen_names),
-    fact('Antigens (S/s/U)', data.antigen_names_ss),
-    fact('Null', data.null_phenotype),
-    fact('Null (S/s/U)', data.null_phenotype_ss),
-    fact('Antithetical pairs', data.antithetical_pairs),
-    fact('Antithetical pairs (S/s/U)', data.antithetical_pairs_ss),
-    fact('Gene location', data.chromosome),
-    fact('Related substance', data.related_substance),
-    fact('Related substance (S/s/U)', data.related_substance_ss),
-    fact('Structure', data.antigen_structure)
-  ].join('');
-  var antibody = [
-    fact('IgG / IgM', data.ig_class),
-    fact('IgG / IgM (S/s/U)', data.ig_class_ss),
-    fact('Warm / Cold', data.temp),
-    fact('Warm / Cold (S/s/U)', data.temp_ss),
-    fact('Naturally occurring', data.naturally_occurring),
-    fact('Naturally occurring (S/s/U)', data.naturally_occurring_ss),
-    fact('Dosage', data.dosage),
-    fact('Dosage (S/s/U)', data.dosage_ss),
-    fact('Destroyed by', data.destroyed),
-    fact('Destroyed by (S/s/U)', data.destroyed_ss),
-    fact('Enhanced by', data.enhanced),
-    fact('Enhanced by (S/s/U)', data.enhanced_ss),
-    fact('Complement', data.complement),
-    fact('Complement (S/s/U)', data.complement_ss)
-  ].join('');
-  var clinical = [
-    fact('Disease association', data.disease_assoc),
-    fact('Baby cells', data.cord_cells),
-    fact('Baby cells (S/s/U)', data.cord_cells_ss),
-    fact('HDN', data.hdn),
-    fact('HDN (S/s/U)', data.hdn_ss),
-    fact('HTRXN', data.htr),
-    fact('HTRXN (S/s/U)', data.htr_ss),
-    fact('Immunogenic', data.immunogenic),
-    fact('Immunogenic (S/s/U)', data.immunogenic_ss),
-    fact('Key notes', data.lab_notes)
-  ].join('');
-  var freqs = getFreqRows(skey).filter(function(row){return row.ag || row.memo || row.c || row.b || row.a || row.i || row.h}).map(function(row) {
-    return '<p><strong>' + exportText(row.ag || 'Antigen') + ':</strong> C ' + exportText(row.c || '-') + ' / B ' + exportText(row.b || '-') + ' / A ' + exportText(row.a || '-') + ' / I ' + exportText(row.i || '-') + ' / H ' + exportText(row.h || '-') + (row.memo ? ' / Memo ' + exportText(row.memo) : '') + (row.pop ? ' / ' + exportText(row.pop) : '') + '</p>';
-  }).join('');
-  return '<section class="page bb-worksheet-system">' +
-    '<h1>' + exportText(sys.name) + '</h1>' +
-    '<div class="bb-worksheet-sub">' + exportText(sys.isbt || '') + '</div>' +
-    '<div class="bb-worksheet-study-grid">' +
-      block(sys.name, sys.icon || key.toUpperCase(), identity) +
-      block('Antibody Pattern', 'Ab', antibody) +
-      block('Clinical Notes', 'MLS', clinical) +
-      block('Frequencies', '%', freqs) +
-    '</div>' +
   '</section>';
 }
 
@@ -4590,24 +4491,22 @@ function buildExportHtml(content, title, orientation, scale) {
   var pageMax = isLandscape ? '10.4in' : '7.45in';
   var onePageHeight = isLandscape ? '7.9in' : '10.25in';
   var onePageGrid = isLandscape ? 'grid-template-columns:1.05fr 1.45fr 1.5fr;' : 'grid-template-columns:1fr 1fr;';
-  var portraitTweaks = isLandscape ? '' : '.onepage-grid .system-card:last-child{grid-column:1/-1}.compact-grid{grid-template-columns:1fr}.system-page .tl-item{font-size:8px}.study-table td{font-size:6.4px;padding:1.8px 3px}.freq-export td,.freq-export th{font-size:5.6px;padding:1.8px 2px}';
-  var worksheetPortraitTweaks = isLandscape ? '' : '.bb-worksheet-system{max-width:7.45in;height:10.25in}.bb-worksheet-system h1{font-size:24px}.bb-worksheet-study-grid{grid-template-columns:1fr;grid-template-rows:repeat(4,1fr);height:9.5in;gap:.12in}.bb-worksheet-study-block{padding:.08in;gap:.05in}.bb-worksheet-study-block h2{font-size:16px}.bb-worksheet-study-body{grid-template-columns:.9fr 2.1fr;gap:.09in}.bb-worksheet-study-visual{padding:.04in}.bb-worksheet-study-visual strong{font-size:24px}.bb-worksheet-study-facts{font-size:11px;line-height:1.18;padding:.07in .08in}.bb-worksheet-study-facts strong{font-size:9px}';
+  var portraitTweaks = isLandscape ? '' : '.onepage-grid .system-card:last-child{grid-column:1/-1}.compact-grid{grid-template-columns:1fr}.system-page .tl-item{font-size:8px}.study-table td{font-size:6.4px;padding:1.8px 3px}.freq-export td,.freq-export th{font-size:5.6px;padding:1.8px 2px}.freq-short-page{max-width:7.45in;height:10.25in}.freq-short-page h1{font-size:21px;text-align:center;margin-bottom:.12in}.freq-short-table th{font-size:10px;padding:5px 6px}.freq-short-table td{font-size:10.5px;line-height:1.08;padding:4px 6px}.freq-short-table th:nth-child(1){width:1.15in}.freq-short-table th:nth-child(2){width:2.45in}.freq-short-table th:nth-child(3){width:1.55in}';
   return '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>' + exportText(title || 'Bloody Brilliant Export') + '</title>' +
     '<style>@page{size:' + pageSize + ';margin:.28in}*{box-sizing:border-box;margin:0;padding:0}body{font-family:Georgia,serif;font-size:11px;color:#1e0d10;background:#fff}.bb-export-scale-wrap{transform:scale(var(--bb-export-scale,1));transform-origin:top left;width:calc(100% / var(--bb-export-scale,1));min-height:calc(100% / var(--bb-export-scale,1))}' +
     'h1{font-size:18px;color:#5a0e20;text-align:center;margin-bottom:6px;padding:12px 0 0}' +
     'h2{font-size:13px;color:#8b0a26;margin:14px 0 6px;border-bottom:2px solid #f7c5d0;padding-bottom:3px}' +
     '.page{padding:0;page-break-after:always;max-width:' + pageMax + ';margin:0 auto}.page:last-child{page-break-after:avoid}' +
     'table{width:100%;border-collapse:collapse;margin-bottom:8px}th{background:#5a0e20;color:#fff;padding:5px 8px;text-align:left;font-size:10px;letter-spacing:.5px}td{padding:5px 8px;border-bottom:1px solid #f7c5d0;vertical-align:top;font-size:11px}td.lbl{font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#7a6468;width:220px}tr:nth-child(even) td{background:#fef4f0}' +
-    '.bb-worksheet-system{max-width:10.4in;height:7.12in;overflow:hidden;color:#000;font-family:Arial,Helvetica,sans-serif}.bb-worksheet-system h1{text-align:left;font:900 26px/1 Arial,Helvetica,sans-serif;color:#000;margin:0 0 2px;padding:0}.bb-worksheet-sub{font:800 10px/1.2 Arial,Helvetica,sans-serif;color:#111;margin:0 0 .08in;text-transform:uppercase;letter-spacing:.9px}.bb-worksheet-study-grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:.16in;height:6.52in}.bb-worksheet-study-block{border:2px solid #000;background:#fff;color:#000;padding:.1in;overflow:hidden;display:grid;grid-template-rows:auto 1fr;gap:.08in;break-inside:avoid;page-break-inside:avoid}.bb-worksheet-study-block h2{text-align:center;font:900 18px/1 Arial,Helvetica,sans-serif;color:#000;border-bottom:2px solid #000;margin:0;padding:0 0 .055in}.bb-worksheet-study-body{display:grid;grid-template-columns:1fr 2fr;gap:.12in;min-height:0}.bb-worksheet-study-visual,.bb-worksheet-study-facts{border:2px solid #000;background:#fff;color:#000;overflow:hidden}.bb-worksheet-study-visual{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:.08in}.bb-worksheet-study-visual strong{font:900 30px/1 Arial,Helvetica,sans-serif;color:#000}.bb-worksheet-study-visual span{font:800 10px/1.15 Arial,Helvetica,sans-serif;color:#111;text-transform:uppercase;margin-top:.05in}.bb-worksheet-study-facts{padding:.1in .12in;font:700 11.8px/1.2 Arial,Helvetica,sans-serif}.bb-worksheet-study-facts p{margin:0 0 .05in}.bb-worksheet-study-facts strong{font-weight:900;text-transform:uppercase;font-size:9.8px;letter-spacing:.02em}.bb-worksheet-study-facts .muted{color:#555;font-style:italic}' +
     '.tl{padding-left:12px;border-left:2px solid #f7c5d0}.tl-item{margin-bottom:7px;font-size:11px}.yr{font-weight:700;color:#c0173d;font-size:10px;display:block}' +
     '.system-page{padding:0;font-size:9px}.system-card{border-top:2.5px solid #5a0e20;border-left:1px solid #f7c5d0;border-right:1px solid #f7c5d0;border-bottom:1px solid #f7c5d0;border-radius:10px;padding:6px 8px;margin:0;background:#fffaf7;break-inside:avoid;page-break-inside:avoid}.hero-card{padding-bottom:10px}.system-head{display:flex;gap:8px;align-items:flex-start;margin-bottom:5px}.system-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;line-height:1;box-shadow:inset 0 2px 5px rgba(0,0,0,.22)}.system-head h1{text-align:left;font-size:20px;line-height:1;margin:0 0 2px;padding:0}.isbt{font-size:8px;letter-spacing:2px;color:#7a6468;text-transform:uppercase}.pun{font-size:9px;color:#c0173d;font-style:italic;font-weight:700;margin-top:2px}.card-label{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#7a6468;font-weight:700;margin:0 0 4px}.system-page .tl{padding-left:8px}.system-page .tl-item{font-size:8.4px;line-height:1.13;margin-bottom:3px}.system-page .yr{font-size:8px;display:inline-block;width:45px}.onepage-system{height:' + onePageHeight + ';overflow:hidden}.onepage-head{border-top:2.5px solid #5a0e20;border-left:1px solid #f7c5d0;border-right:1px solid #f7c5d0;border-bottom:1px solid #f7c5d0;border-radius:10px;background:#fffaf7;padding:5px 8px;margin-bottom:5px}.compact-head{align-items:center;margin-bottom:0}.onepage-grid{display:grid;' + onePageGrid + 'gap:5px;align-items:start}.compact-export h1{padding:0;margin:0 0 7px}.compact-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.compact-card h1{font-size:13px;text-align:left;padding:0;margin:0 0 5px}.compact-card .tl-item{font-size:9px;line-height:1.16;margin-bottom:3px}.compact-card .yr{display:inline-block;width:45px;font-size:9px}.compact-card .card-label{font-size:8px;margin-bottom:4px}.compact-card .study-table td{font-size:6.8px!important;padding:2px 3px!important}.compact-card .study-table td.lbl{font-size:6.5px!important;width:1.15in!important}' +
     '.membrane-card{padding-bottom:7px}.membrane-print{height:1.18in;overflow:hidden;margin:-4px 0 0}.membrane-print div{overflow:hidden!important}.membrane-print svg{width:100%!important;min-width:0!important;height:1.18in!important}.membrane-print text{font-size:14px!important}.mini-table td{font-size:8px;padding:2px 4px}.study-table{font-size:6.8px;line-height:1.08}.study-table td{font-size:6.8px;padding:2px 3px}.study-table td.lbl{width:1.15in;font-size:6.3px}.freq-export{font-size:6.2px;line-height:1.02;table-layout:fixed}.freq-export th{font-size:5.8px;padding:2px 2px}.freq-export td{font-size:5.8px;padding:2px 2px}.freq-export th:nth-child(1){width:.52in}.freq-export th:nth-child(2),.freq-export th:nth-child(3),.freq-export th:nth-child(4),.freq-export th:nth-child(5),.freq-export th:nth-child(6){width:.2in}.freq-export th:nth-child(7){width:.4in}.freq-export .center{text-align:center}.freq-export .memo{background:#dce6f4}.note-box{font-size:6.6px;line-height:1.1;padding:4px;background:#fff;border-left:3px solid #f7c5d0}.muted{color:#9a8588}' +
-    '.binder-system{height:10.25in;overflow:hidden;font-size:10px;padding-top:.03in}.binder-system table{margin-bottom:0}.binder-card{border-top:2.5px solid #5a0e20;border-left:1px solid #f7c5d0;border-right:1px solid #f7c5d0;border-bottom:1px solid #f7c5d0;border-radius:12px;background:#fffaf7;margin-bottom:.07in;break-inside:avoid;page-break-inside:avoid}.binder-hero{min-height:1.08in;padding:5px 10px 6px}.binder-head{gap:8px;align-items:flex-start;margin-bottom:2px}.binder-head .system-dot{width:28px;height:28px;font-size:14px}.binder-head h1{text-align:left;font-size:22px;line-height:.95;margin:0 0 2px;padding:0}.binder-head .isbt{font-size:7px;letter-spacing:2.1px}.binder-head .pun{font-size:9.5px;line-height:1.08;margin-top:2px}.binder-system .card-label{font-size:8.6px;letter-spacing:3px;text-transform:uppercase;color:#7a6468;font-weight:700;margin:0 0 5px}.binder-history .tl{padding-left:8px;border-left:2px solid #f7c5d0}.binder-history .tl-item{font-size:6px;line-height:1.03;margin-bottom:1px}.binder-history .yr{display:inline-block;width:.5in;font-size:6.2px;color:#c0173d;font-weight:700}.binder-membrane-card{height:1.32in;padding:5px 8px}.binder-membrane-print{height:1.08in;display:flex;align-items:center;justify-content:center;overflow:hidden}.binder-membrane-print>div{width:5.25in!important;overflow:hidden!important}.binder-membrane-print svg{width:5.25in!important;min-width:0!important;height:1.05in!important}.binder-membrane-print text{font-size:9px!important}.binder-study{height:auto;max-height:4.9in;padding:8px 10px 9px;overflow:hidden}.binder-system .study-table{font-size:10.2px;line-height:1.18;table-layout:fixed}.binder-system .study-table tr:nth-child(even) td{background:#fff3f0}.binder-system .study-table td{font-size:10.2px;padding:4px 5px;white-space:normal;overflow-wrap:anywhere}.binder-system .study-table td.lbl{width:1.55in;font-size:8.7px;letter-spacing:.5px;color:#7a6468}.binder-system .study-table .muted{font-size:8.2px;color:#b69aa0}.binder-freq{min-height:0;padding:8px 10px}.binder-system .freq-export{font-size:8.8px;line-height:1.08;table-layout:fixed}.binder-system .freq-export th{font-size:7.7px;padding:3px 3px}.binder-system .freq-export td{font-size:8.4px;padding:3px 3px;white-space:normal;overflow-wrap:anywhere}.binder-system .freq-export th:nth-child(1){width:.7in}.binder-system .freq-export th:nth-child(2),.binder-system .freq-export th:nth-child(3),.binder-system .freq-export th:nth-child(4),.binder-system .freq-export th:nth-child(5),.binder-system .freq-export th:nth-child(6){width:.28in}.binder-system .freq-export th:nth-child(7){width:.45in}.binder-notes{min-height:0;padding:6px 10px;margin-bottom:0}.binder-system .note-box{font-size:8.4px;line-height:1.16;padding:4px 6px;background:#fff;border-left:3px solid #f7c5d0}' +
+    '.binder-system{height:10.25in;overflow:hidden;font-size:10px;padding-top:0;display:grid;grid-template-rows:auto auto auto minmax(0,1fr) auto;gap:.055in}.binder-system table{margin-bottom:0}.binder-card{border-top:2.5px solid #5a0e20;border-left:1px solid #f7c5d0;border-right:1px solid #f7c5d0;border-bottom:1px solid #f7c5d0;border-radius:12px;background:#fffaf7;margin-bottom:0;break-inside:avoid;page-break-inside:avoid}.binder-hero{min-height:.58in;padding:4px 9px 5px}.binder-head{gap:8px;align-items:flex-start;margin-bottom:0}.binder-head .system-dot{width:27px;height:27px;font-size:14px}.binder-head h1{text-align:left;font-size:24px;line-height:.92;margin:0 0 1px;padding:0}.binder-head .isbt{font-size:7px;letter-spacing:2.1px}.binder-head .pun{font-size:9.2px;line-height:1.02;margin-top:1px}.binder-system .card-label{font-size:8.8px;letter-spacing:3px;text-transform:uppercase;color:#7a6468;font-weight:700;margin:0 0 4px}.binder-history .tl{padding-left:8px;border-left:2px solid #f7c5d0}.binder-history .tl-item{font-size:6px;line-height:1.03;margin-bottom:1px}.binder-history .yr{display:inline-block;width:.5in;font-size:6.2px;color:#c0173d;font-weight:700}.binder-membrane-card{height:1.14in;padding:4px 8px}.binder-membrane-print{height:.91in;display:flex;align-items:center;justify-content:center;overflow:hidden}.binder-membrane-print>div{width:4.95in!important;overflow:hidden!important}.binder-membrane-print svg{width:4.95in!important;min-width:0!important;height:.9in!important}.binder-membrane-print text{font-size:9px!important}.binder-study{min-height:0;max-height:none;padding:7px 10px 8px;overflow:hidden}.binder-system .study-table{font-size:11.2px;line-height:1.14;table-layout:fixed}.binder-system .study-table tr:nth-child(even) td{background:#fff3f0}.binder-system .study-table td{font-size:11.2px;padding:3.5px 5px;white-space:normal;overflow-wrap:anywhere}.binder-system .study-table td.lbl{width:1.5in;font-size:9.1px;letter-spacing:.45px;color:#7a6468}.binder-system .study-table .muted{font-size:9px;color:#b69aa0}.binder-freq{min-height:0;padding:7px 10px}.binder-system .freq-export{font-size:8.8px;line-height:1.08;table-layout:fixed}.binder-system .freq-export th{font-size:7.7px;padding:3px 3px}.binder-system .freq-export td{font-size:8.4px;padding:3px 3px;white-space:normal;overflow-wrap:anywhere}.binder-system .freq-export th:nth-child(1){width:.7in}.binder-system .freq-export th:nth-child(2),.binder-system .freq-export th:nth-child(3),.binder-system .freq-export th:nth-child(4),.binder-system .freq-export th:nth-child(5),.binder-system .freq-export th:nth-child(6){width:.28in}.binder-system .freq-export th:nth-child(7){width:.45in}.binder-notes{min-height:0;padding:5px 10px;margin-bottom:0}.binder-system .note-box{font-size:8.4px;line-height:1.16;padding:4px 6px;background:#fff;border-left:3px solid #f7c5d0}' +
     '.antigram-export-page{max-width:10.4in;height:7.1in;overflow:hidden}.antigram-export-page h1{font-size:15px;margin:0 0 .04in;padding:0}.antigram-export-note{font-size:8px;color:#7a6468;margin-bottom:.05in}.antigram-export-page .antigram-panel-wrap{overflow:hidden;border:1px solid #5a0e20;border-radius:4px;background:#fff}.antigram-export-page .antigram-table{width:100%;min-width:0;border-collapse:collapse;table-layout:fixed;font-size:5.4px}.antigram-export-page .antigram-table th{position:static;background:#5a0e20;color:#fff;font-size:5.2px;padding:2px 1px;text-align:center}.antigram-export-page .antigram-table td{border:1px solid #d9a9b4;padding:2px 1px;text-align:center;font-size:5.6px;min-width:0}.antigram-export-page .antigram-table td.cell-id{position:static;background:#fffaf7;font-weight:bold;color:#5a0e20;font-size:5.5px}.antigram-export-page .antigram-table td.ruled-out{background:#dff4eb!important}.antigram-export-page .antigram-table td.suspect-hit{background:#fff1b8!important}.antigram-answer-key,.antigram-practice-lines{font-size:8px;line-height:1.25;margin-top:.06in;border:1px solid #f7c5d0;border-radius:6px;padding:.06in;background:#fffaf7}' +
     '.flash-print-page{max-width:7.9in;height:10.4in;overflow:hidden}.flash-print-page h1{font-size:15px;color:#000;text-align:left;margin:0 0 .12in;padding:0}.flash-print-grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:.18in;height:9.9in}.flash-print-card{border:2px solid #000;background:#fff;color:#000;border-radius:0;padding:.18in;display:flex;flex-direction:column;justify-content:center;text-align:center;break-inside:avoid;page-break-inside:avoid}.flash-print-meta{font-size:12px;text-transform:uppercase;letter-spacing:.7px;margin-bottom:.12in;color:#000;font-weight:700}.flash-print-q{font-size:24px;line-height:1.18;font-weight:900}.flash-print-a{font-size:22px;line-height:1.2;font-weight:900;white-space:pre-wrap}' +
     '.general-export-page{max-width:10.4in;height:7.12in;overflow:hidden}.general-export-page h1{text-align:left;font-size:18px;margin:0 0 .07in;padding:0;color:#5a0e20}.general-export-main{table-layout:fixed;margin-bottom:.07in;border:1px solid #f7c5d0}.general-export-main th{font-size:6.6px;line-height:1.05;text-align:center;padding:3px 2px;background:#5a0e20;color:#fff}.general-export-main th:first-child{width:.78in;text-align:left}.general-export-main td{font-size:6.5px;line-height:1.06;padding:2px 3px;border:1px solid #f7c5d0;white-space:normal;overflow-wrap:anywhere}.general-export-main tr:nth-child(even) td{background:#fff1f4}.general-export-label{font-weight:800;color:#5a0e20}.general-export-summary h2{font-size:8px;letter-spacing:1.2px;text-transform:uppercase;color:#7a6468;border:0;margin:.02in 0 .035in;padding:0}.general-export-summary table{table-layout:fixed;border:1px solid #f7c5d0}.general-export-summary th{font-size:6.4px;padding:2px 4px}.general-export-summary td{font-size:6.4px;line-height:1.05;padding:2px 4px;border:1px solid #f7c5d0}.general-export-summary th:nth-child(1){width:44%}.general-blank-page td.general-blank-cell{height:.27in;background:#fff!important;color:#fff}.general-blank-page .general-export-summary td.general-blank-cell{height:.2in}.lesser-export-page{max-width:10.4in;height:7.12in;overflow:hidden}.lesser-export-page h1{text-align:left;font-size:18px;margin:0 0 .08in;padding:0;color:#5a0e20}.lesser-export-table{table-layout:fixed}.lesser-export-table th{font-size:6.6px;line-height:1.05;padding:3px 3px}.lesser-export-table td{font-size:6.6px;line-height:1.07;padding:3px 3px;white-space:normal;overflow-wrap:anywhere}.lesser-export-table th:first-child{width:.85in}.freq-short-page{max-width:10.4in;height:7.12in;overflow:hidden}.freq-short-page h1{text-align:left;font-size:18px;margin:0 0 .08in;padding:0;color:#5a0e20}.freq-short-table{table-layout:fixed;border:1px solid #f7c5d0}.freq-short-table th{font-size:8.4px;padding:4px 5px}.freq-short-table td{font-size:8.2px;line-height:1.04;padding:3px 5px;border:1px solid #f7c5d0;white-space:normal;overflow-wrap:anywhere}.freq-short-table th:nth-child(1){width:1.05in}.freq-short-table th:nth-child(2){width:2.2in}.freq-short-answer{height:.18in;background:#fff!important}' +
     '.map-page{max-width:10.4in;height:7.15in;overflow:hidden}.map-page h1{font-size:16px;padding:0;margin:0 0 .06in}.map-print{height:6.86in;overflow:hidden;display:flex;align-items:center;justify-content:center}.map-print>div{width:100%!important;height:100%!important;overflow:hidden!important}.map-print svg{width:100%!important;max-width:100%!important;min-width:0!important;height:100%!important;max-height:6.78in!important}.map-rbc .map-print svg text{font-size:10px!important}.map-chrom .map-print{align-items:flex-start}svg{max-width:100%;height:auto}' +
-    worksheetPortraitTweaks + portraitTweaks +
+    portraitTweaks +
     '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.bb-export-scale-wrap{zoom:var(--bb-export-scale,1);transform:none;width:auto;min-height:0}}</style></head><body style="--bb-export-scale:' + printScale + '"><div class="bb-export-scale-wrap">' + content + '</div></body></html>';
 }
 
@@ -4641,7 +4540,7 @@ function printExportHtml(content, title, orientation, exportOptions) {
     window.HubPdfExport.open({
       title: title || 'Blood Bank Export',
       orientation: initialOrientation,
-      allowOrientationToggle: !!exportOptions.allowOrientationToggle,
+      allowOrientationToggle: exportOptions.allowOrientationToggle !== false,
       defaultScale: 1,
       minScale: .35,
       maxScale: 1.15,
@@ -4658,6 +4557,51 @@ function printExportHtml(content, title, orientation, exportOptions) {
   writeExport(1);
 }
 
+function buildRbcMapExportPage() {
+  var tmp = document.createElement('div');
+  var oldAdmin = isAdmin;
+  isAdmin = false;
+  tmp.innerHTML = buildFullRbcSVG();
+  isAdmin = oldAdmin;
+  return '<div class="page map-page map-rbc"><h1>RBC Antigen Map</h1><div class="map-print">' + tmp.innerHTML + '</div></div>';
+}
+
+function buildChromosomeMapExportPage() {
+  var tmp = document.createElement('div');
+  tmp.id = 'chromMapContainerExport';
+  tmp.dataset.exportMode = '1';
+  document.body.appendChild(tmp);
+  var origContainer = document.getElementById('chromMapContainer');
+  if (!origContainer) {
+    document.body.removeChild(tmp);
+    return '';
+  }
+  var origId = origContainer.id;
+  origContainer.id = '_chromHidden';
+  tmp.id = 'chromMapContainer';
+  renderChromMap();
+  var chromHTML = tmp.innerHTML;
+  tmp.id = 'chromMapContainerExport';
+  origContainer.id = origId;
+  document.body.removeChild(tmp);
+  renderChromMap();
+  return '<div class="page map-page map-chrom"><h1>Blood Group Chromosome Map</h1><div class="map-print">' + chromHTML + '</div></div>';
+}
+
+function exportRbcMapPage() {
+  printExportHtml(buildRbcMapExportPage(), 'RBC Antigen Map', 'landscape', {
+    persistKey: 'bloodbank-rbc-map-scale',
+    hint: 'Choose portrait or landscape, adjust scale if needed, then use Save as PDF.'
+  });
+}
+
+function exportChromosomeMapPage() {
+  printExportHtml(buildChromosomeMapExportPage(), 'Blood Group Chromosome Map', 'landscape', {
+    persistKey: 'bloodbank-chromosome-map-scale',
+    hint: 'Choose portrait or landscape, adjust scale if needed, then use Save as PDF.'
+  });
+}
+
 function exportCurrentSystemPage() {
   if (currentSystemKey === 'general') {
     exportGeneralComparisonPage();
@@ -4666,23 +4610,6 @@ function exportCurrentSystemPage() {
   } else {
     printExportHtml(buildFullSystemExportPage(currentSystemKey), 'Blood Bank ' + currentSystemKey + ' Export');
   }
-}
-
-function exportCurrentSystemWorksheetPage() {
-  if (currentSystemKey === 'general' || currentSystemKey === 'lesser') {
-    exportCurrentSystemPage();
-    return;
-  }
-  printExportHtml(
-    buildCurrentSystemWorksheetExportPage(currentSystemKey),
-    'Blood Bank ' + currentSystemKey + ' Worksheet Export',
-    'landscape',
-    {
-      allowOrientationToggle: true,
-      persistKey: 'bloodbank-current-system-worksheet-scale',
-      hint: 'Worksheet form prints bigger black text. Landscape keeps the 2x2 sheet; portrait stacks the four study cards across the page.'
-    }
-  );
 }
 
 function exportGeneralComparisonPage(mode) {
@@ -4699,8 +4626,16 @@ function exportLesserSystemsPage() {
   printExportHtml(buildLesserSystemsExportPage(), 'Lesser Systems Export', 'landscape');
 }
 
-function exportShortFrequencyMemorizeBlank() {
-  printExportHtml(buildShortFrequencyMemorizeExportPage(true), 'Blood Bank Short Frequency to Memorize Blank', 'landscape');
+function exportFrequencyMemorizeOnly() {
+  printExportHtml(
+    buildShortFrequencyMemorizeExportPage(false),
+    'Blood Bank Frequency to Memorize Only',
+    'portrait',
+    {
+      persistKey: 'bloodbank-frequency-memorize-only-scale',
+      hint: 'This export keeps only System, Antigen, and Frequency to Memorize. C/B/A/I/H columns are removed.'
+    }
+  );
 }
 
 function exportEncyclopediaSet(kind) {
@@ -4714,39 +4649,10 @@ function exportEncyclopediaSet(kind) {
 }
 
 function doExport() {
-  document.getElementById('exportModal').classList.remove('visible');
-  var inclRbc   = document.getElementById('expRbc').checked;
-  var inclChrom = document.getElementById('expChrom').checked;
-  var html = '';
-
-  if (inclRbc) {
-    var tmp1 = document.createElement('div');
-    var oldAdmin = isAdmin;
-    isAdmin = false;
-    tmp1.innerHTML = buildFullRbcSVG();
-    isAdmin = oldAdmin;
-    html += '<div class="page map-page map-rbc"><h1>RBC Antigen Map</h1><div class="map-print">' + tmp1.innerHTML + '</div></div>';
-  }
-
-  if (inclChrom) {
-    var tmp2 = document.createElement('div');
-    tmp2.id = 'chromMapContainerExport';
-    tmp2.dataset.exportMode = '1';
-    document.body.appendChild(tmp2);
-    var origContainer = document.getElementById('chromMapContainer');
-    var origId = origContainer.id;
-    origContainer.id = '_chromHidden';
-    tmp2.id = 'chromMapContainer';
-    renderChromMap();
-    var chromHTML = tmp2.innerHTML;
-    tmp2.id = 'chromMapContainerExport';
-    origContainer.id = origId;
-    document.body.removeChild(tmp2);
-    renderChromMap();
-    html += '<div class="page map-page map-chrom"><h1>Blood Group Chromosome Map</h1><div class="map-print">' + chromHTML + '</div></div>';
-  }
-
-  printExportHtml(html, 'Blood Bank Map Export', 'landscape');
+  printExportHtml(buildRbcMapExportPage() + buildChromosomeMapExportPage(), 'Blood Bank Map Export', 'landscape', {
+    persistKey: 'bloodbank-map-export-scale',
+    hint: 'Choose portrait or landscape, adjust scale if needed, then use Save as PDF.'
+  });
 }
 
 // ── CHROMOSOME MAP (wider haplotype pairs) ────────────────────
