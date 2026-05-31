@@ -122,11 +122,13 @@ button,input{font-family:inherit}button{cursor:pointer}
 .sample-stage .tube:after{left:16px;right:16px;top:5px;height:10px;border-radius:50%}
 .sample-stage .urine-sediment{left:0;right:0;bottom:0;border-radius:0 0 22px 22px;z-index:3}
 .inline-extra-tests{margin-top:14px;border-top:2px solid rgba(212,134,10,.22);padding-top:12px}.inline-extra-tests h4{color:var(--wine);font-size:18px;margin:0 0 8px}
+.extra-check-btn{background:var(--green)!important;border-color:var(--green)!important;color:#fff!important;box-shadow:0 8px 18px rgba(26,140,92,.18)}.extra-check-btn:disabled{background:#7aa892!important;border-color:#7aa892!important;color:#f3fff8!important}.tube-lab{display:grid;grid-template-columns:140px 1fr 1fr 1fr;gap:12px;align-items:stretch;margin:8px 0 12px}.tube-source,.tube-drop-zone{border:2px dashed rgba(122,61,0,.28);border-radius:14px;background:#fffdf8;min-height:172px;display:grid;place-items:center;text-align:center;color:var(--muted);font-weight:900;padding:10px;position:relative;overflow:hidden}.tube-source span,.tube-drop-zone span{font-size:12px;line-height:1.2}.tube-drop-zone.ready,.tube-drop-zone.drag-over{border-style:solid;border-color:var(--green);background:#effaf4;color:var(--green)}.tube-drop-zone h4{position:absolute;left:12px;top:10px;margin:0;color:var(--wine);font-size:15px}.tube-source.empty{opacity:.65}.kova-tube.draggable{cursor:grab;z-index:2}.kova-tube.draggable:active{cursor:grabbing}.kova-tube.spun i{height:20%;background:#bfa160}.kova-tube.decanted:before{content:"";position:absolute;left:0;right:0;bottom:20%;height:50%;background:linear-gradient(90deg,rgba(255,255,255,.32),transparent),rgba(255,255,255,.72)}.kova-tube.resuspended i{height:33%;background:#cdb273}.centrifuge-zone .centrifuge{margin:auto;transform:scale(.9)}.centrifuge-zone.ready .centrifuge-rotor{animation:spinRotor .65s linear infinite}.sink-zone{background:linear-gradient(180deg,#fffdf8,#eef7f8)}.sink-basin{width:130px;height:92px;border:7px solid #7c8586;border-top-width:12px;border-radius:12px 12px 44px 44px;background:radial-gradient(circle at 50% 72%,#3d4a4d 0 9px,transparent 10px),linear-gradient(180deg,#f7fcfc,#cfdadb);box-shadow:inset 0 0 0 7px rgba(255,255,255,.35)}.resuspend-zone:before{content:"";width:92px;height:92px;border-radius:50%;background:radial-gradient(circle,#fff8ef 0 34%,#e6c071 35% 42%,#fff8ef 43%);border:2px solid rgba(122,61,0,.25)}@keyframes spinRotor{to{transform:translateX(-50%) rotate(360deg)}}@media(max-width:900px){.tube-lab{grid-template-columns:1fr 1fr}.tube-source,.tube-drop-zone{min-height:150px}}@media(max-width:560px){.tube-lab{grid-template-columns:1fr}}
 .step-pill{cursor:pointer;box-shadow:0 2px 0 rgba(122,61,0,.22),0 5px 12px rgba(122,61,0,.08);transition:transform .15s ease,box-shadow .15s ease}.step-pill:hover{transform:translateY(-1px);box-shadow:0 4px 0 rgba(122,61,0,.2),0 8px 18px rgba(122,61,0,.12)}.step-pill.active{box-shadow:inset 0 0 0 2px rgba(255,255,255,.16),0 5px 12px rgba(122,61,0,.16)}
-.micro-item.needle{width:var(--w);height:4px;border-radius:999px;clip-path:none;background:linear-gradient(90deg,transparent,var(--item),rgba(255,255,255,.78),var(--item),transparent)}
-.micro-item.thorny-apple{border-radius:50%;clip-path:none;background:radial-gradient(circle,var(--item) 0 42%,transparent 43%),conic-gradient(from 10deg,var(--item) 0 8deg,transparent 8deg 22deg,var(--item) 22deg 30deg,transparent 30deg 48deg,var(--item) 48deg 58deg,transparent 58deg 76deg,var(--item) 76deg 86deg,transparent 86deg 100deg,var(--item) 100deg 112deg,transparent 112deg 130deg,var(--item) 130deg 142deg,transparent 142deg 160deg,var(--item) 160deg 172deg,transparent 172deg 190deg,var(--item) 190deg 202deg,transparent 202deg 220deg,var(--item) 220deg 232deg,transparent 232deg 250deg,var(--item) 250deg 262deg,transparent 262deg 280deg,var(--item) 280deg 292deg,transparent 292deg 310deg,var(--item) 310deg 322deg,transparent 322deg)}
-.micro-item.stump{border-radius:50%;clip-path:none;background:repeating-radial-gradient(circle,rgba(255,255,255,.58) 0 4px,var(--item) 5px 8px,rgba(92,65,30,.28) 9px 10px)}
-.micro-upload-input{display:none}.micro-upload-label{display:inline-flex;align-items:center;justify-content:center;border:1.5px solid var(--gold);border-radius:999px;background:#fff;color:var(--wine);font-size:12px;font-weight:900;padding:8px 12px;cursor:pointer}
+	.micro-item.needle{width:var(--w);height:4px;border-radius:999px;clip-path:none;background:linear-gradient(90deg,transparent,var(--item),rgba(255,255,255,.78),var(--item),transparent)}
+	.micro-item.thorny-apple{border-radius:50%;clip-path:none;background:radial-gradient(circle,var(--item) 0 42%,transparent 43%),conic-gradient(from 10deg,var(--item) 0 8deg,transparent 8deg 22deg,var(--item) 22deg 30deg,transparent 30deg 48deg,var(--item) 48deg 58deg,transparent 58deg 76deg,var(--item) 76deg 86deg,transparent 86deg 100deg,var(--item) 100deg 112deg,transparent 112deg 130deg,var(--item) 130deg 142deg,transparent 142deg 160deg,var(--item) 160deg 172deg,transparent 172deg 190deg,var(--item) 190deg 202deg,transparent 202deg 220deg,var(--item) 220deg 232deg,transparent 232deg 250deg,var(--item) 250deg 262deg,transparent 262deg 280deg,var(--item) 280deg 292deg,transparent 292deg 310deg,var(--item) 310deg 322deg,transparent 322deg)}
+	.micro-item.stump{border-radius:50%;clip-path:none;background:repeating-radial-gradient(circle,rgba(255,255,255,.58) 0 4px,var(--item) 5px 8px,rgba(92,65,30,.28) 9px 10px)}
+	.micro-report select{border:1px solid var(--gold);border-radius:8px;background:#fffdf8;color:var(--ink);font-family:Georgia,"Times New Roman",serif;font-size:15px;min-height:44px;padding:9px;width:100%}.results-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin:8px 0 12px}.results-card{border:1px solid var(--line);border-radius:10px;background:#fffdf8;padding:10px}.results-card h4{color:var(--wine);font-size:15px;margin:0 0 6px}.results-card ul{margin:0;padding-left:18px}.results-card li{font-size:13px;line-height:1.35;color:var(--ink);margin:3px 0}
+	.micro-upload-input{display:none}.micro-upload-label{display:inline-flex;align-items:center;justify-content:center;border:1.5px solid var(--gold);border-radius:999px;background:#fff;color:var(--wine);font-size:12px;font-weight:900;padding:8px 12px;cursor:pointer}
 .micro-tabs{display:flex;gap:9px;flex-wrap:wrap;margin:0 0 14px}.micro-tab{border:1.5px solid var(--gold);background:#fff;color:var(--wine);border-radius:999px;padding:8px 13px;font-size:13px;font-weight:900}.micro-tab.active{background:var(--wine);color:#fff;border-color:var(--wine)}.micro-tab-panel{display:none}.micro-tab-panel.active{display:block}
 .case-result-row{grid-template-columns:1fr 1fr 1fr 1fr auto}
 .micro-field{cursor:default}
@@ -144,6 +146,10 @@ button,input{font-family:inherit}button{cursor:pointer}
 .lab-flask{position:absolute;left:49%;bottom:30%;width:11%;height:22%;border-radius:50% 50% 20% 20%;background:linear-gradient(180deg,rgba(255,255,255,.24),rgba(212,134,10,.34));box-shadow:0 -36px 0 -25px rgba(255,255,255,.3),0 0 0 1px rgba(255,255,255,.12)}
 .table-subsection-row td{background:#fff7c9!important;border-top:4px solid var(--orange);border-bottom:2px solid var(--gold);font-weight:900;color:var(--wine);font-size:20px;padding:10px 14px!important}.subsection-tools{display:flex;align-items:center;justify-content:space-between;gap:12px;min-width:max-content}.subsection-row-actions,.row-action-cell{gap:8px;flex-wrap:wrap;justify-content:flex-end}.subsection-cell{min-height:0;outline:none;color:var(--wine);font-size:22px;font-weight:900;line-height:1.1;padding:0;background:transparent;border:0;border-radius:0;box-shadow:none}.subsection-cell[contenteditable=true],.subsection-cell[contenteditable=false]{padding:0;background:transparent;border:0;border-radius:0;box-shadow:none}.subsection-cell[contenteditable=true]:focus{outline:2px dashed var(--gold);outline-offset:4px}.print-subsection-row td{font-weight:900;color:var(--wine)!important;background:#fff7c9!important;border-top:4px solid var(--orange)!important;border-bottom:2px solid var(--gold)!important;text-align:left!important}
 .mini-btn:disabled{opacity:.45;cursor:not-allowed}.sample-choice.random-sample{background:var(--wine);color:#fff;border-color:var(--wine)}.step-pill.locked{opacity:.5}.sim-feedback{border:1px solid var(--gold);background:#fff8ef;color:var(--muted);border-radius:10px;padding:9px 11px;margin:10px 0;font-size:13px;font-weight:800}.sim-feedback.ok{border-color:rgba(26,140,92,.45);background:#eef9f3;color:var(--green)}.sim-feedback.warn{border-color:rgba(139,10,38,.35);background:#fff0f3;color:var(--danger)}.sim-bench-shell{display:grid;grid-template-columns:112px 1fr;gap:12px;align-items:stretch}.sample-corner{border:1.5px dashed var(--gold);border-radius:12px;background:#fffdf8;display:grid;align-content:center;justify-items:center;gap:7px;padding:10px;min-height:148px;color:var(--wine);font-weight:900;text-align:center}.sample-corner span{font-size:11px;color:var(--muted);line-height:1.2}.sim-workbench{display:grid;grid-template-columns:130px minmax(220px,1fr) 150px;gap:12px;align-items:center;border:1px solid var(--line);border-radius:12px;background:#fffdf8;padding:12px;margin:0 0 12px;min-height:148px}.bench-drop-zone{height:124px;border:2px dashed rgba(122,61,0,.26);border-radius:12px;display:grid;place-items:center;color:var(--muted);font-weight:900;text-align:center;background:#fff8ef}.bench-drop-zone.ready,.bench-drop-zone.drag-over{border-style:solid;border-color:var(--green);background:#effaf4;color:var(--green)}.mini-cup{--urine:#e8c23a;--opacity:.72;--sediment:transparent;--foam:transparent;width:78px;height:108px;border:2px solid rgba(90,76,54,.38);border-top:10px solid #75c84e;border-radius:9px 9px 24px 24px;background:linear-gradient(90deg,rgba(255,255,255,.72),rgba(255,255,255,.24));position:relative;overflow:hidden;margin:auto}.mini-cup.draggable{cursor:grab}.mini-cup.draggable:active{cursor:grabbing}.mini-cup.ghost{opacity:.45}.mini-cup:before{content:"";position:absolute;left:0;right:0;bottom:0;height:66%;background:linear-gradient(90deg,rgba(255,255,255,.28),transparent 44%,rgba(120,80,20,.12)),var(--urine);opacity:var(--opacity);border-radius:45% 45% 9px 9px / 10% 10% 9px 9px}.mini-cup:after{content:"";position:absolute;left:0;right:0;bottom:0;height:8%;background:var(--sediment);opacity:.8}.mini-cup span{position:absolute;left:0;right:0;bottom:64%;height:7%;background:var(--foam);opacity:.85}.bench-strip{height:54px;border:2px solid #2c251d;background:#eee8dc;border-radius:8px;display:flex;align-items:center;gap:9px;padding:7px 12px;width:100%;text-align:left}.bench-strip.done{border-color:var(--green);box-shadow:0 0 0 3px rgba(26,140,92,.14)}.bench-strip i{display:block;width:32px;height:28px;border:1px solid rgba(0,0,0,.28);background:#e0c36a}.bench-strip i:nth-child(2){background:#9fb46c}.bench-strip i:nth-child(3){background:#d1b697}.bench-strip i:nth-child(4){background:#7da68b}.bench-strip i:nth-child(5){background:#c38d6a}.bench-strip i:nth-child(6){background:#eadbb6}.strip-reader{height:92px;border-radius:14px;background:linear-gradient(145deg,#f7f7f4,#bfc5c6);border:2px solid #7c8586;box-shadow:inset 0 0 0 6px rgba(255,255,255,.38);display:grid;place-items:center;color:#1e2b2e;font-family:Arial,sans-serif;font-weight:900;width:100%}.strip-reader.ready,.strip-reader.drag-over{border-color:var(--green);box-shadow:inset 0 0 0 6px rgba(255,255,255,.38),0 0 0 3px rgba(26,140,92,.18)}.reader-slot{width:72px;height:10px;border-radius:999px;background:#172126;box-shadow:0 16px 0 #728085}.strip-reader span{font-size:12px;letter-spacing:1px}.lab-tool-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px;margin:10px 0}.lab-tool,.test-choice{border:1.5px solid var(--gold);background:#fff;color:var(--wine);border-radius:12px;padding:10px;text-align:left;font-weight:900}.lab-tool span{display:block;color:var(--muted);font-size:11px;line-height:1.25;margin-top:3px}.lab-tool.done,.test-choice.selected{background:var(--wine);color:#fff;border-color:var(--wine)}.lab-tool.done span{color:#ffe7bd}.mini-test-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin:8px 0}.test-choice.right{box-shadow:0 0 0 3px rgba(26,140,92,.2)}.test-choice.wrong:not(.selected){opacity:.65}.confirm-card{border:1px solid var(--gold);border-radius:12px;background:#fffdf8;padding:12px;margin:10px 0}.confirm-card h4{color:var(--wine);font-size:16px;margin-bottom:6px}.ictotest-pad{width:180px;height:78px;margin:8px 0;border:1px solid #dcc9aa;background:radial-gradient(circle at 50% 50%,#f6f0df 0 20%,#e8dcc2 22% 34%,#f8efe2 36%)}.ictotest-pad.positive{background:radial-gradient(circle at 50% 50%,#f5efd9 0 18%,#6e7086 21% 34%,#d6c2a2 36% 56%,#f8efe2 58%)}.centrifuge-scene{display:grid;grid-template-columns:180px 100px;gap:18px;align-items:end;margin:8px 0 12px}.centrifuge{width:170px;height:108px;border-radius:24px;background:linear-gradient(145deg,#e7ecec,#9ea9aa);border:2px solid #778080;position:relative;box-shadow:inset 0 0 0 7px rgba(255,255,255,.34)}.centrifuge span{position:absolute;width:38px;height:66px;border-radius:14px;background:#fff8ef;border:2px solid #7c8586;top:22px}.centrifuge span:first-child{left:42px;transform:rotate(-16deg)}.centrifuge span:nth-child(2){right:42px;transform:rotate(16deg)}.centrifuge-rotor{position:absolute;left:50%;top:42px;width:38px;height:38px;border-radius:50%;background:#293237;transform:translateX(-50%)}.kova-tube{width:72px;height:132px;border:2px solid rgba(90,76,54,.4);border-top:10px solid #75c84e;border-radius:9px 9px 24px 24px;background:linear-gradient(90deg,rgba(255,255,255,.72),rgba(255,255,255,.24));position:relative;overflow:hidden}.kova-tube i{position:absolute;left:0;right:0;bottom:0;height:13%;background:#d7c08c}.micro-report{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin:10px 0}.micro-report label,.case-expected-editor label{display:grid;gap:4px;color:var(--wine);font-size:11px;font-weight:900;text-transform:uppercase}.micro-report textarea,.case-expected-editor textarea{border:1px solid var(--gold);border-radius:8px;background:#fffdf8;color:var(--ink);font-family:Georgia,"Times New Roman",serif;font-size:13px;min-height:58px;padding:8px;resize:vertical}.case-expected-editor{grid-column:1/-1;border:1px solid var(--gold);border-radius:10px;padding:10px;background:#fff8ef;display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}.case-expected-editor h4{grid-column:1/-1;color:var(--wine);font-size:13px}@media(max-width:760px){.sim-bench-shell,.sim-workbench,.centrifuge-scene{grid-template-columns:1fr}.bench-strip{overflow:auto}.sample-corner{min-height:122px}}
+.micro-report{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.micro-report label:last-child{grid-column:span 2}
+.scope-modes .mini-btn.active{background:var(--wine);border-color:var(--wine);color:#fff}
+@media(max-width:760px){.micro-report label:last-child{grid-column:auto}}
 </style>
 </head>
 <body class="intro-active">
@@ -688,7 +694,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     return [
       simSample(1,{urineColor:'#f7e278',urineOpacity:.58,clarity:'clear',macro:'Pale yellow, clear urine.',specificGravity:'1.030',chemistry:{LEU:'negative',NIT:'negative',URO:'normal (0.2 mg/dL)',PRO:'1+ (30 mg/dL)',pH:'5.0',BLO:'negative',SG:'1.030',KET:'trace (5 mg/dL)',BIL:'negative',GLU:'100mg/dL'},dipstick:'Protein 1+, glucose about 100 mg/dL, trace ketones, blood negative.',microscopy:'No required sediment findings supplied for this sample.',reveal:'Color: pale yellow. Clarity: clear. SG: 1.030. Protein 1+, glucose about 100 mg/dL, trace ketones, blood negative.',results:[{test:'Color / clarity',result:'Pale yellow / clear',note:'Physical appearance',condition:''},{test:'Strip highlights',result:'Protein 1+, glucose 100 mg/dL, trace ketones',note:'Blood negative',condition:''},{test:'Specific gravity',result:'1.030',note:'From case study table',condition:''}],microObjects:[],expectedMicro:{rbc:'none reported',wbc:'none reported',casts:'none reported',crystals:'none reported',bacteria:'none reported',other:'no sediment findings supplied'}}),
       simSample(2,{urineColor:'#c98522',urineOpacity:.82,clarity:'hazy',foamColor:'#fff2a8',macro:'Amber, hazy urine. Yellow foam may be seen after shaking.',specificGravity:'1.022',chemistry:{LEU:'negative',NIT:'negative',URO:'normal (0.2 mg/dL)',PRO:'negative',pH:'6.0',BLO:'negative',SG:'1.020',KET:'negative',BIL:'moderate (2+)',GLU:'negative'},dipstick:'Moderate bilirubin with otherwise negative protein, blood, glucose, ketones, nitrite, and leukocyte esterase.',microscopy:'No required sediment findings supplied for this sample.',reveal:'Color: amber. Clarity: hazy. SG: 1.022. Bilirubin: moderate. Ictotest is required because bilirubin is positive.',results:[{test:'Color / clarity',result:'Amber / hazy',note:'Yellow foam possible when shaken',condition:''},{test:'Bilirubin',result:'Moderate',note:'Confirm with Ictotest',condition:''},{test:'Specific gravity',result:'1.022',note:'From case study table',condition:''}],microObjects:[],expectedMicro:{rbc:'none reported',wbc:'none reported',casts:'none reported',crystals:'none reported',bacteria:'none reported',other:'no sediment findings supplied'}}),
-      simSample(3,{urineColor:'#a81f24',urineOpacity:.6,clarity:'clear',macro:'Red, clear urine.',specificGravity:'1.020',chemistry:{LEU:'negative',NIT:'negative',URO:'8 mg/dL',PRO:'negative',pH:'6.0',BLO:'large (3+)',SG:'1.020',KET:'negative',BIL:'negative',GLU:'negative'},dipstick:'Large blood with increased urobilinogen. Bilirubin negative.',microscopy:'No required sediment findings supplied for this sample.',reveal:'Color: red. Clarity: clear. SG: 1.020. Blood: large. Urobilinogen: reported as high in the case text.',results:[{test:'Color / clarity',result:'Red / clear',note:'Physical appearance',condition:''},{test:'Blood',result:'Large',note:'Strip result',condition:''},{test:'Urobilinogen',result:'High',note:'Case text reports 12 EU',condition:''}],microObjects:[simObj('Blood +','cell',42,42,28,28,'#b44b45','Blood pad is large positive.','cell',0,false)],expectedMicro:{rbc:'none reported',wbc:'none reported',casts:'none reported',crystals:'none reported',bacteria:'none reported',other:'no sediment findings supplied'}}),
+      simSample(3,{urineColor:'#a81f24',urineOpacity:.6,clarity:'clear',macro:'Red, clear urine.',specificGravity:'1.020',chemistry:{LEU:'negative',NIT:'negative',URO:'8 mg/dL',PRO:'negative',pH:'6.0',BLO:'large (3+)',SG:'1.020',KET:'negative',BIL:'negative',GLU:'negative'},dipstick:'Large blood with increased urobilinogen. Bilirubin negative.',microscopy:'No intact RBCs expected in a clear red urine pattern; correlate with hemoglobinuria/myoglobinuria.',reveal:'Color: red. Clarity: clear. SG: 1.020. Blood: large. Urobilinogen: reported as high in the case text. Microscopy does not show intact RBCs in this clear red urine pattern.',results:[{test:'Color / clarity',result:'Red / clear',note:'Physical appearance',condition:''},{test:'Blood',result:'Large',note:'Strip result; clear urine suggests free hemoglobin/myoglobin instead of intact RBCs',condition:''},{test:'Urobilinogen',result:'High',note:'Case text reports 12 EU',condition:''}],microObjects:[],expectedMicro:{rbc:'none',wbc:'none',casts:'none',crystals:'none',bacteria:'none',other:'clear red urine pattern; no intact RBC sediment expected'}}),
       simSample(4,{urineColor:'#c78f1c',urineOpacity:.82,clarity:'hazy',macro:'Dark yellow, hazy urine.',specificGravity:'1.030',chemistry:{LEU:'negative',NIT:'negative',URO:'normal (0.2 mg/dL)',PRO:'trace',pH:'5.0',BLO:'moderate (2+)',SG:'1.030',KET:'negative',BIL:'negative',GLU:'negative'},dipstick:'Trace protein, moderate blood, otherwise negative strip findings.',microscopy:'15-20 RBC/hpf, crenated. 0-2 WBC/hpf. Few squamous epithelial cells.',reveal:'Color: dark yellow. Clarity: hazy. SG: 1.030. Blood: moderate. Microscopy: 15-20 crenated RBC/hpf, 0-2 WBC/hpf, few squamous epithelial cells.',results:[{test:'RBC',result:'15-20/hpf',note:'Crenated forms',condition:''},{test:'WBC',result:'0-2/hpf',note:'Low count',condition:''},{test:'Other',result:'Few squamous epithelial cells',note:'Sediment finding',condition:''}],microObjects:[simObj('RBC','cell',28,35,24,24,'#d7a3a0','15-20 RBC/hpf; many appear crenated.','cell',0,false),simObj('Crenated RBC','cell',58,47,28,28,'#c88f86','Crenated RBC appearance in concentrated urine.','thorny-apple',0,false),simObj('Sq epi','cell',43,68,58,34,'#efe6d6','Few squamous epithelial cells.','cell',0,false)],expectedMicro:{rbc:'15-20 RBC per hpf crenated',wbc:'0-2 WBC per hpf',casts:'none reported',crystals:'none reported',bacteria:'none reported',other:'few squamous epithelial cells'}}),
       simSample(5,{urineColor:'#b9292a',urineOpacity:.9,clarity:'cloudy',sedimentColor:'#f3b6c8',hasSediment:true,macro:'Red, cloudy urine.',specificGravity:'1.020',chemistry:{LEU:'trace',NIT:'negative',URO:'normal (0.2 mg/dL)',PRO:'3+ (300 mg/dL)',pH:'5.0',BLO:'large (3+)',SG:'1.020',KET:'negative',BIL:'negative',GLU:'negative'},dipstick:'Protein 3+, blood large, leukocyte esterase trace.',microscopy:'>100 RBC/hpf with many dysmorphic forms. 0-1 RBC casts/lpf. 5-8 WBC/hpf.',reveal:'Color: red. Clarity: cloudy. SG: 1.020. Protein 3+, blood large, leukocyte trace. Microscopy: >100 dysmorphic RBC/hpf, 0-1 RBC casts/lpf, 5-8 WBC/hpf.',results:[{test:'RBC',result:'>100/hpf',note:'Many dysmorphic forms',condition:''},{test:'RBC casts',result:'0-1/lpf',note:'Cast finding',condition:''},{test:'WBC',result:'5-8/hpf',note:'Sediment finding',condition:''}],microObjects:[simObj('Dysmorphic RBC','cell',28,35,28,24,'#c87572','>100 RBC/hpf with many dysmorphic forms.','cell',0,false),simObj('RBC cast','cast',58,52,92,24,'#d59a92','0-1 RBC casts/lpf.','cast',-12,false),simObj('WBC','cell',42,72,30,30,'#d8d2b5','5-8 WBC/hpf.','cell',0,false)],expectedMicro:{rbc:'>100 RBC per hpf many dysmorphic forms',wbc:'5-8 WBC per hpf',casts:'0-1 RBC casts per lpf',crystals:'none reported',bacteria:'none reported',other:''}}),
       simSample(6,{urineColor:'#e1c54a',urineOpacity:.9,clarity:'cloudy',foamColor:'#fff2a8',sedimentColor:'#f7efe4',hasSediment:true,macro:'Yellow, cloudy urine.',specificGravity:'1.015',chemistry:{LEU:'negative',NIT:'negative',URO:'normal (0.2 mg/dL)',PRO:'4+ (>=2000 mg/dL)',pH:'6.0',BLO:'moderate (2+)',SG:'1.015',KET:'negative',BIL:'negative',GLU:'negative'},dipstick:'Protein 4+, blood moderate, leukocyte esterase negative.',microscopy:'15-20 RBC/hpf. 0-5 WBC/hpf. 0-2 granular casts/lpf, 0-2 fatty casts/lpf, 0-2 oval fat bodies/hpf. Moderate free fat droplets and cholesterol crystals.',reveal:'Color: yellow. Clarity: cloudy. SG: 1.015. Protein 4+, blood moderate. Microscopy includes RBCs, granular casts, fatty casts, oval fat bodies, free fat droplets, and cholesterol crystals.',results:[{test:'Protein',result:'4+',note:'Strong strip result',condition:''},{test:'Casts',result:'Granular and fatty casts',note:'0-2/lpf each',condition:''},{test:'Lipids',result:'Oval fat bodies, fat droplets, cholesterol crystals',note:'Moderate lipid findings',condition:''}],microObjects:[simObj('Oval fat body','cell',31,36,34,30,'#d4c06d','0-2 oval fat bodies/hpf.','cell',0,false),simObj('Fatty cast','cast',62,42,100,26,'#dfcf8b','0-2 fatty casts/lpf.','cast',10,false),simObj('Cholesterol','crystal',42,68,48,34,'#e5e8a8','Moderate cholesterol crystals.','crystal',28,true),simObj('Granular cast','cast',68,74,86,22,'#c8b37e','0-2 granular casts/lpf.','cast',-16,false)],expectedMicro:{rbc:'15-20 RBC per hpf',wbc:'0-5 WBC per hpf',casts:'0-2 granular casts and 0-2 fatty casts per lpf',crystals:'moderate cholesterol crystals',bacteria:'none reported',other:'0-2 oval fat bodies per hpf moderate free fat droplets'}}),
@@ -698,15 +704,15 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       simSample(10,{urineColor:'#b8791e',urineOpacity:.88,clarity:'hazy',foamColor:'#fff2a8',sedimentColor:'#d5a66a',hasSediment:true,macro:'Amber, hazy urine.',specificGravity:'1.011',chemistry:{LEU:'negative',NIT:'positive',URO:'8 mg/dL',PRO:'2+ (100 mg/dL)',pH:'7.0',BLO:'negative',SG:'1.010',KET:'negative',BIL:'large (3+)',GLU:'negative'},dipstick:'Protein 2+, bilirubin large, urobilinogen elevated, nitrite positive, blood negative.',microscopy:'2-4 WBC/hpf. 1-3 RBC/hpf. Few squamous and transitional epithelial cells. 1-2 hyaline casts/lpf. 1-2 granular casts/lpf. Many bile-stained renal tubular epithelial cells. 0-1 epithelial cell casts. 0-1 bile-stained waxy casts/lpf.',reveal:'Color: amber. Clarity: hazy. SG: 1.011. Bilirubin large and urobilinogen high. Ictotest is required because bilirubin is positive. Microscopy includes bile-stained RTE cells and casts.',results:[{test:'Bilirubin',result:'Large',note:'Requires Ictotest',condition:''},{test:'Urobilinogen',result:'High',note:'Case text reports 8.0 EU',condition:''},{test:'Microscopy',result:'Bile-stained cells/casts',note:'Sediment finding',condition:''}],microObjects:[simObj('Bile RTE','cell',29,36,34,34,'#b98639','Many bile-stained renal tubular epithelial cells.','cell',0,false),simObj('Hyaline cast','cast',58,42,90,22,'#efe0bf','1-2 hyaline casts/lpf.','cast',8,false),simObj('Granular cast','cast',43,66,92,24,'#c8a76a','1-2 granular casts/lpf.','cast',-14,false),simObj('Waxy cast','cast',65,72,86,22,'#b98a48','0-1 bile-stained waxy casts/lpf.','cast',12,false)],expectedMicro:{rbc:'1-3 RBC per hpf',wbc:'2-4 WBC per hpf',casts:'1-2 hyaline casts 1-2 granular casts 0-1 epithelial cell casts 0-1 bile stained waxy casts per lpf',crystals:'none reported',bacteria:'none reported',other:'few squamous epithelial cells few transitional epithelial cells many bile-stained renal tubular epithelial cells'}}),
       simSample(11,{urineColor:'#f4e58b',urineOpacity:.82,clarity:'hazy',sedimentColor:'#f7efe4',hasSediment:true,macro:'Pale yellow, hazy urine.',specificGravity:'1.020',chemistry:{LEU:'moderate (2+)',NIT:'negative',URO:'normal (0.2 mg/dL)',PRO:'trace',pH:'5.0',BLO:'negative',SG:'1.020',KET:'negative',BIL:'negative',GLU:'200 mg/dL'},dipstick:'Glucose positive, leukocyte esterase 2+, nitrite negative, trace protein.',microscopy:'20-25 WBC/hpf. 10-15 RBC/hpf. Many yeast cells and hyphae.',reveal:'Color: pale yellow. Clarity: hazy. SG: 1.020. Glucose positive, leukocyte 2+, nitrite negative. Microscopy: 20-25 WBC/hpf, 10-15 RBC/hpf, many yeast cells and hyphae.',results:[{test:'Glucose',result:'Positive',note:'Case text reports 250 mg/dL',condition:''},{test:'WBC',result:'20-25/hpf',note:'Sediment finding',condition:''},{test:'Yeast',result:'Many cells and hyphae',note:'Sediment finding',condition:''}],microObjects:[simObj('Yeast','cell',28,36,24,24,'#e0cda8','Many yeast cells.','cell',0,false),simObj('Hyphae','cast',58,42,96,10,'#d2b789','Hyphae-like forms.','cast',16,false),simObj('WBC','cell',42,67,34,34,'#d8d2b5','20-25 WBC/hpf.','cell',0,false),simObj('RBC','cell',66,72,24,24,'#d7a3a0','10-15 RBC/hpf.','cell',0,false)],expectedMicro:{rbc:'10-15 RBC per hpf',wbc:'20-25 WBC per hpf',casts:'none reported',crystals:'none reported',bacteria:'many yeast cells and hyphae',other:''}}),
       simSample(12,{urineColor:'#e4c83d',urineOpacity:.82,clarity:'hazy',macro:'Yellow, hazy urine.',specificGravity:'1.025',chemistry:{LEU:'negative',NIT:'negative',URO:'normal (0.2 mg/dL)',PRO:'negative',pH:'6.0',BLO:'moderate (2+)',SG:'1.025',KET:'negative',BIL:'negative',GLU:'negative'},dipstick:'Blood moderate, otherwise negative strip findings.',microscopy:'0-3 WBC/hpf. 15-20 RBC/hpf. Few squamous epithelial cells. Many cystine crystals.',reveal:'Color: yellow. Clarity: hazy. SG: 1.025. Blood moderate. Microscopy: 15-20 RBC/hpf, 0-3 WBC/hpf, few squamous epithelial cells, many cystine crystals.',results:[{test:'RBC',result:'15-20/hpf',note:'Sediment finding',condition:''},{test:'Crystals',result:'Many cystine crystals',note:'Sediment finding',condition:''},{test:'WBC',result:'0-3/hpf',note:'Low count',condition:''}],microObjects:[simObj('Cystine','crystal',31,36,44,34,'#e7e4ad','Many cystine crystals.','crystal',0,true),simObj('Cystine','crystal',56,44,42,34,'#ded996','Many cystine crystals.','crystal',30,true),simObj('RBC','cell',42,68,24,24,'#d7a3a0','15-20 RBC/hpf.','cell',0,false),simObj('Sq epi','cell',67,71,56,34,'#efe6d6','Few squamous epithelial cells.','cell',0,false)],expectedMicro:{rbc:'15-20 RBC per hpf',wbc:'0-3 WBC per hpf',casts:'none reported',crystals:'many cystine crystals',bacteria:'none reported',other:'few squamous epithelial cells'}}),
-      simSample(13,{urineColor:'#e6ca42',urineOpacity:.8,clarity:'slightly cloudy',sedimentColor:'#e0a84f',hasSediment:true,macro:'Yellow, slightly hazy urine with orange sandy sediment noted in the history.',specificGravity:'1.024',chemistry:{LEU:'negative',NIT:'negative',URO:'normal (0.2 mg/dL)',PRO:'negative',pH:'5.0',BLO:'negative',SG:'1.025',KET:'negative',BIL:'negative',GLU:'negative'},dipstick:'Negative protein, blood, glucose, ketones, nitrite, bilirubin, and leukocyte esterase. Acid pH.',microscopy:'Many crystals.',reveal:'Color: yellow. Clarity: slightly hazy. SG: 1.024. pH 5.0. Microscopy: many crystals.',results:[{test:'Crystals',result:'Many',note:'Case text describes orange sand-like material',condition:''},{test:'pH',result:'5.0',note:'Acid urine',condition:''},{test:'Specific gravity',result:'1.024',note:'From case study table',condition:''}],microObjects:[simObj('Uric acid','crystal',35,38,48,36,'#d58b31','Many crystals in acid urine.','crystal',24,true),simObj('Uric acid','crystal',62,54,44,34,'#c97924','Orange sandy crystals.','crystal',-18,true)],expectedMicro:{rbc:'none reported',wbc:'none reported',casts:'none reported',crystals:'many crystals',bacteria:'none reported',other:''}}),
-      simSample(14,{urineColor:'#c99424',urineOpacity:.84,clarity:'clear',foamColor:'#fff2a8',macro:'Dark yellow urine with positive Ictotest noted in the case text.',specificGravity:'1.020',chemistry:{LEU:'negative',NIT:'negative',URO:'normal (0.2 mg/dL)',PRO:'negative',pH:'6.0',BLO:'negative',SG:'1.020',KET:'negative',BIL:'large (3+)',GLU:'negative'},dipstick:'Bilirubin positive. Case text also reports positive Ictotest.',microscopy:'Needle-shaped crystals seen on microscopic exam.',reveal:'Color: dark yellow. Bilirubin positive with positive Ictotest. Microscopy: needle-shaped crystals.',results:[{test:'Ictotest',result:'Positive',note:'Required because bilirubin is positive',condition:''},{test:'Microscopy',result:'Needle-shaped crystals',note:'Sediment finding',condition:''},{test:'Color',result:'Dark yellow',note:'Physical appearance',condition:''}],microObjects:[simObj('Needles','crystal',35,40,90,5,'#d3a937','Needle-shaped crystals.','needle',20,true),simObj('Needles','crystal',62,58,82,5,'#d3a937','Needle-shaped crystals.','needle',-24,true)],expectedMicro:{rbc:'none reported',wbc:'none reported',casts:'none reported',crystals:'needle-shaped crystals',bacteria:'none reported',other:''}})
+      simSample(13,{urineColor:'#e6ca42',urineOpacity:.8,clarity:'slightly cloudy',sedimentColor:'#e0a84f',hasSediment:true,macro:'Yellow, slightly hazy urine with orange sandy sediment noted in the history.',specificGravity:'1.024',chemistry:{LEU:'negative',NIT:'negative',URO:'normal (0.2 mg/dL)',PRO:'negative',pH:'5.0',BLO:'negative',SG:'1.025',KET:'negative',BIL:'negative',GLU:'negative'},dipstick:'Negative protein, blood, glucose, ketones, nitrite, bilirubin, and leukocyte esterase. Acid pH.',microscopy:'Many uric acid crystals in acid urine.',reveal:'Color: yellow. Clarity: slightly hazy. SG: 1.024. pH 5.0. Microscopy: many uric acid crystals.',results:[{test:'Crystals',result:'Many uric acid crystals',note:'Case text describes orange sand-like material',condition:''},{test:'pH',result:'5.0',note:'Acid urine',condition:''},{test:'Specific gravity',result:'1.024',note:'From case study table',condition:''}],microObjects:[simObj('Uric acid','crystal',35,38,48,36,'#d58b31','Many uric acid crystals in acid urine.','crystal',24,true),simObj('Uric acid','crystal',62,54,44,34,'#c97924','Orange sandy crystals.','crystal',-18,true)],expectedMicro:{rbc:'none reported',wbc:'none reported',casts:'none reported',crystals:'many uric acid crystals',bacteria:'none reported',other:''}}),
+      simSample(14,{urineColor:'#c99424',urineOpacity:.84,clarity:'clear',foamColor:'#fff2a8',macro:'Dark yellow urine with positive Ictotest noted in the case text.',specificGravity:'1.020',chemistry:{LEU:'negative',NIT:'negative',URO:'normal (0.2 mg/dL)',PRO:'negative',pH:'6.0',BLO:'negative',SG:'1.020',KET:'negative',BIL:'large (3+)',GLU:'negative'},dipstick:'Bilirubin positive. Case text also reports positive Ictotest.',microscopy:'Bilirubin crystals; needle-shaped crystals seen on microscopic exam.',reveal:'Color: dark yellow. Bilirubin positive with positive Ictotest. Microscopy: bilirubin crystals with needle-shaped forms.',results:[{test:'Ictotest',result:'Positive',note:'Required because bilirubin is positive',condition:''},{test:'Microscopy',result:'Bilirubin crystals',note:'Needle-shaped sediment finding',condition:''},{test:'Color',result:'Dark yellow',note:'Physical appearance',condition:''}],microObjects:[simObj('Bilirubin needles','crystal',35,40,90,5,'#d3a937','Bilirubin crystals with needle-shaped forms.','needle',20,true),simObj('Bilirubin needles','crystal',62,58,82,5,'#d3a937','Bilirubin crystals with needle-shaped forms.','needle',-24,true)],expectedMicro:{rbc:'none reported',wbc:'none reported',casts:'none reported',crystals:'bilirubin crystals needle-shaped crystals',bacteria:'none reported',other:''}})
     ];
   }
   function defaultState(){
     return {
-      version:14,
+      version:16,
       updatedAt:Date.now(),
-      notes:{simulation_note:'',selected_color:'yellow',sim_case_index:0,sim_step:0,micro_mode:'brightfield',sim_actions:{},sim_extra_choices:{},sim_extra_checked:false,sim_micro_inputs:{},sim_micro_score:0,sim_micro_pass:false},
+      notes:{simulation_note:'',selected_color:'yellow',sim_case_index:0,sim_step:0,micro_mode:'brightfield',sim_actions:{},sim_extra_choices:{},sim_extra_checked:false,sim_micro_inputs:{},sim_micro_score:0,sim_micro_pass:false,sim_micro_checked:false},
       simCases:defaultSimCases(),
       renal:{activeId:'renal_glomerular',charts:defaultRenalCharts()},
       tables:{
@@ -916,7 +922,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       return /^Case\s*\d+$/i.test(name)||/Editable example|Final reveal|Clear yellow urine/i.test(text)||(!name&&i===0);
     });
   }
-  function canonicalSimulationSamples(existing){
+  function canonicalSimulationSamples(existing,preserveSaved){
+    var keepSaved=preserveSaved!==false;
     var incoming=Array.isArray(existing)?existing.map(function(item,i){return normalizeCase(item,i)}):[];
     var byKey={};
     var byName={};
@@ -930,7 +937,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       var key='ua-case-study-sample-'+(i+1);
       var name='Sample '+(i+1);
       var saved=byKey[key]||byName[name.toLowerCase()]||null;
-      var merged=Object.assign({},normalizeCase(sample,i),saved||{});
+      var merged=keepSaved?Object.assign({},normalizeCase(sample,i),saved||{}):normalizeCase(sample,i);
       merged.sourceKey=key;
       merged.name=name;
       return normalizeCase(merged,i);
@@ -938,7 +945,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function ensureSimulationSamples(data,incomingVersion){
     if(!data)return;
-    data.simCases=canonicalSimulationSamples(data.simCases);
+    data.simCases=canonicalSimulationSamples(data.simCases,Number(incomingVersion||0)>=16);
     if(data.notes)stateSafeSampleIndex(data);
   }
   function stateSafeSampleIndex(data){
@@ -975,7 +982,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     Object.keys(base.tables||{}).forEach(function(id){sanitizeTableText(base.tables[id])});
     if(Number(incoming.version)<7)base.tables.resources=defaultState().tables.resources;
     if(resourcesBlank(base.tables.resources))base.tables.resources=defaultState().tables.resources;
-    base.version=14;
+    base.version=16;
     base.updatedAt=Number(incoming.updatedAt||0)||base.updatedAt;
     return base;
   }
@@ -1280,6 +1287,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     state.notes.sim_micro_inputs={};
     state.notes.sim_micro_score=0;
     state.notes.sim_micro_pass=false;
+    state.notes.sim_micro_checked=false;
+    state.notes.micro_mode='brightfield';
   }
   function parseStripNumber(value){
     var text=String(value||'');
@@ -1387,16 +1396,24 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       if(key==='ictotest')return buildIctotest(activeCase);
       return '';
     }).join(''):'<div class="confirm-card"><h4>No extra test needed</h4><p>Proceed to centrifuge and decant.</p></div>'):'';
-    return '<div class="mini-test-grid">'+cards+'</div><div class="sim-actions"><button type="button" class="mini-btn" data-sim-check-extras="1">Check extra tests</button></div>'+
+    return '<div class="mini-test-grid">'+cards+'</div><div class="sim-actions"><button type="button" class="mini-btn extra-check-btn" data-sim-check-extras="1">Check extra tests</button></div>'+
       (checked?(correct?'<div class="sim-feedback ok">Extra-test choice is correct.</div>':'<div class="sim-feedback warn">Not yet. Recheck SG, pH/protein, and bilirubin before dumping supernatant.</div>'):'<div class="sim-feedback">Extra-test choice pending.</div>')+
       panels;
   }
+  function kovaTubeHtml(className,attrs){
+    return '<div class="kova-tube '+(className||'')+'" '+(attrs||'')+'><i></i></div>';
+  }
   function buildSpinDecant(activeCase){
-    return '<div class="centrifuge-scene"><div class="centrifuge"><span></span><span></span><span class="centrifuge-rotor"></span></div><div class="kova-tube"><i></i></div></div>'+
-      '<div class="lab-tool-grid">'+
-      simToolButton('spin','Spin KOVA tube','centrifuge sediment')+
-      simToolButton('decant','Dump supernatant','only after extra tests')+
-      simToolButton('resuspend','Resuspend sediment','prepare wet mount')+
+    var spin=simActionDone('spin');
+    var decant=simActionDone('decant');
+    var resuspend=simActionDone('resuspend');
+    var tubeClass='draggable '+(spin?'spun ':'')+(decant?'decanted ':'')+(resuspend?'resuspended ':'');
+    var tube=kovaTubeHtml(tubeClass,'draggable="true" data-sim-drag="kova" data-sim-action="'+(!spin?'spin':(!decant?'decant':'resuspend'))+'"');
+    return '<div class="tube-lab">'+
+      '<div class="tube-source '+(spin?'empty':'')+'">'+(!spin?tube:'<span>KOVA tube loaded</span>')+'</div>'+
+      '<div class="tube-drop-zone centrifuge-zone '+(spin?'ready ':'')+'" data-sim-drop="centrifuge" data-sim-action="spin"><h4>Spin</h4><div class="centrifuge"><span></span><span></span><span class="centrifuge-rotor"></span></div>'+(spin&&!decant?tube:'')+'<span>'+(spin?'Spun sediment':'Drop tube here')+'</span></div>'+
+      '<div class="tube-drop-zone sink-zone '+(decant?'ready ':'')+'" data-sim-drop="sink" data-sim-action="decant"><h4>Decant</h4><div class="sink-basin"></div>'+(decant&&!resuspend?tube:'')+'<span>'+(decant?'Supernatant dumped':'Drop spun tube here')+'</span></div>'+
+      '<div class="tube-drop-zone resuspend-zone '+(resuspend?'ready ':'')+'" data-sim-drop="resuspend" data-sim-action="resuspend"><h4>Resuspend</h4>'+(resuspend?tube:'')+'<span>'+(resuspend?'Ready for microscope':'Drop decanted tube here')+'</span></div>'+
       '</div>'+
       (simCanAdvance(activeCase,1)?'<div class="sim-feedback ok">Sediment is ready for the microscope.</div>':'<div class="sim-feedback">Finish the tube steps before moving to microscopy.</div>');
   }
@@ -1408,13 +1425,41 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     ['bacteria','Bacteria / yeast'],
     ['other','Other']
   ];
-  function microTokens(text){
-    var ignore={a:true,an:true,and:true,are:true,at:true,be:true,by:true,for:true,from:true,in:true,is:true,no:true,of:true,on:true,or:true,per:true,reported:true,sediment:true,supplied:true,the:true,to:true,with:true};
-    return String(text||'').toLowerCase()
-      .replace(/\bno\b/g,' none ')
-      .replace(/[^a-z0-9+><-]+/g,' ')
-      .split(/\s+/)
-      .filter(function(token){return token&&token.length>1&&!ignore[token]});
+  var MICRO_OPTION_BANK={
+    rbc:['None','0-2 RBC/hpf','1-3 RBC/hpf','6-10 RBC/hpf','10-15 RBC/hpf','15-20 RBC/hpf','15-20 crenated RBC/hpf','20-30 RBC/hpf','>100 dysmorphic RBC/hpf'],
+    wbc:['None','0-2 WBC/hpf','0-3 WBC/hpf','0-5 WBC/hpf','2-4 WBC/hpf','5-8 WBC/hpf','20-25 WBC/hpf','40-50 WBC/hpf','>100 WBC/hpf'],
+    casts:['None','0-1 RBC casts/lpf','0-2 WBC casts/lpf','1-2 WBC casts/lpf','Granular casts','Fatty casts','Hyaline casts','Waxy casts','Bacterial casts','Epithelial cell casts'],
+    crystals:['None','Calcium oxalate crystals','Cholesterol crystals','Cystine crystals','Uric acid crystals','Bilirubin crystals','Needle-shaped crystals','Moderate unidentified crystals'],
+    bacteria:['None','Heavy bacteria','Many bacteria','Many yeast cells and hyphae'],
+    other:['None','Few squamous epithelial cells','Moderate squamous epithelial cells','Few transitional epithelial cells','Many transitional epithelial cells','Oval fat bodies and free fat droplets','Bile-stained renal tubular epithelial cells','Eosinophils may be tested separately','Clear red urine pattern; no intact RBC sediment expected']
+  };
+  function canonicalMicroAnswer(text){
+    var raw=String(text||'').replace(/\s+/g,' ').trim();
+    var plain=raw.toLowerCase();
+    if(!plain||plain==='none'||plain==='none reported'||plain==='not reported'||plain==='no sediment findings supplied'||plain==='no required sediment findings supplied for this sample')return 'None';
+    if(/^no (required )?sediment findings supplied/.test(plain))return 'None';
+    if(/^none\b/.test(plain))return 'None';
+    return raw
+      .replace(/\bper\b/gi,'/')
+      .replace(/\s*\/\s*/g,'/')
+      .replace(/\bhpf\b/gi,'hpf')
+      .replace(/\blpf\b/gi,'lpf')
+      .replace(/\s+/g,' ')
+      .trim();
+  }
+  function microOptionsFor(activeCase,key){
+    var expected=canonicalMicroAnswer((activeCase.expectedMicro||{})[key]||'');
+    var seen={};
+    return [expected].concat(MICRO_OPTION_BANK[key]||[]).filter(function(option){
+      option=canonicalMicroAnswer(option);
+      var id=option.toLowerCase();
+      if(!option||seen[id])return false;
+      seen[id]=true;
+      return true;
+    });
+  }
+  function microOptionHtml(option,selected){
+    return '<option value="'+escapeHtml(option)+'" '+(option===selected?'selected':'')+'>'+escapeHtml(option)+'</option>';
   }
   function scoreMicroReport(activeCase){
     var expected=activeCase.expectedMicro||{};
@@ -1422,12 +1467,10 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var total=0,passed=0;
     MICRO_FIELDS.forEach(function(pair){
       var key=pair[0];
-      var exp=microTokens(expected[key]||'');
-      if(!exp.length)return;
+      var exp=canonicalMicroAnswer(expected[key]||'');
+      var ans=Object.prototype.hasOwnProperty.call(answers,key)?canonicalMicroAnswer(answers[key]):'None';
       total++;
-      var ans=microTokens(answers[key]||'');
-      var hits=exp.filter(function(token){return ans.indexOf(token)>-1}).length;
-      if(exp.length&&hits/exp.length>=.8)passed++;
+      if(ans.toLowerCase()===exp.toLowerCase())passed++;
     });
     return total?passed/total:1;
   }
@@ -1436,9 +1479,11 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var score=Number(state.notes.sim_micro_score||0);
     var pass=!!state.notes.sim_micro_pass;
     return '<div class="micro-report">'+MICRO_FIELDS.map(function(pair){
-      return '<label>'+escapeHtml(pair[1])+'<textarea data-sim-micro-input="'+pair[0]+'" placeholder="enter what you see">'+escapeHtml(answers[pair[0]]||'')+'</textarea></label>';
+      var value=Object.prototype.hasOwnProperty.call(answers,pair[0])?canonicalMicroAnswer(answers[pair[0]]):'None';
+      var options=microOptionsFor(activeCase,pair[0]);
+      return '<label>'+escapeHtml(pair[1])+'<select data-sim-micro-input="'+pair[0]+'">'+options.map(function(option){return microOptionHtml(option,value)}).join('')+'</select></label>';
     }).join('')+'</div><div class="sim-actions"><button type="button" class="mini-btn" data-sim-check-micro="1">Check microscopy</button></div>'+
-    (state.notes.sim_micro_score?'<div class="sim-feedback '+(pass?'ok':'warn')+'">Microscopy match: '+Math.round(score*100)+'% '+(pass?'Full results unlocked.':'Needs about 80% match.')+'</div>':'');
+    (state.notes.sim_micro_checked?'<div class="sim-feedback '+(pass?'ok':'warn')+'">Microscopy match: '+Math.round(score*100)+'% '+(pass?'Full results unlocked.':'Needs about 80% match.')+'</div>':'');
   }
   function caseResultsRows(activeCase){
     var rows=Array.isArray(activeCase.results)?activeCase.results:[];
@@ -1446,6 +1491,39 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     return '<div class="result-mini"><table><thead><tr><th>Test</th><th>Result</th><th>Note</th><th>Report Note</th></tr></thead><tbody>'+
       rows.map(function(row){return '<tr><td>'+escapeHtml(row.test||'')+'</td><td>'+escapeHtml(row.result||'')+'</td><td>'+escapeHtml(row.note||'')+'</td><td>'+escapeHtml(row.condition||'')+'</td></tr>'}).join('')+
       '</tbody></table></div>';
+  }
+  function listItemsHtml(items,emptyText){
+    if(!items.length)return '<li>'+escapeHtml(emptyText||'None')+'</li>';
+    return items.map(function(item){return '<li>'+escapeHtml(item)+'</li>'}).join('');
+  }
+  function abnormalStripSummary(activeCase){
+    var chemistry=Object.assign(defaultChemistry(),(activeCase&&activeCase.chemistry)||{});
+    return STRIP_ORDER.filter(function(label){
+      var value=String(chemistry[label]||'');
+      if(label==='SG')return false;
+      if(label==='pH')return parseStripNumber(value)>7.5;
+      return positiveStrip(value);
+    }).map(function(label){return label+': '+chemistry[label]});
+  }
+  function microscopySummary(activeCase){
+    var expected=(activeCase&&activeCase.expectedMicro)||{};
+    return MICRO_FIELDS.map(function(pair){
+      var value=canonicalMicroAnswer(expected[pair[0]]||'');
+      return value==='None'?'':pair[1]+': '+value;
+    }).filter(Boolean);
+  }
+  function fullSampleResultsHtml(activeCase){
+    var required=requiredExtraTests(activeCase).map(extraTestLabel);
+    var physical=[
+      activeCase.macro||'Color / clarity not listed',
+      'Specific gravity: '+(activeCase.specificGravity||((activeCase.chemistry||{}).SG)||'not listed')
+    ];
+    return '<div class="results-summary">'+
+      '<div class="results-card"><h4>Physical</h4><ul>'+listItemsHtml(physical,'No physical findings listed')+'</ul></div>'+
+      '<div class="results-card"><h4>Abnormal Strip</h4><ul>'+listItemsHtml(abnormalStripSummary(activeCase),'No abnormal strip values listed')+'</ul></div>'+
+      '<div class="results-card"><h4>Extra Tests</h4><ul>'+listItemsHtml(required,'No confirmation test needed')+'</ul></div>'+
+      '<div class="results-card"><h4>Microscopy</h4><ul>'+listItemsHtml(microscopySummary(activeCase),'No significant sediment elements supplied')+'</ul></div>'+
+      '</div><p>'+escapeHtml(activeCase.reveal||'')+'</p>'+caseResultsRows(activeCase);
   }
   function buildDipstick(activeCase){
     var pads=Array.isArray(activeCase.dipstickPads)&&activeCase.dipstickPads.length?activeCase.dipstickPads:defaultPads();
@@ -1516,7 +1594,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       if(step===0)content=buildWorkbench(activeCase);
       if(step===1)content=buildSpinDecant(activeCase);
       if(step===2)content=buildMicroscope(activeCase);
-      if(step===3)content='<strong>Full sample results</strong><br>'+escapeHtml(activeCase.reveal||'')+caseResultsRows(activeCase)+'<br><strong>Macroscopic:</strong> '+escapeHtml(activeCase.macro||'')+'<br><strong>Strip:</strong> '+escapeHtml(activeCase.dipstick||'')+'<br><strong>Specific gravity:</strong> '+escapeHtml(activeCase.specificGravity||'')+'<br><strong>Microscopy:</strong> '+escapeHtml(activeCase.microscopy||'');
+      if(step===3)content=fullSampleResultsHtml(activeCase);
       var nextLabel=step>=simSteps.length-2?'Full Results':'Next';
       var nextButton=step<simSteps.length-1?'<button type="button" class="mini-btn" data-sim-next="1" '+(simCanAdvance(activeCase,step)?'':'disabled')+'>'+nextLabel+'</button>':'';
       panel.innerHTML='<h3>'+escapeHtml(simSteps[step].title)+'</h3><div class="sim-content">'+content+'</div><div class="sim-actions"><button type="button" class="mini-btn" data-sim-back="1">Back</button>'+nextButton+'<button type="button" class="mini-btn" data-sim-reset="1">Restart</button></div>';
@@ -1753,8 +1831,10 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   window.moveSimStep=function(delta){
     var cases=state.simCases&&state.simCases.length?state.simCases:defaultSimCases();
     var activeCase=normalizeCase(cases[Math.max(0,Math.min(cases.length-1,Number(state.notes.sim_case_index)||0))]);
-    var next=Math.max(0,Math.min(simSteps.length-1,(Number(state.notes.sim_step)||0)+(Number(delta)||0)));
-    if(next>(Number(state.notes.sim_step)||0)&&!simCanAdvance(activeCase,Number(state.notes.sim_step)||0)){showToast('Finish this step first',true);return}
+    var current=Number(state.notes.sim_step)||0;
+    var next=Math.max(0,Math.min(simSteps.length-1,current+(Number(delta)||0)));
+    if(next>current&&!simCanAdvance(activeCase,current)){showToast('Finish this step first',true);return}
+    if(next===2&&current!==2)state.notes.micro_mode='brightfield';
     state.notes.sim_step=next;
     saveLocal();
     renderSimulation();
@@ -1763,7 +1843,9 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var cases=state.simCases&&state.simCases.length?state.simCases:defaultSimCases();
     var activeCase=normalizeCase(cases[Math.max(0,Math.min(cases.length-1,Number(state.notes.sim_case_index)||0))]);
     var target=Math.max(0,Math.min(simSteps.length-1,Number(index)||0));
+    var current=Number(state.notes.sim_step)||0;
     if(!canGoToSimStep(activeCase,target)){showToast('Finish the earlier step first',true);return}
+    if(target===2&&current!==2)state.notes.micro_mode='brightfield';
     state.notes.sim_step=target;
     saveLocal();
     renderSimulation();
@@ -1798,6 +1880,26 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       p.sim_actions.reader=true;
       saveLocal();
       renderSimulation();
+      return;
+    }
+    if(type==='kova'&&target==='centrifuge'){
+      p.sim_actions.spin=true;
+      saveLocal();
+      renderSimulation();
+      return;
+    }
+    if(type==='kova'&&target==='sink'){
+      if(!p.sim_actions.spin){showToast('Spin the tube first',true);return}
+      p.sim_actions.decant=true;
+      saveLocal();
+      renderSimulation();
+      return;
+    }
+    if(type==='kova'&&target==='resuspend'){
+      if(!p.sim_actions.decant){showToast('Dump supernatant first',true);return}
+      p.sim_actions.resuspend=true;
+      saveLocal();
+      renderSimulation();
     }
   };
   window.toggleExtraChoice=function(key){
@@ -1819,6 +1921,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var score=scoreMicroReport(activeCase);
     state.notes.sim_micro_score=score;
     state.notes.sim_micro_pass=score>=.8;
+    state.notes.sim_micro_checked=true;
     saveLocal();
     renderSimulation();
   };
@@ -1951,6 +2054,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       simProgress().sim_micro_inputs[el.dataset.simMicroInput]=el.value;
       state.notes.sim_micro_score=0;
       state.notes.sim_micro_pass=false;
+      state.notes.sim_micro_checked=false;
       saveLocal();
       return;
     }
@@ -2048,6 +2152,14 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   });
   document.addEventListener('change',function(e){
     var input=e.target;
+    if(input.dataset.simMicroInput){
+      simProgress().sim_micro_inputs[input.dataset.simMicroInput]=input.value;
+      state.notes.sim_micro_score=0;
+      state.notes.sim_micro_pass=false;
+      state.notes.sim_micro_checked=false;
+      saveLocal();
+      return;
+    }
     if((input.dataset.padField||input.dataset.objectField)&&isAdmin&&editMode){
       saveDraft();
       renderSimulation();
