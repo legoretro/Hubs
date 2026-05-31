@@ -121,6 +121,7 @@ button,input{font-family:inherit}button{cursor:pointer}
 .sample-stage .tube:before{left:0;right:0;top:0;height:24px;border-width:0 0 2px;border-radius:0 0 50% 50%;box-shadow:inset 0 5px 0 rgba(255,255,255,.22)}
 .sample-stage .tube:after{left:16px;right:16px;top:5px;height:10px;border-radius:50%}
 .sample-stage .urine-sediment{left:0;right:0;bottom:0;border-radius:0 0 22px 22px;z-index:3}
+.inline-extra-tests{margin-top:14px;border-top:2px solid rgba(212,134,10,.22);padding-top:12px}.inline-extra-tests h4{color:var(--wine);font-size:18px;margin:0 0 8px}
 .step-pill{cursor:pointer;box-shadow:0 2px 0 rgba(122,61,0,.22),0 5px 12px rgba(122,61,0,.08);transition:transform .15s ease,box-shadow .15s ease}.step-pill:hover{transform:translateY(-1px);box-shadow:0 4px 0 rgba(122,61,0,.2),0 8px 18px rgba(122,61,0,.12)}.step-pill.active{box-shadow:inset 0 0 0 2px rgba(255,255,255,.16),0 5px 12px rgba(122,61,0,.16)}
 .micro-item.needle{width:var(--w);height:4px;border-radius:999px;clip-path:none;background:linear-gradient(90deg,transparent,var(--item),rgba(255,255,255,.78),var(--item),transparent)}
 .micro-item.thorny-apple{border-radius:50%;clip-path:none;background:radial-gradient(circle,var(--item) 0 42%,transparent 43%),conic-gradient(from 10deg,var(--item) 0 8deg,transparent 8deg 22deg,var(--item) 22deg 30deg,transparent 30deg 48deg,var(--item) 48deg 58deg,transparent 58deg 76deg,var(--item) 76deg 86deg,transparent 86deg 100deg,var(--item) 100deg 112deg,transparent 112deg 130deg,var(--item) 130deg 142deg,transparent 142deg 160deg,var(--item) 160deg 172deg,transparent 172deg 190deg,var(--item) 190deg 202deg,transparent 202deg 220deg,var(--item) 220deg 232deg,transparent 232deg 250deg,var(--item) 250deg 262deg,transparent 262deg 280deg,var(--item) 280deg 292deg,transparent 292deg 310deg,var(--item) 310deg 322deg,transparent 322deg)}
@@ -357,7 +358,6 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   var state=null;
   var simSteps=[
     {key:'bench',title:'Sample + strip'},
-    {key:'extras',title:'Extra tests'},
     {key:'spin',title:'Spin + decant'},
     {key:'micro',title:'Microscope'},
     {key:'reveal',title:'Full results'}
@@ -1316,12 +1316,22 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     return required.every(function(key){return choices.indexOf(key)>-1});
   }
   function simActionDone(key){return !!simProgress().sim_actions[key]}
+  function benchActionsDone(){
+    return simActionDone('pickup')&&simActionDone('dip')&&simActionDone('reader');
+  }
   function simCanAdvance(activeCase,step){
-    if(step===0)return simActionDone('pickup')&&simActionDone('dip')&&simActionDone('reader');
-    if(step===1)return !!state.notes.sim_extra_checked&&extrasCorrect(activeCase);
-    if(step===2)return simActionDone('spin')&&simActionDone('decant')&&simActionDone('resuspend');
-    if(step===3)return !!state.notes.sim_micro_pass;
+    if(step===0)return benchActionsDone()&&!!state.notes.sim_extra_checked&&extrasCorrect(activeCase);
+    if(step===1)return simActionDone('spin')&&simActionDone('decant')&&simActionDone('resuspend');
+    if(step===2)return !!state.notes.sim_micro_pass;
     return true;
+  }
+  function highestAllowedSimStep(activeCase){
+    var allowed=0;
+    for(var i=0;i<simSteps.length-1;i++){
+      if(!simCanAdvance(activeCase,i))break;
+      allowed=i+1;
+    }
+    return allowed;
   }
   function canGoToSimStep(activeCase,target){
     var current=Number(state.notes.sim_step)||0;
@@ -1340,7 +1350,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     return '<div class="mini-cup '+(className||'')+'" '+(attrs||'')+' style="'+simCupStyle(activeCase)+'"><span></span></div>';
   }
   function buildWorkbench(activeCase){
-    var ready=simCanAdvance(activeCase,0);
+    var ready=benchActionsDone();
     var pickup=simActionDone('pickup');
     var dip=simActionDone('dip');
     var reader=simActionDone('reader');
@@ -1355,7 +1365,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       simToolButton('dip','Dip reagent strip','use the selected sample')+
       simToolButton('reader','Place strip in reader','read chemistry pads')+
       '</div>'+
-      (ready?'<div class="sim-feedback ok">Strip results are ready.</div>'+buildDipstick(activeCase):'<div class="sim-feedback">Complete the three bench actions to unlock the strip results.</div>');
+      (ready?'<div class="sim-feedback ok">Strip results are ready.</div>'+buildDipstick(activeCase)+'<div class="inline-extra-tests"><h4>Extra tests</h4>'+buildExtraTests(activeCase)+'</div>':'<div class="sim-feedback">Complete the three bench actions to unlock the strip results.</div>');
   }
   function buildSsa(activeCase){
     return '<div class="confirm-card"><h4>SSA</h4><p>Protein confirmation required because pH is above 7.5 and protein is positive.</p><strong>'+(positiveStrip((activeCase.chemistry||{}).PRO)?escapeHtml((activeCase.chemistry||{}).PRO):'Positive protein')+'</strong></div>';
@@ -1378,7 +1388,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       return '';
     }).join(''):'<div class="confirm-card"><h4>No extra test needed</h4><p>Proceed to centrifuge and decant.</p></div>'):'';
     return '<div class="mini-test-grid">'+cards+'</div><div class="sim-actions"><button type="button" class="mini-btn" data-sim-check-extras="1">Check extra tests</button></div>'+
-      (checked?(correct?'<div class="sim-feedback ok">Correct. Complete any required confirmation before decanting.</div>':'<div class="sim-feedback warn">Not yet. Recheck SG, pH/protein, and bilirubin before dumping supernatant.</div>'):'<div class="sim-feedback">Choose the needed confirmation test or choose no extra test.</div>')+
+      (checked?(correct?'<div class="sim-feedback ok">Extra-test choice is correct.</div>':'<div class="sim-feedback warn">Not yet. Recheck SG, pH/protein, and bilirubin before dumping supernatant.</div>'):'<div class="sim-feedback">Extra-test choice pending.</div>')+
       panels;
   }
   function buildSpinDecant(activeCase){
@@ -1388,7 +1398,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       simToolButton('decant','Dump supernatant','only after extra tests')+
       simToolButton('resuspend','Resuspend sediment','prepare wet mount')+
       '</div>'+
-      (simCanAdvance(activeCase,2)?'<div class="sim-feedback ok">Sediment is ready for the microscope.</div>':'<div class="sim-feedback">Finish the tube steps before moving to microscopy.</div>');
+      (simCanAdvance(activeCase,1)?'<div class="sim-feedback ok">Sediment is ready for the microscope.</div>':'<div class="sim-feedback">Finish the tube steps before moving to microscopy.</div>');
   }
   var MICRO_FIELDS=[
     ['rbc','RBC'],
@@ -1474,8 +1484,9 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var index=Math.max(0,Math.min(cases.length-1,Number(state.notes.sim_case_index)||0));
     var step=Math.max(0,Math.min(simSteps.length-1,Number(state.notes.sim_step)||0));
     state.notes.sim_case_index=index;
-    state.notes.sim_step=step;
     var activeCase=cases[index];
+    step=Math.min(step,highestAllowedSimStep(activeCase));
+    state.notes.sim_step=step;
     var current={label:'Sample '+(index+1),color:activeCase.urineColor||'#e8c23a'};
     var fill=document.getElementById('urineFill');
     var sediment=document.getElementById('urineSediment');
@@ -1503,10 +1514,9 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(panel){
       var content='';
       if(step===0)content=buildWorkbench(activeCase);
-      if(step===1)content=buildExtraTests(activeCase);
-      if(step===2)content=buildSpinDecant(activeCase);
-      if(step===3)content=buildMicroscope(activeCase);
-      if(step===4)content='<strong>Full sample results</strong><br>'+escapeHtml(activeCase.reveal||'')+caseResultsRows(activeCase)+'<br><strong>Macroscopic:</strong> '+escapeHtml(activeCase.macro||'')+'<br><strong>Strip:</strong> '+escapeHtml(activeCase.dipstick||'')+'<br><strong>Specific gravity:</strong> '+escapeHtml(activeCase.specificGravity||'')+'<br><strong>Microscopy:</strong> '+escapeHtml(activeCase.microscopy||'');
+      if(step===1)content=buildSpinDecant(activeCase);
+      if(step===2)content=buildMicroscope(activeCase);
+      if(step===3)content='<strong>Full sample results</strong><br>'+escapeHtml(activeCase.reveal||'')+caseResultsRows(activeCase)+'<br><strong>Macroscopic:</strong> '+escapeHtml(activeCase.macro||'')+'<br><strong>Strip:</strong> '+escapeHtml(activeCase.dipstick||'')+'<br><strong>Specific gravity:</strong> '+escapeHtml(activeCase.specificGravity||'')+'<br><strong>Microscopy:</strong> '+escapeHtml(activeCase.microscopy||'');
       var nextLabel=step>=simSteps.length-2?'Full Results':'Next';
       var nextButton=step<simSteps.length-1?'<button type="button" class="mini-btn" data-sim-next="1" '+(simCanAdvance(activeCase,step)?'':'disabled')+'>'+nextLabel+'</button>':'';
       panel.innerHTML='<h3>'+escapeHtml(simSteps[step].title)+'</h3><div class="sim-content">'+content+'</div><div class="sim-actions"><button type="button" class="mini-btn" data-sim-back="1">Back</button>'+nextButton+'<button type="button" class="mini-btn" data-sim-reset="1">Restart</button></div>';
