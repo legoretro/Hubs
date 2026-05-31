@@ -601,6 +601,14 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       if(looksLikeAminoAcidDisorderTable(chart.tableId,table)&&/^(amino\s*acid\s*disorders?|aa\s*disorders?|metabolic\s*disorders?)$/i.test(normalizeCellText(chart.title||'')))chart.title='Phenylalanine-Tyrosine';
     });
   }
+  function isGenericRenalTableTitle(title){
+    var text=normalizeCellText(title||'');
+    return !text||/^new\s+renal\s+section\s+table$/i.test(text)||/^new\s+renal\s+section$/i.test(text)||/^renal\s+section\s+\d+\s+table$/i.test(text);
+  }
+  function syncGenericRenalTableTitle(chart,table){
+    if(!chart||!table)return;
+    if(isGenericRenalTableTitle(table.title)&&!isGenericRenalTableTitle(chart.title))table.title=chart.title;
+  }
   function normalizeRenalNode(node,index){
     node=node&&typeof node==='object'?node:{};
     return {
@@ -641,6 +649,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       data.tables[chart.tableId].section='renal';
       data.tables[chart.tableId].custom=false;
       sanitizeTableText(data.tables[chart.tableId]);
+      syncGenericRenalTableTitle(chart,data.tables[chart.tableId]);
       if(chart.id==='renal_glomerular'||chart.tableId==='renal_table_glomerular')ensureGlomerularSubsections(data.tables[chart.tableId]);
     });
     if(!data.renal.charts.some(function(chart){return chart.id===data.renal.activeId}))data.renal.activeId=data.renal.charts[0].id;
@@ -1062,6 +1071,11 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     return (state.renal.charts||[]).find(function(chart){return chart.id===id})||state.renal.charts[0];
   }
   function activeRenalChart(){return findRenalChart(state.renal&&state.renal.activeId)}
+  function renalTableDisplayTitle(chart){
+    var table=chart&&state.tables&&state.tables[chart.tableId];
+    if(!table)return (chart&&chart.title)||'Renal Section';
+    return isGenericRenalTableTitle(table.title)?((chart&&chart.title)||'Renal Section'):(table.title||((chart&&chart.title)||'Renal Section'));
+  }
   function renalNodeByIndex(chartId,index){
     var chart=findRenalChart(chartId);
     return chart&&chart.nodes?chart.nodes[Number(index)]:null;
@@ -1122,9 +1136,10 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     tabs.innerHTML=state.renal.charts.map(function(item){
       return '<button type="button" class="renal-tab '+(item.id===chart.id?'active':'')+'" data-renal-action="select-chart" data-chart="'+item.id+'">'+escapeHtml(item.title||'Renal Section')+'</button>';
     }).join('');
+    var tableTitle=renalTableDisplayTitle(chart);
     content.innerHTML='<article class="card renal-card">'+
       '<div class="renal-card-head"><div><h2>'+escapeHtml(chart.title||'Renal Section')+'</h2>'+(chart.note?'<p class="renal-note">'+cellDisplayHtml(chart.note)+'</p>':'')+'</div><button type="button" class="mini-btn" data-renal-action="export-chart" data-chart="'+chart.id+'">Print / Save PDF</button></div>'+
-      '<article class="card renal-table-card"><div class="card-title"><h2>'+escapeHtml((state.tables[chart.tableId]&&state.tables[chart.tableId].title)||chart.title+' Table')+'</h2><span class="tag">Table</span></div><div class="table-tools" data-tools-for="'+chart.tableId+'"></div><div class="table-slot" data-table-id="'+chart.tableId+'"></div></article>'+
+      '<article class="card renal-table-card"><div class="card-title"><h2><span class="custom-title-text">'+escapeHtml(tableTitle)+'</span><input class="custom-table-title" data-action="edit-table-title" data-table="'+chart.tableId+'" value="'+escapeHtml(tableTitle)+'"></h2><span class="tag">Table</span></div><div class="table-tools" data-tools-for="'+chart.tableId+'"></div><div class="table-slot" data-table-id="'+chart.tableId+'"></div></article>'+
       renalEditorHtml(chart)+
     '</article>';
   }
@@ -1538,7 +1553,18 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     }
     if(el.dataset.renalChartField){
       var chart=findRenalChart(el.dataset.chart);
-      if(chart){chart[el.dataset.renalChartField]=el.value;saveDraft()}
+      if(chart){
+        var oldTitle=chart.title||'';
+        chart[el.dataset.renalChartField]=el.value;
+        if(el.dataset.renalChartField==='title'){
+          var linkedTable=state.tables&&state.tables[chart.tableId];
+          var linkedTitle=normalizeCellText((linkedTable&&linkedTable.title)||'');
+          if(linkedTable&&(isGenericRenalTableTitle(linkedTable.title)||linkedTitle===normalizeCellText(oldTitle)||linkedTitle===normalizeCellText(oldTitle+' Table'))){
+            linkedTable.title=el.value||oldTitle||'Renal Section';
+          }
+        }
+        saveDraft()
+      }
     }
     if(el.dataset.renalNodeField){
       var node=renalNodeByIndex(el.dataset.chart,el.dataset.nodeIndex);
