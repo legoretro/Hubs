@@ -165,6 +165,8 @@ button,input{font-family:inherit}button{cursor:pointer}
 .kova-tube.spun i{height:78%;opacity:.52}.kova-tube.spun:after{height:12%}
 .kova-tube.decanted i{height:12%;opacity:.86;background:#cdb273}.kova-tube.decanted:after{height:11%}
 .kova-tube.resuspended i{height:30%;opacity:.72;background:linear-gradient(90deg,rgba(255,255,255,.2),transparent),#cdb273}.kova-tube.resuspended:after{height:0}
+.polar-alert{margin:8px 0 0;color:#b00020;font-weight:900;font-size:14px;text-transform:uppercase;line-height:1.25}
+.polar-alert-inline{color:#b00020;font-weight:900;text-transform:uppercase}
 </style>
 </head>
 <body class="intro-active">
@@ -190,8 +192,8 @@ button,input{font-family:inherit}button{cursor:pointer}
     <button type="button" class="nav-tab" data-section="screening" onclick="event.stopPropagation();showSection('screening')">Macroscopic</button>
     <button type="button" class="nav-tab" data-section="microscope" onclick="event.stopPropagation();showSection('microscope')">Microscopic</button>
     <button type="button" class="nav-tab" data-section="renal" onclick="event.stopPropagation();showSection('renal')">Renal Diseases</button>
-    <button type="button" class="nav-tab" data-section="resources" onclick="event.stopPropagation();showSection('resources')">Resources</button>
     <button type="button" class="nav-tab" data-section="simulation" onclick="event.stopPropagation();showSection('simulation')">Simulation</button>
+    <button type="button" class="nav-tab" data-section="resources" onclick="event.stopPropagation();showSection('resources')">Resources</button>
   </nav>
   <button type="button" class="tool-btn" data-ui-action="admin-login" id="adminBtn" onclick="event.stopPropagation();toggleAdminLogin()">Admin</button>
   <button type="button" class="tool-btn admin-exit-btn" data-ui-action="exit-admin" id="adminExitBtn" onclick="event.stopPropagation();exitAdmin()">Exit Admin</button>
@@ -1518,11 +1520,30 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     }).join('')+'</div><div class="sim-actions"><button type="button" class="mini-btn" data-sim-check-micro="1">Check microscopy</button></div>'+
     (state.notes.sim_micro_checked?'<div class="sim-feedback '+(pass?'ok':'warn')+'">Microscopy match: '+Math.round(score*100)+'% '+(pass?'Full results unlocked.':'Needs about 80% match.')+'</div>':'');
   }
+  var POLAR_REMINDER='POLARIZE FOR ANYTHING THAT POLARIZES';
+  function polarReminderNeeded(activeCase){
+    return !!(activeCase&&Array.isArray(activeCase.microObjects)&&activeCase.microObjects.some(function(obj){
+      var text=String((obj&&obj.label||'')+' '+(obj&&obj.note||'')+' '+(obj&&obj.type||'')+' '+(obj&&obj.shape||''));
+      return obj&&obj.polarizes!==false&&/(crystal|cystine|cholesterol|uric acid|bilirubin|calcium oxalate|needle)/i.test(text);
+    }));
+  }
+  function polarReminderHtml(activeCase){
+    return polarReminderNeeded(activeCase)?'<p class="polar-alert">'+POLAR_REMINDER+'</p>':'';
+  }
+  function rowNeedsPolarReminder(activeCase,row){
+    if(!polarReminderNeeded(activeCase))return false;
+    var text=String((row&&row.test||'')+' '+(row&&row.result||'')+' '+(row&&row.note||'')+' '+(row&&row.condition||''));
+    return /(crystal|cystine|cholesterol|uric acid|bilirubin|calcium oxalate)/i.test(text);
+  }
   function caseResultsRows(activeCase){
     var rows=Array.isArray(activeCase.results)?activeCase.results:[];
     if(!rows.length)return '<div class="result-mini"><table><tbody><tr><td>Blank results table. Add rows as admin.</td></tr></tbody></table></div>';
     return '<div class="result-mini"><table><thead><tr><th>Test</th><th>Result</th><th>Note</th><th>Report Note</th></tr></thead><tbody>'+
-      rows.map(function(row){return '<tr><td>'+escapeHtml(row.test||'')+'</td><td>'+escapeHtml(row.result||'')+'</td><td>'+escapeHtml(row.note||'')+'</td><td>'+escapeHtml(row.condition||'')+'</td></tr>'}).join('')+
+      rows.map(function(row){
+        var report=escapeHtml(row.condition||'');
+        if(rowNeedsPolarReminder(activeCase,row))report+=(report?'<br>':'')+'<strong class="polar-alert-inline">'+POLAR_REMINDER+'</strong>';
+        return '<tr><td>'+escapeHtml(row.test||'')+'</td><td>'+escapeHtml(row.result||'')+'</td><td>'+escapeHtml(row.note||'')+'</td><td>'+report+'</td></tr>';
+      }).join('')+
       '</tbody></table></div>';
   }
   function listItemsHtml(items,emptyText){
@@ -1555,7 +1576,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       '<div class="results-card"><h4>Physical</h4><ul>'+listItemsHtml(physical,'No physical findings listed')+'</ul></div>'+
       '<div class="results-card"><h4>Abnormal Strip</h4><ul>'+listItemsHtml(abnormalStripSummary(activeCase),'No abnormal strip values listed')+'</ul></div>'+
       '<div class="results-card"><h4>Extra Tests</h4><ul>'+listItemsHtml(required,'No confirmation test needed')+'</ul></div>'+
-      '<div class="results-card"><h4>Microscopy</h4><ul>'+listItemsHtml(microscopySummary(activeCase),'No significant sediment elements supplied')+'</ul></div>'+
+      '<div class="results-card"><h4>Microscopy</h4><ul>'+listItemsHtml(microscopySummary(activeCase),'No significant sediment elements supplied')+'</ul>'+polarReminderHtml(activeCase)+'</div>'+
       '</div><p>'+escapeHtml(activeCase.reveal||'')+'</p>'+caseResultsRows(activeCase);
   }
   function buildDipstick(activeCase){
