@@ -1446,9 +1446,9 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     ['other','Other']
   ];
   var MICRO_OPTION_BANK={
-    rbc:['None','0-2 RBC/hpf','1-3 RBC/hpf','6-10 RBC/hpf','10-15 RBC/hpf','15-20 RBC/hpf','15-20 crenated RBC/hpf','20-30 RBC/hpf','>100 dysmorphic RBC/hpf'],
+    rbc:['None','0-2 RBC/hpf','1-3 RBC/hpf','6-10 RBC/hpf','10-15 RBC/hpf','15-20 RBC/hpf','15-20 crenated RBC/hpf','20-30 RBC/hpf','>100 RBC/hpf','>100 dysmorphic RBC/hpf'],
     wbc:['None','0-2 WBC/hpf','0-3 WBC/hpf','0-5 WBC/hpf','2-4 WBC/hpf','5-8 WBC/hpf','20-25 WBC/hpf','40-50 WBC/hpf','>100 WBC/hpf'],
-    casts:['None','0-1 RBC casts/lpf','0-2 WBC casts/lpf','1-2 WBC casts/lpf','Granular casts','Fatty casts','Hyaline casts','Waxy casts','Bacterial casts','Epithelial cell casts'],
+    casts:['None','0-1 RBC casts/lpf','0-2 WBC casts/lpf','1-2 WBC casts/lpf','0-2 granular casts and 0-2 fatty casts/lpf','0-2 WBC casts, 0-1 bacterial casts, 4-5 granular casts, 2-3 waxy casts/lpf','1-2 hyaline casts, 1-2 granular casts, 0-1 epithelial cell casts, 0-1 bile-stained waxy casts/lpf','Granular casts','Fatty casts','Hyaline casts','Waxy casts','Bacterial casts','Epithelial cell casts'],
     crystals:['None','Calcium oxalate crystals','Cholesterol crystals','Cystine crystals','Uric acid crystals','Bilirubin crystals','Unidentified crystals'],
     bacteria:['None','Heavy bacteria','Many bacteria','Many yeast cells and hyphae'],
     other:['None','Few squamous epithelial cells','Moderate squamous epithelial cells','Few transitional epithelial cells','Many transitional epithelial cells','Oval fat bodies and free fat droplets','Bile-stained renal tubular epithelial cells','Eosinophils may be tested separately','Clear red urine pattern; no intact RBC sediment expected']
@@ -1459,6 +1459,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(!plain||plain==='none'||plain==='none reported'||plain==='not reported'||plain==='no sediment findings supplied'||plain==='no required sediment findings supplied for this sample')return 'None';
     if(/^no (required )?sediment findings supplied/.test(plain))return 'None';
     if(/^none\b/.test(plain))return 'None';
+    if(/no intact rbc|no intact red/i.test(raw))return 'None';
     if(key==='crystals'){
       if(/calcium oxalate/.test(plain))return 'Calcium oxalate crystals';
       if(/cholesterol/.test(plain))return 'Cholesterol crystals';
@@ -1469,10 +1470,27 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       return 'Crystals present';
     }
     if(key==='rbc'){
-      var range=raw.match(/(\d+)\s*[-–]\s*(\d+)\s*RBC/i);
-      if(range)return 'RBC present: minimum '+range[1]+'/hpf (range '+range[1]+'-'+range[2]+' RBC/hpf)';
+      var range=raw.match(/(\d+)\s*[-–]\s*(\d+)\s*(?:crenated\s*)?RBC/i)||raw.match(/minimum\s+(\d+)\s*\/?\s*hpf.*?range\s+(\d+)\s*[-–]\s*(\d+)/i);
+      if(range){
+        var lo=range[1];
+        var hi=range[3]||range[2];
+        return lo+'-'+hi+(plain.indexOf('crenated')>-1?' crenated':'')+' RBC/hpf';
+      }
       var greater=raw.match(/>\s*(\d+)\s*RBC/i);
-      if(greater)return 'RBC present: >'+greater[1]+' RBC/hpf';
+      if(greater)return '>'+greater[1]+(plain.indexOf('dysmorphic')>-1?' dysmorphic':'')+' RBC/hpf';
+    }
+    if(key==='wbc'){
+      var wbcRange=raw.match(/(\d+)\s*[-–]\s*(\d+)\s*WBC/i);
+      if(wbcRange)return wbcRange[1]+'-'+wbcRange[2]+' WBC/hpf';
+      var wbcGreater=raw.match(/>\s*(\d+)\s*WBC/i);
+      if(wbcGreater)return '>'+wbcGreater[1]+' WBC/hpf';
+    }
+    if(key==='casts'){
+      if(/0\s*[-–]\s*2.*granular.*0\s*[-–]\s*2.*fatty/i.test(raw))return '0-2 granular casts and 0-2 fatty casts/lpf';
+      if(/0\s*[-–]\s*2.*WBC casts.*0\s*[-–]\s*1.*bacterial.*4\s*[-–]\s*5.*granular.*2\s*[-–]\s*3.*waxy/i.test(raw))return '0-2 WBC casts, 0-1 bacterial casts, 4-5 granular casts, 2-3 waxy casts/lpf';
+      if(/1\s*[-–]\s*2.*hyaline.*1\s*[-–]\s*2.*granular.*0\s*[-–]\s*1.*epithelial.*0\s*[-–]\s*1.*waxy/i.test(raw))return '1-2 hyaline casts, 1-2 granular casts, 0-1 epithelial cell casts, 0-1 bile-stained waxy casts/lpf';
+      var castRange=raw.match(/(\d+)\s*[-–]\s*(\d+)\s*([A-Za-z ]+casts?)/i);
+      if(castRange)return castRange[1]+'-'+castRange[2]+' '+castRange[3].replace(/\s+/g,' ').trim()+'/lpf';
     }
     return raw
       .replace(/\bper\b/gi,'/')
@@ -1485,16 +1503,36 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   function microOptionsFor(activeCase,key){
     var expected=canonicalMicroAnswer((activeCase.expectedMicro||{})[key]||'',key);
     var seen={};
-    return [expected].concat(MICRO_OPTION_BANK[key]||[]).filter(function(option){
-      option=canonicalMicroAnswer(option,key);
+    var options=(MICRO_OPTION_BANK[key]||[]).slice();
+    if(expected&&options.map(function(option){return canonicalMicroAnswer(option,key).toLowerCase()}).indexOf(expected.toLowerCase())===-1)options.push(expected);
+    return options.map(function(option){
+      return canonicalMicroAnswer(option,key);
+    }).filter(function(option){
       var id=option.toLowerCase();
       if(!option||seen[id])return false;
       seen[id]=true;
       return true;
     });
   }
+  function microSummaryAnswer(text,key){
+    var raw=String(text||'').replace(/\s+/g,' ').trim();
+    var plain=raw.toLowerCase();
+    if(key==='rbc'){
+      if(!plain||/^none\b/.test(plain)||/none reported|no intact rbc|no intact red/.test(plain))return 'None';
+      var minRange=raw.match(/minimum\s+(\d+)\s*\/?\s*hpf.*?range\s+(\d+)\s*[-–]\s*(\d+)/i);
+      if(minRange)return 'RBC present: minimum '+minRange[1]+'/hpf (range '+minRange[2]+'-'+minRange[3]+' RBC/hpf)';
+      var range=raw.match(/(\d+)\s*[-–]\s*(\d+)\s*RBC/i);
+      if(range)return 'RBC present: minimum '+range[1]+'/hpf (range '+range[1]+'-'+range[2]+' RBC/hpf)';
+      var greater=raw.match(/>\s*(\d+)\s*RBC/i);
+      if(greater)return 'RBC present: >'+greater[1]+' RBC/hpf';
+    }
+    return canonicalMicroAnswer(text,key);
+  }
   function microOptionHtml(option,selected){
     return '<option value="'+escapeHtml(option)+'" '+(option===selected?'selected':'')+'>'+escapeHtml(option)+'</option>';
+  }
+  function microPlaceholderHtml(selected){
+    return '<option value="" '+(!selected?'selected':'')+'>Choose finding</option>';
   }
   function scoreMicroReport(activeCase){
     var expected=activeCase.expectedMicro||{};
@@ -1503,7 +1541,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     MICRO_FIELDS.forEach(function(pair){
       var key=pair[0];
       var exp=canonicalMicroAnswer(expected[key]||'',key);
-      var ans=Object.prototype.hasOwnProperty.call(answers,key)?canonicalMicroAnswer(answers[key],key):'None';
+      var hasAnswer=Object.prototype.hasOwnProperty.call(answers,key)&&String(answers[key]||'').trim();
+      var ans=hasAnswer?canonicalMicroAnswer(answers[key],key):'__unanswered__';
       total++;
       if(ans.toLowerCase()===exp.toLowerCase())passed++;
     });
@@ -1514,9 +1553,10 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var score=Number(state.notes.sim_micro_score||0);
     var pass=!!state.notes.sim_micro_pass;
     return '<div class="micro-report">'+MICRO_FIELDS.map(function(pair){
-      var value=Object.prototype.hasOwnProperty.call(answers,pair[0])?canonicalMicroAnswer(answers[pair[0]],pair[0]):'None';
+      var hasAnswer=Object.prototype.hasOwnProperty.call(answers,pair[0])&&String(answers[pair[0]]||'').trim();
+      var value=hasAnswer?canonicalMicroAnswer(answers[pair[0]],pair[0]):'';
       var options=microOptionsFor(activeCase,pair[0]);
-      return '<label>'+escapeHtml(pair[1])+'<select data-sim-micro-input="'+pair[0]+'">'+options.map(function(option){return microOptionHtml(option,value)}).join('')+'</select></label>';
+      return '<label>'+escapeHtml(pair[1])+'<select data-sim-micro-input="'+pair[0]+'">'+microPlaceholderHtml(value)+options.map(function(option){return microOptionHtml(option,value)}).join('')+'</select></label>';
     }).join('')+'</div><div class="sim-actions"><button type="button" class="mini-btn" data-sim-check-micro="1">Check microscopy</button></div>'+
     (state.notes.sim_micro_checked?'<div class="sim-feedback '+(pass?'ok':'warn')+'">Microscopy match: '+Math.round(score*100)+'% '+(pass?'Full results unlocked.':'Needs about 80% match.')+'</div>':'');
   }
@@ -1562,7 +1602,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   function microscopySummary(activeCase){
     var expected=(activeCase&&activeCase.expectedMicro)||{};
     return MICRO_FIELDS.map(function(pair){
-      var value=canonicalMicroAnswer(expected[pair[0]]||'',pair[0]);
+      var value=microSummaryAnswer(expected[pair[0]]||'',pair[0]);
       return value==='None'?'':pair[1]+': '+value;
     }).filter(Boolean);
   }
