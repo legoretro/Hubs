@@ -156,6 +156,15 @@ button,input{font-family:inherit}button{cursor:pointer}
 .sample-choice .mini-cup{width:42px;height:58px;border-width:1.5px;border-top-width:5px;border-radius:5px 5px 13px 13px;margin:0 auto;pointer-events:none}
 .sample-choice small{font-size:10px;color:var(--muted);font-weight:900;text-transform:capitalize;line-height:1}
 .sample-choice.active .mini-cup{box-shadow:0 0 0 2px rgba(122,61,0,.16)}
+.micro-item.micro-clone{font-size:8px}
+.kova-tube{--kova-fluid:#e8c23a;--kova-opacity:.78;border-top:12px solid #76c74f;border-radius:7px 7px 24px 24px;background:linear-gradient(90deg,rgba(255,255,255,.82),rgba(255,255,255,.22) 48%,rgba(255,255,255,.72));box-shadow:inset 0 0 10px rgba(80,65,40,.16),0 5px 12px rgba(122,61,0,.1)}
+.kova-tube:before{content:"";position:absolute;left:8px;right:auto;top:18px;bottom:18px;width:1px;background:rgba(38,22,4,.16);box-shadow:0 22px 0 rgba(38,22,4,.16),0 44px 0 rgba(38,22,4,.16),0 66px 0 rgba(38,22,4,.16),0 88px 0 rgba(38,22,4,.16);z-index:4}
+.kova-tube.spun:before,.kova-tube.decanted:before,.kova-tube.resuspended:before{content:"";position:absolute;left:8px;right:auto;top:18px;bottom:18px;width:1px;height:auto;background:rgba(38,22,4,.16);box-shadow:0 22px 0 rgba(38,22,4,.16),0 44px 0 rgba(38,22,4,.16),0 66px 0 rgba(38,22,4,.16),0 88px 0 rgba(38,22,4,.16);z-index:4}
+.kova-tube:after{content:"";position:absolute;left:7px;right:7px;bottom:0;height:0;background:#b68d55;border-radius:50% 50% 18px 18px;z-index:3;box-shadow:inset 0 4px 9px rgba(80,45,12,.18)}
+.kova-tube i{left:3px;right:3px;bottom:0;height:78%;background:linear-gradient(90deg,rgba(255,255,255,.28),transparent 46%,rgba(122,61,0,.08)),var(--kova-fluid);opacity:var(--kova-opacity);border-radius:42% 42% 16px 16px / 8% 8% 16px 16px;z-index:2}
+.kova-tube.spun i{height:78%;opacity:.52}.kova-tube.spun:after{height:12%}
+.kova-tube.decanted i{height:12%;opacity:.86;background:#cdb273}.kova-tube.decanted:after{height:11%}
+.kova-tube.resuspended i{height:30%;opacity:.72;background:linear-gradient(90deg,rgba(255,255,255,.2),transparent),#cdb273}.kova-tube.resuspended:after{height:0}
 </style>
 </head>
 <body class="intro-active">
@@ -1406,15 +1415,18 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       (checked?(correct?'<div class="sim-feedback ok">Extra-test choice is correct.</div>':'<div class="sim-feedback warn">Not yet. Recheck SG, pH/protein, and bilirubin before dumping supernatant.</div>'):'<div class="sim-feedback">Extra-test choice pending.</div>')+
       panels;
   }
-  function kovaTubeHtml(className,attrs){
-    return '<div class="kova-tube '+(className||'')+'" '+(attrs||'')+'><i></i></div>';
+  function kovaTubeStyle(activeCase){
+    return '--kova-fluid:'+escapeHtml((activeCase&&activeCase.urineColor)||'#e8c23a')+';--kova-opacity:'+escapeHtml((activeCase&&activeCase.urineOpacity)||.78);
+  }
+  function kovaTubeHtml(className,attrs,activeCase){
+    return '<div class="kova-tube '+(className||'')+'" '+(attrs||'')+' style="'+kovaTubeStyle(activeCase)+'"><i></i></div>';
   }
   function buildSpinDecant(activeCase){
     var spin=simActionDone('spin');
     var decant=simActionDone('decant');
     var resuspend=simActionDone('resuspend');
     var tubeClass='draggable '+(spin?'spun ':'')+(decant?'decanted ':'')+(resuspend?'resuspended ':'');
-    var tube=kovaTubeHtml(tubeClass,'draggable="true" data-sim-drag="kova" data-sim-action="'+(!spin?'spin':(!decant?'decant':'resuspend'))+'"');
+    var tube=kovaTubeHtml(tubeClass,'draggable="true" data-sim-drag="kova" data-sim-action="'+(!spin?'spin':(!decant?'decant':'resuspend'))+'"',activeCase);
     return '<div class="tube-lab">'+
       '<div class="tube-source '+(spin?'empty':'')+'">'+(!spin?tube:'<span>KOVA tube loaded</span>')+'</div>'+
       '<div class="tube-drop-zone centrifuge-zone '+(spin?'ready ':'')+'" data-sim-drop="centrifuge" data-sim-action="spin"><h4>Spin</h4><div class="centrifuge"><span></span><span></span><span class="centrifuge-rotor"></span></div>'+(spin&&!decant?tube:'')+'<span>'+(spin?'Spun sediment':'Drop tube here')+'</span></div>'+
@@ -1568,12 +1580,57 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var rot=Number(obj.rotation)||0;
     return '--x:'+x+'%;--y:'+y+'%;--w:'+w+'px;--h:'+h+'px;--rot:'+rot+'deg;--item:'+(obj.color||'#e3a7a0');
   }
+  function microVisualCount(obj){
+    if(!obj||obj.type!=='cell')return 1;
+    var text=String((obj.label||'')+' '+(obj.note||''));
+    if(/>\s*100/i.test(text))return 24;
+    if(/\bmany\b/i.test(text))return 16;
+    var range=text.match(/(\d+)\s*[-–]\s*(\d+)\s*(?:RBC|WBC)?\s*\/?\s*hpf/i);
+    if(range){
+      var minimum=Number(range[1])||1;
+      return minimum>0?Math.min(24,minimum):1;
+    }
+    return 1;
+  }
+  function shortMicroLabel(obj){
+    var text=String((obj&&obj.label||'')+' '+(obj&&obj.note||''));
+    if(/rbc/i.test(text))return 'RBC';
+    if(/wbc/i.test(text))return 'WBC';
+    if(/yeast/i.test(text))return 'Yeast';
+    return (obj&&obj.label)||'';
+  }
+  function microVisualObjects(objects,expand){
+    var out=[];
+    (objects||[]).forEach(function(obj,i){
+      var count=expand?microVisualCount(obj):1;
+      var spread=count>14?28:(count>6?22:14);
+      var scale=count>14?.58:(count>6?.72:.86);
+      for(var j=0;j<count;j++){
+        var clone=Object.assign({},obj);
+        clone._sourceIndex=i;
+        clone._clone=j>0;
+        if(j>0){
+          var angle=(j*137.508+(Number(obj.rotation)||0))*Math.PI/180;
+          var radius=spread*Math.sqrt(j/Math.max(1,count-1));
+          clone.x=Math.max(6,Math.min(94,(Number(obj.x)||50)+Math.cos(angle)*radius));
+          clone.y=Math.max(6,Math.min(94,(Number(obj.y)||50)+Math.sin(angle)*radius*.82));
+          clone.w=Math.max(12,Math.round((Number(obj.w)||30)*scale));
+          clone.h=Math.max(12,Math.round((Number(obj.h)||30)*scale));
+          clone.rotation=(Number(obj.rotation)||0)+(j*17)%58-29;
+          clone.label=count>8?(j%5===0?shortMicroLabel(obj):''):shortMicroLabel(obj);
+        }
+        out.push(clone);
+      }
+    });
+    return out;
+  }
   function buildMicroscope(activeCase){
     var mode=state.notes.micro_mode||'brightfield';
     var objects=Array.isArray(activeCase.microObjects)?activeCase.microObjects:[];
+    var visualObjects=microVisualObjects(objects,!editMode);
     return '<div class="scope-modes"><button type="button" class="mini-btn '+(mode==='brightfield'?'active':'')+'" data-micro-mode="brightfield" onclick="event.stopPropagation();setMicroMode(\'brightfield\')">Brightfield</button><button type="button" class="mini-btn '+(mode==='polarizing'?'active':'')+'" data-micro-mode="polarizing" onclick="event.stopPropagation();setMicroMode(\'polarizing\')">Polarizing</button></div>'+
       '<div class="micro-visual"><div class="micro-stage"><div class="micro-field '+(mode==='polarizing'?'polarizing':'')+'" data-micro-add-area="1">'+
-      objects.map(function(obj,i){return '<button type="button" class="micro-item '+escapeHtml(obj.shape||obj.type||'cell')+' '+(obj.polarizes===false?'nonpolar':'')+'" style="'+microStyle(obj)+'" data-micro-object="'+i+'" onclick="event.stopPropagation();showMicroItem('+i+')"><span>'+escapeHtml(obj.label||'')+'</span>'+(editMode?'<span class="micro-resize-handle" data-micro-resize="'+i+'"></span>':'')+'</button>'}).join('')+
+      visualObjects.map(function(obj,i){var source=typeof obj._sourceIndex==='number'?obj._sourceIndex:i;return '<button type="button" class="micro-item '+escapeHtml(obj.shape||obj.type||'cell')+' '+(obj.polarizes===false?'nonpolar ':'')+(obj._clone?'micro-clone':'')+'" style="'+microStyle(obj)+'" data-micro-object="'+source+'" onclick="event.stopPropagation();showMicroItem('+source+')"><span>'+escapeHtml(obj.label||'')+'</span>'+(editMode?'<span class="micro-resize-handle" data-micro-resize="'+source+'"></span>':'')+'</button>'}).join('')+
       '</div></div></div>'+buildMicroscopeReport(activeCase);
   }
   function renderSimulation(){
@@ -2750,7 +2807,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var sampleLabel='Sample '+(i+1);
     var pads=chemistryPads(item.chemistry);
     var objects=Array.isArray(item.microObjects)?item.microObjects:[];
-    var micro='<div class="print-micro-field">'+objects.map(function(obj){return '<span class="print-micro-item '+escapeHtml(obj.shape||obj.type||'cell')+'" style="'+microStyle(obj)+'">'+escapeHtml(obj.label||'')+'</span>'}).join('')+'</div>';
+    var visualObjects=microVisualObjects(objects,true);
+    var micro='<div class="print-micro-field">'+visualObjects.map(function(obj){return '<span class="print-micro-item '+escapeHtml(obj.shape||obj.type||'cell')+'" style="'+microStyle(obj)+'">'+escapeHtml(obj.label||'')+'</span>'}).join('')+'</div>';
     var objectRows=objects.map(function(obj){return '<tr><td>'+escapeHtml(obj.label||'')+'</td><td>'+escapeHtml(obj.type||'')+'</td><td>'+escapeHtml(obj.polarizes===false?'No':'Yes')+'</td><td>'+escapeHtml(obj.note||'')+'</td><td>'+(obj.image?'<img src="'+escapeHtml(obj.image)+'" alt="item image"/>':'')+'</td></tr>'}).join('');
     return '<div class="print-page"><h1 class="print-section-title">'+escapeHtml(sampleLabel)+'</h1>'+
       '<div class="print-card"><h2>Macroscopic</h2><div class="print-case-grid"><div><div class="print-cup"><div class="print-liquid" style="--urine:'+escapeHtml(item.urineColor||'#e8c23a')+';--opacity:'+escapeHtml(item.urineOpacity||.72)+'"></div><div class="print-sediment" style="--sediment:'+escapeHtml(item.sedimentColor||'#f7efe4')+'"></div><div class="print-foam" style="--foam:'+escapeHtml(item.foamColor||'#fff2a8')+'"></div></div></div><div><p><strong>Clarity:</strong> '+escapeHtml(item.clarity||'')+'</p><p>'+escapeHtml(item.macro||'')+'</p></div></div></div>'+
