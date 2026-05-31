@@ -117,7 +117,7 @@ button,input{font-family:inherit}button{cursor:pointer}
   body.renal-printing #printArea .renal-print-table{margin-top:6px}
 }
 /* Final cup clipping fix: keep sediment inside the urine cup. */
-.sample-stage .tube{overflow:hidden}
+.sample-stage .tube{overflow:hidden;cursor:grab}
 .sample-stage .tube:before{left:0;right:0;top:0;height:24px;border-width:0 0 2px;border-radius:0 0 50% 50%;box-shadow:inset 0 5px 0 rgba(255,255,255,.22)}
 .sample-stage .tube:after{left:16px;right:16px;top:5px;height:10px;border-radius:50%}
 .sample-stage .urine-sediment{left:0;right:0;bottom:0;border-radius:0 0 22px 22px;z-index:3}
@@ -142,7 +142,7 @@ button,input{font-family:inherit}button{cursor:pointer}
 .lab-rack:before{content:"";position:absolute;left:8%;right:8%;top:-54%;height:70%;background:linear-gradient(90deg,rgba(247,226,142,.76) 0 10%,transparent 10% 18%,rgba(116,181,155,.66) 18% 28%,transparent 28% 38%,rgba(219,99,75,.66) 38% 49%,transparent 49% 59%,rgba(244,235,199,.7) 59% 70%,transparent 70% 80%,rgba(107,177,215,.65) 80% 92%,transparent 92%);border-bottom:22px solid rgba(255,255,255,.16)}
 .lab-flask{position:absolute;left:49%;bottom:30%;width:11%;height:22%;border-radius:50% 50% 20% 20%;background:linear-gradient(180deg,rgba(255,255,255,.24),rgba(212,134,10,.34));box-shadow:0 -36px 0 -25px rgba(255,255,255,.3),0 0 0 1px rgba(255,255,255,.12)}
 .table-subsection-row td{background:#fff7c9!important;border-top:4px solid var(--orange);border-bottom:2px solid var(--gold);font-weight:900;color:var(--wine);font-size:20px;padding:10px 14px!important}.subsection-tools{display:flex;align-items:center;justify-content:space-between;gap:12px;min-width:max-content}.subsection-row-actions,.row-action-cell{gap:8px;flex-wrap:wrap;justify-content:flex-end}.subsection-cell{min-height:0;outline:none;color:var(--wine);font-size:22px;font-weight:900;line-height:1.1;padding:0;background:transparent;border:0;border-radius:0;box-shadow:none}.subsection-cell[contenteditable=true],.subsection-cell[contenteditable=false]{padding:0;background:transparent;border:0;border-radius:0;box-shadow:none}.subsection-cell[contenteditable=true]:focus{outline:2px dashed var(--gold);outline-offset:4px}.print-subsection-row td{font-weight:900;color:var(--wine)!important;background:#fff7c9!important;border-top:4px solid var(--orange)!important;border-bottom:2px solid var(--gold)!important;text-align:left!important}
-.mini-btn:disabled{opacity:.45;cursor:not-allowed}.sample-choice.random-sample{background:var(--wine);color:#fff;border-color:var(--wine)}.step-pill.locked{opacity:.5}.sim-feedback{border:1px solid var(--gold);background:#fff8ef;color:var(--muted);border-radius:10px;padding:9px 11px;margin:10px 0;font-size:13px;font-weight:800}.sim-feedback.ok{border-color:rgba(26,140,92,.45);background:#eef9f3;color:var(--green)}.sim-feedback.warn{border-color:rgba(139,10,38,.35);background:#fff0f3;color:var(--danger)}.sim-workbench{display:grid;grid-template-columns:110px minmax(220px,1fr) 150px;gap:12px;align-items:center;border:1px solid var(--line);border-radius:12px;background:#fffdf8;padding:12px;margin:8px 0 12px}.mini-cup{--urine:#e8c23a;--opacity:.72;--sediment:transparent;--foam:transparent;width:78px;height:108px;border:2px solid rgba(90,76,54,.38);border-top:10px solid #75c84e;border-radius:9px 9px 24px 24px;background:linear-gradient(90deg,rgba(255,255,255,.72),rgba(255,255,255,.24));position:relative;overflow:hidden;margin:auto}.mini-cup:before{content:"";position:absolute;left:0;right:0;bottom:0;height:66%;background:linear-gradient(90deg,rgba(255,255,255,.28),transparent 44%,rgba(120,80,20,.12)),var(--urine);opacity:var(--opacity);border-radius:45% 45% 9px 9px / 10% 10% 9px 9px}.mini-cup:after{content:"";position:absolute;left:0;right:0;bottom:0;height:8%;background:var(--sediment);opacity:.8}.mini-cup span{position:absolute;left:0;right:0;bottom:64%;height:7%;background:var(--foam);opacity:.85}.bench-strip{height:46px;border:2px solid #2c251d;background:#eee8dc;border-radius:6px;display:flex;align-items:center;gap:9px;padding:7px 12px}.bench-strip i{display:block;width:32px;height:28px;border:1px solid rgba(0,0,0,.28);background:#e0c36a}.bench-strip i:nth-child(2){background:#9fb46c}.bench-strip i:nth-child(3){background:#d1b697}.bench-strip i:nth-child(4){background:#7da68b}.bench-strip i:nth-child(5){background:#c38d6a}.bench-strip i:nth-child(6){background:#eadbb6}.strip-reader{height:84px;border-radius:14px;background:linear-gradient(145deg,#f7f7f4,#bfc5c6);border:2px solid #7c8586;box-shadow:inset 0 0 0 6px rgba(255,255,255,.38);display:grid;place-items:center;color:#1e2b2e;font-family:Arial,sans-serif;font-weight:900}.reader-slot{width:72px;height:10px;border-radius:999px;background:#172126;box-shadow:0 16px 0 #728085}.strip-reader span{font-size:12px;letter-spacing:1px}.lab-tool-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px;margin:10px 0}.lab-tool,.test-choice{border:1.5px solid var(--gold);background:#fff;color:var(--wine);border-radius:12px;padding:10px;text-align:left;font-weight:900}.lab-tool span{display:block;color:var(--muted);font-size:11px;line-height:1.25;margin-top:3px}.lab-tool.done,.test-choice.selected{background:var(--wine);color:#fff;border-color:var(--wine)}.lab-tool.done span{color:#ffe7bd}.mini-test-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin:8px 0}.test-choice.right{box-shadow:0 0 0 3px rgba(26,140,92,.2)}.test-choice.wrong:not(.selected){opacity:.65}.confirm-card{border:1px solid var(--gold);border-radius:12px;background:#fffdf8;padding:12px;margin:10px 0}.confirm-card h4{color:var(--wine);font-size:16px;margin-bottom:6px}.ictotest-pad{width:180px;height:78px;margin:8px 0;border:1px solid #dcc9aa;background:radial-gradient(circle at 50% 50%,#f6f0df 0 20%,#e8dcc2 22% 34%,#f8efe2 36%)}.ictotest-pad.positive{background:radial-gradient(circle at 50% 50%,#f5efd9 0 18%,#6e7086 21% 34%,#d6c2a2 36% 56%,#f8efe2 58%)}.centrifuge-scene{display:grid;grid-template-columns:180px 100px;gap:18px;align-items:end;margin:8px 0 12px}.centrifuge{width:170px;height:108px;border-radius:24px;background:linear-gradient(145deg,#e7ecec,#9ea9aa);border:2px solid #778080;position:relative;box-shadow:inset 0 0 0 7px rgba(255,255,255,.34)}.centrifuge span{position:absolute;width:38px;height:66px;border-radius:14px;background:#fff8ef;border:2px solid #7c8586;top:22px}.centrifuge span:first-child{left:42px;transform:rotate(-16deg)}.centrifuge span:nth-child(2){right:42px;transform:rotate(16deg)}.centrifuge-rotor{position:absolute;left:50%;top:42px;width:38px;height:38px;border-radius:50%;background:#293237;transform:translateX(-50%)}.kova-tube{width:72px;height:132px;border:2px solid rgba(90,76,54,.4);border-top:10px solid #75c84e;border-radius:9px 9px 24px 24px;background:linear-gradient(90deg,rgba(255,255,255,.72),rgba(255,255,255,.24));position:relative;overflow:hidden}.kova-tube i{position:absolute;left:0;right:0;bottom:0;height:13%;background:#d7c08c}.micro-report{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin:10px 0}.micro-report label,.case-expected-editor label{display:grid;gap:4px;color:var(--wine);font-size:11px;font-weight:900;text-transform:uppercase}.micro-report textarea,.case-expected-editor textarea{border:1px solid var(--gold);border-radius:8px;background:#fffdf8;color:var(--ink);font-family:Georgia,"Times New Roman",serif;font-size:13px;min-height:58px;padding:8px;resize:vertical}.case-expected-editor{grid-column:1/-1;border:1px solid var(--gold);border-radius:10px;padding:10px;background:#fff8ef;display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}.case-expected-editor h4{grid-column:1/-1;color:var(--wine);font-size:13px}@media(max-width:760px){.sim-workbench,.centrifuge-scene{grid-template-columns:1fr}.bench-strip{overflow:auto}}
+.mini-btn:disabled{opacity:.45;cursor:not-allowed}.sample-choice.random-sample{background:var(--wine);color:#fff;border-color:var(--wine)}.step-pill.locked{opacity:.5}.sim-feedback{border:1px solid var(--gold);background:#fff8ef;color:var(--muted);border-radius:10px;padding:9px 11px;margin:10px 0;font-size:13px;font-weight:800}.sim-feedback.ok{border-color:rgba(26,140,92,.45);background:#eef9f3;color:var(--green)}.sim-feedback.warn{border-color:rgba(139,10,38,.35);background:#fff0f3;color:var(--danger)}.sim-bench-shell{display:grid;grid-template-columns:112px 1fr;gap:12px;align-items:stretch}.sample-corner{border:1.5px dashed var(--gold);border-radius:12px;background:#fffdf8;display:grid;align-content:center;justify-items:center;gap:7px;padding:10px;min-height:148px;color:var(--wine);font-weight:900;text-align:center}.sample-corner span{font-size:11px;color:var(--muted);line-height:1.2}.sim-workbench{display:grid;grid-template-columns:130px minmax(220px,1fr) 150px;gap:12px;align-items:center;border:1px solid var(--line);border-radius:12px;background:#fffdf8;padding:12px;margin:0 0 12px;min-height:148px}.bench-drop-zone{height:124px;border:2px dashed rgba(122,61,0,.26);border-radius:12px;display:grid;place-items:center;color:var(--muted);font-weight:900;text-align:center;background:#fff8ef}.bench-drop-zone.ready,.bench-drop-zone.drag-over{border-style:solid;border-color:var(--green);background:#effaf4;color:var(--green)}.mini-cup{--urine:#e8c23a;--opacity:.72;--sediment:transparent;--foam:transparent;width:78px;height:108px;border:2px solid rgba(90,76,54,.38);border-top:10px solid #75c84e;border-radius:9px 9px 24px 24px;background:linear-gradient(90deg,rgba(255,255,255,.72),rgba(255,255,255,.24));position:relative;overflow:hidden;margin:auto}.mini-cup.draggable{cursor:grab}.mini-cup.draggable:active{cursor:grabbing}.mini-cup.ghost{opacity:.45}.mini-cup:before{content:"";position:absolute;left:0;right:0;bottom:0;height:66%;background:linear-gradient(90deg,rgba(255,255,255,.28),transparent 44%,rgba(120,80,20,.12)),var(--urine);opacity:var(--opacity);border-radius:45% 45% 9px 9px / 10% 10% 9px 9px}.mini-cup:after{content:"";position:absolute;left:0;right:0;bottom:0;height:8%;background:var(--sediment);opacity:.8}.mini-cup span{position:absolute;left:0;right:0;bottom:64%;height:7%;background:var(--foam);opacity:.85}.bench-strip{height:54px;border:2px solid #2c251d;background:#eee8dc;border-radius:8px;display:flex;align-items:center;gap:9px;padding:7px 12px;width:100%;text-align:left}.bench-strip.done{border-color:var(--green);box-shadow:0 0 0 3px rgba(26,140,92,.14)}.bench-strip i{display:block;width:32px;height:28px;border:1px solid rgba(0,0,0,.28);background:#e0c36a}.bench-strip i:nth-child(2){background:#9fb46c}.bench-strip i:nth-child(3){background:#d1b697}.bench-strip i:nth-child(4){background:#7da68b}.bench-strip i:nth-child(5){background:#c38d6a}.bench-strip i:nth-child(6){background:#eadbb6}.strip-reader{height:92px;border-radius:14px;background:linear-gradient(145deg,#f7f7f4,#bfc5c6);border:2px solid #7c8586;box-shadow:inset 0 0 0 6px rgba(255,255,255,.38);display:grid;place-items:center;color:#1e2b2e;font-family:Arial,sans-serif;font-weight:900;width:100%}.strip-reader.ready,.strip-reader.drag-over{border-color:var(--green);box-shadow:inset 0 0 0 6px rgba(255,255,255,.38),0 0 0 3px rgba(26,140,92,.18)}.reader-slot{width:72px;height:10px;border-radius:999px;background:#172126;box-shadow:0 16px 0 #728085}.strip-reader span{font-size:12px;letter-spacing:1px}.lab-tool-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px;margin:10px 0}.lab-tool,.test-choice{border:1.5px solid var(--gold);background:#fff;color:var(--wine);border-radius:12px;padding:10px;text-align:left;font-weight:900}.lab-tool span{display:block;color:var(--muted);font-size:11px;line-height:1.25;margin-top:3px}.lab-tool.done,.test-choice.selected{background:var(--wine);color:#fff;border-color:var(--wine)}.lab-tool.done span{color:#ffe7bd}.mini-test-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin:8px 0}.test-choice.right{box-shadow:0 0 0 3px rgba(26,140,92,.2)}.test-choice.wrong:not(.selected){opacity:.65}.confirm-card{border:1px solid var(--gold);border-radius:12px;background:#fffdf8;padding:12px;margin:10px 0}.confirm-card h4{color:var(--wine);font-size:16px;margin-bottom:6px}.ictotest-pad{width:180px;height:78px;margin:8px 0;border:1px solid #dcc9aa;background:radial-gradient(circle at 50% 50%,#f6f0df 0 20%,#e8dcc2 22% 34%,#f8efe2 36%)}.ictotest-pad.positive{background:radial-gradient(circle at 50% 50%,#f5efd9 0 18%,#6e7086 21% 34%,#d6c2a2 36% 56%,#f8efe2 58%)}.centrifuge-scene{display:grid;grid-template-columns:180px 100px;gap:18px;align-items:end;margin:8px 0 12px}.centrifuge{width:170px;height:108px;border-radius:24px;background:linear-gradient(145deg,#e7ecec,#9ea9aa);border:2px solid #778080;position:relative;box-shadow:inset 0 0 0 7px rgba(255,255,255,.34)}.centrifuge span{position:absolute;width:38px;height:66px;border-radius:14px;background:#fff8ef;border:2px solid #7c8586;top:22px}.centrifuge span:first-child{left:42px;transform:rotate(-16deg)}.centrifuge span:nth-child(2){right:42px;transform:rotate(16deg)}.centrifuge-rotor{position:absolute;left:50%;top:42px;width:38px;height:38px;border-radius:50%;background:#293237;transform:translateX(-50%)}.kova-tube{width:72px;height:132px;border:2px solid rgba(90,76,54,.4);border-top:10px solid #75c84e;border-radius:9px 9px 24px 24px;background:linear-gradient(90deg,rgba(255,255,255,.72),rgba(255,255,255,.24));position:relative;overflow:hidden}.kova-tube i{position:absolute;left:0;right:0;bottom:0;height:13%;background:#d7c08c}.micro-report{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin:10px 0}.micro-report label,.case-expected-editor label{display:grid;gap:4px;color:var(--wine);font-size:11px;font-weight:900;text-transform:uppercase}.micro-report textarea,.case-expected-editor textarea{border:1px solid var(--gold);border-radius:8px;background:#fffdf8;color:var(--ink);font-family:Georgia,"Times New Roman",serif;font-size:13px;min-height:58px;padding:8px;resize:vertical}.case-expected-editor{grid-column:1/-1;border:1px solid var(--gold);border-radius:10px;padding:10px;background:#fff8ef;display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}.case-expected-editor h4{grid-column:1/-1;color:var(--wine);font-size:13px}@media(max-width:760px){.sim-bench-shell,.sim-workbench,.centrifuge-scene{grid-template-columns:1fr}.bench-strip{overflow:auto}.sample-corner{min-height:122px}}
 </style>
 </head>
 <body class="intro-active">
@@ -315,10 +315,10 @@ button,input{font-family:inherit}button{cursor:pointer}
     <article class="card">
       <div class="card-title"><h2>Urinalysis Lab Simulation</h2><span class="tag">Practice</span></div>
       <div class="urine-sim">
-        <div class="sample-stage" aria-hidden="true"><div class="tube" id="urineCup"><div class="cup-bg">UA CLARITY<br>TEXT CHECK</div><div class="urine-fill" id="urineFill"></div><div class="urine-sediment" id="urineSediment"></div><div class="urine-foam" id="urineFoam"></div></div></div>
+        <div class="sample-stage"><div class="tube" id="urineCup" draggable="true" data-sim-drag="cup" data-sim-action="pickup"><div class="cup-bg">UA CLARITY<br>TEXT CHECK</div><div class="urine-fill" id="urineFill"></div><div class="urine-sediment" id="urineSediment"></div><div class="urine-foam" id="urineFoam"></div></div></div>
         <div>
           <h2 class="sim-label" id="simCaseLabel">Sample 1</h2>
-          <p class="sim-note">Random samples with strip reading, required confirmation checks, KOVA tube prep, and microscope reporting.</p>
+          <p class="sim-note">Sample 1 through Sample 14 with strip reading, confirmation checks, KOVA tube prep, and microscope reporting.</p>
           <div class="sample-grid" id="sampleChoices"></div>
           <div class="step-strip" id="simSteps"></div>
           <div class="sim-panel" id="simPanel"></div>
@@ -351,6 +351,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   var syncPresence=null;
   var adminExitInProgress=false;
   var microDrag=null;
+  var simDrag=null;
   var suppressMicroClick=false;
   var activeMicroIndex=null;
   var state=null;
@@ -703,7 +704,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function defaultState(){
     return {
-      version:13,
+      version:14,
       updatedAt:Date.now(),
       notes:{simulation_note:'',selected_color:'yellow',sim_case_index:0,sim_step:0,micro_mode:'brightfield',sim_actions:{},sim_extra_choices:{},sim_extra_checked:false,sim_micro_inputs:{},sim_micro_score:0,sim_micro_pass:false},
       simCases:defaultSimCases(),
@@ -915,19 +916,35 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       return /^Case\s*\d+$/i.test(name)||/Editable example|Final reveal|Clear yellow urine/i.test(text)||(!name&&i===0);
     });
   }
+  function canonicalSimulationSamples(existing){
+    var incoming=Array.isArray(existing)?existing.map(function(item,i){return normalizeCase(item,i)}):[];
+    var byKey={};
+    var byName={};
+    incoming.forEach(function(item){
+      var key=String(item.sourceKey||'');
+      var name=String(item.name||'').trim().toLowerCase();
+      if(/^ua-case-study-sample-\d+$/.test(key))byKey[key]=item;
+      if(/^sample\s+\d+$/i.test(item.name||''))byName[name]=item;
+    });
+    return defaultSimCases().map(function(sample,i){
+      var key='ua-case-study-sample-'+(i+1);
+      var name='Sample '+(i+1);
+      var saved=byKey[key]||byName[name.toLowerCase()]||null;
+      var merged=Object.assign({},normalizeCase(sample,i),saved||{});
+      merged.sourceKey=key;
+      merged.name=name;
+      return normalizeCase(merged,i);
+    });
+  }
   function ensureSimulationSamples(data,incomingVersion){
     if(!data)return;
-    var bank=defaultSimCases().map(normalizeCase);
-    if(!Array.isArray(data.simCases)||!data.simCases.length||oldSimulationPlaceholder(data.simCases)){
-      data.simCases=bank;
-      return;
-    }
-    var seen={};
-    data.simCases=data.simCases.map(normalizeCase);
-    data.simCases.forEach(function(item){seen[item.sourceKey||item.name]=true});
-    bank.forEach(function(sample){
-      if(!seen[sample.sourceKey]&&!data.simCases.some(function(item){return item.name===sample.name}))data.simCases.push(sample);
-    });
+    data.simCases=canonicalSimulationSamples(data.simCases);
+    if(data.notes)stateSafeSampleIndex(data);
+  }
+  function stateSafeSampleIndex(data){
+    var max=Math.max(0,(data.simCases||[]).length-1);
+    if(!data.notes)data.notes={};
+    data.notes.sim_case_index=Math.max(0,Math.min(max,Number(data.notes.sim_case_index)||0));
   }
   function mergeState(incoming){
     var base=defaultState();
@@ -958,7 +975,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     Object.keys(base.tables||{}).forEach(function(id){sanitizeTableText(base.tables[id])});
     if(Number(incoming.version)<7)base.tables.resources=defaultState().tables.resources;
     if(resourcesBlank(base.tables.resources))base.tables.resources=defaultState().tables.resources;
-    base.version=13;
+    base.version=14;
     base.updatedAt=Number(incoming.updatedAt||0)||base.updatedAt;
     return base;
   }
@@ -1316,13 +1333,24 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var done=simActionDone(key);
     return '<button type="button" class="lab-tool '+(done?'done':'')+'" data-sim-action="'+key+'"><strong>'+escapeHtml(label)+'</strong><span>'+escapeHtml(detail||'')+'</span></button>';
   }
+  function simCupStyle(activeCase){
+    return '--urine:'+escapeHtml(activeCase.urineColor||'#e8c23a')+';--opacity:'+escapeHtml(activeCase.urineOpacity||.72)+';--sediment:'+escapeHtml(activeCase.sedimentColor||'transparent')+';--foam:'+escapeHtml(activeCase.foamColor||'transparent');
+  }
+  function simCupHtml(activeCase,className,attrs){
+    return '<div class="mini-cup '+(className||'')+'" '+(attrs||'')+' style="'+simCupStyle(activeCase)+'"><span></span></div>';
+  }
   function buildWorkbench(activeCase){
     var ready=simCanAdvance(activeCase,0);
-    return '<div class="sim-workbench">'+
-      '<div class="bench-cup mini-cup" style="--urine:'+escapeHtml(activeCase.urineColor||'#e8c23a')+';--opacity:'+escapeHtml(activeCase.urineOpacity||.72)+';--sediment:'+escapeHtml(activeCase.sedimentColor||'transparent')+';--foam:'+escapeHtml(activeCase.foamColor||'transparent')+'"><span></span></div>'+
-      '<div class="bench-strip"><i></i><i></i><i></i><i></i><i></i><i></i></div>'+
-      '<div class="strip-reader"><span>CLINITEK</span><span class="reader-slot"></span></div>'+
-      '</div><div class="lab-tool-grid">'+
+    var pickup=simActionDone('pickup');
+    var dip=simActionDone('dip');
+    var reader=simActionDone('reader');
+    return '<div class="sim-bench-shell">'+
+      '<div class="sample-corner">'+simCupHtml(activeCase,'draggable '+(pickup?'ghost':''),'draggable="true" data-sim-drag="cup" data-sim-action="pickup"')+'<span>Drag cup to bench</span></div>'+
+      '<div><div class="sim-workbench">'+
+      '<div class="bench-drop-zone '+(pickup?'ready':'')+'" data-sim-drop="cup">'+(pickup?simCupHtml(activeCase,'',''):'Drop cup here')+'</div>'+
+      '<button type="button" class="bench-strip '+(dip?'done':'')+'" draggable="true" data-sim-drag="strip" data-sim-action="dip" aria-label="Dip reagent strip"><i></i><i></i><i></i><i></i><i></i><i></i></button>'+
+      '<button type="button" class="strip-reader '+(reader?'ready':'')+'" data-sim-drop="strip" data-sim-action="reader" aria-label="Place strip in reader"><span>CLINITEK</span><span class="reader-slot"></span></button>'+
+      '</div></div></div><div class="lab-tool-grid">'+
       simToolButton('pickup','Pick up sample','start with the cup')+
       simToolButton('dip','Dip reagent strip','use the selected sample')+
       simToolButton('reader','Place strip in reader','read chemistry pads')+
@@ -1441,14 +1469,14 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function renderSimulation(){
     var cases=state.simCases&&state.simCases.length?state.simCases:defaultSimCases();
-    cases=cases.map(normalizeCase);
+    cases=canonicalSimulationSamples(cases);
     state.simCases=cases;
     var index=Math.max(0,Math.min(cases.length-1,Number(state.notes.sim_case_index)||0));
     var step=Math.max(0,Math.min(simSteps.length-1,Number(state.notes.sim_step)||0));
     state.notes.sim_case_index=index;
     state.notes.sim_step=step;
     var activeCase=cases[index];
-    var current={label:activeCase.name||'Sample',color:activeCase.urineColor||'#e8c23a'};
+    var current={label:'Sample '+(index+1),color:activeCase.urineColor||'#e8c23a'};
     var fill=document.getElementById('urineFill');
     var sediment=document.getElementById('urineSediment');
     var foam=document.getElementById('urineFoam');
@@ -1463,10 +1491,10 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     }
     if(sediment)sediment.style.background=activeCase.sedimentColor||'#f7efe4';
     if(foam)foam.style.background=activeCase.foamColor||'#fff2a8';
-    if(label)label.textContent=activeCase.name||current.label;
+    if(label)label.textContent=current.label;
     if(choices){
-      choices.innerHTML='<button type="button" class="sample-choice random-sample" data-sim-random="1"><span>Random sample</span></button>'+cases.map(function(item,i){
-        return '<button type="button" class="sample-choice '+(i===index?'active':'')+'" data-sim-case="'+i+'" onclick="event.stopPropagation();selectSimCase('+i+')"><span>'+escapeHtml(item.name||('Sample '+(i+1)))+'</span></button>';
+      choices.innerHTML=cases.map(function(item,i){
+        return '<button type="button" class="sample-choice '+(i===index?'active':'')+'" data-sim-case="'+i+'" onclick="event.stopPropagation();selectSimCase('+i+')"><span>Sample '+(i+1)+'</span></button>';
       }).join('');
     }
     if(stepStrip){
@@ -1480,15 +1508,16 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       if(step===3)content=buildMicroscope(activeCase);
       if(step===4)content='<strong>Full sample results</strong><br>'+escapeHtml(activeCase.reveal||'')+caseResultsRows(activeCase)+'<br><strong>Macroscopic:</strong> '+escapeHtml(activeCase.macro||'')+'<br><strong>Strip:</strong> '+escapeHtml(activeCase.dipstick||'')+'<br><strong>Specific gravity:</strong> '+escapeHtml(activeCase.specificGravity||'')+'<br><strong>Microscopy:</strong> '+escapeHtml(activeCase.microscopy||'');
       var nextLabel=step>=simSteps.length-2?'Full Results':'Next';
-      var nextButton=step<simSteps.length-1?'<button type="button" class="mini-btn" data-sim-step="1" '+(simCanAdvance(activeCase,step)?'':'disabled')+'>'+nextLabel+'</button>':'';
-      panel.innerHTML='<h3>'+escapeHtml(simSteps[step].title)+'</h3><div class="sim-content">'+content+'</div><div class="sim-actions"><button type="button" class="mini-btn" data-sim-step="-1">Back</button>'+nextButton+'<button type="button" class="mini-btn" data-sim-reset="1">Restart</button></div>';
+      var nextButton=step<simSteps.length-1?'<button type="button" class="mini-btn" data-sim-next="1" '+(simCanAdvance(activeCase,step)?'':'disabled')+'>'+nextLabel+'</button>':'';
+      panel.innerHTML='<h3>'+escapeHtml(simSteps[step].title)+'</h3><div class="sim-content">'+content+'</div><div class="sim-actions"><button type="button" class="mini-btn" data-sim-back="1">Back</button>'+nextButton+'<button type="button" class="mini-btn" data-sim-reset="1">Restart</button></div>';
     }
     renderCaseEditor();
   }
   function renderCaseEditor(){
     var editor=document.getElementById('caseEditor');
     if(!editor)return;
-    editor.innerHTML='<div class="card-title"><h2>Edit Simulation Samples</h2><span class="tag">Admin</span></div><button class="mini-btn" data-action="add-case">Add Sample</button>'+
+    state.simCases=canonicalSimulationSamples(state.simCases);
+    editor.innerHTML='<div class="card-title"><h2>Edit Simulation Samples 1-14</h2><span class="tag">Admin</span></div>'+
       state.simCases.map(function(item,i){
         item=normalizeCase(item,i);
         var resultEditor='<div class="case-results-editor"><h4>Sample Results Table</h4>'+
@@ -1537,8 +1566,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
           '<div class="sediment-choice-row"><span>Sediment</span><button type="button" class="sediment-choice '+(!item.hasSediment?'active':'')+'" data-action="set-sediment" data-case-index="'+i+'" data-color="transparent">None</button><button type="button" class="sediment-choice '+(item.hasSediment&&(item.sedimentColor||'')==='#f3b6c8'?'active':'')+'" data-action="set-sediment" data-case-index="'+i+'" data-color="#f3b6c8">Pink</button><button type="button" class="sediment-choice '+(item.hasSediment&&(item.sedimentColor||'')==='#c83232'?'active':'')+'" data-action="set-sediment" data-case-index="'+i+'" data-color="#c83232">Red</button><button type="button" class="sediment-choice '+(item.hasSediment&&(item.sedimentColor||'')==='#f7efe4'?'active':'')+'" data-action="set-sediment" data-case-index="'+i+'" data-color="#f7efe4">White</button></div>'+
           '<label>Foam<select data-case-field="foamColor" data-case-index="'+i+'"><option value="transparent" '+(item.foamColor==='transparent'?'selected':'')+'>none</option><option value="#ffffff" '+(item.foamColor==='#ffffff'?'selected':'')+'>white</option><option value="#fff2a8" '+((item.foamColor||'#fff2a8')==='#fff2a8'?'selected':'')+'>yellow</option></select></label>'+
           '</div></div>';
-        return '<div class="case-edit-card" data-case-edit="'+i+'"><div class="case-edit-grid">'+
-          '<label>Name<input data-case-field="name" data-case-index="'+i+'" value="'+escapeHtml(item.name||'')+'"></label>'+
+        return '<div class="case-edit-card" data-case-edit="'+i+'"><h3>Sample '+(i+1)+'</h3><div class="case-edit-grid">'+
           '<label>Macroscopic check<textarea data-case-field="macro" data-case-index="'+i+'">'+escapeHtml(item.macro||'')+'</textarea></label>'+
           '<label>Dipstick test<textarea data-case-field="dipstick" data-case-index="'+i+'">'+escapeHtml(item.dipstick||'')+'</textarea></label>'+
           '<label>Specific gravity<textarea data-case-field="specificGravity" data-case-index="'+i+'">'+escapeHtml(item.specificGravity||'')+'</textarea></label>'+
@@ -1546,7 +1574,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
           '<label>Report notes<textarea data-case-field="interpretation" data-case-index="'+i+'">'+escapeHtml(item.interpretation||'')+'</textarea></label>'+
           '<label>Reveal results<textarea data-case-field="reveal" data-case-index="'+i+'">'+escapeHtml(item.reveal||'')+'</textarea></label>'+
           fluidEditor+resultEditor+padEditor+expectedEditor+objectEditor+
-          '</div><button class="mini-btn danger" data-action="delete-case" data-case-index="'+i+'">Delete Case</button></div>';
+          '</div></div>';
       }).join('');
   }
   function renderAll(){ensureRenalDefaults(state);renderRenal();renderCustomTables();Object.keys(state.tables).forEach(renderTable);renderNotes();renderSimulation();document.body.classList.toggle('admin-mode',editMode)}
@@ -1738,7 +1766,6 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   };
   window.markSimAction=function(action){
     var p=simProgress();
-    var order={pickup:0,dip:1,reader:2,spin:0,decant:1,resuspend:2};
     if(action==='dip'&&!p.sim_actions.pickup){showToast('Pick up sample first',true);return}
     if(action==='reader'&&!p.sim_actions.dip){showToast('Dip the strip first',true);return}
     if(action==='decant'&&!p.sim_actions.spin){showToast('Spin the tube first',true);return}
@@ -1746,6 +1773,22 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     p.sim_actions[action]=true;
     saveLocal();
     renderSimulation();
+  };
+  window.handleSimDrop=function(type,target){
+    var p=simProgress();
+    if(type==='cup'&&target==='cup'){
+      p.sim_actions.pickup=true;
+      saveLocal();
+      renderSimulation();
+      return;
+    }
+    if(type==='strip'&&target==='strip'){
+      if(!p.sim_actions.pickup){showToast('Put the sample on the bench first',true);return}
+      p.sim_actions.dip=true;
+      p.sim_actions.reader=true;
+      saveLocal();
+      renderSimulation();
+    }
   };
   window.toggleExtraChoice=function(key){
     var p=simProgress();
@@ -1839,6 +1882,57 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     renderSimulation();
     microDrag=null;
     setTimeout(function(){suppressMicroClick=false},80);
+  });
+  document.addEventListener('pointerdown',function(e){
+    var drag=e.target.closest('[data-sim-drag]');
+    if(!drag)return;
+    simDrag={type:drag.dataset.simDrag,startX:e.clientX,startY:e.clientY,moved:false};
+    drag.classList.add('sim-dragging');
+    drag.setPointerCapture&&drag.setPointerCapture(e.pointerId);
+  });
+  document.addEventListener('pointermove',function(e){
+    if(!simDrag)return;
+    if(Math.abs(e.clientX-simDrag.startX)+Math.abs(e.clientY-simDrag.startY)>6)simDrag.moved=true;
+    document.querySelectorAll('.drag-over').forEach(function(el){el.classList.remove('drag-over')});
+    var hover=document.elementFromPoint(e.clientX,e.clientY);
+    var drop=hover&&hover.closest?hover.closest('[data-sim-drop]'):null;
+    if(drop)drop.classList.add('drag-over');
+  });
+  document.addEventListener('pointerup',function(e){
+    if(!simDrag)return;
+    document.querySelectorAll('.drag-over').forEach(function(el){el.classList.remove('drag-over')});
+    var hover=document.elementFromPoint(e.clientX,e.clientY);
+    var drop=hover&&hover.closest?hover.closest('[data-sim-drop]'):null;
+    var type=simDrag.type;
+    document.querySelectorAll('.sim-dragging').forEach(function(el){el.classList.remove('sim-dragging')});
+    simDrag=null;
+    if(drop){
+      e.preventDefault();
+      handleSimDrop(type,drop.dataset.simDrop);
+    }
+  });
+  document.addEventListener('dragstart',function(e){
+    var drag=e.target.closest('[data-sim-drag]');
+    if(!drag||!e.dataTransfer)return;
+    e.dataTransfer.setData('text/plain',drag.dataset.simDrag);
+    e.dataTransfer.effectAllowed='move';
+  });
+  document.addEventListener('dragover',function(e){
+    var drop=e.target.closest('[data-sim-drop]');
+    if(!drop)return;
+    e.preventDefault();
+    drop.classList.add('drag-over');
+  });
+  document.addEventListener('dragleave',function(e){
+    var drop=e.target.closest('[data-sim-drop]');
+    if(drop)drop.classList.remove('drag-over');
+  });
+  document.addEventListener('drop',function(e){
+    var drop=e.target.closest('[data-sim-drop]');
+    if(!drop||!e.dataTransfer)return;
+    e.preventDefault();
+    drop.classList.remove('drag-over');
+    handleSimDrop(e.dataTransfer.getData('text/plain'),drop.dataset.simDrop);
   });
   document.addEventListener('keydown',function(e){if(e.key==='Enter'&&document.getElementById('adminModal').classList.contains('visible'))attemptLogin();if(e.key==='Escape'){closeModal();closeMicroItemModal()}if((e.key==='Delete'||e.key==='Backspace')&&document.getElementById('microItemModal').classList.contains('visible'))deleteActiveMicroItem()});
   document.addEventListener('input',function(e){
@@ -2076,6 +2170,16 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var renalBtn=e.target.closest('[data-renal-action]');
     if(renalBtn){
       handleRenalAction(renalBtn);
+      return;
+    }
+    var nextBtn=e.target.closest('[data-sim-next]');
+    if(nextBtn){
+      moveSimStep(1);
+      return;
+    }
+    var backBtn=e.target.closest('[data-sim-back]');
+    if(backBtn){
+      moveSimStep(-1);
       return;
     }
     var sampleBtn=e.target.closest('[data-sim-case]');
@@ -2371,8 +2475,9 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       return chartChoices.concat(extraChoices);
     }
     if(section==='simulation'){
+      state.simCases=canonicalSimulationSamples(state.simCases);
       return (state.simCases||[]).map(function(item,i){
-        return {key:'case::'+i,kind:'case',id:String(i),label:(item&&item.name)||('Case '+(i+1))};
+        return {key:'case::'+i,kind:'case',id:String(i),label:'Sample '+(i+1)};
       });
     }
     return sectionTableIds(section).map(function(id){
@@ -2499,11 +2604,12 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function casePrintHtml(item,i){
     item=normalizeCase(item,i);
+    var sampleLabel='Sample '+(i+1);
     var pads=chemistryPads(item.chemistry);
     var objects=Array.isArray(item.microObjects)?item.microObjects:[];
     var micro='<div class="print-micro-field">'+objects.map(function(obj){return '<span class="print-micro-item '+escapeHtml(obj.shape||obj.type||'cell')+'" style="'+microStyle(obj)+'">'+escapeHtml(obj.label||'')+'</span>'}).join('')+'</div>';
     var objectRows=objects.map(function(obj){return '<tr><td>'+escapeHtml(obj.label||'')+'</td><td>'+escapeHtml(obj.type||'')+'</td><td>'+escapeHtml(obj.polarizes===false?'No':'Yes')+'</td><td>'+escapeHtml(obj.note||'')+'</td><td>'+(obj.image?'<img src="'+escapeHtml(obj.image)+'" alt="item image"/>':'')+'</td></tr>'}).join('');
-    return '<div class="print-page"><h1 class="print-section-title">'+escapeHtml(item.name||('Sample '+(i+1)))+'</h1>'+
+    return '<div class="print-page"><h1 class="print-section-title">'+escapeHtml(sampleLabel)+'</h1>'+
       '<div class="print-card"><h2>Macroscopic</h2><div class="print-case-grid"><div><div class="print-cup"><div class="print-liquid" style="--urine:'+escapeHtml(item.urineColor||'#e8c23a')+';--opacity:'+escapeHtml(item.urineOpacity||.72)+'"></div><div class="print-sediment" style="--sediment:'+escapeHtml(item.sedimentColor||'#f7efe4')+'"></div><div class="print-foam" style="--foam:'+escapeHtml(item.foamColor||'#fff2a8')+'"></div></div></div><div><p><strong>Clarity:</strong> '+escapeHtml(item.clarity||'')+'</p><p>'+escapeHtml(item.macro||'')+'</p></div></div></div>'+
       '<div class="print-card"><h2>Chemistry Strip</h2><div class="print-strip">'+pads.map(function(p){return '<div class="print-strip-pad"><span style="--pad-bg:'+escapeHtml(stripBackground(p.label,p.value))+'"></span><strong>'+escapeHtml(p.label)+'</strong><em>'+escapeHtml(p.value)+'</em></div>'}).join('')+'</div><p>'+escapeHtml(item.dipstick||'')+'</p></div>'+
       '<div class="print-card"><h2>Specific Gravity</h2><p>'+escapeHtml(item.specificGravity||'')+'</p></div>'+
@@ -2511,6 +2617,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       '<div class="print-card"><h2>Reveal Results</h2><p><strong>Report notes:</strong> '+escapeHtml(item.interpretation||'')+'</p><p><strong>Reveal:</strong> '+escapeHtml(item.reveal||'')+'</p>'+caseResultsRows(item)+'</div></div>';
   }
   function printCases(indexes){
+    state.simCases=canonicalSimulationSamples(state.simCases);
     indexes=Array.isArray(indexes)?indexes:(state.simCases||[]).map(function(_,i){return i});
     if(!indexes.length)return '';
     return indexes.map(function(i){return casePrintHtml(state.simCases[i],i)}).join('');
