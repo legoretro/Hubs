@@ -150,6 +150,12 @@ button,input{font-family:inherit}button{cursor:pointer}
 .micro-report label:last-child{grid-column:span 2}
 .scope-modes .mini-btn.active{background:var(--wine);border-color:var(--wine);color:#fff}
 @media(max-width:760px){.micro-report label:last-child{grid-column:auto}}
+.urine-sim{grid-template-columns:1fr}
+.sample-stage{display:none}
+.sample-choice{flex-direction:column;justify-content:center;gap:5px;min-height:96px;padding:8px 6px}
+.sample-choice .mini-cup{width:42px;height:58px;border-width:1.5px;border-top-width:5px;border-radius:5px 5px 13px 13px;margin:0 auto;pointer-events:none}
+.sample-choice small{font-size:10px;color:var(--muted);font-weight:900;text-transform:capitalize;line-height:1}
+.sample-choice.active .mini-cup{box-shadow:0 0 0 2px rgba(122,61,0,.16)}
 </style>
 </head>
 <body class="intro-active">
@@ -703,14 +709,14 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       simSample(9,{urineColor:'#bf8a1b',urineOpacity:.9,clarity:'cloudy',sedimentColor:'#f7efe4',hasSediment:true,macro:'Dark yellow, cloudy urine.',specificGravity:'1.015',chemistry:{LEU:'moderate (2+)',NIT:'negative',URO:'normal (0.2 mg/dL)',PRO:'3+ (300 mg/dL)',pH:'6.0',BLO:'moderate (2+)',SG:'1.015',KET:'negative',BIL:'negative',GLU:'negative'},dipstick:'Protein 3+, blood moderate, leukocyte esterase 2+, nitrite negative.',microscopy:'20-30 RBC/hpf. >100 WBC/hpf. 1-2 WBC casts/lpf. Eosinophils may be requested separately.',reveal:'Color: dark yellow. Clarity: cloudy. SG: 1.015. Protein 3+, blood moderate, leukocyte 2+. Microscopy: 20-30 RBC/hpf, >100 WBC/hpf, 1-2 WBC casts/lpf.',results:[{test:'RBC',result:'20-30/hpf',note:'Sediment finding',condition:''},{test:'WBC',result:'>100/hpf',note:'High count',condition:''},{test:'WBC casts',result:'1-2/lpf',note:'Cast finding',condition:''}],microObjects:[simObj('WBC','cell',28,36,34,34,'#d8d2b5','>100 WBC/hpf.','cell',0,false),simObj('RBC','cell',44,48,24,24,'#d7a3a0','20-30 RBC/hpf.','cell',0,false),simObj('WBC cast','cast',62,62,100,26,'#d7d0a8','1-2 WBC casts/lpf.','cast',-12,false)],expectedMicro:{rbc:'20-30 RBC per hpf',wbc:'>100 WBC per hpf',casts:'1-2 WBC casts per lpf',crystals:'none reported',bacteria:'none reported',other:'eosinophils may be tested separately'}}),
       simSample(10,{urineColor:'#b8791e',urineOpacity:.88,clarity:'hazy',foamColor:'#fff2a8',sedimentColor:'#d5a66a',hasSediment:true,macro:'Amber, hazy urine.',specificGravity:'1.011',chemistry:{LEU:'negative',NIT:'positive',URO:'8 mg/dL',PRO:'2+ (100 mg/dL)',pH:'7.0',BLO:'negative',SG:'1.010',KET:'negative',BIL:'large (3+)',GLU:'negative'},dipstick:'Protein 2+, bilirubin large, urobilinogen elevated, nitrite positive, blood negative.',microscopy:'2-4 WBC/hpf. 1-3 RBC/hpf. Few squamous and transitional epithelial cells. 1-2 hyaline casts/lpf. 1-2 granular casts/lpf. Many bile-stained renal tubular epithelial cells. 0-1 epithelial cell casts. 0-1 bile-stained waxy casts/lpf.',reveal:'Color: amber. Clarity: hazy. SG: 1.011. Bilirubin large and urobilinogen high. Ictotest is required because bilirubin is positive. Microscopy includes bile-stained RTE cells and casts.',results:[{test:'Bilirubin',result:'Large',note:'Requires Ictotest',condition:''},{test:'Urobilinogen',result:'High',note:'Case text reports 8.0 EU',condition:''},{test:'Microscopy',result:'Bile-stained cells/casts',note:'Sediment finding',condition:''}],microObjects:[simObj('Bile RTE','cell',29,36,34,34,'#b98639','Many bile-stained renal tubular epithelial cells.','cell',0,false),simObj('Hyaline cast','cast',58,42,90,22,'#efe0bf','1-2 hyaline casts/lpf.','cast',8,false),simObj('Granular cast','cast',43,66,92,24,'#c8a76a','1-2 granular casts/lpf.','cast',-14,false),simObj('Waxy cast','cast',65,72,86,22,'#b98a48','0-1 bile-stained waxy casts/lpf.','cast',12,false)],expectedMicro:{rbc:'1-3 RBC per hpf',wbc:'2-4 WBC per hpf',casts:'1-2 hyaline casts 1-2 granular casts 0-1 epithelial cell casts 0-1 bile stained waxy casts per lpf',crystals:'none reported',bacteria:'none reported',other:'few squamous epithelial cells few transitional epithelial cells many bile-stained renal tubular epithelial cells'}}),
       simSample(11,{urineColor:'#f4e58b',urineOpacity:.82,clarity:'hazy',sedimentColor:'#f7efe4',hasSediment:true,macro:'Pale yellow, hazy urine.',specificGravity:'1.020',chemistry:{LEU:'moderate (2+)',NIT:'negative',URO:'normal (0.2 mg/dL)',PRO:'trace',pH:'5.0',BLO:'negative',SG:'1.020',KET:'negative',BIL:'negative',GLU:'200 mg/dL'},dipstick:'Glucose positive, leukocyte esterase 2+, nitrite negative, trace protein.',microscopy:'20-25 WBC/hpf. 10-15 RBC/hpf. Many yeast cells and hyphae.',reveal:'Color: pale yellow. Clarity: hazy. SG: 1.020. Glucose positive, leukocyte 2+, nitrite negative. Microscopy: 20-25 WBC/hpf, 10-15 RBC/hpf, many yeast cells and hyphae.',results:[{test:'Glucose',result:'Positive',note:'Case text reports 250 mg/dL',condition:''},{test:'WBC',result:'20-25/hpf',note:'Sediment finding',condition:''},{test:'Yeast',result:'Many cells and hyphae',note:'Sediment finding',condition:''}],microObjects:[simObj('Yeast','cell',28,36,24,24,'#e0cda8','Many yeast cells.','cell',0,false),simObj('Hyphae','cast',58,42,96,10,'#d2b789','Hyphae-like forms.','cast',16,false),simObj('WBC','cell',42,67,34,34,'#d8d2b5','20-25 WBC/hpf.','cell',0,false),simObj('RBC','cell',66,72,24,24,'#d7a3a0','10-15 RBC/hpf.','cell',0,false)],expectedMicro:{rbc:'10-15 RBC per hpf',wbc:'20-25 WBC per hpf',casts:'none reported',crystals:'none reported',bacteria:'many yeast cells and hyphae',other:''}}),
-      simSample(12,{urineColor:'#e4c83d',urineOpacity:.82,clarity:'hazy',macro:'Yellow, hazy urine.',specificGravity:'1.025',chemistry:{LEU:'negative',NIT:'negative',URO:'normal (0.2 mg/dL)',PRO:'negative',pH:'6.0',BLO:'moderate (2+)',SG:'1.025',KET:'negative',BIL:'negative',GLU:'negative'},dipstick:'Blood moderate, otherwise negative strip findings.',microscopy:'0-3 WBC/hpf. 15-20 RBC/hpf. Few squamous epithelial cells. Many cystine crystals.',reveal:'Color: yellow. Clarity: hazy. SG: 1.025. Blood moderate. Microscopy: 15-20 RBC/hpf, 0-3 WBC/hpf, few squamous epithelial cells, many cystine crystals.',results:[{test:'RBC',result:'15-20/hpf',note:'Sediment finding',condition:''},{test:'Crystals',result:'Many cystine crystals',note:'Sediment finding',condition:''},{test:'WBC',result:'0-3/hpf',note:'Low count',condition:''}],microObjects:[simObj('Cystine','crystal',31,36,44,34,'#e7e4ad','Many cystine crystals.','crystal',0,true),simObj('Cystine','crystal',56,44,42,34,'#ded996','Many cystine crystals.','crystal',30,true),simObj('RBC','cell',42,68,24,24,'#d7a3a0','15-20 RBC/hpf.','cell',0,false),simObj('Sq epi','cell',67,71,56,34,'#efe6d6','Few squamous epithelial cells.','cell',0,false)],expectedMicro:{rbc:'15-20 RBC per hpf',wbc:'0-3 WBC per hpf',casts:'none reported',crystals:'many cystine crystals',bacteria:'none reported',other:'few squamous epithelial cells'}}),
+      simSample(12,{urineColor:'#e4c83d',urineOpacity:.82,clarity:'hazy',macro:'Yellow, hazy urine.',specificGravity:'1.025',chemistry:{LEU:'negative',NIT:'negative',URO:'normal (0.2 mg/dL)',PRO:'negative',pH:'6.0',BLO:'moderate (2+)',SG:'1.025',KET:'negative',BIL:'negative',GLU:'negative'},dipstick:'Blood moderate, otherwise negative strip findings.',microscopy:'0-3 WBC/hpf. RBC present: minimum 15/hpf, reported range 15-20 RBC/hpf. Few squamous epithelial cells. Many cystine crystals.',reveal:'Color: yellow. Clarity: hazy. SG: 1.025. Blood moderate. Microscopy: RBC present with minimum 15/hpf (reported range 15-20 RBC/hpf), 0-3 WBC/hpf, few squamous epithelial cells, many cystine crystals.',results:[{test:'RBC',result:'15-20/hpf',note:'Minimum 15/hpf; reported range 15-20/hpf',condition:''},{test:'Crystals',result:'Many cystine crystals',note:'Sediment finding',condition:''},{test:'WBC',result:'0-3/hpf',note:'Low count',condition:''}],microObjects:[simObj('Cystine','crystal',31,36,44,34,'#e7e4ad','Cystine crystals present. Quantity: many.','crystal',0,true),simObj('Cystine','crystal',56,44,42,34,'#ded996','Cystine crystals present. Quantity: many.','crystal',30,true),simObj('RBC','cell',42,68,24,24,'#d7a3a0','RBC present: minimum 15/hpf. Reported range: 15-20 RBC/hpf.','cell',0,false),simObj('Sq epi','cell',67,71,56,34,'#efe6d6','Few squamous epithelial cells.','cell',0,false)],expectedMicro:{rbc:'RBC present: minimum 15/hpf (reported range 15-20 RBC/hpf)',wbc:'0-3 WBC per hpf',casts:'none reported',crystals:'many cystine crystals',bacteria:'none reported',other:'few squamous epithelial cells'}}),
       simSample(13,{urineColor:'#e6ca42',urineOpacity:.8,clarity:'slightly cloudy',sedimentColor:'#e0a84f',hasSediment:true,macro:'Yellow, slightly hazy urine with orange sandy sediment noted in the history.',specificGravity:'1.024',chemistry:{LEU:'negative',NIT:'negative',URO:'normal (0.2 mg/dL)',PRO:'negative',pH:'5.0',BLO:'negative',SG:'1.025',KET:'negative',BIL:'negative',GLU:'negative'},dipstick:'Negative protein, blood, glucose, ketones, nitrite, bilirubin, and leukocyte esterase. Acid pH.',microscopy:'Many uric acid crystals in acid urine.',reveal:'Color: yellow. Clarity: slightly hazy. SG: 1.024. pH 5.0. Microscopy: many uric acid crystals.',results:[{test:'Crystals',result:'Many uric acid crystals',note:'Case text describes orange sand-like material',condition:''},{test:'pH',result:'5.0',note:'Acid urine',condition:''},{test:'Specific gravity',result:'1.024',note:'From case study table',condition:''}],microObjects:[simObj('Uric acid','crystal',35,38,48,36,'#d58b31','Many uric acid crystals in acid urine.','crystal',24,true),simObj('Uric acid','crystal',62,54,44,34,'#c97924','Orange sandy crystals.','crystal',-18,true)],expectedMicro:{rbc:'none reported',wbc:'none reported',casts:'none reported',crystals:'many uric acid crystals',bacteria:'none reported',other:''}}),
       simSample(14,{urineColor:'#c99424',urineOpacity:.84,clarity:'clear',foamColor:'#fff2a8',macro:'Dark yellow urine with positive Ictotest noted in the case text.',specificGravity:'1.020',chemistry:{LEU:'negative',NIT:'negative',URO:'normal (0.2 mg/dL)',PRO:'negative',pH:'6.0',BLO:'negative',SG:'1.020',KET:'negative',BIL:'large (3+)',GLU:'negative'},dipstick:'Bilirubin positive. Case text also reports positive Ictotest.',microscopy:'Bilirubin crystals; needle-shaped crystals seen on microscopic exam.',reveal:'Color: dark yellow. Bilirubin positive with positive Ictotest. Microscopy: bilirubin crystals with needle-shaped forms.',results:[{test:'Ictotest',result:'Positive',note:'Required because bilirubin is positive',condition:''},{test:'Microscopy',result:'Bilirubin crystals',note:'Needle-shaped sediment finding',condition:''},{test:'Color',result:'Dark yellow',note:'Physical appearance',condition:''}],microObjects:[simObj('Bilirubin needles','crystal',35,40,90,5,'#d3a937','Bilirubin crystals with needle-shaped forms.','needle',20,true),simObj('Bilirubin needles','crystal',62,58,82,5,'#d3a937','Bilirubin crystals with needle-shaped forms.','needle',-24,true)],expectedMicro:{rbc:'none reported',wbc:'none reported',casts:'none reported',crystals:'bilirubin crystals needle-shaped crystals',bacteria:'none reported',other:''}})
     ];
   }
   function defaultState(){
     return {
-      version:16,
+      version:17,
       updatedAt:Date.now(),
       notes:{simulation_note:'',selected_color:'yellow',sim_case_index:0,sim_step:0,micro_mode:'brightfield',sim_actions:{},sim_extra_choices:{},sim_extra_checked:false,sim_micro_inputs:{},sim_micro_score:0,sim_micro_pass:false,sim_micro_checked:false},
       simCases:defaultSimCases(),
@@ -945,7 +951,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function ensureSimulationSamples(data,incomingVersion){
     if(!data)return;
-    data.simCases=canonicalSimulationSamples(data.simCases,Number(incomingVersion||0)>=16);
+    data.simCases=canonicalSimulationSamples(data.simCases,Number(incomingVersion||0)>=17);
     if(data.notes)stateSafeSampleIndex(data);
   }
   function stateSafeSampleIndex(data){
@@ -982,7 +988,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     Object.keys(base.tables||{}).forEach(function(id){sanitizeTableText(base.tables[id])});
     if(Number(incoming.version)<7)base.tables.resources=defaultState().tables.resources;
     if(resourcesBlank(base.tables.resources))base.tables.resources=defaultState().tables.resources;
-    base.version=16;
+    base.version=17;
     base.updatedAt=Number(incoming.updatedAt||0)||base.updatedAt;
     return base;
   }
@@ -1429,16 +1435,31 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     rbc:['None','0-2 RBC/hpf','1-3 RBC/hpf','6-10 RBC/hpf','10-15 RBC/hpf','15-20 RBC/hpf','15-20 crenated RBC/hpf','20-30 RBC/hpf','>100 dysmorphic RBC/hpf'],
     wbc:['None','0-2 WBC/hpf','0-3 WBC/hpf','0-5 WBC/hpf','2-4 WBC/hpf','5-8 WBC/hpf','20-25 WBC/hpf','40-50 WBC/hpf','>100 WBC/hpf'],
     casts:['None','0-1 RBC casts/lpf','0-2 WBC casts/lpf','1-2 WBC casts/lpf','Granular casts','Fatty casts','Hyaline casts','Waxy casts','Bacterial casts','Epithelial cell casts'],
-    crystals:['None','Calcium oxalate crystals','Cholesterol crystals','Cystine crystals','Uric acid crystals','Bilirubin crystals','Needle-shaped crystals','Moderate unidentified crystals'],
+    crystals:['None','Calcium oxalate crystals','Cholesterol crystals','Cystine crystals','Uric acid crystals','Bilirubin crystals','Unidentified crystals'],
     bacteria:['None','Heavy bacteria','Many bacteria','Many yeast cells and hyphae'],
     other:['None','Few squamous epithelial cells','Moderate squamous epithelial cells','Few transitional epithelial cells','Many transitional epithelial cells','Oval fat bodies and free fat droplets','Bile-stained renal tubular epithelial cells','Eosinophils may be tested separately','Clear red urine pattern; no intact RBC sediment expected']
   };
-  function canonicalMicroAnswer(text){
+  function canonicalMicroAnswer(text,key){
     var raw=String(text||'').replace(/\s+/g,' ').trim();
     var plain=raw.toLowerCase();
     if(!plain||plain==='none'||plain==='none reported'||plain==='not reported'||plain==='no sediment findings supplied'||plain==='no required sediment findings supplied for this sample')return 'None';
     if(/^no (required )?sediment findings supplied/.test(plain))return 'None';
     if(/^none\b/.test(plain))return 'None';
+    if(key==='crystals'){
+      if(/calcium oxalate/.test(plain))return 'Calcium oxalate crystals';
+      if(/cholesterol/.test(plain))return 'Cholesterol crystals';
+      if(/cystine/.test(plain))return 'Cystine crystals';
+      if(/uric acid/.test(plain))return 'Uric acid crystals';
+      if(/bilirubin/.test(plain))return 'Bilirubin crystals';
+      if(/unidentified/.test(plain))return 'Unidentified crystals';
+      return 'Crystals present';
+    }
+    if(key==='rbc'){
+      var range=raw.match(/(\d+)\s*[-–]\s*(\d+)\s*RBC/i);
+      if(range)return 'RBC present: minimum '+range[1]+'/hpf (range '+range[1]+'-'+range[2]+' RBC/hpf)';
+      var greater=raw.match(/>\s*(\d+)\s*RBC/i);
+      if(greater)return 'RBC present: >'+greater[1]+' RBC/hpf';
+    }
     return raw
       .replace(/\bper\b/gi,'/')
       .replace(/\s*\/\s*/g,'/')
@@ -1448,10 +1469,10 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       .trim();
   }
   function microOptionsFor(activeCase,key){
-    var expected=canonicalMicroAnswer((activeCase.expectedMicro||{})[key]||'');
+    var expected=canonicalMicroAnswer((activeCase.expectedMicro||{})[key]||'',key);
     var seen={};
     return [expected].concat(MICRO_OPTION_BANK[key]||[]).filter(function(option){
-      option=canonicalMicroAnswer(option);
+      option=canonicalMicroAnswer(option,key);
       var id=option.toLowerCase();
       if(!option||seen[id])return false;
       seen[id]=true;
@@ -1467,8 +1488,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var total=0,passed=0;
     MICRO_FIELDS.forEach(function(pair){
       var key=pair[0];
-      var exp=canonicalMicroAnswer(expected[key]||'');
-      var ans=Object.prototype.hasOwnProperty.call(answers,key)?canonicalMicroAnswer(answers[key]):'None';
+      var exp=canonicalMicroAnswer(expected[key]||'',key);
+      var ans=Object.prototype.hasOwnProperty.call(answers,key)?canonicalMicroAnswer(answers[key],key):'None';
       total++;
       if(ans.toLowerCase()===exp.toLowerCase())passed++;
     });
@@ -1479,7 +1500,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var score=Number(state.notes.sim_micro_score||0);
     var pass=!!state.notes.sim_micro_pass;
     return '<div class="micro-report">'+MICRO_FIELDS.map(function(pair){
-      var value=Object.prototype.hasOwnProperty.call(answers,pair[0])?canonicalMicroAnswer(answers[pair[0]]):'None';
+      var value=Object.prototype.hasOwnProperty.call(answers,pair[0])?canonicalMicroAnswer(answers[pair[0]],pair[0]):'None';
       var options=microOptionsFor(activeCase,pair[0]);
       return '<label>'+escapeHtml(pair[1])+'<select data-sim-micro-input="'+pair[0]+'">'+options.map(function(option){return microOptionHtml(option,value)}).join('')+'</select></label>';
     }).join('')+'</div><div class="sim-actions"><button type="button" class="mini-btn" data-sim-check-micro="1">Check microscopy</button></div>'+
@@ -1508,7 +1529,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   function microscopySummary(activeCase){
     var expected=(activeCase&&activeCase.expectedMicro)||{};
     return MICRO_FIELDS.map(function(pair){
-      var value=canonicalMicroAnswer(expected[pair[0]]||'');
+      var value=canonicalMicroAnswer(expected[pair[0]]||'',pair[0]);
       return value==='None'?'':pair[1]+': '+value;
     }).filter(Boolean);
   }
@@ -1583,7 +1604,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(label)label.textContent=current.label;
     if(choices){
       choices.innerHTML=cases.map(function(item,i){
-        return '<button type="button" class="sample-choice '+(i===index?'active':'')+'" data-sim-case="'+i+'" onclick="event.stopPropagation();selectSimCase('+i+')"><span>Sample '+(i+1)+'</span></button>';
+        return '<button type="button" class="sample-choice '+(i===index?'active':'')+'" data-sim-case="'+i+'" onclick="event.stopPropagation();selectSimCase('+i+')"><span>Sample '+(i+1)+'</span>'+simCupHtml(item,'sample-choice-cup','aria-hidden="true"')+'<small>'+escapeHtml(item.clarity||'clear')+'</small></button>';
       }).join('');
     }
     if(stepStrip){
