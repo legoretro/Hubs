@@ -4,6 +4,35 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Urinalysis Lab Hub</title>
+<script>
+(function(){
+  function releaseIntro(){
+    var body=document.body;
+    var intro=document.getElementById('intro');
+    if(body)body.classList.remove('intro-active');
+    if(intro){
+      intro.style.opacity='0';
+      intro.style.transition='opacity .35s';
+      setTimeout(function(){intro.style.display='none'},350);
+    }
+  }
+  function openIntro(){
+    var left=document.getElementById('doorLeft');
+    var right=document.getElementById('doorRight');
+    if(left)left.classList.add('open');
+    if(right)right.classList.add('open');
+    setTimeout(releaseIntro,900);
+  }
+  window.uaReleaseIntro=releaseIntro;
+  document.addEventListener('DOMContentLoaded',function(){
+    if(new URLSearchParams(location.search).has('nointro'))releaseIntro();
+    else setTimeout(openIntro,1500);
+  });
+  window.addEventListener('load',function(){setTimeout(function(){
+    if(document.body&&document.body.classList.contains('intro-active'))openIntro();
+  },4200)});
+})();
+</script>
 <style>
 :root{
   --wine:#7a3d00;--orange:#d4860a;--gold:#f2c782;--cream:#fff8ef;--ivory:#fffdf8;
@@ -303,9 +332,9 @@ button,input{font-family:inherit}button{cursor:pointer}
 <div id="printArea" aria-hidden="true"></div>
 <div class="save-indicator" id="saveIndicator">Saved</div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="shared/pdf-export.js"></script>
-<script src="safe-supabase-sync.js"></script>
+<script async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script async src="shared/pdf-export.js"></script>
+<script async src="safe-supabase-sync.js"></script>
 <script>
 const SUPABASE_URL='https://fjrdlasmdhqjqqlvuxwj.supabase.co';
 const SUPABASE_KEY='sb_publishable_UnXRXK6It0PKVmZmixYZeg_WDx9frO2';
@@ -324,7 +353,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   var microDrag=null;
   var suppressMicroClick=false;
   var activeMicroIndex=null;
-  var state=defaultState();
+  var state=null;
   var simSteps=[
     {key:'bench',title:'Sample + strip'},
     {key:'extras',title:'Extra tests'},
@@ -1020,11 +1049,24 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     saveLocal();
     if(isAdmin) scheduleSave();
   }
+  function waitForSafeSync(timeoutMs){
+    return new Promise(function(resolve){
+      var started=Date.now();
+      function check(){
+        if(window.createSafeSupabaseDoc)return resolve(true);
+        if(Date.now()-started>timeoutMs)return resolve(false);
+        setTimeout(check,100);
+      }
+      check();
+    });
+  }
 	  async function loadRemote(){
 	    state=defaultState();
 	    renderAll();
 	    renderSimulation();
 	    try{
+        var syncReady=await waitForSafeSync(7000);
+        if(!syncReady){console.warn('safe sync script did not load in time');return}
 	      safeDoc=createSafeSupabaseDoc({url:SUPABASE_URL,key:SUPABASE_KEY,table:TABLE_NAME,id:UA_ROW_ID,defaultData:defaultState,normalize:mergeState,getLocal:function(){return state},setLocal:function(data){state=data;renderAll();renderSimulation()},toast:showToast,onConflict:function(info){console.warn('UA save conflict:',info.paths)}});
 	      await safeDoc.load();
 	      safeDoc.subscribe();
