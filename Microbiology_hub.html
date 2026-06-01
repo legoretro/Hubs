@@ -225,6 +225,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   var safeDoc=null;
   var syncPresence=null;
   var SPECIMEN_BANK_VERSION=5;
+  var WORKUP_REQUIREMENTS_VERSION=2;
   var state=defaultState();
   var activeChartId=null;
   var generatedChartId=null;
@@ -247,7 +248,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     text=decodeEntities(decodeEntities(text));
     return text.replace(/\r\n?/g,'\n').replace(/\n{3,}/g,'\n\n');
   }
-  function cellDisplayHtml(value){return escapeHtml(normalizeCellText(value)).replace(/\n/g,'<br>')}
+  function cellDisplayHtml(value){var tags=[];var text=decodeEntities(decodeEntities(String(value||''))).replace(/<\s*(\/?)\s*(?:b|strong)\b[^>]*>/gi,function(_,close){var token='@@MICRO_BOLD_'+tags.length+'@@';tags.push(close?'</strong>':'<strong>');return token}).replace(/<br\s*\/?>/gi,'\n').replace(/<\/(?:div|p|li|tr)>/gi,'\n').replace(/<li[^>]*>/gi,'\n').replace(/<[^>\n]{1,120}>/g,'').replace(/\u00a0|&nbsp;|&amp;nbsp;/g,' ');var html=escapeHtml(text).replace(/\r\n?/g,'\n').replace(/\n{3,}/g,'\n\n').replace(/\n/g,'<br>');tags.forEach(function(tag,i){html=html.replace('@@MICRO_BOLD_'+i+'@@',tag)});return html}
   function defaultColumns(labels,includeImage){
     var cols=labels.map(function(label){return {id:uid('col'),label:label,type:'text'}});
     if(includeImage)cols.push({id:uid('col'),label:'Image',type:'image'});
@@ -268,30 +269,30 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function worksheetGramPositiveRows(){
     return [
-      ['Staphylococcus aureus','Gram-positive cocci in clusters','Hemolysis noted on BA','CM & GS; HM; Catalase; Staph Latex','Worksheet minimum ID requirements.'],
-      ['Coagulase-negative Staphylococcus','Gram-positive cocci in clusters','Colony morphology on BA/Choc as applicable','CM & GS; Catalase; Staph Latex','Report as coagulase-negative Staph.'],
-      ['Enterococcus sp.','Gram-positive cocci in chains/pairs','Colony morphology on BA/Choc as applicable','CM & GS; Catalase; PYR or 6.5% NaCl','Use PYR or salt tolerance pathway.'],
-      ['Streptococcus pyogenes','Gram-positive cocci in chains','Hemolysis noted on BA','CM & GS; HM; Catalase; StrepPro','Group A Strep workflow.'],
-      ['Streptococcus agalactiae','Gram-positive cocci in chains','Hemolysis noted on BA','CM & GS; HM; Catalase; StrepPro','Group B Strep workflow.'],
-      ['Streptococcus pneumoniae','Gram-positive lancet diplococci','Alpha hemolysis pattern','CM & GS; HM; Catalase; Bile solubility or Taxo P','Differentiate from viridans group.'],
-      ['Viridans group Streptococcus','Gram-positive cocci in chains','Alpha hemolysis pattern','CM & GS; HM; Catalase; Bile solubility or Taxo P','Differentiate from S. pneumoniae.'],
-      ['Corynebacterium sp.','Characteristic Gram-positive rods','Colony morphology as applicable','CM & GS; Catalase; characteristic Gram stain','Use characteristic Gram stain.'],
-      ['Probable Listeria monocytogenes','Small Gram-positive rods/coccobacilli','Hemolysis noted on BA','CM & GS; HM; Catalase; tumbling motility at room temp','Report as probable when workflow supports it.'],
-      ['Bacillus sp. NOT anthracis','Gram-positive spore-forming rods','Hemolysis noted on BA','CM & GS; HM; Catalase; motility or beta hemolysis','Exclude anthracis in label.']
+      ['Staphylococcus aureus','Gram-positive cocci in clusters','CM & GS; HM','Catalase (+); Staph Latex (+)','Required-only row from class workup.'],
+      ['Staph coagulase negative','Gram-positive cocci in clusters','CM & GS','Catalase (+); Staph Latex (=)','Required-only row from class workup.'],
+      ['Enterococcus sp.','Gram-positive cocci in pairs/chains','CM & GS','Catalase (=); PYR positive; 6.5% NaCl positive','Required-only row from class workup.'],
+      ['Streptococcus pyogenes','Gram-positive cocci in chains','CM & GS; HM','Catalase (=); StrepPro Reagent A positive','Required Group A Strep workup.'],
+      ['Streptococcus agalactiae','Gram-positive cocci in chains','CM & GS; HM','Catalase (=); StrepPro Reagent B positive','Required Group B Strep workup.'],
+      ['Streptococcus pneumoniae','Gram-positive lancet diplococci/pairs','CM & GS; HM; alpha hemolysis','Catalase (=); bile solubility or Taxo P positive','Required-only row from class workup.'],
+      ['Viridans group Streptococcus','Gram-positive cocci in chains/pairs','CM & GS; HM; alpha hemolysis','Catalase (=); bile solubility or Taxo P negative','Required-only row from class workup.'],
+      ['Corynebacterium sp.','Characteristic pleomorphic Gram-positive rods','CM & GS','Catalase (+); characteristic gram stain','Required-only row from class workup.'],
+      ['Probable Listeria monocytogenes','Small Gram-positive rods/coccobacilli','CM & GS; HM','Catalase (+); tumbling motility at room temp positive','Required-only row from class workup.'],
+      ['Bacillus sp. NOT anthracis','Gram-positive spore-forming rods','CM & GS; HM','Catalase (+); motility positive or beta hemolysis','Required Bacillus-not-anthracis support.']
     ];
   }
   function worksheetGramNegativeRows(){
     return [
-      ['Probable E. coli','Gram-negative rod','Lactose fermenter; bile precipitate','Indole','Worksheet minimum ID requirements.'],
-      ['Probable Klebsiella pneumoniae','Gram-negative rod','Mucoid lactose fermenter','Indole','Worksheet minimum ID requirements.'],
-      ['Probable Proteus mirabilis','Gram-negative rod','Swarming growth','Indole','Worksheet minimum ID requirements.'],
-      ['Probable Aeromonas hydrophilia','Gram-negative rod','Non-enteric style workup','Indole; Oxidase','Worksheet minimum ID requirements.'],
-      ['Probable Salmonella spp.','Gram-negative rod','Characteristic growth on HE or XLD media','Characteristic growth on HE or XLD','Worksheet minimum ID requirements.'],
-      ['Pseudomonas aeruginosa','Gram-negative rod','Pigment; Cetrimide growth','Oxidase; pigment; Cetrimide','Worksheet minimum ID requirements.'],
-      ['Haemophilus influenzae/hemolyticus','Gram-negative coccobacillus','Chocolate agar / factor requirement pattern','Oxidase; X&V disks','Worksheet minimum ID requirements.'],
-      ['Haemophilus parainfluenzae/parahemolyticus','Gram-negative coccobacillus','Chocolate agar / factor requirement pattern','Oxidase; X&V disks','Worksheet minimum ID requirements.'],
-      ['Moraxella catarrhalis','Gram-negative diplococci','Colony morphology as applicable','Oxidase; CAT Screen disk','Worksheet minimum ID requirements.'],
-      ['Neisseria gonorrhoeae','Gram-negative diplococci','Colony morphology as applicable','Oxidase; carbohydrate results','See paper form for carbohydrate result pattern.']
+      ['Probable E. coli','Gram-negative rod','Lactose fermenter positive; bile precipitate','CM & GS; HM; Indole (+)','Required-only row from class workup.'],
+      ['Probable Klebsiella pneumoniae','Gram-negative rod','Mucoid lactose fermenter positive','CM & GS; Indole (=)','Required-only row from class workup.'],
+      ['Probable Proteus mirabilis','Gram-negative rod','Swarming positive','CM & GS; Indole (=)','Required-only row from class workup.'],
+      ['Probable Aeromonas hydrophilia','Gram-negative rod','Oxidase positive','CM & GS; Indole (+); Oxidase (+)','Required oxidase-positive, indole-positive workup.'],
+      ['Probable Salmonella spp.','Gram-negative rod','HE/XLD characteristic growth: H2S black precipitate/black center','CM & GS; HE or XLD characteristic growth','Book source used for the missing HE/XLD result pattern.'],
+      ['Pseudomonas aeruginosa','Gram-negative rod','Oxidase positive; pigment/cetrimide positive','CM & GS; Oxidase (+); pigment; cetrimide','Required-only row from class workup.'],
+      ['Haemophilus influenzae/hemolyticus','Gram-negative coccobacillus','Oxidase positive; requires X and V factors','CM & GS; Oxidase (+); X&V disks: X + V required','Book source used for X/V disk result pattern.'],
+      ['Haemophilus parainfluenzae/parahemolyticus','Gram-negative coccobacillus','Oxidase positive; requires V factor only','CM & GS; Oxidase (+); X&V disks: V required, X not required','Book source used for X/V disk result pattern.'],
+      ['Moraxella catarrhalis','Gram-negative diplococci','Oxidase positive; carbohydrate negative','CM & GS; Oxidase (+); CAT Screen disk positive','Book source supports oxidase-positive GN diplococci and Moraxella butyrate/DNase positive pattern.'],
+      ['Neisseria gonorrhoeae','Gram-negative diplococci','Oxidase positive; CTA glucose only','CM & GS; Oxidase (+); carbohydrate results: glucose positive, maltose/lactose/sucrose negative','Book source used for carbohydrate results.']
     ];
   }
   function worksheetMediaRows(){
@@ -299,19 +300,23 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       ['CM & GS','Colony morphology and Gram stain','Morphology correlates with final ID','Mismatch requires review','Required for all unknowns in worksheet.'],
       ['HM','Hemolysis on blood agar','Alpha, beta, gamma, or pattern noted','No useful hemolysis pattern','Required for many Gram-positive IDs.'],
       ['Catalase','Differentiate Staph/Bacillus/Coryne/Listeria from Strep/Enterococcus patterns','Bubbling','No bubbling','Used throughout Gram-positive workflow.'],
-      ['Staph Latex','Staphylococcus aureus support','Positive latex reaction','Negative latex reaction','Used for Staph aureus vs coagulase-negative Staph.'],
-      ['StrepPro','Streptococcus grouping support','Group reaction present','No target group reaction','Used for S. pyogenes and S. agalactiae.'],
-      ['PYR or 6.5% NaCl','Enterococcus support','PYR positive or growth in 6.5% NaCl','Negative/no growth','Used for Enterococcus sp.'],
-      ['Bile Solubility or Taxo P','S. pneumoniae vs viridans group support','Bile soluble or Taxo P susceptible pattern','Negative/resistant pattern','Used in alpha-hemolytic Strep comparison.'],
+      ['Staph Latex','Staphylococcus aureus support','Positive for S. aureus','Negative supports Staph coagulase negative','Required Staph support from the class workup.'],
+      ['StrepPro Reagent A / B','Streptococcus grouping support','A positive = S. pyogenes; B positive = S. agalactiae','No target group reaction','Required for S. pyogenes and S. agalactiae.'],
+      ['PYR and 6.5% NaCl','Enterococcus support','Both positive','Negative/no growth pattern','Required Enterococcus support from the class workup.'],
+      ['Bile Solubility or Taxo P','S. pneumoniae vs viridans group support','Positive for S. pneumoniae','Negative for viridans group Strep','Required alpha-strep support from the class workup.'],
       ['Tumbling motility at room temp','Listeria support','Tumbling motility','No tumbling motility','Used for probable Listeria monocytogenes.'],
       ['Motility or beta hemolysis','Bacillus support','Motility or beta hemolysis present','Absent pattern','Used for Bacillus sp. NOT anthracis.'],
+      ['Characteristic Gram stain','Corynebacterium support','Characteristic pleomorphic/diphtheroid Gram stain','Not characteristic','Required Corynebacterium support.'],
       ['Indole','Enteric/Gram-negative support','Red/pink positive reaction','No red color','Used for E. coli, Klebsiella, Proteus, Aeromonas workflows.'],
+      ['Lactose fermenter / bile precipitate','E. coli support on MAC-style media','Lactose fermenter with bile precipitate','No lactose fermentation/bile precipitate pattern','Required for probable E. coli in the class doc.'],
+      ['Mucoid lactose fermenter','Klebsiella pneumoniae support','Mucoid lactose fermenter positive','Not mucoid or non-lactose fermenter','Required for probable Klebsiella pneumoniae in the class doc.'],
+      ['Swarming','Proteus mirabilis support','Swarming positive','No swarming','Required for probable Proteus mirabilis in the class doc.'],
       ['Oxidase','Non-enteric/GNDC support','Purple/blue positive reaction','No color change','Used for Aeromonas, Pseudomonas, Haemophilus, Moraxella, Neisseria.'],
-      ['HE or XLD media','Salmonella support','Characteristic growth pattern','Non-characteristic growth','Used for probable Salmonella spp.'],
-      ['Pigment; Cetrimide','Pseudomonas aeruginosa support','Pigment or Cetrimide growth pattern','Absent pattern','Used with oxidase.'],
-      ['X&V disks','Haemophilus factor requirement','Expected factor requirement pattern','Unexpected factor pattern','Used for Haemophilus species pairs.'],
-      ['CAT Screen disk','Moraxella catarrhalis support','Positive disk reaction','Negative disk reaction','Used with oxidase.'],
-      ['Carbohydrate results','Neisseria gonorrhoeae support','Expected carbohydrate pattern','Unexpected pattern','Worksheet says see paper form.']
+      ['HE or XLD media','Salmonella support','H2S black precipitate/black center characteristic pattern','Non-characteristic growth','Book source used to complete the missing Salmonella result.'],
+      ['Pigment; Cetrimide','Pseudomonas aeruginosa support','Pigment present and/or cetrimide growth','Absent pattern','Required Pseudomonas support from the class workup.'],
+      ['X&V disks','Haemophilus factor requirement','H. influenzae: X + V required; H. parainfluenzae: V only','Unexpected factor pattern','Book source used to complete the missing Haemophilus results.'],
+      ['CAT Screen disk','Moraxella catarrhalis support','Positive disk reaction','Negative disk reaction','Required with oxidase for Moraxella catarrhalis.'],
+      ['CTA carbohydrate results','Neisseria gonorrhoeae support','Glucose positive only','Maltose, lactose, and sucrose negative','Book source used to complete the missing Neisseria result.']
     ];
   }
   function worksheetSpecies(){
@@ -364,17 +369,43 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(depth>1)return '#0f7b61';
     return '#0b4f3d';
   }
+  function requiredUnknownWorkupPaths(root){
+    root=root||'Gram stain';
+    return [
+      root+' > Gram Positive > GPC clusters > Catalase (+) > Staph Latex (+) > Staph aureus {GPC clusters}',
+      root+' > Gram Positive > GPC clusters > Catalase (+) > Staph Latex (=) > Staph coagulase negative {GPC clusters}',
+      root+' > Gram Positive > GPC pairs/chains > Catalase (=) > PYR positive and 6.5% NaCl positive > Enterococcus sp. {GPC chains}',
+      root+' > Gram Positive > GPC chains > Catalase (=) > Beta hemolysis > StrepPro Reagent A positive > Streptococcus pyogenes {GPC chains}',
+      root+' > Gram Positive > GPC chains > Catalase (=) > Beta hemolysis > StrepPro Reagent B positive > Streptococcus agalactiae {GPC chains}',
+      root+' > Gram Positive > GPC pairs/lancet diplococci > Catalase (=) > Alpha hemolysis > Bile solubility or Taxo P positive > Streptococcus pneumoniae {GPC pairs}',
+      root+' > Gram Positive > GPC chains/pairs > Catalase (=) > Alpha hemolysis > Bile solubility or Taxo P negative > Viridans group Streptococcus {GPC chains}',
+      root+' > Gram Positive > Characteristic Gram-positive rods > Catalase (+) > Characteristic gram stain > Corynebacterium sp. {GPR}',
+      root+' > Gram Positive > Small Gram-positive rods/coccobacilli > Catalase (+) > Hemolysis > Tumbling motility at room temp positive > Probable Listeria monocytogenes {GPR}',
+      root+' > Gram Positive > Spore-forming Gram-positive rods > Catalase (+) > Motility positive or beta hemolysis > Bacillus sp. NOT anthracis {GPR}',
+      root+' > Gram Negative > GNR > Lactose fermenter positive; bile precipitate > Indole (+) > Probable E. coli {GNR}',
+      root+' > Gram Negative > GNR > Mucoid lactose fermenter positive > Indole (=) > Probable Klebsiella pneumoniae {GNR}',
+      root+' > Gram Negative > GNR > Swarming positive > Indole (=) > Probable Proteus mirabilis {GNR}',
+      root+' > Gram Negative > GNR > Oxidase (+) > Indole (+) > Probable Aeromonas hydrophilia {GNR}',
+      root+' > Gram Negative > GNR > HE/XLD characteristic growth > H2S black precipitate or black center > Probable Salmonella spp. {GNR}',
+      root+' > Gram Negative > GNR > Oxidase (+) > Pigment or Cetrimide positive > Pseudomonas aeruginosa {GNR}',
+      root+' > Gram Negative > Gram-negative coccobacilli > Oxidase (+) > X&V disks > X + V required > Haemophilus influenzae/hemolyticus {GNCB}',
+      root+' > Gram Negative > Gram-negative coccobacilli > Oxidase (+) > X&V disks > V required only > Haemophilus parainfluenzae/parahemolyticus {GNCB}',
+      root+' > Gram Negative > Gram-negative diplococci > Oxidase (+) > CAT Screen disk positive > Moraxella catarrhalis {GNDC}',
+      root+' > Gram Negative > Gram-negative diplococci > Oxidase (+) > CTA carbohydrates > Glucose (+); maltose/lactose/sucrose (=) > Neisseria gonorrhoeae {GNDC}'
+    ];
+  }
+  function requiredUnknownEndpointName(path){
+    var last=(simplePathParts(path).pop()||'Organism').replace(/\s*\{[^}]+\}/g,'').trim();
+    return last||'Organism';
+  }
   function defaultSimpleCharts(){
     var root='Gram stain';
     return [{
       id:'micro_simple_summary',
-      title:'Microbiology Flowchart',
+      title:'Unknown Organism Required Workup',
       root:root,
-      note:'',
-      paths:[
-        root+' > Gram Positive',
-        root+' > Gram Negative'
-      ],
+      note:'Required MLS 444 unknown organism workup. Red/extra tests from the class document are excluded.',
+      paths:requiredUnknownWorkupPaths(root),
       colors:{
         'Gram stain':'#0b4f3d',
         'Gram stain > Gram Positive':'#7b3aa7',
@@ -409,28 +440,9 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     });
   }
   function classUnknownSpecies(){
-    return specimenSpecies([
-      ['Staph aureus','Gram stain > Positive > Gram-positive cocci in clusters {GPC clusters} > Catalase > Positive > Staph latex / coagulase > Positive > Staph aureus {GPC clusters}'],
-      ['Staph coagulase negative','Gram stain > Positive > Gram-positive cocci in clusters {GPC clusters} > Catalase > Positive > Staph latex / coagulase > Negative > Staph coagulase negative {GPC clusters}'],
-      ['Enterococcus sp.','Gram stain > Positive > Gram-positive cocci in pairs/chains {GPC chains} > Catalase > Negative > PYR and 6.5% NaCl > Positive > Bile esculin > Positive > Enterococcus sp. {GPC chains}'],
-      ['Streptococcus pyogenes','Gram stain > Positive > Gram-positive cocci in pairs/chains {GPC chains} > Catalase > Negative > Hemolysis > Beta > StrepPro reagent A > Positive > Streptococcus pyogenes {GPC chains}'],
-      ['Streptococcus agalactiae','Gram stain > Positive > Gram-positive cocci in pairs/chains {GPC chains} > Catalase > Negative > Hemolysis > Beta > StrepPro reagent B > Positive > Streptococcus agalactiae {GPC chains}'],
-      ['Streptococcus pneumoniae','Gram stain > Positive > Gram-positive cocci in pairs/chains {GPC chains} > Catalase > Negative > Hemolysis > Alpha > Bile solubility / Taxo P > Positive > Bile esculin > Positive > Streptococcus pneumoniae {GPC pairs}'],
-      ['Viridans group Streptococcus','Gram stain > Positive > Gram-positive cocci in pairs/chains {GPC chains} > Catalase > Negative > Hemolysis > Alpha > Bile solubility / Taxo P > Negative > Bile esculin > Negative > Viridans group Streptococcus {GPC chains}'],
-      ['Corynebacterium sp.','Gram stain > Positive > Gram-positive rods {GPR} > Catalase > Positive > Characteristic gram stain > Motility and bile esculin > Negative > Corynebacterium sp. {GPR}'],
-      ['Probable Listeria monocytogenes','Gram stain > Positive > Gram-positive rods {GPR} > Catalase > Positive > Hemolysis > Beta > Tumbling motility at room temp > Positive > Bile esculin > Positive > Probable Listeria monocytogenes {GPR}'],
-      ['Bacillus sp. NOT anthracis','Gram stain > Positive > Gram-positive rods {GPR} > Catalase > Positive > Motility or beta hemolysis > Positive > Bacillus sp. NOT anthracis {GPR}'],
-      ['Probable E. coli','Gram stain > Negative > Gram-negative rods {GNR} > Indole > Positive > Lactose fermenter / bile precipitate > Positive > Oxidase > Negative > Probable E. coli {GNR}'],
-      ['Probable Klebsiella pneumoniae','Gram stain > Negative > Gram-negative rods {GNR} > Indole > Negative > Mucoid lactose fermenter > Positive > Oxidase > Negative > Probable Klebsiella pneumoniae {GNR}'],
-      ['Probable Proteus mirabilis','Gram stain > Negative > Gram-negative rods {GNR} > Indole > Negative > Swarming > Positive > Oxidase > Negative > Probable Proteus mirabilis {GNR}'],
-      ['Probable Aeromonas hydrophilia','Gram stain > Negative > Gram-negative rods {GNR} > Indole > Positive > Oxidase > Positive > Probable Aeromonas hydrophilia {GNR}'],
-      ['Probable Salmonella spp.','Gram stain > Negative > Gram-negative rods {GNR} > Indole > Variable > HE or XLD characteristic growth > Positive > Probable Salmonella spp. {GNR}'],
-      ['Pseudomonas aeruginosa','Gram stain > Negative > Gram-negative rods {GNR} > Oxidase > Positive > Pigment / Cetrimide / BA fluorescent > Positive > Pseudomonas aeruginosa {GNR}'],
-      ['Haemophilus influenzae/hemolyticus','Gram stain > Negative > Gram-negative coccobacilli {GNCB} > Oxidase > Positive > X&V disks > X and V required > Haemophilus influenzae/hemolyticus {GNCB}'],
-      ['Haemophilus parainfluenzae/parahemolyticus','Gram stain > Negative > Gram-negative coccobacilli {GNCB} > Oxidase > Positive > X&V disks > V required only > Haemophilus parainfluenzae/parahemolyticus {GNCB}'],
-      ['Moraxella catarrhalis','Gram stain > Negative > Gram-negative diplococci {GNDC} > Oxidase > Positive > CAT Screen disk > Positive > Moraxella catarrhalis {GNDC}'],
-      ['Neisseria gonorrhoeae','Gram stain > Negative > Gram-negative diplococci {GNDC} > Oxidase > Positive > Carbohydrate results > See paper form > Neisseria gonorrhoeae {GNDC}']
-    ]);
+    return specimenSpecies(requiredUnknownWorkupPaths('Gram stain').map(function(path){
+      return [requiredUnknownEndpointName(path),path];
+    }));
   }
   function gramPositiveRodSpecies(){
     return specimenSpecies([
@@ -660,12 +672,33 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       }
     });
   }
+  function refreshRequiredWorkupContent(base){
+    var fresh=defaultState();
+    ['gram_positive','gram_negative','media_tests'].forEach(function(id){
+      base.tables[id]=fresh.tables[id];
+    });
+    base.simpleCharts=defaultSimpleCharts();
+    var bocSpec=(base.specimenBank||[]).find(function(item){return item.id==='boc_summary'})||{id:'boc_summary',name:'BOC Summary',category:'Summary',note:'All practical unknown organisms from the BOC/class list.'};
+    var refreshedBoc=makeSpecimenChart(bocSpec);
+    var replaced=false;
+    base.charts=(base.charts||[]).map(function(chart){
+      var title=String(chart&&chart.title||'');
+      if(chart&&chart.specimenId==='boc_summary'){replaced=true;return refreshedBoc}
+      if(/Class Unknown Workup|BOC Summary/i.test(title)){
+        replaced=true;
+        return Object.assign({},refreshedBoc,{id:chart.id||refreshedBoc.id,specimenId:chart.specimenId||refreshedBoc.specimenId});
+      }
+      return chart;
+    });
+    if(!replaced)base.charts.unshift(refreshedBoc);
+  }
   function defaultState(){
     var bank=defaultSpecimenBank();
     return {
       version:1,
       updatedAt:Date.now(),
       specimenBankVersion:SPECIMEN_BANK_VERSION,
+      workupRequirementsVersion:WORKUP_REQUIREMENTS_VERSION,
       specimenBank:bank,
       tables:{
         overview_core:makeTable('Big Picture',['Area','What To Track','Why It Matters'],[
@@ -678,8 +711,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         gram_negative:makeTable('Gram Negative Organisms',['Organism','Morphology / Arrangement','Oxidase / Fermentation','Key Tests','Clinical Notes'],worksheetGramNegativeRows(),true),
         media_tests:makeTable('Media & Biochemical Tests',['Media / Test','Purpose','Positive Result','Negative Result','Organisms / Notes'],worksheetMediaRows(),true),
         resources:makeTable('Resources',['Type','Title','Notes'],[
-          ['Class Document','Organism workup requirements','MLS 444 unknown organism minimum ID requirements.'],
-          ['PDF','Microbiology Chapter 6','Bacteriology and specimen procedures reference.'],
+          ['Class Document','Organism workup requirements','MLS 444 unknown organism required ID workup.'],
+          ['PDF','Microbiology Chapter 6','Used for HE/XLD Salmonella, Haemophilus X/V, Moraxella, and Neisseria carbohydrate patterns.'],
           ['Course Notes','Microbiology lecture and lab notes','Editable reference line.']
         ],false)
       },
@@ -691,6 +724,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var base=defaultState();
     if(!incoming||typeof incoming!=='object')return base;
     var bankVersion=Number(incoming.specimenBankVersion||0)||0;
+    var incomingWorkupVersion=Number(incoming.workupRequirementsVersion||0)||0;
     base.specimenBank=mergeSpecimenBank(incoming.specimenBank,bankVersion);
     if(Array.isArray(incoming.specimenBank)&&incoming.specimenBank.length&&!base.specimenBank.length)base.specimenBank=defaultSpecimenBank();
     if(incoming.tables){
@@ -713,8 +747,10 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       base.charts=defaultSpecimenCharts(base.specimenBank);
     }
     base.simpleCharts=Array.isArray(incoming.simpleCharts)&&incoming.simpleCharts.length?incoming.simpleCharts.map(normalizeSimpleChart):defaultSimpleCharts();
+    if(incomingWorkupVersion<WORKUP_REQUIREMENTS_VERSION)refreshRequiredWorkupContent(base);
     base.version=1;
     base.specimenBankVersion=SPECIMEN_BANK_VERSION;
+    base.workupRequirementsVersion=WORKUP_REQUIREMENTS_VERSION;
     base.updatedAt=Number(incoming.updatedAt||0)||base.updatedAt;
     return base;
   }
@@ -729,8 +765,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var seen={};
     table.rows.forEach(function(row){seen[normalizeCellText(row.cells&&row.cells[titleCol.id]).trim().toLowerCase()]=true});
     [
-      ['Class Document','Organism workup requirements','MLS 444 unknown organism minimum ID requirements.'],
-      ['PDF','Microbiology Chapter 6','Bacteriology and specimen procedures reference.']
+      ['Class Document','Organism workup requirements','MLS 444 unknown organism required ID workup.'],
+      ['PDF','Microbiology Chapter 6','Used for HE/XLD Salmonella, Haemophilus X/V, Moraxella, and Neisseria carbohydrate patterns.']
     ].forEach(function(item){
       if(seen[item[1].toLowerCase()])return;
       var cells={};
@@ -783,7 +819,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     });
   }
   function saveDraft(){collectVisibleState();touchState();saveLocal();if(isAdmin)scheduleSave()}
-  function scheduleSave(){clearTimeout(saveTimer);saveTimer=setTimeout(function(){saveNow('auto')},1600)}
+  function scheduleSave(){clearTimeout(saveTimer);saveTimer=setTimeout(function(){saveNow('auto')},4000)}
   async function saveNow(reason){
     if(!isAdmin){showToast('Unlock admin first',true);return false}
     clearTimeout(saveTimer);
@@ -1643,7 +1679,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function renderExportOptions(){
     var box=document.getElementById('exportOptions');if(!box)return;
-    box.innerHTML=EXPORT_ITEMS.map(function(item){return '<label><input type="checkbox" class="export-check" value="'+item[0]+'" checked> '+escapeHtml(item[1])+'</label>'}).join('')+'<label><input type="checkbox" id="worksheetExportMode"> Worksheet form: bigger black text, landscape PDF only</label>';
+    box.innerHTML=EXPORT_ITEMS.map(function(item){return '<label><input type="checkbox" class="export-check" value="'+item[0]+'" checked> '+escapeHtml(item[1])+'</label>'}).join('');
   }
   function renderAll(){Object.keys(state.tables).forEach(renderTable);renderCharts();renderExportOptions();document.body.classList.toggle('admin-mode',editMode)}
   function setEditMode(on){if(on&&!isAdmin){toggleAdminLogin();return}if(!on)collectVisibleState();editMode=!!on;document.body.classList.toggle('admin-mode',editMode);renderAll()}
@@ -2043,41 +2079,14 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   window.openExportModal=function(){renderExportOptions();document.getElementById('exportModal').classList.add('visible')};
   window.closeExportModal=function(){document.getElementById('exportModal').classList.remove('visible')};
   window.selectAllExport=function(on){document.querySelectorAll('#exportModal .export-check').forEach(function(box){box.checked=!!on})};
-  function worksheetTablesFromSelection(selected){return selected.filter(function(id){return state.tables[id]}).map(function(id){var table=state.tables[id];return{title:table.title||id,note:'',columns:table.columns||[],rows:table.rows||[]}})}
   window.doExport=function(){
     collectVisibleState();
     saveLocal();
     if(isAdmin&&safeDoc)safeDoc.saveNow({reason:'manual'}).catch(function(e){console.warn(e)});
     var selected=Array.from(document.querySelectorAll('#exportModal .export-check:checked')).map(function(box){return box.value});
     if(!selected.length){showToast('Choose at least one section',true);return}
-    var worksheetMode=!!(document.getElementById('worksheetExportMode')&&document.getElementById('worksheetExportMode').checked&&window.HubPdfExport&&window.HubPdfExport.tableWorksheetHtml);
     closeExportModal();
     var html='';
-    if(worksheetMode){
-      function buildWorksheetExport(){
-        var out=window.HubPdfExport.tableWorksheetHtml(worksheetTablesFromSelection(selected),{itemsPerPage:6});
-        if(selected.indexOf('charts')>-1)out+=(state.simpleCharts||defaultSimpleCharts()).map(simpleChartPrintHtml).join('');
-        return out;
-      }
-      var worksheetArea=document.getElementById('printArea');
-      window.HubPdfExport.open({
-        title:'Microbiology Worksheet Export',
-        orientation:'landscape',
-        orientationClassPrefix:'hub-worksheet',
-        defaultScale:1,
-        minScale:.45,
-        maxScale:1.15,
-        step:.01,
-        persistKey:'micro-worksheet-export-scale',
-        printArea:worksheetArea,
-        buildContent:function(){return buildWorksheetExport()},
-        previewClass:'worksheet-print-preview',
-        bodyClass:['printing','worksheet-printing'].concat(selected.indexOf('charts')>-1?['micro-simple-printing']:[]),
-        scaleVar:'--hub-print-scale',
-        hint:'Worksheet form prints bigger black text in landscape. Use the scale slider before saving as PDF.'
-      });
-      return;
-    }
     selected.forEach(function(id){if(state.tables[id])html+='<div class="print-page">'+tablePrintHtml(id)+'</div>';if(id==='charts')html+=(state.simpleCharts||defaultSimpleCharts()).map(simpleChartPrintHtml).join('')});
     var area=document.getElementById('printArea');
     var classes=['printing'];
@@ -2090,7 +2099,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     window.print();
     setTimeout(function(){document.body.classList.remove('printing','micro-flow-printing','micro-simple-printing');area.innerHTML=''},1200)
   };
-  window.addEventListener('afterprint',function(){document.body.classList.remove('printing','worksheet-printing','micro-flow-printing','micro-simple-printing');document.getElementById('printArea').innerHTML=''});
+  window.addEventListener('afterprint',function(){document.body.classList.remove('printing','micro-flow-printing','micro-simple-printing');document.getElementById('printArea').innerHTML=''});
   window.addEventListener('beforeunload',function(){collectVisibleState();saveLocal()});
   window.addEventListener('load',function(){setTimeout(function(){var left=document.getElementById('doorLeft');var right=document.getElementById('doorRight');if(left)left.classList.add('open');if(right)right.classList.add('open');setTimeout(function(){var intro=document.getElementById('intro');document.body.classList.remove('intro-active');if(intro){intro.style.opacity='0';intro.style.transition='opacity .5s';setTimeout(function(){intro.style.display='none'},500)}},1100)},1500)});
   loadRemote();
