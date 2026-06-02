@@ -344,7 +344,7 @@ button,input{font-family:inherit}button{cursor:pointer}
         <div class="sample-stage"><div class="tube" id="urineCup" draggable="true" data-sim-drag="cup" data-sim-action="pickup"><div class="cup-bg">UA CLARITY<br>TEXT CHECK</div><div class="urine-fill" id="urineFill"></div><div class="urine-sediment" id="urineSediment"></div><div class="urine-foam" id="urineFoam"></div></div></div>
         <div>
           <h2 class="sim-label" id="simCaseLabel">Sample 1</h2>
-          <p class="sim-note">Sample 1 through Sample 14 with strip reading, confirmation checks, KOVA tube prep, and microscope reporting.</p>
+          <p class="sim-note">Sample 1 through Sample 15 with strip reading, confirmation checks, KOVA tube prep, and microscope reporting.</p>
           <div class="sample-grid" id="sampleChoices"></div>
           <div class="step-strip" id="simSteps"></div>
           <div class="sim-panel" id="simPanel"></div>
@@ -725,12 +725,13 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       simSample(11,{urineColor:'#f4e58b',urineOpacity:.82,clarity:'hazy',sedimentColor:'#f7efe4',hasSediment:true,macro:'Pale yellow, hazy urine.',specificGravity:'1.020',chemistry:{LEU:'moderate (2+)',NIT:'negative',URO:'normal (0.2 mg/dL)',PRO:'trace',pH:'5.0',BLO:'negative',SG:'1.020',KET:'negative',BIL:'negative',GLU:'200 mg/dL'},dipstick:'Glucose positive, leukocyte esterase 2+, nitrite negative, trace protein.',microscopy:'20-25 WBC/hpf. 10-15 RBC/hpf. Many yeast cells and hyphae.',reveal:'Color: pale yellow. Clarity: hazy. SG: 1.020. Glucose positive, leukocyte 2+, nitrite negative. Microscopy: 20-25 WBC/hpf, 10-15 RBC/hpf, many yeast cells and hyphae.',results:[{test:'Glucose',result:'Positive',note:'Case text reports 250 mg/dL',condition:''},{test:'WBC',result:'20-25/hpf',note:'Sediment finding',condition:''},{test:'Yeast',result:'Many cells and hyphae',note:'Sediment finding',condition:''}],microObjects:[simObj('Yeast','cell',28,36,24,24,'#e0cda8','Many yeast cells.','cell',0,false),simObj('Hyphae','cast',58,42,96,10,'#d2b789','Hyphae-like forms.','cast',16,false),simObj('WBC','cell',42,67,34,34,'#d8d2b5','20-25 WBC/hpf.','cell',0,false),simObj('RBC','cell',66,72,24,24,'#d7a3a0','10-15 RBC/hpf.','cell',0,false)],expectedMicro:{rbc:'10-15 RBC per hpf',wbc:'20-25 WBC per hpf',casts:'none reported',crystals:'none reported',bacteria:'many yeast cells and hyphae',other:''}}),
       simSample(12,{urineColor:'#e4c83d',urineOpacity:.82,clarity:'hazy',macro:'Yellow, hazy urine.',specificGravity:'1.025',chemistry:{LEU:'negative',NIT:'negative',URO:'normal (0.2 mg/dL)',PRO:'negative',pH:'6.0',BLO:'moderate (2+)',SG:'1.025',KET:'negative',BIL:'negative',GLU:'negative'},dipstick:'Blood moderate, otherwise negative strip findings.',microscopy:'0-3 WBC/hpf. RBC present: minimum 15/hpf, reported range 15-20 RBC/hpf. Few squamous epithelial cells. Cystine crystals present.',reveal:'Color: yellow. Clarity: hazy. SG: 1.025. Blood moderate. Microscopy: RBC present with minimum 15/hpf (reported range 15-20 RBC/hpf), 0-3 WBC/hpf, few squamous epithelial cells, cystine crystals present.',results:[{test:'RBC',result:'15-20/hpf',note:'Minimum 15/hpf; reported range 15-20/hpf',condition:''},{test:'Crystals',result:'Cystine crystals present',note:'Quantity: many',condition:''},{test:'WBC',result:'0-3/hpf',note:'Low count',condition:''}],microObjects:[simObj('Cystine','crystal',31,36,44,34,'#e7e4ad','Cystine crystals present. Quantity: many.','crystal',0,true),simObj('Cystine','crystal',56,44,42,34,'#ded996','Cystine crystals present. Quantity: many.','crystal',30,true),simObj('RBC','cell',42,68,24,24,'#d7a3a0','RBC present: minimum 15/hpf. Reported range: 15-20 RBC/hpf.','cell',0,false),simObj('Sq epi','cell',67,71,56,34,'#efe6d6','Few squamous epithelial cells.','cell',0,false)],expectedMicro:{rbc:'RBC present: minimum 15/hpf (reported range 15-20 RBC/hpf)',wbc:'0-3 WBC per hpf',casts:'none reported',crystals:'cystine crystals',bacteria:'none reported',other:'few squamous epithelial cells'}}),
       simSample(13,{urineColor:'#e6ca42',urineOpacity:.8,clarity:'slightly cloudy',sedimentColor:'#e0a84f',hasSediment:true,macro:'Yellow, slightly hazy urine with orange sandy sediment noted in the history.',specificGravity:'1.024',chemistry:{LEU:'negative',NIT:'negative',URO:'normal (0.2 mg/dL)',PRO:'negative',pH:'5.0',BLO:'negative',SG:'1.025',KET:'negative',BIL:'negative',GLU:'negative'},dipstick:'Negative protein, blood, glucose, ketones, nitrite, bilirubin, and leukocyte esterase. Acid pH.',microscopy:'Many uric acid crystals in acid urine.',reveal:'Color: yellow. Clarity: slightly hazy. SG: 1.024. pH 5.0. Microscopy: many uric acid crystals.',results:[{test:'Crystals',result:'Many uric acid crystals',note:'Case text describes orange sand-like material',condition:''},{test:'pH',result:'5.0',note:'Acid urine',condition:''},{test:'Specific gravity',result:'1.024',note:'From case study table',condition:''}],microObjects:[simObj('Uric acid','crystal',35,38,48,36,'#d58b31','Many uric acid crystals in acid urine.','crystal',24,true),simObj('Uric acid','crystal',62,54,44,34,'#c97924','Orange sandy crystals.','crystal',-18,true)],expectedMicro:{rbc:'none reported',wbc:'none reported',casts:'none reported',crystals:'many uric acid crystals',bacteria:'none reported',other:''}}),
-      simSample(14,{urineColor:'#c99424',urineOpacity:.84,clarity:'clear',foamColor:'#fff2a8',macro:'Dark yellow urine with positive Ictotest noted in the case text.',specificGravity:'1.020',chemistry:{LEU:'negative',NIT:'negative',URO:'normal (0.2 mg/dL)',PRO:'negative',pH:'6.0',BLO:'negative',SG:'1.020',KET:'negative',BIL:'large (3+)',GLU:'negative'},dipstick:'Bilirubin positive. Case text also reports positive Ictotest.',microscopy:'Bilirubin crystals present. Tyrosine and leucine crystal reminders are included because they are also tied to severe liver disease/positive bilirubin patterns.',reveal:'Color: dark yellow. Bilirubin positive with positive Ictotest. Microscopy: bilirubin crystals present.',studyNote:BILIRUBIN_CRYSTAL_STUDY_NOTE,results:[{test:'Ictotest',result:'Positive',note:'Required because bilirubin is positive',condition:''},{test:'Microscopy',result:'Bilirubin crystals present',note:'Sediment finding',condition:BILIRUBIN_CRYSTAL_STUDY_NOTE},{test:'Color',result:'Dark yellow',note:'Physical appearance',condition:''}],microObjects:[simObj('Bilirubin','crystal',30,40,90,5,'#d3a937','Bilirubin crystals present. Yellow-brown needles or granules may be seen.','needle',20,true),simObj('Bilirubin','crystal',62,58,82,5,'#d3a937','Bilirubin crystals present.','needle',-24,true),simObj('Tyrosine','crystal',56,34,88,5,'#d8c4a6','Tyrosine crystals: fine needles in sheaves or rosettes; seen with leucine in severe liver disease patterns.','needle',-36,true),simObj('Leucine','crystal',72,48,34,34,'#cc9b45','Leucine crystals: yellow-brown spheroids with concentric rings and radial striations.','stump',0,true)],expectedMicro:{rbc:'none reported',wbc:'none reported',casts:'none reported',crystals:'bilirubin crystals',bacteria:'none reported',other:''}})
+      simSample(14,{urineColor:'#c99424',urineOpacity:.84,clarity:'clear',foamColor:'#fff2a8',macro:'Dark yellow urine with positive Ictotest noted in the case text.',specificGravity:'1.020',chemistry:{LEU:'negative',NIT:'negative',URO:'normal (0.2 mg/dL)',PRO:'negative',pH:'6.0',BLO:'negative',SG:'1.020',KET:'negative',BIL:'large (3+)',GLU:'negative'},dipstick:'Bilirubin positive. Case text also reports positive Ictotest.',microscopy:'Bilirubin crystals present. Tyrosine and leucine crystal reminders are included because they are also tied to severe liver disease/positive bilirubin patterns.',reveal:'Color: dark yellow. Bilirubin positive with positive Ictotest. Microscopy: bilirubin crystals present.',studyNote:BILIRUBIN_CRYSTAL_STUDY_NOTE,results:[{test:'Ictotest',result:'Positive',note:'Required because bilirubin is positive',condition:''},{test:'Microscopy',result:'Bilirubin crystals present',note:'Sediment finding',condition:BILIRUBIN_CRYSTAL_STUDY_NOTE},{test:'Color',result:'Dark yellow',note:'Physical appearance',condition:''}],microObjects:[simObj('Bilirubin','crystal',30,40,90,5,'#d3a937','Bilirubin crystals present. Yellow-brown needles or granules may be seen.','needle',20,true),simObj('Bilirubin','crystal',62,58,82,5,'#d3a937','Bilirubin crystals present.','needle',-24,true),simObj('Tyrosine','crystal',56,34,88,5,'#d8c4a6','Tyrosine crystals: fine needles in sheaves or rosettes; seen with leucine in severe liver disease patterns.','needle',-36,true),simObj('Leucine','crystal',72,48,34,34,'#cc9b45','Leucine crystals: yellow-brown spheroids with concentric rings and radial striations.','stump',0,true)],expectedMicro:{rbc:'none reported',wbc:'none reported',casts:'none reported',crystals:'bilirubin crystals',bacteria:'none reported',other:''}}),
+      simSample(15,{urineColor:'#d2a21f',urineOpacity:.94,clarity:'cloudy',sedimentColor:'#e6c379',hasSediment:true,macro:'Deep yellow, cloudy, very high-solute urine with visible sediment.',specificGravity:'1.075 by refractometer (strip SG pad is maxed at 1.030)',chemistry:{LEU:'negative',NIT:'negative',URO:'normal (0.2 mg/dL)',PRO:'negative',pH:'5.0',BLO:'negative',SG:'1.030',KET:'negative',BIL:'negative',GLU:'negative'},dipstick:'Strip SG reads the maximum pad value of 1.030 while the other chemistry pads are negative. Refractometer is needed to get the true SG when the strip SG is maxed/out of range.',microscopy:'Concentrated acidic urine may show calcium oxalate crystals and hyaline casts. This sample is the refractometer-only practice sample.',reveal:'Color: deep yellow. Clarity: cloudy. Strip SG maxes at 1.030, but refractometer SG is 1.075. Refractometer is required. SSA is not required because protein is negative and pH is not above 7.5; Ictotest is not required because bilirubin is negative. Extreme refractometer SG like this points to an exogenous/high-solute pattern rather than routine renal concentration alone. Microscopy: calcium oxalate crystals and hyaline casts.',results:[{test:'Specific gravity',result:'1.075 by refractometer',note:'Strip SG pad maxed at 1.030',condition:''},{test:'Extra test',result:'Refractometer only',note:'No SSA because protein is negative and pH is 5.0; no Ictotest because bilirubin is negative',condition:''},{test:'Strip highlights',result:'SG pad at 1.030; other pads negative',note:'Very high refractometer SG can reflect exogenous/high molecular weight solutes not fully represented by the strip SG pad',condition:''},{test:'Microscopy',result:'Calcium oxalate crystals and hyaline casts',note:'Concentrated acidic urine correlation',condition:''}],microObjects:[simObj('Calcium oxalate','crystal',34,40,44,34,'#e6dfb8','Calcium oxalate crystals can appear in acidic, concentrated urine.','crystal',18,true),simObj('Calcium oxalate','crystal',58,34,40,32,'#ddd5ad','Calcium oxalate crystals in concentrated acidic urine.','crystal',-20,true),simObj('Hyaline cast','cast',62,62,88,20,'#efe0bf','Hyaline casts may be seen with concentrated urine.','cast',-12,false),simObj('Sq epi','cell',40,72,54,32,'#efe6d6','Few squamous epithelial cells.','cell',0,false)],expectedMicro:{rbc:'none reported',wbc:'none reported',casts:'hyaline casts',crystals:'calcium oxalate crystals',bacteria:'none reported',other:'few squamous epithelial cells'}})
     ];
   }
   function defaultState(){
     return {
-      version:19,
+      version:20,
       updatedAt:Date.now(),
       notes:{simulation_note:'',selected_color:'yellow',sim_case_index:0,sim_step:0,micro_mode:'brightfield',sim_actions:{},sim_extra_choices:{},sim_extra_checked:false,sim_micro_inputs:{},sim_micro_score:0,sim_micro_pass:false,sim_micro_checked:false},
       simCases:defaultSimCases(),
@@ -865,6 +866,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   };
   var STRIP_ORDER=['LEU','NIT','URO','PRO','pH','BLO','SG','KET','BIL','GLU'];
   var CLARITY_OPTIONS=['clear','slightly cloudy','cloudy','turbid','milky','bloody'];
+  var STRIP_SG_MAX=1.030;
+  var STRIP_SG_MAX_LABEL='1.030';
   function stripColor(label,value){var opts=STRIP_OPTIONS[label]||[];var hit=opts.find(function(item){return item[0]===value});return hit?hit[1]:(opts[0]?opts[0][1]:'#f2d79c')}
   function stripBackground(label,value){
     var base=stripColor(label,value);
@@ -967,7 +970,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function ensureSimulationSamples(data,incomingVersion){
     if(!data)return;
-    data.simCases=canonicalSimulationSamples(data.simCases,Number(incomingVersion||0)>=19);
+    data.simCases=canonicalSimulationSamples(data.simCases,Number(incomingVersion||0)>=20);
     if(data.notes)stateSafeSampleIndex(data);
   }
   function stateSafeSampleIndex(data){
@@ -1004,7 +1007,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     Object.keys(base.tables||{}).forEach(function(id){sanitizeTableText(base.tables[id])});
     if(Number(incoming.version)<7)base.tables.resources=defaultState().tables.resources;
     if(resourcesBlank(base.tables.resources))base.tables.resources=defaultState().tables.resources;
-    base.version=19;
+    base.version=20;
     base.updatedAt=Number(incoming.updatedAt||0)||base.updatedAt;
     return base;
   }
@@ -1326,7 +1329,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var chemistry=Object.assign(defaultChemistry(),(activeCase&&activeCase.chemistry)||{});
     var tests=[];
     var sgText=String((activeCase&&activeCase.specificGravity)||chemistry.SG||'');
-    if(/^>\s*1\.035/.test(sgText)||parseStripNumber(sgText)>1.035)tests.push('refractometer');
+    if(parseStripNumber(sgText)>STRIP_SG_MAX)tests.push('refractometer');
     if(parseStripNumber(chemistry.pH)>7.5&&positiveStrip(chemistry.PRO))tests.push('ssa');
     if(positiveStrip(chemistry.BIL))tests.push('ictotest');
     return tests;
@@ -1419,7 +1422,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       return '';
     }).join(''):'<div class="confirm-card"><h4>No extra test needed</h4><p>Proceed to centrifuge and decant.</p></div>'):'';
     return '<div class="mini-test-grid">'+cards+'</div><div class="sim-actions"><button type="button" class="mini-btn extra-check-btn" data-sim-check-extras="1">Check extra tests</button></div>'+
-      (checked?(correct?'<div class="sim-feedback ok">Extra-test choice is correct.</div>':'<div class="sim-feedback warn">Not yet. Recheck SG, pH/protein, and bilirubin before dumping supernatant.</div>'):'<div class="sim-feedback">Extra-test choice pending.</div>')+
+      (checked?(correct?'<div class="sim-feedback ok">Extra-test choice is correct.</div>':'<div class="sim-feedback warn">Not yet. Recheck whether true SG is above the strip max ('+STRIP_SG_MAX_LABEL+'), whether pH/protein needs SSA, and whether bilirubin needs Ictotest.</div>'):'<div class="sim-feedback">Extra-test choice pending.</div>')+
       panels;
   }
   function kovaTubeStyle(activeCase){
@@ -1642,7 +1645,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     return match?match[0]:text.slice(0,10)||'SG';
   }
   function buildRefractometer(activeCase){
-    return '<div class="refractometer"><div class="refract-device" aria-hidden="true"><div class="refract-prism"></div><div class="refract-body"></div><div class="refract-grip"></div><div class="refract-eye"></div></div><div class="refract-readout"><div class="refract-scale"></div><div class="refract-line"></div><div class="sg-readout"><span>Specific Gravity</span><strong>'+escapeHtml(sgValue(activeCase))+'</strong></div></div></div><p>'+escapeHtml(activeCase.specificGravity||'')+'</p>';
+    return '<div class="refractometer"><div class="refract-device" aria-hidden="true"><div class="refract-prism"></div><div class="refract-body"></div><div class="refract-grip"></div><div class="refract-eye"></div></div><div class="refract-readout"><div class="refract-scale"></div><div class="refract-line"></div><div class="sg-readout"><span>Specific Gravity</span><strong>'+escapeHtml(sgValue(activeCase))+'</strong></div></div></div><p>'+escapeHtml(activeCase.specificGravity||'')+'</p><p class="micro-help">Use refractometer only when true SG is above the strip SG pad maximum of '+STRIP_SG_MAX_LABEL+'.</p>';
   }
   function microStyle(obj){
     var x=Math.max(4,Math.min(96,Number(obj.x)||50));
@@ -1755,7 +1758,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var editor=document.getElementById('caseEditor');
     if(!editor)return;
     state.simCases=canonicalSimulationSamples(state.simCases);
-    editor.innerHTML='<div class="card-title"><h2>Edit Simulation Samples 1-14</h2><span class="tag">Admin</span></div>'+
+    editor.innerHTML='<div class="card-title"><h2>Edit Simulation Samples 1-15</h2><span class="tag">Admin</span></div>'+
       state.simCases.map(function(item,i){
         item=normalizeCase(item,i);
         var resultEditor='<div class="case-results-editor"><h4>Sample Results Table</h4>'+
