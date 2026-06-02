@@ -203,42 +203,87 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   function starterResourceTables(){
     return [
       makeResourceTable('Heme, Porphyrins, And Iron',['Topic','Notes'],[
-        ['Hemoglobin','Role:\nStructure:\nAdult vs fetal:'],
-        ['Defects','Hemoglobinopathy:\nThalassemia:'],
-        ['Synthesis','Where it happens:\nRequirements:'],
-        ['Degradation','Intravascular:\nExtravascular:\nProducts:'],
-        ['Myoglobin','Structure:\nWhen increased:\nKidney concern:\nUrine dipstick issue:'],
-        ['Heme','Structure:\nWhere found:'],
-        ['Porphyrins','Light/fluorescence:\nSolubility:\nSpecimen connection:'],
-        ['Porphyria categories','Erythropoietic:\nHepatic:\nNeuropsychiatric:\nCutaneous:\nNeurocutaneous:'],
-        ['Acute vs non-acute','Acute examples:\nNon-acute examples:\nMost common points:'],
-        ['Secondary porphyrinuria','Meaning:\nCauses:'],
-        ['Testing','Acute initial test:\nCutaneous initial test:\nSpecimen handling:'],
-        ['Iron','Forms:\nAbsorption:\nTransport:\nLoss:'],
-        ['Iron status tests','Serum iron:\nTotal binding capacity:\nPercent saturation:\nTransferrin:\nFerritin:']
+        ['Hemoglobin','carries oxygen to tissues\ncarries carbon dioxide back to lungs\nmajor buffering system\nadult hemoglobin has two alpha and two beta chains\nhemoglobin A is adult\nhemoglobin F is fetal'],
+        ['Defects','hemoglobinopathy means structure problem\nhemoglobinopathy is qualitative\nthalassemia means production amount problem\nthalassemia is quantitative'],
+        ['Synthesis','made in immature red blood cells in bone marrow\nheme made in mitochondria\nglobin made in cytoplasm\nneeds enough iron'],
+        ['Degradation','in blood vessels is intravascular hemolysis\noutside blood vessels is extravascular hemolysis\nspleen liver and bone marrow are main sites\nheme becomes bilirubin and urobilinogen\niron is reclaimed and stored'],
+        ['Myoglobin','oxygen carrier in skeletal and cardiac muscle\none polypeptide and one heme group\nmuscle injury raises serum and urine myoglobin\nhigh myoglobin can damage kidneys\nurine myoglobin can make blood pad positive'],
+        ['Heme','not a protein\nprosthetic group bound to proteins\nflat cyclic tetrapyrrole\ncentral ferrous iron atom'],
+        ['Porphyrins','intermediates in heme pathway\ndark red color\norange red fluorescence\ncauses photosensitivity\nprotect specimens from light'],
+        ['Solubility','uroporphyrin has most water solubility\nuroporphyrin is found in urine\ncoproporphyrin has middle solubility\ncoproporphyrin can be in blood urine and feces\nlow solubility porphyrins show more in feces or blood'],
+        ['Porphyria groups','erythropoietic means red cell related\nhepatic means liver related\nneuropsychiatric has abdominal and nervous system symptoms\ncutaneous has photosensitivity and skin changes\nneurocutaneous has both'],
+        ['Acute disease','acute types have neurologic attacks\nacute intermittent porphyria is most common acute type\nmany people with acute intermittent porphyria have no symptoms\nnon acute types are chronic skin types\nporphyria cutanea tarda is most common non acute type'],
+        ['Secondary porphyrinuria','acquired increase in urinary porphyrins\nnot inherited heme synthesis defect\nliver disease can cause it\nlead poisoning can cause it'],
+        ['Testing','acute porphyria starts with urine porphobilinogen\ncutaneous porphyria starts with urine porphyrins\nerythropoietic protoporphyria uses plasma or whole blood\nkeep urine blood and feces protected from light'],
+        ['Iron','trace element in body\nferrous iron is iron two plus\nferric iron is iron three plus\niron three plus must be reduced before absorption\nabsorbed in intestine\nlost through cells urine feces blood loss and menstruation'],
+        ['Iron tests','serum iron measures iron bound to transferrin\nearly morning sample is preferred\nhemolysis falsely increases serum iron\ntransferrin transports iron\ntotal iron binding capacity shows possible binding\npercent saturation compares serum iron to binding capacity\nferritin is storage and best early deficiency marker']
       ]),
-      makeResourceTable('Trace/Toxic Elements',['Topic','Notes'],[
-        ['Definitions','Essential:\nTrace:\nUltratrace:\nNonessential:'],
-        ['Collection','Contamination risks:\nTube type:'],
-        ['Methods','Atomic emission:\nAtomic absorption:\nMass spectrometry:'],
-        ['Chromium','Forms:\nExposure:\nTransport:\nDeficiency:\nToxicity:'],
-        ['Copper','Function:\nTransport:\nExcretion:\nWilson disease:\nMenkes disease:'],
-        ['Manganese','Use:\nStorage/excretion:\nDeficiency:\nToxicity:'],
-        ['Selenium','Use:\nExcretion:\nThyroid:\nDeficiency:\nToxicity:'],
-        ['Zinc','Storage:\nEnzyme role:\nCopper interaction:\nDeficiency:\nToxicity:']
+      makeResourceTable('Metals And Vitamins',['Topic','Notes'],[
+        {type:'subsection',title:'Trace And Toxic Elements'},
+        ['Definitions','essential element is needed for normal function\nreplacement fixes impairment if truly essential\ntrace elements are needed in tiny amounts\nultratrace elements are needed in even smaller amounts\nnonessential elements matter because many are toxic'],
+        ['Collection','contamination is the big issue\ntube stopper additive cups pipettes and water can contaminate\nroyal blue top is typical\nspecial handling is needed for trace testing'],
+        ['Methods','atomic emission measures emitted radiation\natomic absorption measures absorbed light\nmass spectrometry measures mass to charge\nno method is best for everything\nchoice depends on sensitivity cost speed and coverage'],
+        ['Chromium','used in stainless steel and industry\nchromium three plus is essential\nchromium three plus helps insulin action\nchromium six plus is easier to absorb\nchromium six plus is more toxic\nchromium six plus is linked to lung cancer risk'],
+        ['Copper','important cofactor\nhelps reduce iron\ntransported mainly bound to albumin\nmost copper leaves in bile\ntoxicity can damage liver kidney and nervous system\nWilson disease has copper rings in eyes\nMenkes disease is severe copper metabolism problem'],
+        ['Manganese','used in steel production\nstored mostly in fat and bone\nleaves mainly in bile\ndeficiency can cause clotting issues and dermatitis\ntoxicity can cause nausea headache anxiety and confusion\nmanganese madness can cause random laughing or crying\nchronic toxicity can look like Parkinson disease'],
+        ['Selenium','used in supplements and industry\nwell absorbed from food\nleaves mostly in urine\nimportant antioxidant\nneeded for thyroid hormone synthesis\ndeficiency can cause cardiomyopathy\ntoxicity can cause stomach heart rate and nervous system symptoms'],
+        ['Zinc','mostly in muscle and bone\nimportant for many enzymes\nhelps DNA RNA proteins glucose and insulin function\nleaves mostly in feces\ntoo much zinc can lower copper absorption\nzinc can be used for Wilson disease\ndeficiency can affect growth and development'],
+        {type:'subsection',title:'Vitamins'},
+        ['Definitions','deficiency means not enough due to diet absorption or organisms\ninsufficiency means body needs more than usual\ntoxicity means too much intake causing harm\ntoxicity can affect liver or kidneys'],
+        ['Fat soluble','vitamins A D E K\nneed fat and bile acids for absorption\ncarried by lipoproteins\nstored in intestine liver and fat tissue\nhigher toxicity risk because they are stored'],
+        ['Water soluble','vitamin C and B vitamins\nnot stored much\nremoved in urine and feces\nneed regular resupply\ntoxicity risk is lower unless kidney function is poor'],
+        ['B vitamins','B1 thiamine affects energy metabolism\nB1 deficiency causes beriberi\nB6 helps amino acid metabolism and heme synthesis\nB7 biotin deficiency can cause hair loss and depression\nB12 affects blood cell formation\nB12 deficiency causes megaloblastic anemia'],
+        ['Folate','most common vitamin deficiency\nneeded for one carbon transfer\ndeficiency causes megaloblastic anemia\nlow folate in pregnancy increases neural tube defect risk\nfolate and B12 must be separated as anemia causes'],
+        ['Vitamin B12','also called cobalamin\nabsorption needs intrinsic factor\nlow intake or malabsorption can cause deficiency\npernicious anemia is a cause\ndeficiency causes megaloblastic anemia'],
+        ['Vitamin C','also called ascorbic acid\nneeded for collagen\ndeficiency causes scurvy\nsigns include bleeding gums petechiae and bruising'],
+        ['Vitamin A','important for vision\nalso helps growth and immune function\ndeficiency can cause night blindness'],
+        ['Vitamin D','few foods naturally contain it\nimportant for calcium and phosphorus metabolism\nused to assess parathyroid and bone problems\ndeficiency can cause rickets or osteomalacia\nchronic kidney disease can affect vitamin D'],
+        ['Vitamin E','antioxidant\nprotects cell integrity\ndeficiency can affect nerves muscles eyes and red cells'],
+        ['Vitamin K','needed for clotting factors\ndeficiency causes easy bruising and bleeding\ncan cause abnormal clotting screen\nnewborn shot prevents serious bleeding'],
+        ['Absorption','small intestine is main absorption site\nlarge intestine handles vitamin B12 and vitamin K metabolism\ncommon assays are folate B12 and vitamin D']
       ]),
-      makeResourceTable('Vitamins',['Topic','Notes'],[
-        ['Definitions','Deficiency:\nInsufficiency:\nToxicity:'],
-        ['Fat-soluble','Vitamins:\nAbsorption:\nStorage:\nToxicity risk:'],
-        ['Water-soluble','Vitamins:\nStorage:\nExcretion:\nResupply:'],
-        ['B vitamins','B1:\nB2:\nB3:\nB5:\nB6:\nB7:\nB12:'],
-        ['Folate','Main role:\nDeficiency:\nTesting reason:'],
-        ['Vitamin B12','Absorption:\nDeficiency:\nTesting reason:'],
-        ['Vitamin C','Main role:\nDeficiency:'],
-        ['Vitamin A','Main role:\nDeficiency:'],
-        ['Vitamin D','Main role:\nTesting reasons:\nDeficiency:'],
-        ['Vitamin E','Main role:\nDeficiency:'],
-        ['Vitamin K','Main role:\nDeficiency:\nNewborn relevance:']
+      makeResourceTable('Nutrition',['Topic','Notes'],[
+        ['Malnutrition','marasmus means low protein and low calories\nmarasmus causes general wasting\nkwashiorkor means enough calories but low protein\nkwashiorkor causes low albumin and swollen belly'],
+        ['Causes','eating disorders\nlimited diets\ncancer cachexia\npoor digestion\npoor absorption\nloss of appetite from disease or therapy\nsurgery effects\ndrug interactions'],
+        ['Outcomes','higher illness and death risk\npoor wound healing\nmore infections\nlonger hospital stay\nweakness and poor body function'],
+        ['Assessment','history and weight loss\nsigns and symptoms\nheight and weight\nskinfold thickness\narm and wrist measurements\nmuscle strength\nbody composition'],
+        ['Lab tools','protein markers are most useful\nblood counts can drop\nimmune function can decrease\nvitamin B12 folate vitamin A and vitamin D may be checked\nfecal fat can show malabsorption\nelectrolytes and trace elements may be checked'],
+        ['Protein markers','transferrin\ntransthyretin also called prealbumin\nretinol binding protein\nalbumin\namino acids\ninsulin like growth factor one\nleptin'],
+        ['Limits','no single test proves nutrition status\ninflammation changes protein markers\nliver disease changes results\nrecent food intake matters\nhydration changes concentration'],
+        ['Protein status','normal C reactive protein with low prealbumin suggests protein malnutrition\nhigh C reactive protein can falsely lower prealbumin\nfalling C reactive protein with rising prealbumin suggests improvement'],
+        ['Nutrition support','enteral means through the gut\nparenteral means through a vein\nused when patient cannot eat enough\nmay be needed after weight loss or long illness'],
+        ['Total parenteral nutrition','custom nutrition through a central line\ncan help restore weight\ncan support healing bowel\nrisks include sepsis glucose problems kidney issues and bone issues\ncan cause fluid electrolyte acid base vitamin and mineral problems\nlabs monitor glucose electrolytes kidney liver minerals and proteins']
+      ]),
+      makeResourceTable('Pediatric And Geriatric Clinical Chemistry',['Topic','Notes'],[
+        {type:'subsection',title:'Geriatric Clinical Chemistry'},
+        ['Definitions','gerontology is study of aging\ngeriatrics is care of older adults\nolder adults are not just older versions of young adults'],
+        ['Muscle','muscle mass decreases with age\ncreatinine depends on muscle mass\ncreatinine can look normal even when kidney function is worse'],
+        ['Bone','bone density decreases with age\nrisk is higher after menopause\nosteoporosis increases fracture risk\ncalcium and vitamin D matter\nalkaline phosphatase can rise with bone activity'],
+        ['Gastrointestinal','gastric acid can decrease\nmalnutrition risk increases\nB12 calcium iron and albumin can be affected'],
+        ['Kidney','functional glomeruli decrease\nkidney size and weight can decrease\nfiltration decreases with age\nwater electrolyte and acid base control gets weaker'],
+        ['Immune','thymus shrinks\nimmune response decreases\ninfection risk increases\nshingles risk increases'],
+        ['Endocrine','growth hormone decreases\nmelatonin can decrease\nsex hormones decrease\ninsulin sensitivity decreases\ntype two diabetes risk increases'],
+        ['Lab interpretation','reference ranges are harder in older adults\nmany older adults have chronic conditions\npatient history and trends matter a lot\nbaseline labs are helpful'],
+        ['Collection','fragile skin\nrolling veins\nbruising is more common\ntape can tear skin\nsmall needles can increase hemolysis risk'],
+        ['Disease patterns','hypertension is very common\nhigh cholesterol is common\nmultiple chronic diseases often occur together\nheart attack may show shortness of breath instead of chest pain\nurinary tract infection can cause confusion or delirium'],
+        ['Drug metabolism','absorption can slow\ndehydration affects distribution\nlower liver blood flow affects metabolism\nlower kidney function slows excretion\npolypharmacy is common'],
+        ['Health support','exercise improves strength and balance\nexercise lowers fall risk\nnutrition helps quality of life\nbeing active earlier helps later aging'],
+        {type:'subsection',title:'Neonate And Pediatric Clinical Chemistry'},
+        ['Birth transition','baby switches from placenta to breathing air\nlungs need surfactant to expand\nlung expansion increases pulmonary blood flow\nmany changes happen quickly after birth'],
+        ['Growth','some weight loss after birth is normal\nbody weight doubles around four to six months\npremature babies grow slower\nsmall for gestational age means below tenth percentile'],
+        ['Prematurity','organs are not fully mature at birth\nkidneys and liver need time to mature\nearlier gestation has higher risk\nblood volume is very small'],
+        ['Collection','small volume is very important\ntoo much blood draw can cause anemia\nheel sticks are common in babies\nheel sticks stop around six months\nheel sticks risk hemolysis and tissue fluid contamination\nsmall tubes can evaporate after opening\nclots are common in small samples'],
+        ['Point of care','needs less sample\ngives faster results\nglucose testing is common\nblood gas testing can be done near bedside\nwhole blood testing cannot always show hemolysis'],
+        ['Blood gases','type one pneumocytes do gas exchange\ntype two pneumocytes make surfactant\nlow surfactant can cause respiratory distress\nrespiratory distress can cause respiratory acidosis\ncarbon dioxide rises when lungs cannot remove it'],
+        ['Acid base','respiratory acidosis is most common in neonates\nmetabolic acidosis can come from poor perfusion or kidney issues\nalkalosis is less common\npyloric stenosis can cause metabolic alkalosis'],
+        ['Electrolytes','sodium balance is important\nhigh sodium can come from water loss\nlow sodium can come from too much water\ndiluted formula can cause low sodium and seizures\npotassium can rise after transfusion'],
+        ['Kidney','filtration is low at birth\nkidneys develop rapidly near thirty five weeks\nkidney function takes about two years to mature\nnewborn creatinine is lower because muscle mass is low'],
+        ['Liver','newborn liver does not handle bilirubin well yet\nbilirubin can require phototherapy\nliver helps glucose control\nliver makes albumin and clotting factors\nammonia is higher in newborns'],
+        ['Bone','bone growth needs calcium phosphate and magnesium\nvitamin D parathyroid hormone and calcitonin regulate bone\nlow vitamin D can cause rickets\nmost body calcium is in bone\nlow calcium can cause twitching irritability or seizures'],
+        ['Endocrine','growth hormones control childhood growth\npuberty starts when suppression is removed\nfollicle stimulating hormone and luteinizing hormone increase at puberty\nsex hormones rise during puberty'],
+        ['Immune','newborn immune system is immature\nbabies receive passive protection\nimmunoglobulin G crosses placenta\nimmunoglobulin A is in secretions and breast milk\nsevere combined immune deficiency affects both immune pathways'],
+        ['Genetic disease','cystic fibrosis is autosomal recessive\nnewborn screen is more than just phenylketonuria\nscreening varies by state\nlarge molecule storage disease accumulates big compounds\nsmall molecule disease makes smaller compounds easier to excrete'],
+        ['Drug and toxicology','children have different therapeutic and toxic ranges\ndrug absorption distribution metabolism and clearance matter\nsome drugs act differently in neonates\naccidental ingestion is a major concern']
       ])
     ];
   }
@@ -271,10 +316,17 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     });
     return {id:table.id||uid('resource'),title:plainCellText(table.title||('Chemistry Table '+(index+1)))||('Chemistry Table '+(index+1)),columns:columns,rows:rows};
   }
-  function normalizeResourceTables(tables){
+  function starterResourceTitle(title){
+    return /^(Student Notes Table|Heme, Porphyrins, And Iron|Trace\/Toxic Elements|Trace And Toxic Elements|Vitamins|Metals And Vitamins|Nutrition|Pediatric And Geriatric Clinical Chemistry)$/i.test(String(title||'').trim());
+  }
+  function normalizeResourceTables(tables,options){
     var starter=starterResourceTables();
     if(!Array.isArray(tables)||!tables.length)return starter;
     var normalized=tables.map(normalizeResourceTable);
+    if(options&&options.upgradeStarters){
+      var custom=normalized.filter(function(table){return !starterResourceTitle(table.title)});
+      return starter.concat(custom);
+    }
     if(isBlankOldResourceStarter(normalized))return starter;
     return normalized;
   }
@@ -287,7 +339,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       return Object.keys(row.cells||{}).some(function(key){return plainCellText(row.cells[key]);});
     });
   }
-  function defaultState(){return{version:3,starter:'minimal-liver-v1',updatedAt:Date.now(),charts:[
+  function defaultState(){return{version:4,starter:'minimal-liver-v1',updatedAt:Date.now(),charts:[
     {id:'liver',title:'Liver',organ:'Liver',note:'',nodeMeta:{},paths:[
       'Liver > Anatomy',
       'Liver > Biochemical functions',
@@ -313,7 +365,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       copy.paths=Array.isArray(copy.paths)&&copy.paths.length?copy.paths:[copy.organ+' > New branch'];
       return copy;
     });
-    return {version:3,starter:incoming.starter||base.starter,updatedAt:incoming.updatedAt||Date.now(),charts:charts,hormones:Array.isArray(incoming.hormones)?incoming.hormones:base.hormones,resourceTables:normalizeResourceTables(incoming.resourceTables||base.resourceTables)};
+    return {version:4,starter:incoming.starter||base.starter,updatedAt:incoming.updatedAt||Date.now(),charts:charts,hormones:Array.isArray(incoming.hormones)?incoming.hormones:base.hormones,resourceTables:normalizeResourceTables(incoming.resourceTables||base.resourceTables,{upgradeStarters:Number(incoming.version||0)<4})};
   }
   function saveLocal(){try{localStorage.setItem('chemistryHubState',JSON.stringify(state))}catch(e){}}
   function markDirty(){state.updatedAt=Date.now();saveLocal();if(safeDoc)safeDoc.scheduleSave(4000,'auto')}
