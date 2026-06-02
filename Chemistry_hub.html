@@ -203,22 +203,26 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   function starterResourceTables(){
     return [
       makeResourceTable('Heme, Porphyrins, And Iron',['Topic','Notes'],[
+        {type:'subsection',title:'Hemoglobin And Myoglobin'},
         ['Hemoglobin','carries oxygen to tissues\ncarries carbon dioxide back to lungs\nmajor buffering system\nadult hemoglobin has two alpha and two beta chains\nhemoglobin A is adult\nhemoglobin F is fetal'],
         ['Defects','hemoglobinopathy means structure problem\nhemoglobinopathy is qualitative\nthalassemia means production amount problem\nthalassemia is quantitative'],
         ['Synthesis','made in immature red blood cells in bone marrow\nheme made in mitochondria\nglobin made in cytoplasm\nneeds enough iron'],
         ['Degradation','in blood vessels is intravascular hemolysis\noutside blood vessels is extravascular hemolysis\nspleen liver and bone marrow are main sites\nheme becomes bilirubin and urobilinogen\niron is reclaimed and stored'],
         ['Myoglobin','oxygen carrier in skeletal and cardiac muscle\none polypeptide and one heme group\nmuscle injury raises serum and urine myoglobin\nhigh myoglobin can damage kidneys\nurine myoglobin can make blood pad positive'],
+        {type:'subsection',title:'Heme'},
         ['Heme','not a protein\nprosthetic group bound to proteins\nflat cyclic tetrapyrrole\ncentral ferrous iron atom'],
+        {type:'subsection',title:'Porphyrins And Porphyrias'},
         ['Porphyrins','intermediates in heme pathway\ndark red color\norange red fluorescence\ncauses photosensitivity\nprotect specimens from light'],
         ['Solubility','uroporphyrin has most water solubility\nuroporphyrin is found in urine\ncoproporphyrin has middle solubility\ncoproporphyrin can be in blood urine and feces\nlow solubility porphyrins show more in feces or blood'],
         ['Porphyria groups','erythropoietic means red cell related\nhepatic means liver related\nneuropsychiatric has abdominal and nervous system symptoms\ncutaneous has photosensitivity and skin changes\nneurocutaneous has both'],
         ['Acute disease','acute types have neurologic attacks\nacute intermittent porphyria is most common acute type\nmany people with acute intermittent porphyria have no symptoms\nnon acute types are chronic skin types\nporphyria cutanea tarda is most common non acute type'],
         ['Secondary porphyrinuria','acquired increase in urinary porphyrins\nnot inherited heme synthesis defect\nliver disease can cause it\nlead poisoning can cause it'],
         ['Testing','acute porphyria starts with urine porphobilinogen\ncutaneous porphyria starts with urine porphyrins\nerythropoietic protoporphyria uses plasma or whole blood\nkeep urine blood and feces protected from light'],
+        {type:'subsection',title:'Iron'},
         ['Iron','trace element in body\nferrous iron is iron two plus\nferric iron is iron three plus\niron three plus must be reduced before absorption\nabsorbed in intestine\nlost through cells urine feces blood loss and menstruation'],
         ['Iron tests','serum iron measures iron bound to transferrin\nearly morning sample is preferred\nhemolysis falsely increases serum iron\ntransferrin transports iron\ntotal iron binding capacity shows possible binding\npercent saturation compares serum iron to binding capacity\nferritin is storage and best early deficiency marker']
       ]),
-      makeResourceTable('Metals And Vitamins',['Topic','Notes'],[
+      makeResourceTable('Metals, Vitamins, And Nutrition',['Topic','Notes'],[
         {type:'subsection',title:'Trace And Toxic Elements'},
         ['Definitions','essential element is needed for normal function\nreplacement fixes impairment if truly essential\ntrace elements are needed in tiny amounts\nultratrace elements are needed in even smaller amounts\nnonessential elements matter because many are toxic'],
         ['Collection','contamination is the big issue\ntube stopper additive cups pipettes and water can contaminate\nroyal blue top is typical\nspecial handling is needed for trace testing'],
@@ -240,9 +244,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         ['Vitamin D','few foods naturally contain it\nimportant for calcium and phosphorus metabolism\nused to assess parathyroid and bone problems\ndeficiency can cause rickets or osteomalacia\nchronic kidney disease can affect vitamin D'],
         ['Vitamin E','antioxidant\nprotects cell integrity\ndeficiency can affect nerves muscles eyes and red cells'],
         ['Vitamin K','needed for clotting factors\ndeficiency causes easy bruising and bleeding\ncan cause abnormal clotting screen\nnewborn shot prevents serious bleeding'],
-        ['Absorption','small intestine is main absorption site\nlarge intestine handles vitamin B12 and vitamin K metabolism\ncommon assays are folate B12 and vitamin D']
-      ]),
-      makeResourceTable('Nutrition',['Topic','Notes'],[
+        ['Absorption','small intestine is main absorption site\nlarge intestine handles vitamin B12 and vitamin K metabolism\ncommon assays are folate B12 and vitamin D'],
+        {type:'subsection',title:'Nutrition'},
         ['Malnutrition','marasmus means low protein and low calories\nmarasmus causes general wasting\nkwashiorkor means enough calories but low protein\nkwashiorkor causes low albumin and swollen belly'],
         ['Causes','eating disorders\nlimited diets\ncancer cachexia\npoor digestion\npoor absorption\nloss of appetite from disease or therapy\nsurgery effects\ndrug interactions'],
         ['Outcomes','higher illness and death risk\npoor wound healing\nmore infections\nlonger hospital stay\nweakness and poor body function'],
@@ -317,7 +320,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     return {id:table.id||uid('resource'),title:plainCellText(table.title||('Chemistry Table '+(index+1)))||('Chemistry Table '+(index+1)),columns:columns,rows:rows};
   }
   function starterResourceTitle(title){
-    return /^(Student Notes Table|Heme, Porphyrins, And Iron|Trace\/Toxic Elements|Trace And Toxic Elements|Vitamins|Metals And Vitamins|Nutrition|Pediatric And Geriatric Clinical Chemistry)$/i.test(String(title||'').trim());
+    return /^(Student Notes Table|Heme, Porphyrins, And Iron|Trace\/Toxic Elements|Trace And Toxic Elements|Vitamins|Metals And Vitamins|Metals, Vitamins, And Nutrition|Nutrition|Pediatric And Geriatric Clinical Chemistry)$/i.test(String(title||'').trim());
   }
   function normalizeResourceTables(tables,options){
     var starter=starterResourceTables();
@@ -339,7 +342,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       return Object.keys(row.cells||{}).some(function(key){return plainCellText(row.cells[key]);});
     });
   }
-  function defaultState(){return{version:4,starter:'minimal-liver-v1',updatedAt:Date.now(),charts:[
+  function defaultState(){return{version:5,starter:'minimal-liver-v1',updatedAt:Date.now(),charts:[
     {id:'liver',title:'Liver',organ:'Liver',note:'',nodeMeta:{},paths:[
       'Liver > Anatomy',
       'Liver > Biochemical functions',
@@ -365,7 +368,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       copy.paths=Array.isArray(copy.paths)&&copy.paths.length?copy.paths:[copy.organ+' > New branch'];
       return copy;
     });
-    return {version:4,starter:incoming.starter||base.starter,updatedAt:incoming.updatedAt||Date.now(),charts:charts,hormones:Array.isArray(incoming.hormones)?incoming.hormones:base.hormones,resourceTables:normalizeResourceTables(incoming.resourceTables||base.resourceTables,{upgradeStarters:Number(incoming.version||0)<4})};
+    return {version:5,starter:incoming.starter||base.starter,updatedAt:incoming.updatedAt||Date.now(),charts:charts,hormones:Array.isArray(incoming.hormones)?incoming.hormones:base.hormones,resourceTables:normalizeResourceTables(incoming.resourceTables||base.resourceTables,{upgradeStarters:Number(incoming.version||0)<5})};
   }
   function saveLocal(){try{localStorage.setItem('chemistryHubState',JSON.stringify(state))}catch(e){}}
   function markDirty(){state.updatedAt=Date.now();saveLocal();if(safeDoc)safeDoc.scheduleSave(4000,'auto')}
