@@ -337,7 +337,10 @@ textarea{resize:none;overflow:hidden}
 .flow-select{min-width:96px;border:1px solid var(--rose);border-radius:10px;background:#fff;color:var(--wine);font-family:var(--flow-font-family);font-size:12px;font-weight:800;padding:6px 8px}
 .flow-action-group{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .flow-canvas{border:1px solid var(--rose);border-radius:18px;background:linear-gradient(180deg,#fff,#fff7f9);min-height:520px;padding:18px;overflow:auto}
-.flow-tree{display:flex;justify-content:center;min-width:max-content;padding:8px 22px 28px}
+#flowchartPreview{position:relative;min-width:max-content}
+.flow-link-layer{position:absolute;left:0;top:0;z-index:0;pointer-events:none;overflow:visible}
+.flow-link-path{fill:none;stroke:var(--crimson);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:7 5;opacity:.86}
+.flow-tree{position:relative;z-index:1;display:flex;justify-content:center;min-width:max-content;padding:8px 22px 28px}
 .flow-node-wrap{display:flex;flex-direction:column;align-items:center;min-width:190px}
 .flow-node-row{display:flex;align-items:flex-start;justify-content:center;gap:10px}
 .flow-node{position:relative;max-width:270px;min-width:185px;background:#fff;border:2px solid var(--rose);border-radius:16px;padding:11px 12px;text-align:center;box-shadow:0 8px 18px rgba(140,10,38,.08);color:var(--dark);font-family:var(--flow-font-family);font-size:14px;line-height:1.32;font-weight:800;white-space:pre-wrap}
@@ -386,7 +389,7 @@ textarea{resize:none;overflow:hidden}
 .flow-empty,.flow-error{border:1px dashed var(--rose);border-radius:14px;padding:24px;color:var(--warm-grey);text-align:center;font-size:13px;background:#fff}
 .flow-error{border-color:var(--crimson);color:var(--crimson);background:var(--blush)}
 @media(max-width:820px){.flow-canvas{min-height:420px}.flow-branches{grid-auto-flow:row;grid-auto-columns:auto;grid-template-columns:1fr;min-width:0}.flow-tree{min-width:0;justify-content:flex-start}.flow-node-wrap{min-width:0;width:100%}.flow-node-row{width:100%;flex-direction:column;align-items:stretch}.flow-node,.flow-note-card{max-width:100%;width:100%}.flow-branch:after{display:none}}
-@media print{@page{size:letter landscape;margin:.22in}body{background:#fff!important;color:#000!important}#intro,.top-nav,.flow-toolbar,.flow-selection-panel,.flow-node-tools,.flow-note-remove,.flow-note-palette{display:none!important}#app{display:block!important;opacity:1!important}.section{display:none!important}#sec-flowchart{display:block!important;padding:0!important}.section-hero{box-shadow:none!important;border:0!important;padding:0 0 .08in!important;background:#fff!important}.section-hero h2{font-size:14px!important;color:#000!important;text-align:left!important;margin:0!important}.sys-card,.flow-builder-card,.flow-canvas{border:0!important;background:#fff!important;box-shadow:none!important;padding:0!important;overflow:visible!important;min-height:0!important}.flow-tree{zoom:var(--flow-print-zoom,.4)!important;justify-content:flex-start!important;padding:0!important}.flow-node,.flow-note-card,.flow-edge-label{background:#fff!important;color:#000!important;border-color:#000!important;box-shadow:none!important;text-shadow:none!important}.flow-note-card:before{display:none!important}.flow-branch:before,.flow-branch:after{background:#000!important}.flow-node-kind{color:#000!important}.flow-node-text{border:0!important}.flow-edge-label{font-size:10px!important}}
+@media print{@page{size:letter landscape;margin:.22in}body{background:#fff!important;color:#000!important}#intro,.top-nav,.flow-toolbar,.flow-selection-panel,.flow-node-tools,.flow-note-remove,.flow-note-palette{display:none!important}#app{display:block!important;opacity:1!important}.section{display:none!important}#sec-flowchart{display:block!important;padding:0!important}.section-hero{box-shadow:none!important;border:0!important;padding:0 0 .08in!important;background:#fff!important}.section-hero h2{font-size:14px!important;color:#000!important;text-align:left!important;margin:0!important}.sys-card,.flow-builder-card,.flow-canvas{border:0!important;background:#fff!important;box-shadow:none!important;padding:0!important;overflow:visible!important;min-height:0!important}.flow-tree{zoom:var(--flow-print-zoom,.4)!important;justify-content:flex-start!important;padding:0!important}.flow-link-path{stroke:#000!important}.flow-node,.flow-note-card,.flow-edge-label{background:#fff!important;color:#000!important;border-color:#000!important;box-shadow:none!important;text-shadow:none!important}.flow-note-card:before{display:none!important}.flow-branch:before,.flow-branch:after{background:#000!important}.flow-node-kind{color:#000!important}.flow-node-text{border:0!important}.flow-edge-label{font-size:10px!important}}
 
 /* RBC DIAGRAM */
 .rbc-antigen-wrap{position:relative;width:100%;max-width:700px;margin:0 auto}
@@ -1804,10 +1807,12 @@ function renderFlowchartPreview(data) {
   data = normalizeFlowchartData(data);
   if (!flowSelectedNodeId || !data.nodes[flowSelectedNodeId]) flowSelectedNodeId = data.rootId;
   applyFlowFont(data);
-  preview.innerHTML = '<div class="flow-tree" id="flowStage">' + renderFlowNode(data, data.rootId, [], buildFlowLayoutInfo(data), null) + '</div>';
+  const layout = buildFlowLayoutInfo(data);
+  preview.innerHTML = '<svg id="flowLinkLayer" class="flow-link-layer" aria-hidden="true"></svg><div class="flow-tree" id="flowStage">' + renderFlowNode(data, data.rootId, [], layout, null) + '</div>';
   applyFlowZoom();
   updateFlowMeta(data);
   renderFlowSelectionPanel(data);
+  scheduleFlowLinkDraw(data);
 }
 
 function applyFlowFont(data) {
@@ -1817,18 +1822,85 @@ function applyFlowFont(data) {
 
 function buildFlowLayoutInfo(data) {
   const primaryParent = {};
+  const primaryLabel = {};
   Object.keys(data.nodes).forEach(function(parentId) {
     (data.nodes[parentId].branches || []).forEach(function(branch) {
-      if (!primaryParent[branch.to]) primaryParent[branch.to] = parentId;
+      const label = String(branch.label || 'Next').trim().toLowerCase();
+      if (!primaryParent[branch.to] || (primaryLabel[branch.to] === 'next' && label !== 'next')) {
+        primaryParent[branch.to] = parentId;
+        primaryLabel[branch.to] = label;
+      }
     });
   });
   return {primaryParent:primaryParent};
+}
+
+function isFlowLinkBranch(data, parentId, branch, path, layout) {
+  if (!branch || !data.nodes[branch.to]) return false;
+  if (path && path.indexOf(branch.to) !== -1) return true;
+  layout = layout || buildFlowLayoutInfo(data);
+  return Boolean(layout.primaryParent[branch.to] && layout.primaryParent[branch.to] !== parentId);
+}
+
+function collectFlowLinkBranches(data) {
+  data = normalizeFlowchartData(data);
+  const links = [];
+  const layout = buildFlowLayoutInfo(data);
+  const seen = {};
+  function walk(id, path) {
+    if (!data.nodes[id] || seen[id]) return;
+    seen[id] = true;
+    (data.nodes[id].branches || []).forEach(function(branch) {
+      if (!data.nodes[branch.to]) return;
+      if (isFlowLinkBranch(data, id, branch, path, layout)) {
+        links.push({from:id, to:branch.to, label:branch.label || 'Next'});
+      } else {
+        walk(branch.to, path.concat(id));
+      }
+    });
+  }
+  walk(data.rootId, []);
+  return links;
+}
+
+function scheduleFlowLinkDraw(data) {
+  setTimeout(function(){ drawFlowLinkLines(data || getFlowchartData()); }, 80);
+}
+
+function drawFlowLinkLines(data) {
+  const layer = document.getElementById('flowLinkLayer');
+  const preview = document.getElementById('flowchartPreview');
+  if (!layer || !preview) return;
+  const links = collectFlowLinkBranches(data || getFlowchartData());
+  const previewRect = preview.getBoundingClientRect();
+  const width = Math.max(preview.scrollWidth, previewRect.width, 1);
+  const height = Math.max(preview.scrollHeight, previewRect.height, 1);
+  layer.setAttribute('width', width);
+  layer.setAttribute('height', height);
+  layer.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
+  layer.style.width = width + 'px';
+  layer.style.height = height + 'px';
+  layer.innerHTML = links.map(function(link) {
+    const fromEl = document.querySelector('[data-flow-node-id="' + link.from + '"]');
+    const toEl = document.querySelector('[data-flow-node-id="' + link.to + '"]');
+    if (!fromEl || !toEl) return '';
+    const a = fromEl.getBoundingClientRect();
+    const b = toEl.getBoundingClientRect();
+    const x1 = a.left + a.width / 2 - previewRect.left;
+    const y1 = a.bottom - previewRect.top;
+    const x2 = b.left + b.width / 2 - previewRect.left;
+    const y2 = b.top - previewRect.top;
+    const midY = y1 + (y2 - y1) / 2;
+    const path = 'M ' + x1.toFixed(1) + ' ' + y1.toFixed(1) + ' C ' + x1.toFixed(1) + ' ' + midY.toFixed(1) + ', ' + x2.toFixed(1) + ' ' + midY.toFixed(1) + ', ' + x2.toFixed(1) + ' ' + y2.toFixed(1);
+    return '<path class="flow-link-path" d="' + path + '"/>';
+  }).join('');
 }
 
 function applyFlowZoom() {
   const stage = document.getElementById('flowStage');
   if (stage) stage.style.zoom = String(flowZoom);
   updateFlowMeta(getFlowchartData());
+  scheduleFlowLinkDraw(getFlowchartData());
 }
 
 function setFlowchartZoom(value) {
@@ -2160,9 +2232,30 @@ function deleteFlowNode(id) {
   if (!isAdmin) return;
   const data = getFlowchartData();
   if (id === data.rootId) return;
-  Object.keys(data.nodes).forEach(function(nodeId) {
-    data.nodes[nodeId].branches = data.nodes[nodeId].branches.filter(function(branch){ return branch.to !== id; });
+  const deleted = data.nodes[id];
+  if (!deleted) return;
+  const outgoing = (deleted.branches || []).map(function(branch) {
+    return {label:branch.label || 'Next', to:branch.to};
+  }).filter(function(branch) {
+    return branch.to && data.nodes[branch.to] && branch.to !== id;
   });
+  Object.keys(data.nodes).forEach(function(nodeId) {
+    const parent = data.nodes[nodeId];
+    const rebuilt = [];
+    parent.branches.forEach(function(branch) {
+      if (branch.to !== id) {
+        rebuilt.push(branch);
+        return;
+      }
+      outgoing.forEach(function(nextBranch) {
+        if (!rebuilt.some(function(existing){ return existing.to === nextBranch.to; })) {
+          rebuilt.push({id:flowId('branch'), label:outgoing.length === 1 ? (branch.label || nextBranch.label || 'Next') : (nextBranch.label || 'Next'), to:nextBranch.to});
+        }
+      });
+    });
+    parent.branches = rebuilt;
+  });
+  delete data.nodes[id];
   pruneUnreachableFlowNodes(data);
   flowSelectedNodeId = data.rootId;
   saveFlowchartData(data, true);
@@ -2190,27 +2283,28 @@ function renderFlowNode(data, id, path, layout, parentId) {
   const node = data.nodes[id];
   if (!node) return '';
   layout = layout || buildFlowLayoutInfo(data);
-  const repeated = path.indexOf(id) !== -1 || Boolean(parentId && layout.primaryParent[id] && layout.primaryParent[id] !== parentId);
   const type = normalizeFlowNodeType(node.type);
-  const cls = 'flow-node ' + type + (id === data.rootId ? ' start' : '') + (repeated ? ' repeat' : '') + (id === flowSelectedNodeId ? ' selected' : '');
-  const kind = repeated ? 'Connects to' : (type === 'question' ? 'Question' : (type === 'terminal' ? 'Oval' : (type === 'plain' ? 'Plain' : 'Step')));
-  const editable = isAdmin && !repeated ? 'contenteditable="true" spellcheck="true"' : '';
+  const cls = 'flow-node ' + type + (id === data.rootId ? ' start' : '') + (id === flowSelectedNodeId ? ' selected' : '');
+  const kind = type === 'question' ? 'Question' : (type === 'terminal' ? 'Oval' : (type === 'plain' ? 'Plain' : 'Step'));
+  const editable = isAdmin ? 'contenteditable="true" spellcheck="true"' : '';
   const nodeStyle = 'style="background:' + normalizeFlowFillColor(node.fillColor) + ';border-color:' + normalizeFlowBorderColor(node.borderColor) + '"';
-  const dropAttrs = isAdmin && !repeated ? ' ondragover="allowFlowConnectDrop(event,\'' + id + '\')" ondragleave="clearFlowConnectTarget(event)" ondrop="dropFlowConnect(event,\'' + id + '\')"' : '';
-  let html = '<div class="flow-node-wrap"><div class="flow-node-row"><div class="' + cls + '" data-flow-node-id="' + escAttr(id) + '" ' + nodeStyle + dropAttrs + (isAdmin && !repeated ? ' onclick="selectFlowNode(\'' + id + '\')"' : '') + '>' +
+  const dropAttrs = isAdmin ? ' ondragover="allowFlowConnectDrop(event,\'' + id + '\')" ondragleave="clearFlowConnectTarget(event)" ondrop="dropFlowConnect(event,\'' + id + '\')"' : '';
+  let html = '<div class="flow-node-wrap"><div class="flow-node-row"><div class="' + cls + '" data-flow-node-id="' + escAttr(id) + '" ' + nodeStyle + dropAttrs + (isAdmin ? ' onclick="selectFlowNode(\'' + id + '\')"' : '') + '>' +
     '<div class="flow-node-kind">' + escText(kind) + '</div>' +
     '<div class="flow-node-text flow-editable" data-placeholder="' + (type === 'question' ? 'Type a question' : 'Type a step') + '" ' + editable +
-    (isAdmin && !repeated ? ' oninput="updateFlowNodeText(\'' + id + '\',this.textContent)"' : '') + '>' + escText(node.text || '') + '</div>';
-  if (isAdmin && !repeated) {
+    (isAdmin ? ' oninput="updateFlowNodeText(\'' + id + '\',this.textContent)"' : '') + '>' + escText(node.text || '') + '</div>';
+  if (isAdmin) {
     html += '<div class="flow-node-tools">' +
       '<button class="flow-mini-btn flow-node-plus" draggable="true" title="Click to add; drag to connect" ondragstart="startFlowConnectDrag(event,\'' + id + '\')" ondragend="endFlowConnectDrag()" onclick="event.stopPropagation();handleFlowPlusClick(\'' + id + '\')">+</button>' +
       '</div>';
   }
-  html += '</div>' + renderFlowNote(id, node, repeated) + '</div>';
-  if (repeated) return html + '</div>';
+  html += '</div>' + renderFlowNote(id, node, false) + '</div>';
   const branches = node.branches || [];
-  if (branches.length) {
-    html += '<div class="flow-branches">' + branches.map(function(branch) {
+  const visibleBranches = branches.filter(function(branch) {
+    return !isFlowLinkBranch(data, id, branch, path, layout);
+  });
+  if (visibleBranches.length) {
+    html += '<div class="flow-branches">' + visibleBranches.map(function(branch) {
       const label = branch.label || 'Next';
       const labelEditable = isAdmin ? 'contenteditable="true" spellcheck="false" oninput="updateFlowBranchLabel(\'' + id + '\',\'' + branch.id + '\',this.textContent)" onblur="renderFlowchart()"' : '';
       return '<div class="flow-branch"><div class="flow-edge-row">' +
@@ -5314,7 +5408,11 @@ function buildFlowchartExportPage() {
   var oldSelected = flowSelectedNodeId;
   isAdmin = false;
   flowSelectedNodeId = null;
-  var tree = '<div class="flow-tree">' + renderFlowNode(data, data.rootId, [], buildFlowLayoutInfo(data), null) + '</div>';
+  var links = collectFlowLinkBranches(data);
+  var markers = links.map(function(link) {
+    return '<span class="flow-link-marker" data-flow-link-from="' + escAttr(link.from) + '" data-flow-link-to="' + escAttr(link.to) + '"></span>';
+  }).join('');
+  var tree = '<svg class="flow-link-layer" aria-hidden="true"></svg><div class="flow-tree">' + renderFlowNode(data, data.rootId, [], buildFlowLayoutInfo(data), null) + '</div>' + markers;
   isAdmin = oldAdmin;
   flowSelectedNodeId = oldSelected;
   return '<section class="page flow-export-page" style="--flow-export-zoom:' + flowPrintZoom + ';--flow-font-family:' + escAttr(flowFontStack(data.font)) + '"><div class="flow-export-wrap">' + tree + '</div></section>';
@@ -5329,6 +5427,7 @@ function buildExportHtml(content, title, orientation, scale) {
   var onePageHeight = isLandscape ? '7.9in' : '10.25in';
   var onePageGrid = isLandscape ? 'grid-template-columns:1.05fr 1.45fr 1.5fr;' : 'grid-template-columns:1fr 1fr;';
   var portraitTweaks = isLandscape ? '' : '.onepage-grid .system-card:last-child{grid-column:1/-1}.compact-grid{grid-template-columns:1fr}.system-page .tl-item{font-size:8px}.study-table td{font-size:6.4px;padding:1.8px 3px}.freq-export td,.freq-export th{font-size:5.6px;padding:1.8px 2px}.freq-short-page{max-width:7.45in;height:10.25in}.freq-short-page h1{font-size:21px;text-align:center;margin-bottom:.12in}.freq-short-table th{font-size:10px;padding:5px 6px}.freq-short-table td{font-size:10.5px;line-height:1.08;padding:4px 6px}.freq-short-table th:nth-child(1){width:1.15in}.freq-short-table th:nth-child(2){width:2.45in}.freq-short-table th:nth-child(3){width:1.55in}';
+  var flowExportScript = content.indexOf('flow-export-page') >= 0 ? '<scr' + 'ipt>(function(){function nodeById(wrap,id){var nodes=wrap.querySelectorAll("[data-flow-node-id]");for(var i=0;i<nodes.length;i++){if(nodes[i].getAttribute("data-flow-node-id")===id)return nodes[i];}return null;}function draw(){var wrap=document.querySelector(".flow-export-wrap");if(!wrap)return;var layer=wrap.querySelector(".flow-link-layer");if(!layer)return;var markers=[].slice.call(wrap.querySelectorAll(".flow-link-marker"));var rect=wrap.getBoundingClientRect();var w=Math.max(wrap.scrollWidth,rect.width,1);var h=Math.max(wrap.scrollHeight,rect.height,1);layer.setAttribute("width",w);layer.setAttribute("height",h);layer.setAttribute("viewBox","0 0 "+w+" "+h);layer.style.width=w+"px";layer.style.height=h+"px";layer.innerHTML=markers.map(function(m){var from=nodeById(wrap,m.getAttribute("data-flow-link-from"));var to=nodeById(wrap,m.getAttribute("data-flow-link-to"));if(!from||!to)return "";var a=from.getBoundingClientRect();var b=to.getBoundingClientRect();var x1=a.left+a.width/2-rect.left;var y1=a.bottom-rect.top;var x2=b.left+b.width/2-rect.left;var y2=b.top-rect.top;var mid=y1+(y2-y1)/2;var d="M "+x1.toFixed(1)+" "+y1.toFixed(1)+" C "+x1.toFixed(1)+" "+mid.toFixed(1)+", "+x2.toFixed(1)+" "+mid.toFixed(1)+", "+x2.toFixed(1)+" "+y2.toFixed(1);return "<path class=\\"flow-link-path\\" d=\\""+d+"\\"/>";}).join("");}if(document.readyState==="complete")setTimeout(draw,80);else window.addEventListener("load",function(){setTimeout(draw,80);});})();</scr' + 'ipt>' : '';
   return '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>' + exportText(title || 'Bloody Brilliant Export') + '</title>' +
     '<style>@page{size:' + pageSize + ';margin:.28in}*{box-sizing:border-box;margin:0;padding:0}body{font-family:Georgia,serif;font-size:11px;color:#1e0d10;background:#fff}.bb-export-scale-wrap{transform:scale(var(--bb-export-scale,1));transform-origin:top left;width:calc(100% / var(--bb-export-scale,1));min-height:calc(100% / var(--bb-export-scale,1))}' +
     'h1{font-size:18px;color:#5a0e20;text-align:center;margin-bottom:6px;padding:12px 0 0}' +
@@ -5343,9 +5442,9 @@ function buildExportHtml(content, title, orientation, scale) {
     '.flash-print-page{max-width:7.9in;height:10.4in;overflow:hidden}.flash-print-page h1{font-size:15px;color:#000;text-align:left;margin:0 0 .12in;padding:0}.flash-print-grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:.18in;height:9.9in}.flash-print-card{border:2px solid #000;background:#fff;color:#000;border-radius:0;padding:.18in;display:flex;flex-direction:column;justify-content:center;text-align:center;break-inside:avoid;page-break-inside:avoid}.flash-print-meta{font-size:12px;text-transform:uppercase;letter-spacing:.7px;margin-bottom:.12in;color:#000;font-weight:700}.flash-print-q{font-size:24px;line-height:1.18;font-weight:900}.flash-print-a{font-size:22px;line-height:1.2;font-weight:900;white-space:pre-wrap}' +
     '.general-export-page{max-width:10.4in;height:7.12in;overflow:hidden}.general-export-page h1{text-align:left;font-size:18px;margin:0 0 .07in;padding:0;color:#5a0e20}.general-export-main{table-layout:fixed;margin-bottom:.07in;border:1px solid #f7c5d0}.general-export-main th{font-size:6.6px;line-height:1.05;text-align:center;padding:3px 2px;background:#5a0e20;color:#fff}.general-export-main th:first-child{width:.78in;text-align:left}.general-export-main td{font-size:6.5px;line-height:1.06;padding:2px 3px;border:1px solid #f7c5d0;white-space:normal;overflow-wrap:anywhere}.general-export-main tr:nth-child(even) td{background:#fff1f4}.general-export-label{font-weight:800;color:#5a0e20}.general-export-summary h2{font-size:8px;letter-spacing:1.2px;text-transform:uppercase;color:#7a6468;border:0;margin:.02in 0 .035in;padding:0}.general-export-summary table{table-layout:fixed;border:1px solid #f7c5d0}.general-export-summary th{font-size:6.4px;padding:2px 4px}.general-export-summary td{font-size:6.4px;line-height:1.05;padding:2px 4px;border:1px solid #f7c5d0}.general-export-summary th:nth-child(1){width:44%}.general-blank-page td.general-blank-cell{height:.27in;background:#fff!important;color:#fff}.general-blank-page .general-export-summary td.general-blank-cell{height:.2in}.lesser-export-page{max-width:10.4in;height:7.12in;overflow:hidden}.lesser-export-page h1{text-align:left;font-size:18px;margin:0 0 .08in;padding:0;color:#5a0e20}.lesser-export-table{table-layout:fixed}.lesser-export-table th{font-size:6.6px;line-height:1.05;padding:3px 3px}.lesser-export-table td{font-size:6.6px;line-height:1.07;padding:3px 3px;white-space:normal;overflow-wrap:anywhere}.lesser-export-table th:first-child{width:.85in}.freq-short-page{max-width:10.4in;height:7.12in;overflow:hidden}.freq-short-page h1{text-align:left;font-size:18px;margin:0 0 .08in;padding:0;color:#5a0e20}.freq-short-table{table-layout:fixed;border:1px solid #f7c5d0}.freq-short-table th{font-size:8.4px;padding:4px 5px}.freq-short-table td{font-size:8.2px;line-height:1.04;padding:3px 5px;border:1px solid #f7c5d0;white-space:normal;overflow-wrap:anywhere}.freq-short-table th:nth-child(1){width:1.05in}.freq-short-table th:nth-child(2){width:2.2in}.freq-short-answer{height:.18in;background:#fff!important}' +
     '.map-page{max-width:10.4in;height:7.15in;overflow:hidden}.map-page h1{font-size:16px;padding:0;margin:0 0 .06in}.map-print{height:6.86in;overflow:hidden;display:flex;align-items:center;justify-content:center}.map-print>div{width:100%!important;height:100%!important;overflow:hidden!important}.map-print svg{width:100%!important;max-width:100%!important;min-width:0!important;height:100%!important;max-height:6.78in!important}.map-rbc .map-print svg text{font-size:10px!important}.map-chrom .map-print{align-items:flex-start}svg{max-width:100%;height:auto}' +
-    '.flow-export-page{max-width:10.55in;height:7.15in;overflow:hidden;padding:0}.flow-export-wrap{height:7.15in;overflow:hidden;display:flex;align-items:flex-start;justify-content:center}.flow-export-wrap .flow-tree{display:flex;justify-content:center;min-width:max-content;padding:0;zoom:var(--flow-export-zoom,.4);font-family:var(--flow-font-family,Georgia,serif)}.flow-export-wrap .flow-node-wrap{display:flex;flex-direction:column;align-items:center;min-width:185px}.flow-export-wrap .flow-node-row{display:flex;align-items:flex-start;justify-content:center;gap:8px}.flow-export-wrap .flow-node{position:relative;max-width:250px;min-width:172px;background:#fff!important;border:2px solid #000!important;border-radius:12px;padding:9px 10px;text-align:center;color:#000!important;font-family:var(--flow-font-family,Georgia,serif);font-size:13px;line-height:1.25;font-weight:800;white-space:pre-wrap;box-shadow:none!important}.flow-export-wrap .flow-node.question{border-radius:6px}.flow-export-wrap .flow-node.terminal,.flow-export-wrap .flow-node.start{border-radius:999px}.flow-export-wrap .flow-node.plain{border-radius:3px}.flow-export-wrap .flow-node.repeat{border-style:dashed}.flow-export-wrap .flow-node-kind{font-size:8px;text-transform:uppercase;letter-spacing:1px;color:#000;font-weight:900;margin-bottom:4px}.flow-export-wrap .flow-node-text{min-height:20px;padding:2px 4px}.flow-export-wrap .flow-note-card{width:112px;min-height:64px;border:1px solid #000;border-radius:6px;background:#fff!important;color:#000!important;padding:7px 7px;font-family:var(--flow-font-family,Georgia,serif);font-size:10.5px;line-height:1.18;text-align:left;box-shadow:none;transform:none}.flow-export-wrap .flow-note-card:before{display:none}.flow-export-wrap .flow-branches{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(190px,max-content);gap:14px;margin-top:28px;align-items:start}.flow-export-wrap .flow-branch{position:relative;display:flex;flex-direction:column;align-items:center}.flow-export-wrap .flow-branch:before{content:"";position:absolute;top:-26px;left:50%;width:2px;height:21px;background:#000}.flow-export-wrap .flow-branch:after{content:"";position:absolute;top:-26px;left:0;right:0;height:2px;background:#000}.flow-export-wrap .flow-branch:first-child:after{left:50%}.flow-export-wrap .flow-branch:last-child:after{right:50%}.flow-export-wrap .flow-branch:only-child:after{display:none}.flow-export-wrap .flow-edge-row{display:flex;align-items:center;justify-content:center;gap:4px;position:relative;z-index:1;margin-top:-12px;margin-bottom:7px}.flow-export-wrap .flow-edge-label{position:relative;z-index:1;margin:0;border:1px solid #000;border-radius:999px;background:#fff!important;color:#000!important;padding:3px 8px;font-family:var(--flow-font-family,Georgia,serif);font-size:9.5px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;box-shadow:none}.flow-export-wrap .flow-node-tools,.flow-export-wrap .flow-selection-panel,.flow-export-wrap button{display:none!important}' +
+    '.flow-export-page{max-width:10.55in;height:7.15in;overflow:hidden;padding:0}.flow-export-wrap{position:relative;height:7.15in;overflow:hidden;display:flex;align-items:flex-start;justify-content:center}.flow-export-wrap .flow-link-layer{position:absolute;left:0;top:0;z-index:0;pointer-events:none;overflow:visible}.flow-export-wrap .flow-link-path{fill:none;stroke:#000;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:7 5}.flow-export-wrap .flow-link-marker{display:none}.flow-export-wrap .flow-tree{position:relative;z-index:1;display:flex;justify-content:center;min-width:max-content;padding:0;zoom:var(--flow-export-zoom,.4);font-family:var(--flow-font-family,Georgia,serif)}.flow-export-wrap .flow-node-wrap{display:flex;flex-direction:column;align-items:center;min-width:185px}.flow-export-wrap .flow-node-row{display:flex;align-items:flex-start;justify-content:center;gap:8px}.flow-export-wrap .flow-node{position:relative;max-width:250px;min-width:172px;background:#fff!important;border:2px solid #000!important;border-radius:12px;padding:9px 10px;text-align:center;color:#000!important;font-family:var(--flow-font-family,Georgia,serif);font-size:13px;line-height:1.25;font-weight:800;white-space:pre-wrap;box-shadow:none!important}.flow-export-wrap .flow-node.question{border-radius:6px}.flow-export-wrap .flow-node.terminal,.flow-export-wrap .flow-node.start{border-radius:999px}.flow-export-wrap .flow-node.plain{border-radius:3px}.flow-export-wrap .flow-node.repeat{border-style:dashed}.flow-export-wrap .flow-node-kind{font-size:8px;text-transform:uppercase;letter-spacing:1px;color:#000;font-weight:900;margin-bottom:4px}.flow-export-wrap .flow-node-text{min-height:20px;padding:2px 4px}.flow-export-wrap .flow-note-card{width:112px;min-height:64px;border:1px solid #000;border-radius:6px;background:#fff!important;color:#000!important;padding:7px 7px;font-family:var(--flow-font-family,Georgia,serif);font-size:10.5px;line-height:1.18;text-align:left;box-shadow:none;transform:none}.flow-export-wrap .flow-note-card:before{display:none}.flow-export-wrap .flow-branches{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(190px,max-content);gap:14px;margin-top:28px;align-items:start}.flow-export-wrap .flow-branch{position:relative;display:flex;flex-direction:column;align-items:center}.flow-export-wrap .flow-branch:before{content:"";position:absolute;top:-26px;left:50%;width:2px;height:21px;background:#000}.flow-export-wrap .flow-branch:after{content:"";position:absolute;top:-26px;left:0;right:0;height:2px;background:#000}.flow-export-wrap .flow-branch:first-child:after{left:50%}.flow-export-wrap .flow-branch:last-child:after{right:50%}.flow-export-wrap .flow-branch:only-child:after{display:none}.flow-export-wrap .flow-edge-row{display:flex;align-items:center;justify-content:center;gap:4px;position:relative;z-index:1;margin-top:-12px;margin-bottom:7px}.flow-export-wrap .flow-edge-label{position:relative;z-index:1;margin:0;border:1px solid #000;border-radius:999px;background:#fff!important;color:#000!important;padding:3px 8px;font-family:var(--flow-font-family,Georgia,serif);font-size:9.5px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;box-shadow:none}.flow-export-wrap .flow-node-tools,.flow-export-wrap .flow-selection-panel,.flow-export-wrap button{display:none!important}' +
     portraitTweaks +
-    '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.bb-export-scale-wrap{zoom:var(--bb-export-scale,1);transform:none;width:auto;min-height:0}}</style></head><body style="--bb-export-scale:' + printScale + '"><div class="bb-export-scale-wrap">' + content + '</div></body></html>';
+    '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.bb-export-scale-wrap{zoom:var(--bb-export-scale,1);transform:none;width:auto;min-height:0}}</style></head><body style="--bb-export-scale:' + printScale + '"><div class="bb-export-scale-wrap">' + content + '</div>' + flowExportScript + '</body></html>';
 }
 
 function printExportHtml(content, title, orientation, exportOptions) {
