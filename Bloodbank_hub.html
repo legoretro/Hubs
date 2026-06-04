@@ -319,23 +319,34 @@ textarea{resize:none;overflow:hidden}
 .calc-ref-card{padding:16px;position:relative}.calc-ref-title{position:sticky;top:82px;z-index:4;background:var(--card-bg);padding:0 0 8px}.calc-ref-scroll{overflow:auto;max-height:280px;border:1px solid var(--rose);border-radius:10px}.calc-ref-table{width:100%;border-collapse:collapse;font-size:11px}.calc-ref-table th{background:var(--wine);color:#fff;padding:5px;position:sticky;top:0;z-index:3}.calc-ref-table td{border:1px solid var(--rose);padding:4px 6px;text-align:center;background:#fff}.calc-ref-table td:first-child,.calc-ref-table td:nth-child(2){text-align:left;font-weight:800;color:var(--wine)}
 
 /* FLOWCHART BUILDER */
-.flow-shell{display:grid;grid-template-columns:minmax(280px,390px) minmax(0,1fr);gap:16px;align-items:start}
-.flow-editor-card{position:sticky;top:82px}
-.flowchart-editor{width:100%;min-height:380px;border:1.5px solid var(--rose);border-radius:14px;background:#fff;color:var(--dark);font-family:Menlo,Consolas,monospace;font-size:12px;line-height:1.5;padding:14px;resize:vertical;overflow:auto;white-space:pre}
-.flowchart-editor:disabled{opacity:.88;background:#fffaf7;color:var(--warm-grey)}
-.admin-mode .flowchart-editor{background:#fff;border-color:var(--warn);box-shadow:inset 0 0 0 1px rgba(212,134,10,.18)}
-.flow-actions{display:none;gap:8px;flex-wrap:wrap;margin-top:10px}.admin-mode .flow-actions{display:flex}
-.flow-preview-card{min-width:0}
+.flow-shell{display:block}
+.flow-builder-card{min-width:0}
 .flow-preview-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.flow-toolbar{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.flow-tool-btn{border:1.5px solid var(--rose);background:#fff;color:var(--wine);border-radius:999px;padding:7px 11px;font-size:12px;font-weight:900}
+.flow-tool-btn:hover{border-color:var(--crimson);background:var(--blush)}
+.flow-tool-btn.primary{background:var(--crimson);border-color:var(--crimson);color:#fff}
+.flow-admin-action{display:none}.admin-mode .flow-admin-action{display:inline-flex}
+.flow-zoom-pill{border:1px solid var(--rose);background:#fffaf7;color:var(--warm-grey);border-radius:999px;padding:7px 10px;font-size:11px;font-weight:900;min-width:58px;text-align:center}
 .flow-meta{font-size:11px;color:var(--warm-grey);font-weight:800;text-transform:uppercase;letter-spacing:1.2px}
-.flow-canvas{border:1px solid var(--rose);border-radius:18px;background:linear-gradient(180deg,#fff,#fff7f9);min-height:460px;padding:18px;overflow:auto}
-.flow-tree{display:flex;justify-content:center;min-width:max-content}
+.flow-canvas{border:1px solid var(--rose);border-radius:18px;background:linear-gradient(180deg,#fff,#fff7f9);min-height:520px;padding:18px;overflow:auto}
+.flow-tree{display:flex;justify-content:center;min-width:max-content;padding:8px 22px 28px}
 .flow-node-wrap{display:flex;flex-direction:column;align-items:center;min-width:190px}
-.flow-node{position:relative;max-width:250px;min-width:170px;background:#fff;border:2px solid var(--rose);border-radius:16px;padding:12px 14px;text-align:center;box-shadow:0 8px 18px rgba(140,10,38,.08);color:var(--dark);font-size:14px;line-height:1.32;font-weight:800;white-space:pre-wrap}
-.flow-node.start,.flow-node.terminal{border-radius:999px;background:#fffaf7;border-color:var(--crimson);color:var(--wine)}
-.flow-node.decision{border-color:var(--warn);background:#fff8e8;transform:rotate(0deg)}
+.flow-node{position:relative;max-width:270px;min-width:185px;background:#fff;border:2px solid var(--rose);border-radius:16px;padding:11px 12px;text-align:center;box-shadow:0 8px 18px rgba(140,10,38,.08);color:var(--dark);font-size:14px;line-height:1.32;font-weight:800;white-space:pre-wrap}
+.flow-node.start,.flow-node.terminal{border-radius:20px;background:#fffaf7;border-color:var(--crimson);color:var(--wine)}
+.flow-node.question{border-color:var(--warn);background:#fff8e8;transform:rotate(0deg)}
 .flow-node.decision .flow-node-text{display:block}
 .flow-node.repeat{border-style:dashed;background:#fffaf7;color:var(--warm-grey)}
+.flow-node-kind{font-size:9px;text-transform:uppercase;letter-spacing:1.1px;color:var(--warm-grey);font-weight:900;margin-bottom:6px}
+.flow-node.question .flow-node-kind{color:#9b5b00}
+.flow-node-text{min-height:24px;outline:none;border-radius:10px;padding:4px 6px}
+.admin-mode .flow-node-text[contenteditable="true"]{background:rgba(255,255,255,.64);border:1px dashed rgba(212,134,10,.45);cursor:text}
+.admin-mode .flow-node-text[contenteditable="true"]:focus{background:#fff;border-color:var(--warn);box-shadow:0 0 0 3px rgba(212,134,10,.12)}
+.flow-editable:empty:before{content:attr(data-placeholder);color:#b99aa2;font-style:italic}
+.flow-node-tools{display:none;gap:5px;flex-wrap:wrap;justify-content:center;margin-top:8px}.admin-mode .flow-node-tools{display:flex}
+.flow-mini-btn{border:1px solid var(--rose);background:#fff;color:var(--wine);border-radius:999px;padding:4px 8px;font-size:10px;font-weight:900}
+.flow-mini-btn:hover{border-color:var(--crimson);background:var(--blush)}
+.flow-mini-btn.danger{color:var(--crimson)}
 .flow-branches{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(210px,max-content);gap:18px;margin-top:32px;align-items:start}
 .flow-branch{position:relative;display:flex;flex-direction:column;align-items:center}
 .flow-branch:before{content:"";position:absolute;top:-30px;left:50%;width:2px;height:24px;background:var(--rose)}
@@ -343,12 +354,16 @@ textarea{resize:none;overflow:hidden}
 .flow-branch:first-child:after{left:50%}
 .flow-branch:last-child:after{right:50%}
 .flow-branch:only-child:after{display:none}
+.flow-edge-row{display:flex;align-items:center;justify-content:center;gap:5px;position:relative;z-index:1;margin-top:-14px;margin-bottom:8px}
 .flow-edge-label{position:relative;z-index:1;margin-top:-14px;margin-bottom:8px;border:1px solid var(--rose);border-radius:999px;background:#fff;color:var(--wine);padding:4px 11px;font-size:11px;font-weight:900;letter-spacing:.7px;text-transform:uppercase;box-shadow:0 4px 10px rgba(140,10,38,.08)}
+.flow-edge-row .flow-edge-label{margin:0;min-width:42px;outline:none}
+.admin-mode .flow-edge-label[contenteditable="true"]{cursor:text}
+.admin-mode .flow-edge-label[contenteditable="true"]:focus{box-shadow:0 0 0 3px rgba(212,134,10,.13)}
 .flow-edge-label.yes{background:var(--good-lt);border-color:var(--good);color:var(--good)}
 .flow-edge-label.no{background:var(--blush);border-color:var(--crimson);color:var(--crimson)}
 .flow-empty,.flow-error{border:1px dashed var(--rose);border-radius:14px;padding:24px;color:var(--warm-grey);text-align:center;font-size:13px;background:#fff}
 .flow-error{border-color:var(--crimson);color:var(--crimson);background:var(--blush)}
-@media(max-width:820px){.flow-shell{grid-template-columns:1fr}.flow-editor-card{position:static}.flow-canvas{min-height:380px}.flow-branches{grid-auto-flow:row;grid-auto-columns:auto;grid-template-columns:1fr;min-width:0}.flow-tree{min-width:0;justify-content:flex-start}.flow-node-wrap{min-width:0;width:100%}.flow-node{max-width:100%;width:100%}.flow-branch:after{display:none}}
+@media(max-width:820px){.flow-canvas{min-height:420px}.flow-branches{grid-auto-flow:row;grid-auto-columns:auto;grid-template-columns:1fr;min-width:0}.flow-tree{min-width:0;justify-content:flex-start}.flow-node-wrap{min-width:0;width:100%}.flow-node{max-width:100%;width:100%}.flow-branch:after{display:none}}
 
 /* RBC DIAGRAM */
 .rbc-antigen-wrap{position:relative;width:100%;max-width:700px;margin:0 auto}
@@ -740,20 +755,26 @@ textarea{resize:none;overflow:hidden}
       <h2><span class="hero-emoji">🧭</span> Blood Bank Flowchart</h2>
     </div>
     <div class="flow-shell">
-      <div class="sys-card flow-editor-card">
-        <div class="sec-label">Flowchart script</div>
-        <textarea id="flowchartEditor" class="flowchart-editor" spellcheck="false"></textarea>
-        <div class="flow-actions">
-          <button class="btn btn-primary btn-sm" onclick="saveFlowchartNow()">Save Flowchart</button>
-          <button class="btn btn-ghost btn-sm" onclick="resetFlowchartExample()">Load Example</button>
-        </div>
-      </div>
-      <div class="sys-card flow-preview-card">
+      <div class="sys-card flow-builder-card">
         <div class="flow-preview-head">
-          <div class="sec-label" style="margin-bottom:0">Live chart</div>
-          <div class="flow-meta" id="flowchartMeta"></div>
+          <div>
+            <div class="sec-label" style="margin-bottom:3px">Visual flowchart</div>
+            <div class="flow-meta" id="flowchartMeta"></div>
+          </div>
+          <div class="flow-toolbar">
+            <button class="flow-tool-btn" onclick="zoomFlowchart(-0.1)">−</button>
+            <span class="flow-zoom-pill" id="flowZoomLabel">100%</span>
+            <button class="flow-tool-btn" onclick="zoomFlowchart(0.1)">+</button>
+            <button class="flow-tool-btn" onclick="fitFlowchart()">Fit</button>
+            <button class="flow-tool-btn flow-admin-action" onclick="addFlowBranch(getFlowchartData().rootId,'Next','step')">+ Step</button>
+            <button class="flow-tool-btn flow-admin-action" onclick="addFlowBranch(getFlowchartData().rootId,'Next','question')">+ Question</button>
+            <button class="flow-tool-btn primary flow-admin-action" onclick="saveFlowchartNow()">Save</button>
+            <button class="flow-tool-btn flow-admin-action" onclick="resetFlowchartExample()">Reset</button>
+          </div>
         </div>
-        <div id="flowchartPreview" class="flow-canvas"></div>
+        <div id="flowchartViewport" class="flow-canvas">
+          <div id="flowchartPreview"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -846,17 +867,23 @@ let antigramLots = [];
 let activeAntigramLotId = null;
 let antigramShowAnswer = false;
 let antigramStep = 1;
-const FLOWCHART_TEXT_KEY = '__flowchartText';
-const FLOWCHART_DEFAULT_TEXT = `flowchart TD
-  A[Physician blood order] --> B{Current type and screen within policy?}
-  B -- Yes --> C{Antibody screen negative?}
-  B -- No --> D[Collect properly labeled specimen]
-  D --> C
-  C -- Yes --> E[Electronic or immediate-spin crossmatch]
-  C -- No --> F[Identify antibody specificity]
-  F --> G{Compatible antigen-negative units available?}
-  G -- Yes --> H[Issue compatible RBC unit]
-  G -- No --> I[Call provider and blood supplier]`;
+let flowZoom = .86;
+const FLOWCHART_DATA_KEY = '__flowchartData';
+const FLOWCHART_LEGACY_TEXT_KEY = '__flowchartText';
+const FLOWCHART_DEFAULT_DATA = {
+  rootId:'flow_order',
+  nodes:{
+    flow_order:{id:'flow_order',type:'step',text:'Physician blood order',branches:[{id:'flow_b1',label:'Next',to:'flow_policy'}]},
+    flow_policy:{id:'flow_policy',type:'question',text:'Current type and screen within policy?',branches:[{id:'flow_b2',label:'Yes',to:'flow_screen'},{id:'flow_b3',label:'No',to:'flow_collect'}]},
+    flow_collect:{id:'flow_collect',type:'step',text:'Collect properly labeled specimen',branches:[{id:'flow_b4',label:'Next',to:'flow_screen'}]},
+    flow_screen:{id:'flow_screen',type:'question',text:'Antibody screen negative?',branches:[{id:'flow_b5',label:'Yes',to:'flow_crossmatch'},{id:'flow_b6',label:'No',to:'flow_identify'}]},
+    flow_crossmatch:{id:'flow_crossmatch',type:'step',text:'Electronic or immediate-spin crossmatch',branches:[{id:'flow_b7',label:'Next',to:'flow_issue'}]},
+    flow_identify:{id:'flow_identify',type:'step',text:'Identify antibody specificity',branches:[{id:'flow_b8',label:'Next',to:'flow_units'}]},
+    flow_units:{id:'flow_units',type:'question',text:'Compatible antigen-negative units available?',branches:[{id:'flow_b9',label:'Yes',to:'flow_issue'},{id:'flow_b10',label:'No',to:'flow_call'}]},
+    flow_issue:{id:'flow_issue',type:'step',text:'Issue compatible RBC unit',branches:[]},
+    flow_call:{id:'flow_call',type:'step',text:'Call provider and blood supplier',branches:[]}
+  }
+};
 
 // ============================================================
 // INTRO ANIMATION
@@ -1556,72 +1583,265 @@ function autoGrowTextAreas(root) {
   root.querySelectorAll('textarea').forEach(autoGrowTextArea);
 }
 
-function getFlowchartText() {
-  if (notesData && Object.prototype.hasOwnProperty.call(notesData, FLOWCHART_TEXT_KEY)) {
-    return String(notesData[FLOWCHART_TEXT_KEY] || '');
-  }
-  return FLOWCHART_DEFAULT_TEXT;
+function cloneFlowchartData(data) {
+  return JSON.parse(JSON.stringify(data || FLOWCHART_DEFAULT_DATA));
 }
 
-function updateFlowchartText(value) {
+function flowId(prefix) {
+  return prefix + '_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7);
+}
+
+function normalizeFlowchartData(data) {
+  data = data && typeof data === 'object' ? data : FLOWCHART_DEFAULT_DATA;
+  const srcNodes = data.nodes && typeof data.nodes === 'object' ? data.nodes : {};
+  const nodes = {};
+  Object.keys(srcNodes).forEach(function(id) {
+    const src = srcNodes[id] || {};
+    const cleanId = String(src.id || id);
+    nodes[cleanId] = {
+      id: cleanId,
+      type: src.type === 'question' ? 'question' : 'step',
+      text: String(src.text || src.label || (src.type === 'question' ? 'New question?' : 'New step')),
+      branches: Array.isArray(src.branches) ? src.branches.map(function(branch) {
+        return {
+          id: String(branch.id || flowId('branch')),
+          label: String(branch.label || 'Next'),
+          to: String(branch.to || '')
+        };
+      }).filter(function(branch) {
+        return branch.to && srcNodes[branch.to];
+      }) : []
+    };
+  });
+  let rootId = data.rootId && nodes[data.rootId] ? data.rootId : Object.keys(nodes)[0];
+  if (!rootId) return cloneFlowchartData(FLOWCHART_DEFAULT_DATA);
+  return {rootId:rootId, nodes:nodes};
+}
+
+function flowchartDataFromText(text) {
+  const parsed = parseFlowchartText(text);
+  if (!parsed.order.length || parsed.errors.length) return cloneFlowchartData(FLOWCHART_DEFAULT_DATA);
+  const incoming = {};
+  parsed.edges.forEach(function(edge){ incoming[edge.to] = (incoming[edge.to] || 0) + 1; });
+  const rootId = parsed.order.find(function(id){ return !incoming[id]; }) || parsed.order[0];
+  const data = {rootId:rootId, nodes:{}};
+  parsed.order.forEach(function(id) {
+    const src = parsed.nodes[id] || {};
+    data.nodes[id] = {
+      id:id,
+      type: src.shape === 'decision' ? 'question' : 'step',
+      text: src.label || id,
+      branches: parsed.edges.filter(function(edge){ return edge.from === id; }).map(function(edge) {
+        return {id:flowId('branch'), label:edge.label || 'Next', to:edge.to};
+      })
+    };
+  });
+  return normalizeFlowchartData(data);
+}
+
+function getFlowchartData() {
+  if (notesData && Object.prototype.hasOwnProperty.call(notesData, FLOWCHART_DATA_KEY)) {
+    return normalizeFlowchartData(notesData[FLOWCHART_DATA_KEY]);
+  }
+  if (notesData && Object.prototype.hasOwnProperty.call(notesData, FLOWCHART_LEGACY_TEXT_KEY)) {
+    return flowchartDataFromText(notesData[FLOWCHART_LEGACY_TEXT_KEY]);
+  }
+  return cloneFlowchartData(FLOWCHART_DEFAULT_DATA);
+}
+
+function saveFlowchartData(data, rerender) {
   if (!isAdmin) return;
-  notesData[FLOWCHART_TEXT_KEY] = value;
+  const clean = normalizeFlowchartData(data);
+  notesData[FLOWCHART_DATA_KEY] = clean;
   scheduleSave();
-  renderFlowchartPreview(value);
+  if (rerender) renderFlowchart();
+  else updateFlowMeta(clean);
 }
 
 async function saveFlowchartNow() {
   if (!isAdmin) { showToast('Unlock admin first', true); return; }
-  const editor = document.getElementById('flowchartEditor');
-  if (editor) notesData[FLOWCHART_TEXT_KEY] = editor.value;
+  notesData[FLOWCHART_DATA_KEY] = normalizeFlowchartData(getFlowchartData());
   const ok = await saveNotesNow('flowchart_manual');
   showToast(ok ? 'Flowchart saved' : 'Flowchart save failed', !ok);
 }
 
 function resetFlowchartExample() {
   if (!isAdmin) { showToast('Unlock admin first', true); return; }
-  if (!confirm('Replace the current flowchart text with the starter example?')) return;
-  notesData[FLOWCHART_TEXT_KEY] = FLOWCHART_DEFAULT_TEXT;
+  if (!confirm('Replace this flowchart with the starter example?')) return;
+  notesData[FLOWCHART_DATA_KEY] = cloneFlowchartData(FLOWCHART_DEFAULT_DATA);
   scheduleSave();
   renderFlowchart();
 }
 
 function renderFlowchart() {
-  const editor = document.getElementById('flowchartEditor');
-  if (editor) {
-    editor.value = getFlowchartText();
-    editor.disabled = !isAdmin;
-    editor.oninput = function() {
-      updateFlowchartText(this.value);
-    };
-  }
-  renderFlowchartPreview(getFlowchartText());
+  renderFlowchartPreview(getFlowchartData());
 }
 
-function renderFlowchartPreview(text) {
-  const preview = document.getElementById('flowchartPreview');
+function updateFlowMeta(data) {
   const meta = document.getElementById('flowchartMeta');
+  const zoomLabel = document.getElementById('flowZoomLabel');
+  if (zoomLabel) zoomLabel.textContent = Math.round(flowZoom * 100) + '%';
+  if (!meta) return;
+  data = normalizeFlowchartData(data || getFlowchartData());
+  const ids = Object.keys(data.nodes);
+  const questions = ids.filter(function(id){ return data.nodes[id].type === 'question'; }).length;
+  meta.textContent = ids.length + ' boxes / ' + questions + ' questions';
+}
+
+function renderFlowchartPreview(data) {
+  const preview = document.getElementById('flowchartPreview');
   if (!preview) return;
-  const parsed = parseFlowchartText(text);
-  if (parsed.errors.length) {
-    preview.innerHTML = '<div class="flow-error">' + parsed.errors.map(escText).join('<br>') + '</div>';
-    if (meta) meta.textContent = 'Needs one arrow line';
-    return;
+  data = normalizeFlowchartData(data);
+  preview.innerHTML = '<div class="flow-tree" id="flowStage">' + renderFlowNode(data, data.rootId, []) + '</div>';
+  applyFlowZoom();
+  updateFlowMeta(data);
+}
+
+function applyFlowZoom() {
+  const stage = document.getElementById('flowStage');
+  if (stage) stage.style.zoom = String(flowZoom);
+  updateFlowMeta(getFlowchartData());
+}
+
+function setFlowchartZoom(value) {
+  flowZoom = Math.max(.35, Math.min(1.4, Number(value) || .86));
+  applyFlowZoom();
+}
+
+function zoomFlowchart(delta) {
+  setFlowchartZoom(flowZoom + delta);
+}
+
+function fitFlowchart() {
+  const viewport = document.getElementById('flowchartViewport');
+  const stage = document.getElementById('flowStage');
+  if (!viewport || !stage) return;
+  flowZoom = 1;
+  applyFlowZoom();
+  const ratio = (viewport.clientWidth - 36) / Math.max(stage.scrollWidth, 1);
+  setFlowchartZoom(Math.max(.35, Math.min(1, ratio)));
+  viewport.scrollLeft = 0;
+  viewport.scrollTop = 0;
+}
+
+function updateFlowNodeText(id, value) {
+  if (!isAdmin) return;
+  const data = getFlowchartData();
+  if (!data.nodes[id]) return;
+  data.nodes[id].text = String(value || '').trim();
+  saveFlowchartData(data, false);
+}
+
+function updateFlowBranchLabel(parentId, branchId, value) {
+  if (!isAdmin) return;
+  const data = getFlowchartData();
+  const branch = getFlowBranch(data, parentId, branchId);
+  if (!branch) return;
+  branch.label = String(value || '').trim() || 'Next';
+  saveFlowchartData(data, false);
+}
+
+function setFlowNodeType(id, type) {
+  if (!isAdmin) return;
+  const data = getFlowchartData();
+  if (!data.nodes[id]) return;
+  data.nodes[id].type = type === 'question' ? 'question' : 'step';
+  saveFlowchartData(data, true);
+}
+
+function addFlowBranch(parentId, label, childType) {
+  if (!isAdmin) { showToast('Unlock admin first', true); return; }
+  const data = getFlowchartData();
+  const parent = data.nodes[parentId];
+  if (!parent) return;
+  if (/^(yes|no)$/i.test(label || '')) parent.type = 'question';
+  const childId = flowId('node');
+  data.nodes[childId] = {
+    id: childId,
+    type: childType === 'question' ? 'question' : 'step',
+    text: childType === 'question' ? 'New question?' : 'New step',
+    branches: []
+  };
+  parent.branches.push({id:flowId('branch'), label:label || 'Next', to:childId});
+  saveFlowchartData(data, true);
+}
+
+function getFlowBranch(data, parentId, branchId) {
+  const parent = data.nodes[parentId];
+  if (!parent) return null;
+  return parent.branches.find(function(branch){ return branch.id === branchId; }) || null;
+}
+
+function deleteFlowBranch(parentId, branchId) {
+  if (!isAdmin) return;
+  const data = getFlowchartData();
+  const parent = data.nodes[parentId];
+  if (!parent) return;
+  parent.branches = parent.branches.filter(function(branch){ return branch.id !== branchId; });
+  pruneUnreachableFlowNodes(data);
+  saveFlowchartData(data, true);
+}
+
+function deleteFlowNode(id) {
+  if (!isAdmin) return;
+  const data = getFlowchartData();
+  if (id === data.rootId) return;
+  Object.keys(data.nodes).forEach(function(nodeId) {
+    data.nodes[nodeId].branches = data.nodes[nodeId].branches.filter(function(branch){ return branch.to !== id; });
+  });
+  pruneUnreachableFlowNodes(data);
+  saveFlowchartData(data, true);
+}
+
+function pruneUnreachableFlowNodes(data) {
+  const seen = {};
+  function visit(id) {
+    if (!data.nodes[id] || seen[id]) return;
+    seen[id] = true;
+    data.nodes[id].branches.forEach(function(branch){ visit(branch.to); });
   }
-  if (!parsed.order.length) {
-    preview.innerHTML = '<div class="flow-empty">Add a flowchart line to begin.</div>';
-    if (meta) meta.textContent = '';
-    return;
+  visit(data.rootId);
+  Object.keys(data.nodes).forEach(function(id) {
+    if (!seen[id]) delete data.nodes[id];
+  });
+}
+
+function renderFlowNode(data, id, path) {
+  const node = data.nodes[id];
+  if (!node) return '';
+  const repeated = path.indexOf(id) !== -1;
+  const type = node.type === 'question' ? 'question' : 'step';
+  const cls = 'flow-node ' + type + (id === data.rootId ? ' start' : '') + (repeated ? ' repeat' : '');
+  const editable = isAdmin && !repeated ? 'contenteditable="true" spellcheck="true"' : '';
+  let html = '<div class="flow-node-wrap"><div class="' + cls + '">' +
+    '<div class="flow-node-kind">' + (type === 'question' ? 'Question' : 'Step') + '</div>' +
+    '<div class="flow-node-text flow-editable" data-placeholder="' + (type === 'question' ? 'Type a question' : 'Type a step') + '" ' + editable +
+    (isAdmin && !repeated ? ' oninput="updateFlowNodeText(\'' + id + '\',this.textContent)"' : '') + '>' + escText(node.text || '') + '</div>';
+  if (isAdmin && !repeated) {
+    html += '<div class="flow-node-tools">' +
+      '<button class="flow-mini-btn" onclick="setFlowNodeType(\'' + id + '\',\'step\')">Step</button>' +
+      '<button class="flow-mini-btn" onclick="setFlowNodeType(\'' + id + '\',\'question\')">Question</button>' +
+      '<button class="flow-mini-btn" onclick="addFlowBranch(\'' + id + '\',\'Next\',\'step\')">+ Step</button>' +
+      '<button class="flow-mini-btn" onclick="addFlowBranch(\'' + id + '\',\'Next\',\'question\')">+ Question</button>' +
+      '<button class="flow-mini-btn" onclick="addFlowBranch(\'' + id + '\',\'Yes\',\'step\')">+ Yes</button>' +
+      '<button class="flow-mini-btn" onclick="addFlowBranch(\'' + id + '\',\'No\',\'step\')">+ No</button>' +
+      (id === data.rootId ? '' : '<button class="flow-mini-btn danger" onclick="deleteFlowNode(\'' + id + '\')">Delete</button>') +
+      '</div>';
   }
-  const incoming = {};
-  parsed.edges.forEach(function(edge){ incoming[edge.to] = (incoming[edge.to] || 0) + 1; });
-  let roots = parsed.order.filter(function(id){ return !incoming[id]; });
-  if (!roots.length) roots = [parsed.order[0]];
-  const decisions = parsed.order.filter(function(id){ return parsed.nodes[id] && parsed.nodes[id].shape === 'decision'; }).length;
-  if (meta) meta.textContent = parsed.order.length + ' nodes / ' + decisions + ' questions';
-  preview.innerHTML = '<div class="flow-tree">' + roots.map(function(id) {
-    return renderFlowNode(parsed, id, []);
-  }).join('') + '</div>';
+  html += '</div>';
+  if (repeated) return html + '</div>';
+  const branches = node.branches || [];
+  if (branches.length) {
+    html += '<div class="flow-branches">' + branches.map(function(branch) {
+      const label = branch.label || 'Next';
+      const labelEditable = isAdmin ? 'contenteditable="true" spellcheck="false" oninput="updateFlowBranchLabel(\'' + id + '\',\'' + branch.id + '\',this.textContent)" onblur="renderFlowchart()"' : '';
+      return '<div class="flow-branch"><div class="flow-edge-row">' +
+        '<div class="flow-edge-label flow-editable ' + flowLabelClass(label) + '" data-placeholder="Label" ' + labelEditable + '>' + escText(label) + '</div>' +
+        (isAdmin ? '<button class="flow-mini-btn danger" onclick="deleteFlowBranch(\'' + id + '\',\'' + branch.id + '\')">×</button>' : '') +
+        '</div>' + renderFlowNode(data, branch.to, path.concat(id)) + '</div>';
+    }).join('') + '</div>';
+  }
+  return html + '</div>';
 }
 
 function parseFlowchartText(text) {
@@ -1688,23 +1908,6 @@ function stripFlowQuotes(value) {
 function flowSlug(label) {
   let slug = String(label || '').toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 36);
   return slug || ('node_' + Math.random().toString(36).slice(2, 8));
-}
-
-function renderFlowNode(chart, id, path) {
-  const node = chart.nodes[id];
-  if (!node) return '';
-  const repeated = path.indexOf(id) !== -1;
-  const cls = 'flow-node ' + (node.shape || 'step') + (repeated ? ' repeat' : '');
-  let html = '<div class="flow-node-wrap"><div class="' + cls + '"><span class="flow-node-text">' + escText(node.label || id) + '</span></div>';
-  if (repeated) return html + '</div>';
-  const kids = chart.edges.filter(function(edge){ return edge.from === id; });
-  if (kids.length) {
-    html += '<div class="flow-branches">' + kids.map(function(edge) {
-      const lbl = edge.label ? '<div class="flow-edge-label ' + flowLabelClass(edge.label) + '">' + escText(edge.label) + '</div>' : '<div class="flow-edge-label">Next</div>';
-      return '<div class="flow-branch">' + lbl + renderFlowNode(chart, edge.to, path.concat(id)) + '</div>';
-    }).join('') + '</div>';
-  }
-  return html + '</div>';
 }
 
 function flowLabelClass(label) {
