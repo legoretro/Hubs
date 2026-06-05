@@ -326,6 +326,7 @@ textarea{resize:none;overflow:hidden}
 .flow-preview-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
 .flow-toolbar{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
 .flow-tool-btn{border:1.5px solid var(--rose);background:#fff;color:var(--wine);border-radius:999px;padding:7px 11px;font-size:12px;font-weight:900}
+.flow-tool-btn:disabled{opacity:.38;cursor:not-allowed;transform:none}
 .flow-tool-btn:hover{border-color:var(--crimson);background:var(--blush)}
 .flow-tool-btn.primary{background:var(--crimson);border-color:var(--crimson);color:#fff}
 .flow-admin-action{display:none}.admin-mode .flow-admin-action{display:inline-flex}
@@ -340,8 +341,8 @@ textarea{resize:none;overflow:hidden}
 .flow-action-group{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .flow-canvas{border:1px solid var(--rose);border-radius:18px;background:linear-gradient(180deg,#fff,#fff7f9);height:calc(100vh - 250px);min-height:560px;max-height:760px;padding:18px;overflow:auto;scroll-padding:150px 24px 210px;-webkit-overflow-scrolling:touch}
 #flowchartPreview{position:relative;min-width:max-content}
-.flow-link-layer{position:absolute;left:0;top:0;z-index:0;pointer-events:none;overflow:visible}.admin-mode .flow-link-layer{pointer-events:auto}
-.flow-link-path{fill:none;stroke:var(--crimson);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:7 5;opacity:.86}
+.flow-link-layer{position:absolute;left:0;top:0;z-index:2;pointer-events:none;overflow:visible}.admin-mode .flow-link-layer{pointer-events:auto}
+.flow-link-path{fill:none;stroke:var(--crimson);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:7 5;opacity:.86;pointer-events:none}
 .flow-link-hit{fill:none;stroke:transparent;stroke-width:16;stroke-linecap:round;stroke-linejoin:round;pointer-events:stroke;cursor:pointer}.admin-mode .flow-link-hit:hover+.flow-link-path{stroke-width:4;opacity:1}
 .flow-tree{position:relative;z-index:1;display:flex;justify-content:center;min-width:max-content;padding:8px 22px 220px}
 .flow-node-wrap{display:flex;flex-direction:column;align-items:center;min-width:190px}
@@ -819,6 +820,8 @@ textarea{resize:none;overflow:hidden}
               <button class="flow-tool-btn" onclick="zoomFlowchart(0.1)">+</button>
               <button class="flow-tool-btn" onclick="fitFlowchart()">Fit</button>
               <button class="flow-tool-btn" onclick="fitFlowchartForLandscape()">Page Fit</button>
+              <button class="flow-tool-btn flow-admin-action" id="flowUndoBtn" onclick="undoFlowchartChange()">Undo</button>
+              <button class="flow-tool-btn flow-admin-action" id="flowRedoBtn" onclick="redoFlowchartChange()">Redo</button>
               <button class="flow-tool-btn primary" onclick="exportFlowchart()">Export</button>
               <button class="flow-tool-btn flow-admin-action" onclick="resetFlowchartExample()">Reset</button>
             </div>
@@ -926,6 +929,10 @@ let flowConnectFromId = null;
 let flowDragJustEnded = false;
 let flowPrintZoom = .58;
 const FLOW_EXPORT_MIN_ZOOM = .58;
+let flowUndoStack = [];
+let flowRedoStack = [];
+let flowIsRestoringHistory = false;
+const FLOW_HISTORY_LIMIT = 80;
 const FLOWCHART_DATA_KEY = '__flowchartData';
 const FLOWCHART_LEGACY_TEXT_KEY = '__flowchartText';
 const FLOW_NOTE_COLORS = ['#fff4a8','#ffd7df','#dff7ff','#dcf8df','#efe3ff','#ffe3c2','#d8ecff','#f6dfc8','#e7f5c9','#f0f0f0'];
@@ -1789,13 +1796,75 @@ function getFlowchartData() {
   return cloneFlowchartData(FLOWCHART_DEFAULT_DATA);
 }
 
-function saveFlowchartData(data, rerender) {
+function flowchartHistorySnapshot(data) {
+  return JSON.stringify(normalizeFlowchartData(data || getFlowchartData()));
+}
+
+function updateFlowHistoryButtons() {
+  const undo = document.getElementById('flowUndoBtn');
+  const redo = document.getElementById('flowRedoBtn');
+  if (undo) undo.disabled = !flowUndoStack.length;
+  if (redo) redo.disabled = !flowRedoStack.length;
+}
+
+function rememberFlowchartHistory(nextData) {
+  if (flowIsRestoringHistory) return;
+  const before = flowchartHistorySnapshot(getFlowchartData());
+  const after = flowchartHistorySnapshot(nextData);
+  if (before === after) return;
+  if (flowUndoStack[flowUndoStack.length - 1] !== before) {
+    flowUndoStack.push(before);
+    if (flowUndoStack.length > FLOW_HISTORY_LIMIT) flowUndoStack.shift();
+  }
+  flowRedoStack = [];
+}
+
+function restoreFlowchartHistory(snapshot) {
+  if (!snapshot) return;
+  let data;
+  try {
+    data = normalizeFlowchartData(JSON.parse(snapshot));
+  } catch(e) {
+    data = cloneFlowchartData(FLOWCHART_DEFAULT_DATA);
+  }
+  flowIsRestoringHistory = true;
+  notesData[FLOWCHART_DATA_KEY] = data;
+  scheduleSave();
+  if (!flowSelectedNodeId || !data.nodes[flowSelectedNodeId]) flowSelectedNodeId = data.rootId;
+  renderFlowchart();
+  flowIsRestoringHistory = false;
+  updateFlowHistoryButtons();
+}
+
+function undoFlowchartChange() {
+  if (!isAdmin) { showToast('Unlock admin first', true); return; }
+  const previous = flowUndoStack.pop();
+  if (!previous) { updateFlowHistoryButtons(); return; }
+  flowRedoStack.push(flowchartHistorySnapshot(getFlowchartData()));
+  restoreFlowchartHistory(previous);
+  showToast('Flowchart undo');
+}
+
+function redoFlowchartChange() {
+  if (!isAdmin) { showToast('Unlock admin first', true); return; }
+  const next = flowRedoStack.pop();
+  if (!next) { updateFlowHistoryButtons(); return; }
+  flowUndoStack.push(flowchartHistorySnapshot(getFlowchartData()));
+  if (flowUndoStack.length > FLOW_HISTORY_LIMIT) flowUndoStack.shift();
+  restoreFlowchartHistory(next);
+  showToast('Flowchart redo');
+}
+
+function saveFlowchartData(data, rerender, options) {
   if (!isAdmin) return;
   const clean = normalizeFlowchartData(data);
+  options = options || {};
+  if (!options.skipHistory) rememberFlowchartHistory(clean);
   notesData[FLOWCHART_DATA_KEY] = clean;
   scheduleSave();
   if (rerender) renderFlowchart();
   else updateFlowMeta(clean);
+  updateFlowHistoryButtons();
 }
 
 async function saveFlowchartNow() {
@@ -1808,9 +1877,7 @@ async function saveFlowchartNow() {
 function resetFlowchartExample() {
   if (!isAdmin) { showToast('Unlock admin first', true); return; }
   if (!confirm('Replace this flowchart with the starter example?')) return;
-  notesData[FLOWCHART_DATA_KEY] = cloneFlowchartData(FLOWCHART_DEFAULT_DATA);
-  scheduleSave();
-  renderFlowchart();
+  saveFlowchartData(cloneFlowchartData(FLOWCHART_DEFAULT_DATA), true);
 }
 
 function renderFlowchart() {
@@ -1840,6 +1907,7 @@ function renderFlowchartPreview(data) {
   applyFlowZoom();
   updateFlowMeta(data);
   renderFlowSelectionPanel(data);
+  updateFlowHistoryButtons();
   scheduleFlowLinkDraw(data);
 }
 
