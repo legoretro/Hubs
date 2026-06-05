@@ -341,13 +341,13 @@ textarea{resize:none;overflow:hidden}
 .flow-action-group{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .flow-canvas{border:1px solid var(--rose);border-radius:18px;background:linear-gradient(180deg,#fff,#fff7f9);height:calc(100vh - 250px);min-height:560px;max-height:760px;padding:18px;overflow:auto;scroll-padding:150px 24px 210px;-webkit-overflow-scrolling:touch}
 #flowchartPreview{position:relative;min-width:max-content}
-.flow-link-layer{position:absolute;left:0;top:0;z-index:2;pointer-events:none;overflow:visible}.admin-mode .flow-link-layer{pointer-events:auto}
+.flow-link-layer{position:absolute;left:0;top:0;z-index:0;pointer-events:none;overflow:visible}
 .flow-link-path{fill:none;stroke:var(--crimson);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:7 5;opacity:.86;pointer-events:none}
-.flow-link-hit{fill:none;stroke:transparent;stroke-width:16;stroke-linecap:round;stroke-linejoin:round;pointer-events:stroke;cursor:pointer}.admin-mode .flow-link-hit:hover+.flow-link-path{stroke-width:4;opacity:1}
+.flow-link-path.selected{stroke-width:4;opacity:1;filter:drop-shadow(0 0 3px rgba(192,23,61,.22))}
 .flow-tree{position:relative;z-index:1;display:flex;justify-content:center;min-width:max-content;padding:8px 22px 220px}
 .flow-node-wrap{display:flex;flex-direction:column;align-items:center;min-width:190px}
 .flow-node-row{display:flex;align-items:flex-start;justify-content:center;gap:10px}
-.flow-node{position:relative;max-width:270px;min-width:185px;background:#fff;border:2px solid var(--rose);border-radius:16px;padding:11px 12px;text-align:center;box-shadow:0 8px 18px rgba(140,10,38,.08);color:var(--dark);font-family:var(--flow-font-family);font-size:14px;line-height:1.32;font-weight:800;white-space:pre-wrap}
+.flow-node{position:relative;max-width:270px;min-width:185px;background:#fff;border:2px solid var(--rose);border-radius:16px;padding:11px 12px;text-align:center;box-shadow:0 8px 18px rgba(140,10,38,.08);color:var(--dark);font-family:var(--flow-font-family);font-size:14px;line-height:1.32;font-weight:800;white-space:pre-wrap;overflow-wrap:anywhere;word-break:normal}
 .flow-node.selected{box-shadow:0 0 0 4px rgba(212,134,10,.18),0 8px 18px rgba(140,10,38,.08)}
 .flow-node.connect-target{box-shadow:0 0 0 5px rgba(42,170,132,.22),0 8px 18px rgba(140,10,38,.08);border-color:var(--good)!important}
 .flow-node.start,.flow-node.terminal{border-radius:999px;background:#fffaf7;border-color:var(--crimson);color:var(--wine)}
@@ -357,7 +357,7 @@ textarea{resize:none;overflow:hidden}
 .flow-node.repeat{border-style:dashed;background:#fffaf7;color:var(--warm-grey)}
 .flow-node-kind{font-size:9px;text-transform:uppercase;letter-spacing:1.1px;color:var(--warm-grey);font-weight:900;margin-bottom:6px}
 .flow-node.question .flow-node-kind{color:#9b5b00}
-.flow-node-text{min-height:24px;outline:none;border-radius:10px;padding:4px 6px}
+.flow-node-text{min-height:24px;outline:none;border-radius:10px;padding:4px 6px;max-width:100%;overflow-wrap:anywhere;word-break:break-word}
 .admin-mode .flow-node-text[contenteditable="true"]{background:rgba(255,255,255,.64);border:1px dashed rgba(212,134,10,.45);cursor:text}
 .admin-mode .flow-node-text[contenteditable="true"]:focus{background:#fff;border-color:var(--warn);box-shadow:0 0 0 3px rgba(212,134,10,.12)}
 .flow-editable:empty:before{content:attr(data-placeholder);color:#b99aa2;font-style:italic}
@@ -829,7 +829,7 @@ textarea{resize:none;overflow:hidden}
           <div class="flow-selection-panel flow-admin-action" id="flowSelectionPanel"></div>
         </div>
         <div id="flowchartViewport" class="flow-canvas">
-          <div id="flowchartPreview"></div>
+          <div id="flowchartPreview" onclick="handleFlowPreviewClick(event)"></div>
         </div>
       </div>
     </div>
@@ -925,6 +925,8 @@ let antigramShowAnswer = false;
 let antigramStep = 1;
 let flowZoom = .64;
 let flowSelectedNodeId = null;
+let flowSelectedLink = null;
+let flowLinkClickTargets = [];
 let flowConnectFromId = null;
 let flowDragJustEnded = false;
 let flowPrintZoom = .58;
@@ -1900,7 +1902,9 @@ function renderFlowchartPreview(data) {
   const preview = document.getElementById('flowchartPreview');
   if (!preview) return;
   data = normalizeFlowchartData(data);
-  if (!flowSelectedNodeId || !data.nodes[flowSelectedNodeId]) flowSelectedNodeId = data.rootId;
+  if (flowSelectedLink && !getFlowSelectedConnection(data)) flowSelectedLink = null;
+  if (flowSelectedLink) flowSelectedNodeId = null;
+  else if (!flowSelectedNodeId || !data.nodes[flowSelectedNodeId]) flowSelectedNodeId = data.rootId;
   applyFlowFont(data);
   const layout = buildFlowLayoutInfo(data);
   preview.innerHTML = '<svg id="flowLinkLayer" class="flow-link-layer" aria-hidden="true"></svg><div class="flow-tree" id="flowStage">' + renderFlowNode(data, data.rootId, [], layout, null) + '</div>';
@@ -1968,6 +1972,7 @@ function drawFlowLinkLines(data) {
   const preview = document.getElementById('flowchartPreview');
   if (!layer || !preview) return;
   const links = collectFlowLinkBranches(data || getFlowchartData());
+  flowLinkClickTargets = [];
   const previewRect = preview.getBoundingClientRect();
   const width = Math.max(preview.scrollWidth, previewRect.width, 1);
   const height = Math.max(preview.scrollHeight, previewRect.height, 1);
@@ -1976,10 +1981,11 @@ function drawFlowLinkLines(data) {
   layer.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
   layer.style.width = width + 'px';
   layer.style.height = height + 'px';
-  layer.innerHTML = links.map(function(link) {
+  const visiblePaths = [];
+  links.forEach(function(link) {
     const fromEl = document.querySelector('[data-flow-node-id="' + link.from + '"]');
     const toEl = document.querySelector('[data-flow-node-id="' + link.to + '"]');
-    if (!fromEl || !toEl) return '';
+    if (!fromEl || !toEl) return;
     const a = fromEl.getBoundingClientRect();
     const b = toEl.getBoundingClientRect();
     const x1 = a.left + a.width / 2 - previewRect.left;
@@ -1988,10 +1994,76 @@ function drawFlowLinkLines(data) {
     const y2 = b.top - previewRect.top;
     const midY = y1 + (y2 - y1) / 2;
     const path = 'M ' + x1.toFixed(1) + ' ' + y1.toFixed(1) + ' C ' + x1.toFixed(1) + ' ' + midY.toFixed(1) + ', ' + x2.toFixed(1) + ' ' + midY.toFixed(1) + ', ' + x2.toFixed(1) + ' ' + y2.toFixed(1);
-    const deleteAttrs = isAdmin ? ' data-flow-link-from="' + escAttr(link.from) + '" data-flow-link-branch="' + escAttr(link.branchId || '') + '" onclick="deleteFlowConnectionLine(\'' + escAttr(link.from) + '\',\'' + escAttr(link.branchId || '') + '\')"' : '';
-    const hit = isAdmin ? '<path class="flow-link-hit" d="' + path + '"' + deleteAttrs + '><title>Click to delete this line</title></path>' : '';
-    return hit + '<path class="flow-link-path" d="' + path + '"/>';
-  }).join('');
+    const selected = flowSelectedLink && flowSelectedLink.from === link.from && flowSelectedLink.branchId === link.branchId;
+    visiblePaths.push('<path class="flow-link-path' + (selected ? ' selected' : '') + '" d="' + path + '"/>');
+    flowLinkClickTargets.push({
+      from:link.from,
+      branchId:link.branchId || '',
+      points:sampleFlowConnectorPoints(x1, y1, x1, midY, x2, midY, x2, y2)
+    });
+  });
+  layer.innerHTML = visiblePaths.join('');
+}
+
+function sampleFlowConnectorPoints(x1, y1, cx1, cy1, cx2, cy2, x2, y2) {
+  const points = [];
+  for (let i = 0; i <= 24; i++) {
+    const t = i / 24;
+    const u = 1 - t;
+    points.push({
+      x:u * u * u * x1 + 3 * u * u * t * cx1 + 3 * u * t * t * cx2 + t * t * t * x2,
+      y:u * u * u * y1 + 3 * u * u * t * cy1 + 3 * u * t * t * cy2 + t * t * t * y2
+    });
+  }
+  return points;
+}
+
+function distanceToFlowSegment(point, a, b) {
+  const dx = b.x - a.x;
+  const dy = b.y - a.y;
+  const lengthSq = dx * dx + dy * dy;
+  if (!lengthSq) return Math.hypot(point.x - a.x, point.y - a.y);
+  const t = Math.max(0, Math.min(1, ((point.x - a.x) * dx + (point.y - a.y) * dy) / lengthSq));
+  const x = a.x + t * dx;
+  const y = a.y + t * dy;
+  return Math.hypot(point.x - x, point.y - y);
+}
+
+function distanceToFlowConnector(point, target) {
+  let best = Infinity;
+  for (let i = 0; i < target.points.length - 1; i++) {
+    best = Math.min(best, distanceToFlowSegment(point, target.points[i], target.points[i + 1]));
+  }
+  return best;
+}
+
+function isFlowEditableTarget(target) {
+  return Boolean(target && target.closest && target.closest('.flow-node,.flow-note-card,.flow-edge-label,.flow-node-tools,.flow-selection-panel,button,select,input,textarea,[contenteditable="true"]'));
+}
+
+function handleFlowPreviewClick(event) {
+  if (!isAdmin || !event) return;
+  if (isFlowEditableTarget(event.target)) return;
+  const preview = document.getElementById('flowchartPreview');
+  if (!preview) return;
+  const rect = preview.getBoundingClientRect();
+  const point = {x:event.clientX - rect.left, y:event.clientY - rect.top};
+  let bestTarget = null;
+  let bestDistance = 18;
+  flowLinkClickTargets.forEach(function(target) {
+    const distance = distanceToFlowConnector(point, target);
+    if (distance < bestDistance) {
+      bestDistance = distance;
+      bestTarget = target;
+    }
+  });
+  if (bestTarget) {
+    event.preventDefault();
+    event.stopPropagation();
+    selectFlowConnectionLine(bestTarget.from, bestTarget.branchId);
+  } else if (flowSelectedLink) {
+    clearFlowConnectionSelection();
+  }
 }
 
 function applyFlowZoom() {
@@ -2081,10 +2153,31 @@ function getFlowSelectedNode(data) {
   return data.nodes[flowSelectedNodeId] || data.nodes[data.rootId] || null;
 }
 
+function getFlowSelectedConnection(data) {
+  data = normalizeFlowchartData(data || getFlowchartData());
+  if (!flowSelectedLink) return null;
+  const parent = data.nodes[flowSelectedLink.from];
+  if (!parent) return null;
+  const branch = (parent.branches || []).find(function(item){ return item.id === flowSelectedLink.branchId; });
+  if (!branch || !data.nodes[branch.to]) return null;
+  return {parent:parent, branch:branch, target:data.nodes[branch.to]};
+}
+
 function renderFlowSelectionPanel(data) {
   const panel = document.getElementById('flowSelectionPanel');
   if (!panel) return;
   data = normalizeFlowchartData(data || getFlowchartData());
+  const selectedConnection = getFlowSelectedConnection(data);
+  if (selectedConnection) {
+    panel.innerHTML =
+      '<div class="flow-selected-title">Current selected<strong>Line: ' + escText(selectedConnection.parent.text || 'Box') + ' -> ' + escText(selectedConnection.target.text || 'Box') + '</strong></div>' +
+      '<label class="flow-control">Label<span class="flow-zoom-pill">' + escText(selectedConnection.branch.label || 'Next') + '</span></label>' +
+      '<div class="flow-action-group">' +
+        '<button class="flow-tool-btn" onclick="deleteSelectedFlowConnectionLine()">Delete line</button>' +
+        '<button class="flow-tool-btn" onclick="clearFlowConnectionSelection()">Cancel</button>' +
+      '</div>';
+    return;
+  }
   const node = getFlowSelectedNode(data);
   if (!node) { panel.innerHTML = ''; return; }
   const shapeValues = ['step','question','terminal','plain'];
@@ -2113,11 +2206,13 @@ function selectFlowNode(id) {
   if (!isAdmin) return;
   const data = getFlowchartData();
   if (!data.nodes[id]) return;
+  flowSelectedLink = null;
   flowSelectedNodeId = id;
   document.querySelectorAll('#flowchartPreview .flow-node').forEach(function(el){ el.classList.remove('selected'); });
   const active = document.querySelector('[data-flow-node-id="' + id + '"]');
   if (active) active.classList.add('selected');
   renderFlowSelectionPanel(data);
+  drawFlowLinkLines(data);
 }
 
 function setFlowchartFont(font) {
@@ -2348,6 +2443,24 @@ function deleteFlowBranch(parentId, branchId) {
   saveFlowchartData(data, true);
 }
 
+function selectFlowConnectionLine(parentId, branchId) {
+  if (window.event) window.event.stopPropagation();
+  if (!isAdmin || !parentId || !branchId) return;
+  const data = getFlowchartData();
+  const parent = data.nodes[parentId];
+  if (!parent || !parent.branches.some(function(branch){ return branch.id === branchId; })) return;
+  flowSelectedLink = {from:parentId, branchId:branchId};
+  flowSelectedNodeId = null;
+  renderFlowSelectionPanel(data);
+  drawFlowLinkLines(data);
+}
+
+function clearFlowConnectionSelection() {
+  flowSelectedLink = null;
+  flowSelectedNodeId = null;
+  renderFlowchart();
+}
+
 function deleteFlowConnectionLine(parentId, branchId) {
   if (window.event) window.event.stopPropagation();
   if (!isAdmin || !parentId || !branchId) return;
@@ -2357,8 +2470,14 @@ function deleteFlowConnectionLine(parentId, branchId) {
   const before = parent.branches.length;
   parent.branches = parent.branches.filter(function(branch){ return branch.id !== branchId; });
   if (parent.branches.length === before) return;
+  flowSelectedLink = null;
   saveFlowchartData(data, true);
   showToast('Connection line deleted');
+}
+
+function deleteSelectedFlowConnectionLine() {
+  if (!flowSelectedLink) return;
+  deleteFlowConnectionLine(flowSelectedLink.from, flowSelectedLink.branchId);
 }
 
 function deleteFlowNode(id) {
@@ -5664,7 +5783,7 @@ function buildExportHtml(content, title, orientation, scale) {
     '.flash-print-page{max-width:7.9in;height:10.4in;overflow:hidden}.flash-print-page h1{font-size:15px;color:#000;text-align:left;margin:0 0 .12in;padding:0}.flash-print-grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:.18in;height:9.9in}.flash-print-card{border:2px solid #000;background:#fff;color:#000;border-radius:0;padding:.18in;display:flex;flex-direction:column;justify-content:center;text-align:center;break-inside:avoid;page-break-inside:avoid}.flash-print-meta{font-size:12px;text-transform:uppercase;letter-spacing:.7px;margin-bottom:.12in;color:#000;font-weight:700}.flash-print-q{font-size:24px;line-height:1.18;font-weight:900}.flash-print-a{font-size:22px;line-height:1.2;font-weight:900;white-space:pre-wrap}' +
     '.general-export-page{max-width:10.4in;height:7.12in;overflow:hidden}.general-export-page h1{text-align:left;font-size:18px;margin:0 0 .07in;padding:0;color:#5a0e20}.general-export-main{table-layout:fixed;margin-bottom:.07in;border:1px solid #f7c5d0}.general-export-main th{font-size:6.6px;line-height:1.05;text-align:center;padding:3px 2px;background:#5a0e20;color:#fff}.general-export-main th:first-child{width:.78in;text-align:left}.general-export-main td{font-size:6.5px;line-height:1.06;padding:2px 3px;border:1px solid #f7c5d0;white-space:normal;overflow-wrap:anywhere}.general-export-main tr:nth-child(even) td{background:#fff1f4}.general-export-label{font-weight:800;color:#5a0e20}.general-export-summary h2{font-size:8px;letter-spacing:1.2px;text-transform:uppercase;color:#7a6468;border:0;margin:.02in 0 .035in;padding:0}.general-export-summary table{table-layout:fixed;border:1px solid #f7c5d0}.general-export-summary th{font-size:6.4px;padding:2px 4px}.general-export-summary td{font-size:6.4px;line-height:1.05;padding:2px 4px;border:1px solid #f7c5d0}.general-export-summary th:nth-child(1){width:44%}.general-blank-page td.general-blank-cell{height:.27in;background:#fff!important;color:#fff}.general-blank-page .general-export-summary td.general-blank-cell{height:.2in}.lesser-export-page{max-width:10.4in;height:7.12in;overflow:hidden}.lesser-export-page h1{text-align:left;font-size:18px;margin:0 0 .08in;padding:0;color:#5a0e20}.lesser-export-table{table-layout:fixed}.lesser-export-table th{font-size:6.6px;line-height:1.05;padding:3px 3px}.lesser-export-table td{font-size:6.6px;line-height:1.07;padding:3px 3px;white-space:normal;overflow-wrap:anywhere}.lesser-export-table th:first-child{width:.85in}.freq-short-page{max-width:10.4in;height:7.12in;overflow:hidden}.freq-short-page h1{text-align:left;font-size:18px;margin:0 0 .08in;padding:0;color:#5a0e20}.freq-short-table{table-layout:fixed;border:1px solid #f7c5d0}.freq-short-table th{font-size:8.4px;padding:4px 5px}.freq-short-table td{font-size:8.2px;line-height:1.04;padding:3px 5px;border:1px solid #f7c5d0;white-space:normal;overflow-wrap:anywhere}.freq-short-table th:nth-child(1){width:1.05in}.freq-short-table th:nth-child(2){width:2.2in}.freq-short-answer{height:.18in;background:#fff!important}' +
     '.map-page{max-width:10.4in;height:7.15in;overflow:hidden}.map-page h1{font-size:16px;padding:0;margin:0 0 .06in}.map-print{height:6.86in;overflow:hidden;display:flex;align-items:center;justify-content:center}.map-print>div{width:100%!important;height:100%!important;overflow:hidden!important}.map-print svg{width:100%!important;max-width:100%!important;min-width:0!important;height:100%!important;max-height:6.78in!important}.map-rbc .map-print svg text{font-size:10px!important}.map-chrom .map-print{align-items:flex-start}svg{max-width:100%;height:auto}' +
-    '.flow-export-page{max-width:10.55in;height:7.15in;overflow:hidden;padding:0}.flow-export-wrap{position:relative;height:7.15in;overflow:hidden;display:flex;align-items:flex-start;justify-content:center}.flow-export-wrap .flow-link-layer{position:absolute;left:0;top:0;z-index:0;pointer-events:none;overflow:visible}.flow-export-wrap .flow-link-path{fill:none;stroke:#c0173d;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:7 5}.flow-export-wrap .flow-link-marker{display:none}.flow-export-wrap .flow-tree{position:relative;z-index:1;display:flex;justify-content:center;min-width:max-content;padding:0;zoom:var(--flow-export-zoom,.58);font-family:var(--flow-font-family,Georgia,serif)}.flow-export-wrap .flow-node-wrap{display:flex;flex-direction:column;align-items:center;min-width:132px}.flow-export-wrap .flow-node-row{display:flex;align-items:flex-start;justify-content:center;gap:5px}.flow-export-wrap .flow-node{position:relative;max-width:166px;min-width:126px;background:#fff;border:2px solid #9a8d92;border-radius:10px;padding:7px 8px;text-align:center;color:#1e0d10;font-family:var(--flow-font-family,Georgia,serif);font-size:16px;line-height:1.12;font-weight:800;white-space:pre-wrap;box-shadow:0 3px 8px rgba(140,10,38,.08)}.flow-export-wrap .flow-node.question{border-radius:6px}.flow-export-wrap .flow-node.terminal,.flow-export-wrap .flow-node.start{border-radius:999px;color:#5a0e20}.flow-export-wrap .flow-node.plain{border-radius:3px}.flow-export-wrap .flow-node.repeat{border-style:dashed;color:#7a6468}.flow-export-wrap .flow-node-kind{font-size:7px;text-transform:uppercase;letter-spacing:.8px;color:#7a6468;font-weight:900;margin-bottom:2px}.flow-export-wrap .flow-node.question .flow-node-kind{color:#9b5b00}.flow-export-wrap .flow-node-text{min-height:18px;padding:1px 2px}.flow-export-wrap .flow-note-card{width:88px;min-height:50px;border:1px solid rgba(90,14,32,.16);border-radius:6px;background:#fff4a8;color:#4a3038;padding:6px 6px;font-family:var(--flow-font-family,Georgia,serif);font-size:9.5px;line-height:1.12;text-align:left;box-shadow:0 3px 8px rgba(90,14,32,.1);transform:rotate(-1.4deg)}.flow-export-wrap .flow-note-card:before{content:"";display:block;width:28px;height:6px;margin:-9px auto 3px;border-radius:999px;background:rgba(255,255,255,.72);box-shadow:0 1px 2px rgba(90,14,32,.1)}.flow-export-wrap .flow-branches{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(136px,max-content);gap:8px;margin-top:22px;align-items:start}.flow-export-wrap .flow-branch{position:relative;display:flex;flex-direction:column;align-items:center}.flow-export-wrap .flow-branch:before{content:"";position:absolute;top:-20px;left:50%;width:2px;height:16px;background:#f7c5d0}.flow-export-wrap .flow-branch:after{content:"";position:absolute;top:-20px;left:0;right:0;height:2px;background:#f7c5d0}.flow-export-wrap .flow-branch:first-child:after{left:50%}.flow-export-wrap .flow-branch:last-child:after{right:50%}.flow-export-wrap .flow-branch:only-child:after{display:none}.flow-export-wrap .flow-edge-row{display:flex;align-items:center;justify-content:center;gap:4px;position:relative;z-index:1;margin-top:-10px;margin-bottom:5px}.flow-export-wrap .flow-edge-label{position:relative;z-index:1;margin:0;border:1px solid #f7c5d0;border-radius:999px;background:#fff;color:#5a0e20;padding:2px 7px;font-family:var(--flow-font-family,Georgia,serif);font-size:10px;font-weight:900;letter-spacing:.35px;text-transform:uppercase;box-shadow:0 2px 6px rgba(140,10,38,.08)}.flow-export-wrap .flow-edge-label.yes{background:#d4f5e8;color:#1a8c5c;border-color:#1a8c5c}.flow-export-wrap .flow-edge-label.no{background:#fce8ed;color:#c0173d;border-color:#c0173d}.flow-export-wrap .flow-node-tools,.flow-export-wrap .flow-selection-panel,.flow-export-wrap button{display:none!important}' +
+    '.flow-export-page{max-width:10.55in;height:7.15in;overflow:hidden;padding:0}.flow-export-wrap{position:relative;height:7.15in;overflow:hidden;display:flex;align-items:flex-start;justify-content:center}.flow-export-wrap .flow-link-layer{position:absolute;left:0;top:0;z-index:0;pointer-events:none;overflow:visible}.flow-export-wrap .flow-link-path{fill:none;stroke:#c0173d;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:7 5}.flow-export-wrap .flow-link-marker{display:none}.flow-export-wrap .flow-tree{position:relative;z-index:1;display:flex;justify-content:center;min-width:max-content;padding:0;zoom:var(--flow-export-zoom,.58);font-family:var(--flow-font-family,Georgia,serif)}.flow-export-wrap .flow-node-wrap{display:flex;flex-direction:column;align-items:center;min-width:132px}.flow-export-wrap .flow-node-row{display:flex;align-items:flex-start;justify-content:center;gap:5px}.flow-export-wrap .flow-node{position:relative;max-width:166px;min-width:126px;background:#fff;border:2px solid #9a8d92;border-radius:10px;padding:7px 8px;text-align:center;color:#1e0d10;font-family:var(--flow-font-family,Georgia,serif);font-size:16px;line-height:1.12;font-weight:800;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word;box-shadow:0 3px 8px rgba(140,10,38,.08)}.flow-export-wrap .flow-node.question{border-radius:6px}.flow-export-wrap .flow-node.terminal,.flow-export-wrap .flow-node.start{border-radius:999px;color:#5a0e20}.flow-export-wrap .flow-node.plain{border-radius:3px}.flow-export-wrap .flow-node.repeat{border-style:dashed;color:#7a6468}.flow-export-wrap .flow-node-kind{font-size:7px;text-transform:uppercase;letter-spacing:.8px;color:#7a6468;font-weight:900;margin-bottom:2px}.flow-export-wrap .flow-node.question .flow-node-kind{color:#9b5b00}.flow-export-wrap .flow-node-text{min-height:18px;padding:1px 2px;max-width:100%;overflow-wrap:anywhere;word-break:break-word}.flow-export-wrap .flow-note-card{width:88px;min-height:50px;border:1px solid rgba(90,14,32,.16);border-radius:6px;background:#fff4a8;color:#4a3038;padding:6px 6px;font-family:var(--flow-font-family,Georgia,serif);font-size:9.5px;line-height:1.12;text-align:left;box-shadow:0 3px 8px rgba(90,14,32,.1);transform:rotate(-1.4deg)}.flow-export-wrap .flow-note-card:before{content:"";display:block;width:28px;height:6px;margin:-9px auto 3px;border-radius:999px;background:rgba(255,255,255,.72);box-shadow:0 1px 2px rgba(90,14,32,.1)}.flow-export-wrap .flow-branches{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(136px,max-content);gap:8px;margin-top:22px;align-items:start}.flow-export-wrap .flow-branch{position:relative;display:flex;flex-direction:column;align-items:center}.flow-export-wrap .flow-branch:before{content:"";position:absolute;top:-20px;left:50%;width:2px;height:16px;background:#f7c5d0}.flow-export-wrap .flow-branch:after{content:"";position:absolute;top:-20px;left:0;right:0;height:2px;background:#f7c5d0}.flow-export-wrap .flow-branch:first-child:after{left:50%}.flow-export-wrap .flow-branch:last-child:after{right:50%}.flow-export-wrap .flow-branch:only-child:after{display:none}.flow-export-wrap .flow-edge-row{display:flex;align-items:center;justify-content:center;gap:4px;position:relative;z-index:1;margin-top:-10px;margin-bottom:5px}.flow-export-wrap .flow-edge-label{position:relative;z-index:1;margin:0;border:1px solid #f7c5d0;border-radius:999px;background:#fff;color:#5a0e20;padding:2px 7px;font-family:var(--flow-font-family,Georgia,serif);font-size:10px;font-weight:900;letter-spacing:.35px;text-transform:uppercase;box-shadow:0 2px 6px rgba(140,10,38,.08)}.flow-export-wrap .flow-edge-label.yes{background:#d4f5e8;color:#1a8c5c;border-color:#1a8c5c}.flow-export-wrap .flow-edge-label.no{background:#fce8ed;color:#c0173d;border-color:#c0173d}.flow-export-wrap .flow-node-tools,.flow-export-wrap .flow-selection-panel,.flow-export-wrap button{display:none!important}' +
     portraitTweaks +
     '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.bb-export-scale-wrap{zoom:var(--bb-export-scale,1);transform:none;width:auto;min-height:0}}</style></head><body style="--bb-export-scale:' + printScale + '"><div class="bb-export-scale-wrap">' + content + '</div>' + flowExportScript + '</body></html>';
 }
