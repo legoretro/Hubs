@@ -101,6 +101,7 @@ textarea{resize:none;overflow:hidden}
 .rbc-map-actions{display:none;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}.admin-mode .rbc-map-actions{display:flex}
 .rbc-help{font-size:12px;color:var(--warm-grey);line-height:1.35}
 .export-choice-list{display:grid;gap:8px;text-align:left;margin:14px 0}.export-choice-list label{display:flex;gap:8px;align-items:flex-start;border:1px solid var(--rose);background:#fff;border-radius:10px;padding:9px 10px;font-size:13px;color:var(--dark);cursor:pointer}.export-choice-list input{margin-top:2px;accent-color:var(--crimson)}
+.ency-export-box{max-width:620px;width:min(94vw,620px);max-height:90vh;overflow:auto;text-align:left}.ency-export-box h3{text-align:center}.ency-export-actions{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 4px}.ency-export-mini{border:1px solid var(--rose);background:#fff;color:var(--wine);border-radius:999px;padding:6px 10px;font-size:11px;font-weight:900}.ency-export-mini:hover{border-color:var(--crimson);background:var(--blush)}.export-choice-list .export-group-label{display:block;margin:10px 0 2px;font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--warm-grey);font-weight:900}.export-choice-list label.is-checked{border-color:var(--crimson);background:var(--blush);box-shadow:0 0 0 2px rgba(192,23,61,.08)}.export-choice-main{font-weight:900;color:var(--wine);line-height:1.15}.export-choice-sub{font-size:11px;color:var(--warm-grey);line-height:1.25;margin-top:2px}.ency-export-summary{font-size:12px;color:var(--warm-grey);font-weight:800;text-align:center;margin:8px 0 12px}
 .admin-only-inline{display:none}.admin-mode .admin-only-inline{display:inline-flex}
 .flash-launch{border:0;background:linear-gradient(135deg,#fff36a,#ff9fb5 48%,#7bdff2);color:#4b0820;border-radius:999px;padding:10px 18px;font-size:14px;font-weight:900;box-shadow:0 8px 20px rgba(192,23,61,.18);display:inline-flex;align-items:center;gap:8px;max-width:100%;white-space:normal;line-height:1.2;text-align:left}
 .flash-launch:hover{transform:translateY(-1px);filter:saturate(1.08)}
@@ -339,8 +340,9 @@ textarea{resize:none;overflow:hidden}
 .flow-action-group{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .flow-canvas{border:1px solid var(--rose);border-radius:18px;background:linear-gradient(180deg,#fff,#fff7f9);height:calc(100vh - 250px);min-height:560px;max-height:760px;padding:18px;overflow:auto;scroll-padding:150px 24px 210px;-webkit-overflow-scrolling:touch}
 #flowchartPreview{position:relative;min-width:max-content}
-.flow-link-layer{position:absolute;left:0;top:0;z-index:0;pointer-events:none;overflow:visible}
+.flow-link-layer{position:absolute;left:0;top:0;z-index:0;pointer-events:none;overflow:visible}.admin-mode .flow-link-layer{pointer-events:auto}
 .flow-link-path{fill:none;stroke:var(--crimson);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:7 5;opacity:.86}
+.flow-link-hit{fill:none;stroke:transparent;stroke-width:16;stroke-linecap:round;stroke-linejoin:round;pointer-events:stroke;cursor:pointer}.admin-mode .flow-link-hit:hover+.flow-link-path{stroke-width:4;opacity:1}
 .flow-tree{position:relative;z-index:1;display:flex;justify-content:center;min-width:max-content;padding:8px 22px 220px}
 .flow-node-wrap{display:flex;flex-direction:column;align-items:center;min-width:190px}
 .flow-node-row{display:flex;align-items:flex-start;justify-content:center;gap:10px}
@@ -571,6 +573,28 @@ textarea{resize:none;overflow:hidden}
   </div>
 </div>
 
+<!-- ENCYCLOPEDIA EXPORT MODAL -->
+<div class="modal-overlay" id="encyExportModal">
+  <div class="modal-box ency-export-box">
+    <div style="font-size:28px;text-align:center;margin-bottom:8px">📚</div>
+    <h3>Export Encyclopedia Pages</h3>
+    <p style="text-align:center">Choose one page or print a whole bundle at once.</p>
+    <div class="ency-export-actions">
+      <button class="ency-export-mini" onclick="setEncyclopediaExportSelection('current')">Current</button>
+      <button class="ency-export-mini" onclick="setEncyclopediaExportSelection('usual')">All Usual</button>
+      <button class="ency-export-mini" onclick="setEncyclopediaExportSelection('study')">General + Usual</button>
+      <button class="ency-export-mini" onclick="setEncyclopediaExportSelection('all')">Everything</button>
+      <button class="ency-export-mini" onclick="setEncyclopediaExportSelection('none')">Clear</button>
+    </div>
+    <div class="export-choice-list" id="encyExportChoices"></div>
+    <div class="ency-export-summary" id="encyExportSummary">0 selected</div>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="runEncyclopediaExport()">Export Selected</button>
+      <button class="btn btn-ghost" onclick="document.getElementById('encyExportModal').classList.remove('visible')">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <!-- GEL MODAL -->
 <div class="modal-overlay" id="gelModal">
   <div class="modal-box" style="max-width:560px">
@@ -696,7 +720,7 @@ textarea{resize:none;overflow:hidden}
     <div class="sys-card" style="border-top:3px solid var(--crimson);margin-bottom:16px">
       <div class="sec-label" style="margin-bottom:10px">Encyclopedia PDF</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-primary btn-sm" onclick="exportCurrentSystemPage()">Print / Save PDF</button>
+        <button class="btn btn-primary btn-sm" onclick="openEncyclopediaExportModal()">Export Encyclopedia</button>
         <button class="flash-launch" onclick="openFlashcardPractice()">Ready to practice flashcards? Click here.</button>
       </div>
     </div>
@@ -1857,7 +1881,7 @@ function collectFlowLinkBranches(data) {
     (data.nodes[id].branches || []).forEach(function(branch) {
       if (!data.nodes[branch.to]) return;
       if (isFlowLinkBranch(data, id, branch, path, layout)) {
-        links.push({from:id, to:branch.to, label:branch.label || 'Next'});
+        links.push({from:id, to:branch.to, branchId:branch.id, label:branch.label || 'Next'});
       } else {
         walk(branch.to, path.concat(id));
       }
@@ -1896,7 +1920,9 @@ function drawFlowLinkLines(data) {
     const y2 = b.top - previewRect.top;
     const midY = y1 + (y2 - y1) / 2;
     const path = 'M ' + x1.toFixed(1) + ' ' + y1.toFixed(1) + ' C ' + x1.toFixed(1) + ' ' + midY.toFixed(1) + ', ' + x2.toFixed(1) + ' ' + midY.toFixed(1) + ', ' + x2.toFixed(1) + ' ' + y2.toFixed(1);
-    return '<path class="flow-link-path" d="' + path + '"/>';
+    const deleteAttrs = isAdmin ? ' data-flow-link-from="' + escAttr(link.from) + '" data-flow-link-branch="' + escAttr(link.branchId || '') + '" onclick="deleteFlowConnectionLine(\'' + escAttr(link.from) + '\',\'' + escAttr(link.branchId || '') + '\')"' : '';
+    const hit = isAdmin ? '<path class="flow-link-hit" d="' + path + '"' + deleteAttrs + '><title>Click to delete this line</title></path>' : '';
+    return hit + '<path class="flow-link-path" d="' + path + '"/>';
   }).join('');
 }
 
@@ -2252,6 +2278,19 @@ function deleteFlowBranch(parentId, branchId) {
   parent.branches = parent.branches.filter(function(branch){ return branch.id !== branchId; });
   pruneUnreachableFlowNodes(data);
   saveFlowchartData(data, true);
+}
+
+function deleteFlowConnectionLine(parentId, branchId) {
+  if (window.event) window.event.stopPropagation();
+  if (!isAdmin || !parentId || !branchId) return;
+  const data = getFlowchartData();
+  const parent = data.nodes[parentId];
+  if (!parent) return;
+  const before = parent.branches.length;
+  parent.branches = parent.branches.filter(function(branch){ return branch.id !== branchId; });
+  if (parent.branches.length === before) return;
+  saveFlowchartData(data, true);
+  showToast('Connection line deleted');
 }
 
 function deleteFlowNode(id) {
@@ -4830,11 +4869,100 @@ function selectAllExport(val) {
   var boxes = document.querySelectorAll('#exportModal input[type="checkbox"]');
   for (var i = 0; i < boxes.length; i++) { boxes[i].checked = val; }
 }
-function openEncyclopediaExportModal() {
-  exportCurrentSystemPage();
+var ENCY_EXPORT_USUAL_KEYS = ['abo','rh','kell','duffy','kidd','mns','p1pk','lewis','lutheran'];
+var ENCY_EXPORT_ALL_KEYS = ['general'].concat(ENCY_EXPORT_USUAL_KEYS).concat(['lesser']);
+
+function getEncyclopediaExportLabel(key) {
+  if (key === 'general') return 'Comparison Table';
+  if (key === 'lesser') return 'All Lesser Systems';
+  var sys = SYSTEMS[key];
+  return sys ? sys.name.replace(' System','') : key;
 }
+
+function getEncyclopediaExportSub(key) {
+  if (key === 'general') return 'General comparison table and shared patterns';
+  if (key === 'lesser') return 'All lesser-known blood group systems table';
+  var sys = SYSTEMS[key];
+  return sys ? ((sys.isbt || '') + (sys.pun ? ' · ' + sys.pun : '')) : '';
+}
+
+function getEncyclopediaExportDefaultKeys() {
+  if (currentSystemKey && ENCY_EXPORT_ALL_KEYS.indexOf(currentSystemKey) >= 0) return [currentSystemKey];
+  return ['general'].concat(ENCY_EXPORT_USUAL_KEYS);
+}
+
+function renderEncyclopediaExportChoices(selectedKeys) {
+  var root = document.getElementById('encyExportChoices');
+  if (!root) return;
+  selectedKeys = selectedKeys || getEncyclopediaExportDefaultKeys();
+  var selected = {};
+  selectedKeys.forEach(function(key){ selected[key] = true; });
+  function item(key) {
+    var checked = selected[key] ? ' checked' : '';
+    var cls = selected[key] ? ' class="is-checked"' : '';
+    return '<label' + cls + '><input type="checkbox" value="' + escAttr(key) + '"' + checked + ' onchange="updateEncyclopediaExportSummary()">' +
+      '<span><span class="export-choice-main">' + exportText(getEncyclopediaExportLabel(key)) + '</span>' +
+      '<span class="export-choice-sub">' + exportText(getEncyclopediaExportSub(key)) + '</span></span></label>';
+  }
+  root.innerHTML =
+    '<div class="export-group-label">General</div>' + item('general') +
+    '<div class="export-group-label">Usual Suspects</div>' + ENCY_EXPORT_USUAL_KEYS.map(item).join('') +
+    '<div class="export-group-label">Lesser Known</div>' + item('lesser');
+  updateEncyclopediaExportSummary();
+}
+
+function getSelectedEncyclopediaExportKeys() {
+  return Array.from(document.querySelectorAll('#encyExportChoices input[type="checkbox"]:checked')).map(function(box){ return box.value; });
+}
+
+function setEncyclopediaExportSelection(mode) {
+  var keys;
+  if (mode === 'current') keys = getEncyclopediaExportDefaultKeys();
+  else if (mode === 'usual') keys = ENCY_EXPORT_USUAL_KEYS.slice();
+  else if (mode === 'study') keys = ['general'].concat(ENCY_EXPORT_USUAL_KEYS);
+  else if (mode === 'all') keys = ENCY_EXPORT_ALL_KEYS.slice();
+  else keys = [];
+  renderEncyclopediaExportChoices(keys);
+}
+
+function updateEncyclopediaExportSummary() {
+  var boxes = Array.from(document.querySelectorAll('#encyExportChoices input[type="checkbox"]'));
+  boxes.forEach(function(box) {
+    if (box.parentElement) box.parentElement.classList.toggle('is-checked', box.checked);
+  });
+  var selected = boxes.filter(function(box){ return box.checked; });
+  var summary = document.getElementById('encyExportSummary');
+  if (summary) summary.textContent = selected.length + ' selected';
+}
+
+function openEncyclopediaExportModal() {
+  renderEncyclopediaExportChoices(getEncyclopediaExportDefaultKeys());
+  document.getElementById('encyExportModal').classList.add('visible');
+}
+
+function buildSelectedEncyclopediaExportPage(keys) {
+  keys = keys && keys.length ? keys : getEncyclopediaExportDefaultKeys();
+  return keys.map(function(key) {
+    if (key === 'general') return buildGeneralComparisonExportPage('both');
+    if (key === 'lesser') return buildLesserSystemsExportPage();
+    return buildFullSystemExportPage(key);
+  }).join('');
+}
+
 function runEncyclopediaExport() {
-  exportCurrentSystemPage();
+  var keys = getSelectedEncyclopediaExportKeys();
+  if (!keys.length) {
+    showToast('Choose at least one encyclopedia page', true);
+    return;
+  }
+  document.getElementById('encyExportModal').classList.remove('visible');
+  var title = keys.length === 1
+    ? 'Blood Bank ' + getEncyclopediaExportLabel(keys[0]) + ' Export'
+    : 'Blood Bank Encyclopedia Bundle';
+  printExportHtml(buildSelectedEncyclopediaExportPage(keys), title, 'landscape', {
+    persistKey:'bloodbank-encyclopedia-bundle-scale',
+    hint:'Choose the encyclopedia pages once, then save the combined PDF.'
+  });
 }
 
 function buildAllFrequenciesExportPage(keys) {
