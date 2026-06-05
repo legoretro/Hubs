@@ -99,6 +99,9 @@ textarea{resize:none;overflow:hidden}
 .rbc-piece-chip{border:1px solid var(--rose);background:var(--blush);border-radius:999px;padding:4px 7px;font-size:11px;color:var(--warm-grey);display:inline-flex;align-items:center;gap:5px}
 .rbc-piece-chip strong{color:var(--wine)}.rbc-chip-x{border:none;background:transparent;color:var(--crimson);font-weight:900;padding:0 2px}
 .rbc-map-actions{display:none;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}.admin-mode .rbc-map-actions{display:flex}
+.rbc-copy-list{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.rbc-copy-chip{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--rose);background:#fff;color:var(--wine);border-radius:999px;padding:4px 8px;font-size:11px;font-weight:900}
+.rbc-copy-chip button{border:0;background:var(--crimson);color:#fff;border-radius:999px;width:17px;height:17px;line-height:15px;font-size:11px;font-weight:900;padding:0}
 .rbc-help{font-size:12px;color:var(--warm-grey);line-height:1.35}
 .export-choice-list{display:grid;gap:8px;text-align:left;margin:14px 0}.export-choice-list label{display:flex;gap:8px;align-items:flex-start;border:1px solid var(--rose);background:#fff;border-radius:10px;padding:9px 10px;font-size:13px;color:var(--dark);cursor:pointer}.export-choice-list input{margin-top:2px;accent-color:var(--crimson)}
 .ency-export-box{max-width:620px;width:min(94vw,620px);max-height:90vh;overflow:auto;text-align:left}.ency-export-box h3{text-align:center}.ency-export-actions{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 4px}.ency-export-mini{border:1px solid var(--rose);background:#fff;color:var(--wine);border-radius:999px;padding:6px 10px;font-size:11px;font-weight:900}.ency-export-mini:hover{border-color:var(--crimson);background:var(--blush)}.export-choice-list .export-group-label{display:block;margin:10px 0 2px;font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--warm-grey);font-weight:900}.export-choice-list label.is-checked{border-color:var(--crimson);background:var(--blush);box-shadow:0 0 0 2px rgba(192,23,61,.08)}.export-choice-main{font-weight:900;color:var(--wine);line-height:1.15}.export-choice-sub{font-size:11px;color:var(--warm-grey);line-height:1.25;margin-top:2px}.ency-export-summary{font-size:12px;color:var(--warm-grey);font-weight:800;text-align:center;margin:8px 0 12px}
@@ -4144,7 +4147,7 @@ function renderLesser(area) {
 // ============================================================
 function renderRbcDiagram() {
   const container = document.getElementById('rbcDiagramContainer');
-  container.innerHTML = (isAdmin ? '<div class="rbc-map-actions"><span class="rbc-help">This map uses placed copies. Drag/rotate copies for the print map without changing the encyclopedia originals.</span><button class="btn btn-ghost btn-sm" onclick="clearRbcMapCopies()">Clear placed copies</button></div>' : '') + buildFullRbcSVG();
+  container.innerHTML = (isAdmin ? '<div class="rbc-map-actions"><span class="rbc-help">This map uses placed copies. Drag/rotate copies for the print map without changing the encyclopedia originals.</span>' + renderRbcMapCopyChips() + '<button class="btn btn-ghost btn-sm" onclick="clearRbcMapCopies()">Clear placed copies</button></div>' : '') + buildFullRbcSVG();
   initRbcDrag(container);
 }
 
@@ -4242,6 +4245,106 @@ function makeRbcMapCopy(item, offsetIndex) {
   return copy;
 }
 
+function rbcMapCopyLabel(item) {
+  if (!item) return 'Copy';
+  if (item.unitLabel) return item.unitLabel;
+  if (Array.isArray(item.children) && item.children.length) {
+    var labels = item.children.map(function(child){ return child.label || child.type || ''; }).filter(Boolean);
+    return labels.slice(0, 3).join(' + ') || 'Grouped copy';
+  }
+  return item.label || item.type || 'Copy';
+}
+
+function relatedRbcUnitItems(items, seedId) {
+  items = (items || []).filter(function(item){ return item && item.id && rbcHiddenItems.indexOf(item.id) === -1; });
+  if (!seedId) return items.slice();
+  var byId = {};
+  items.forEach(function(item){ byId[item.id] = item; });
+  var chosen = {};
+  function include(id) {
+    if (!id || !byId[id] || chosen[id]) return;
+    chosen[id] = true;
+    if (byId[id].attachTo) include(byId[id].attachTo);
+    items.forEach(function(item) {
+      if (item.attachTo === id) include(item.id);
+    });
+  }
+  include(seedId);
+  var changed = true;
+  while (changed) {
+    changed = false;
+    items.forEach(function(item) {
+      if (chosen[item.id] && item.attachTo && byId[item.attachTo] && !chosen[item.attachTo]) {
+        chosen[item.attachTo] = true;
+        changed = true;
+      }
+      if (item.attachTo && chosen[item.attachTo] && !chosen[item.id]) {
+        chosen[item.id] = true;
+        changed = true;
+      }
+    });
+  }
+  return items.filter(function(item){ return chosen[item.id]; });
+}
+
+function makeRbcMapUnitCopy(items, offsetIndex, label) {
+  items = (items || []).filter(function(item){ return item && rbcHiddenItems.indexOf(item.id) === -1; });
+  if (!items.length) return null;
+  if (items.length === 1) return makeRbcMapCopy(items[0], offsetIndex);
+  var positions = items.map(function(item) {
+    return {item:item, pos:rbcPos(item)};
+  });
+  var centerX = positions.reduce(function(sum, entry){ return sum + (entry.pos.x || entry.item.x || 640); }, 0) / positions.length;
+  var centerY = positions.reduce(function(sum, entry){ return sum + (entry.pos.y || entry.item.y || 130); }, 0) / positions.length;
+  var offset = offsetIndex || 0;
+  var unitId = 'copy_unit_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+  var copy = {
+    id: unitId,
+    sourceId: items.map(function(item){ return item.id; }).join('|'),
+    mapCopy: true,
+    copyUnit: true,
+    custom: true,
+    preset: false,
+    showOnFullMap: true,
+    system: items[0].system || 'abo',
+    type: 'unit',
+    unitLabel: label || items.map(function(item){ return item.label || item.type || ''; }).filter(Boolean).slice(0, 3).join(' + ') || 'Grouped copy',
+    x: Math.min(1320, Math.max(30, centerX + 34 + offset * 14)),
+    y: Math.min(380, Math.max(34, centerY + 16 + offset * 10)),
+    r: 0,
+    children: positions.map(function(entry, index) {
+      var item = entry.item;
+      var pos = entry.pos;
+      return {
+        id: unitId + '_part_' + index,
+        sourceId: item.id,
+        custom: true,
+        mapCopyPart: true,
+        system: item.system,
+        label: item.label || '',
+        type: item.type || 'bead',
+        color: item.color || '#5a0e20',
+        size: item.size,
+        labelPos: item.labelPos,
+        labelOffsetBottom: item.labelOffsetBottom,
+        attachTo: item.attachTo || '',
+        x: (pos.x || item.x || 640) - centerX,
+        y: (pos.y || item.y || 130) - centerY,
+        r: pos.r || item.r || 0
+      };
+    })
+  };
+  rbcLayout[copy.id] = { x:copy.x, y:copy.y, r:copy.r || 0 };
+  return copy;
+}
+
+function renderRbcMapCopyChips() {
+  if (!rbcMapCopies.length) return '';
+  return '<div class="rbc-copy-list">' + rbcMapCopies.map(function(item) {
+    return '<span class="rbc-copy-chip">' + escText(rbcMapCopyLabel(item)) + '<button type="button" title="Delete this placed copy" onclick="deleteRbcMapCopy(\'' + escAttr(item.id) + '\')">x</button></span>';
+  }).join('') + '</div>';
+}
+
 function migrateLegacyRbcMapCopies() {
   if (rbcMapCopies.length) return;
   var legacy = rbcCustomItems.filter(function(item) {
@@ -4284,11 +4387,48 @@ function escAttr(value) {
   return escText(value);
 }
 
-function rbcShape(item) {
-  var p = rbcPos(item);
-  var drag = isAdmin ? ' rbc-draggable' : '';
-  var cursor = isAdmin ? 'cursor:move' : 'cursor:default';
+function rbcMapCopyBounds(item) {
+  if (Array.isArray(item.children) && item.children.length) {
+    var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    item.children.forEach(function(child) {
+      var size = Math.max(28, Number(child.size) || 42);
+      minX = Math.min(minX, (child.x || 0) - size - 24);
+      maxX = Math.max(maxX, (child.x || 0) + size + 24);
+      minY = Math.min(minY, (child.y || 0) - size - 42);
+      maxY = Math.max(maxY, (child.y || 0) + size + 48);
+    });
+    return {minX:minX, minY:minY, maxX:maxX, maxY:maxY};
+  }
+  var size = Math.max(34, Number(item.size) || 52);
+  return {minX:-size - 28, minY:-size - 52, maxX:size + 28, maxY:size + 72};
+}
+
+function rbcMapCopyDeleteControl(item) {
+  if (!isAdmin || !item.mapCopy) return '';
+  var b = rbcMapCopyBounds(item);
+  var x = Math.min(88, b.maxX + 12);
+  var y = Math.max(-88, b.minY - 8);
+  return '<g class="rbc-copy-delete" onpointerdown="event.stopPropagation()" onclick="event.stopPropagation();deleteRbcMapCopy(\'' + escAttr(item.id) + '\')" style="cursor:pointer">' +
+    '<circle cx="' + x + '" cy="' + y + '" r="13" fill="#c0173d" stroke="#fff" stroke-width="3"/>' +
+    '<text x="' + x + '" y="' + (y + 4) + '" fill="#fff" font-size="14" text-anchor="middle" font-weight="bold">x</text>' +
+    '<title>Delete this placed copy</title>' +
+  '</g>';
+}
+
+function rbcShape(item, options) {
+  options = options || {};
+  var p = options.position || rbcPos(item);
+  var drag = isAdmin && !options.locked ? ' rbc-draggable' : '';
+  var cursor = isAdmin && !options.locked ? 'cursor:move' : 'cursor:default';
   var transform = 'translate(' + p.x + ' ' + p.y + ') rotate(' + (p.r || 0) + ')';
+  if (Array.isArray(item.children) && item.children.length) {
+    return '<g class="rbc-item' + drag + '" data-rbc-id="' + escAttr(item.id) + '" transform="' + transform + '" style="' + cursor + '">' +
+      item.children.map(function(child) {
+        return rbcShape(child, {locked:true, position:{x:child.x || 0, y:child.y || 0, r:child.r || 0}});
+      }).join('') +
+      rbcMapCopyDeleteControl(item) +
+    '</g>';
+  }
   var body = '';
   var label = escText(item.label);
   var labelPos = item.labelPos || 'top';
@@ -4381,9 +4521,10 @@ function rbcShape(item) {
     body = '<rect x="-24" y="48" width="48" height="9" rx="5" fill="' + item.color + '" opacity=".75"/>' +
       '<line x1="0" y1="48" x2="0" y2="-22" stroke="' + item.color + '" stroke-width="2" stroke-dasharray="4,3"/>';
   }
-  return '<g class="rbc-item' + drag + '" data-rbc-id="' + item.id + '" transform="' + transform + '" style="' + cursor + '">' +
+  return '<g class="rbc-item' + drag + '" data-rbc-id="' + escAttr(item.id) + '" transform="' + transform + '" style="' + cursor + '">' +
     body +
     (label && labelPos !== 'none' ? '<text x="0" y="' + labelY + '" fill="' + item.color + '" font-size="14" text-anchor="middle" font-weight="bold">' + label + '</text>' : '') +
+    rbcMapCopyDeleteControl(item) +
   '</g>';
 }
 
@@ -4732,7 +4873,10 @@ function toggleCustomRbcMap(id) {
   if (!isAdmin) return;
   var item = rbcCustomItems.find(function(i){ return i.id === id; });
   if (!item) return;
-  rbcMapCopies.push(makeRbcMapCopy(item, rbcMapCopies.length % 5));
+  var systemItems = rbcCustomItems.filter(function(i){ return i.system === item.system && rbcHiddenItems.indexOf(i.id) === -1; });
+  var unitItems = relatedRbcUnitItems(systemItems, id);
+  var copy = makeRbcMapUnitCopy(unitItems, rbcMapCopies.length % 5);
+  if (copy) rbcMapCopies.push(copy);
   persistRbcBuilder();
   populateRbcTargetOptions();
   renderRbcCustomList();
@@ -4748,12 +4892,11 @@ function copySystemRbcToMap(systemKey, openMap) {
   var originals = rbcCustomItems.filter(function(item) {
     return item.system === systemKey && rbcHiddenItems.indexOf(item.id) === -1;
   });
-  originals.forEach(function(item, index) {
-    rbcMapCopies.push(makeRbcMapCopy(item, (rbcMapCopies.length + index) % 6));
-  });
+  var copy = makeRbcMapUnitCopy(relatedRbcUnitItems(originals), rbcMapCopies.length % 6, (SYSTEMS[systemKey] && SYSTEMS[systemKey].name ? SYSTEMS[systemKey].name : systemKey.toUpperCase()) + ' unit');
+  if (copy) rbcMapCopies.push(copy);
   persistRbcBuilder();
   refreshRbcViews();
-  showToast(originals.length ? 'Copied ' + originals.length + ' pieces to RBC map' : 'No system pieces to copy yet');
+  showToast(originals.length ? 'Copied as one movable unit on RBC map' : 'No system pieces to copy yet');
   if (openMap) openRbcMapFromSystem(systemKey);
 }
 
@@ -4775,6 +4918,18 @@ function clearRbcMapCopies() {
   rbcMapCopies = [];
   persistRbcBuilder();
   renderRbcDiagram();
+}
+
+function deleteRbcMapCopy(id) {
+  if (!isAdmin) return;
+  var before = rbcMapCopies.length;
+  rbcMapCopies = rbcMapCopies.filter(function(item){ return item.id !== id; });
+  if (rbcMapCopies.length === before) return;
+  delete rbcLayout[id];
+  persistRbcBuilder();
+  renderRbcDiagram();
+  renderRbcCustomList();
+  showToast('Placed copy deleted');
 }
 
 function blankRbcSystem() {
