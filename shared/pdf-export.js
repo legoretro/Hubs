@@ -44,6 +44,7 @@
       '.hub-pdf-custom{display:none;margin:0 0 14px}',
       '.hub-pdf-custom.visible{display:block}',
       '.hub-pdf-presets{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}',
+      '.hub-pdf-hidden{display:none!important}',
       '.hub-pdf-btn{border:1.5px solid rgba(16,40,58,.25)!important;border-radius:999px!important;background:#fff!important;color:#10283a!important;padding:8px 14px!important;font:900 14px/1 Georgia,"Times New Roman",serif!important;cursor:pointer!important;text-decoration:none!important;opacity:1!important}',
       '.hub-pdf-btn:hover{background:#f4fbff!important}',
       '.hub-pdf-btn.active{background:#0f7b61!important;color:#fff!important;border-color:#0f7b61!important}',
@@ -129,7 +130,7 @@
       '<p id="hubPdfSubtitle">Adjust the scale before Chrome opens Save as PDF.</p>'+
       '<div class="hub-pdf-layout">'+
         '<div class="hub-pdf-controls">'+
-          '<div class="hub-pdf-row">'+
+          '<div class="hub-pdf-row" data-pdf-scale-row>'+
             '<div class="hub-pdf-label"><span>Scale</span><span class="hub-pdf-value" data-pdf-value>100%</span></div>'+
             '<input class="hub-pdf-slider" data-pdf-scale type="range" min="40" max="120" step="1" value="100">'+
           '</div>'+
@@ -141,7 +142,7 @@
             '</div>'+
           '</div>'+
           '<div class="hub-pdf-custom" data-pdf-custom></div>'+
-          '<div class="hub-pdf-presets">'+
+          '<div class="hub-pdf-presets" data-pdf-scale-presets>'+
             '<button type="button" class="hub-pdf-btn" data-pdf-preset="0.55">Tiny fit</button>'+
             '<button type="button" class="hub-pdf-btn" data-pdf-preset="0.75">Compact</button>'+
             '<button type="button" class="hub-pdf-btn" data-pdf-preset="1">Full size</button>'+
@@ -258,6 +259,8 @@
     var saved=null;
     try{saved=localStorage.getItem(persistKey)}catch(e){}
     var defaultScale=clamp(saved||options.defaultScale||1,min,max);
+    var hideScaleControls=!!options.hideScaleControls;
+    if(hideScaleControls)defaultScale=clamp(options.defaultScale||1,min,max);
     var allowOrientation=!!options.allowOrientationToggle;
     var rememberOrientation=options.rememberOrientation!==false;
     var orientationPrefix=options.orientationClassPrefix||'';
@@ -270,6 +273,8 @@
       }catch(e){}
     }
     var slider=modal.querySelector('[data-pdf-scale]');
+    var scaleRow=modal.querySelector('[data-pdf-scale-row]');
+    var scalePresets=modal.querySelector('[data-pdf-scale-presets]');
     var value=modal.querySelector('[data-pdf-value]');
     var title=modal.querySelector('#hubPdfTitle');
     var subtitle=modal.querySelector('#hubPdfSubtitle');
@@ -285,6 +290,8 @@
     title.textContent=options.modalTitle||'Export PDF Settings';
     hint.textContent=Object.prototype.hasOwnProperty.call(options,'hint')?options.hint:'Chrome may not show a scale box, so this slider scales the page before the print dialog opens.';
     modal.className='hub-pdf-modal'+(options.modalClass?' '+String(options.modalClass):'');
+    if(scaleRow)scaleRow.classList.toggle('hub-pdf-hidden',hideScaleControls);
+    if(scalePresets)scalePresets.classList.toggle('hub-pdf-hidden',hideScaleControls);
     if(custom){
       custom.innerHTML=options.controlsHtml||'';
       custom.classList.toggle('visible',!!options.controlsHtml);
