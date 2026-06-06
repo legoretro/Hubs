@@ -236,7 +236,7 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
   </section>
 
   <section class="section" id="resources">
-    <div class="hero"><h1>Resources</h1><p>Keep your microbiology references here.</p></div>
+    <div class="hero"><h1>Resources and Attribution</h1><p>Information in editable cells is student input from the listed microbiology references.</p></div>
     <div class="grid">
       <article class="card"><div class="card-title"><h2>Resources</h2><span class="tag">List</span></div><div class="table-tools" data-tools-for="resources"></div><div class="table-slot" data-table-id="resources"></div></article>
     </div>
@@ -376,6 +376,17 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       ['HACEK organisms','Fastidious gram-negative rods/coccobacilli','Blood culture bottles; chocolate/enriched media','Fastidious growth; MALDI-TOF or biochemical identification','Endocarditis','Blood cultures'],
       ['Fusobacterium spp.','Anaerobic gram-negative rods','Anaerobic media','Anaerobic culture and identification','Vincent angina, bite/wound or oral-source infections','Throat/oral specimens, wounds'],
       ['Bacteroides fragilis group','Anaerobic gram-negative rods','Anaerobic media','Anaerobic culture and identification; susceptibility when needed','Intra-abdominal, sterile body fluid, wound/abscess infection','Peritoneal/abdominal sources, wounds, sterile body fluids']
+    ];
+  }
+  function microbiologyResourceRows(){
+    return [
+      ['Student Input','Editable microbiology tables, flowcharts, and study cells','Student input: cells are filled and edited by the student using the resources credited below.'],
+      ['Course Objectives','Final.docx','Student input from course final objectives; used to decide which bench topics, organisms, media, tests, diseases, and specimen locations belong in the Microbiology hub.'],
+      ['Reference Guideline','ascp_ascpi_mls_content_guideline.pdf','Student input from the ASCP/ASCPi MLS content guideline; used as an exam-scope reference for organism identification, media, biochemical tests, and laboratory methods.'],
+      ['Textbook / Review Book','Microbiology_Chapter_6.pdf','Student input from the Microbiology Chapter 6 review section; used for media, tests, organism workups, culture interpretation, and bench-study organization.'],
+      ['Class / Lab Resource','Micro_Lab_Practical.docx','Student input from lab-practical organism and unknown-workup materials when building editable study tables and organism flowcharts.'],
+      ['Class Document','Organism workup requirements','Student input from class workup requirements; used for required identification steps and practical unknown organism pathways.'],
+      ['Student Notes','Microbiology lecture and lab notes','Student input line for added lecture notes, instructor wording, and personal study edits.']
     ];
   }
   function worksheetMediaRows(){
@@ -1200,14 +1211,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         gram_negative:makeTable('Gram Negative Organisms',['Organism','Morphology','Media','Tests','Diseases','Location / Specimen'],worksheetGramNegativeRows(),false),
         media_tests:makeTable('Media',['Name','Purpose','Positive Result','Negative Result'],worksheetMediaRows(),true),
         micro_tests:makeTable('Tests',['Name','Purpose','Positive Result','Negative Result'],worksheetTestRows(),true),
-        resources:makeTable('Resources',['Type','Title','Notes'],[
-          ['Course Objectives','Final.docx','Used to build the objective-based organism-by-site starter tables.'],
-          ['Lab Practical','Micro_Lab_Practical.docx','Used for practical unknown organism names and minimum ID workup requirements.'],
-          ['Class Document','Organism workup requirements','MLS 444 unknown organism required ID workup.'],
-          ['PDF','ASCP MLS Content Guideline','Used to keep MLS-level identification method names aligned with exam categories.'],
-          ['PDF','Microbiology Chapter 6','Used for HE/XLD Salmonella, Haemophilus X/V, Moraxella, and Neisseria carbohydrate patterns.'],
-          ['Course Notes','Microbiology lecture and lab notes','Editable reference line.']
-        ],false)
+        resources:makeTable('Resources',['Type','Title','Notes'],microbiologyResourceRows(),false)
       },
       charts:defaultSpecimenCharts(bank),
       simpleCharts:defaultSimpleCharts()
@@ -1268,15 +1272,27 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var titleCol=table.columns.find(function(col){return /title/i.test(col.label||'')})||table.columns[1]||table.columns[0];
     var notesCol=table.columns.find(function(col){return /note/i.test(col.label||'')})||table.columns[2]||table.columns[0];
     var seen={};
-    table.rows.forEach(function(row){seen[normalizeCellText(row.cells&&row.cells[titleCol.id]).trim().toLowerCase()]=true});
-    [
-      ['Course Objectives','Final.docx','Used to build the objective-based organism-by-site starter tables.'],
-      ['Lab Practical','Micro_Lab_Practical.docx','Used for practical unknown organism names and minimum ID workup requirements.'],
-      ['Class Document','Organism workup requirements','MLS 444 unknown organism required ID workup.'],
-      ['PDF','ASCP MLS Content Guideline','Used to keep MLS-level identification method names aligned with exam categories.'],
-      ['PDF','Microbiology Chapter 6','Used for HE/XLD Salmonella, Haemophilus X/V, Moraxella, and Neisseria carbohydrate patterns.']
-    ].forEach(function(item){
-      if(seen[item[1].toLowerCase()])return;
+    function resourceKey(title){
+      var text=normalizeCellText(title).trim().toLowerCase().replace(/_/g,' ');
+      if(text.indexOf('editable microbiology')>-1||text.indexOf('student input')>-1)return 'student-input';
+      if(text.indexOf('final.docx')>-1)return 'final-objectives';
+      if(text.indexOf('ascp')>-1)return 'ascp-guideline';
+      if(text.indexOf('microbiology chapter 6')>-1)return 'microbiology-chapter-6';
+      if(text.indexOf('micro lab practical')>-1)return 'micro-lab-practical';
+      if(text.indexOf('organism workup')>-1)return 'organism-workup';
+      if(text.indexOf('microbiology lecture')>-1||text.indexOf('lab notes')>-1)return 'lecture-notes';
+      return text;
+    }
+    table.rows.forEach(function(row){seen[resourceKey(row.cells&&row.cells[titleCol.id])]=row});
+    microbiologyResourceRows().forEach(function(item){
+      var key=resourceKey(item[1]);
+      if(seen[key]){
+        var existing=seen[key];
+        if(typeCol)existing.cells[typeCol.id]=item[0];
+        if(titleCol)existing.cells[titleCol.id]=item[1];
+        if(notesCol)existing.cells[notesCol.id]=item[2];
+        return;
+      }
       var cells={};
       table.columns.forEach(function(col){cells[col.id]=''});
       if(typeCol)cells[typeCol.id]=item[0];
