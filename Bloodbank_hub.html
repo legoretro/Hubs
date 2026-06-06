@@ -932,6 +932,7 @@ let rbcCustomItems = [];
 let rbcMapCopies = [];
 let rbcHiddenItems = [];
 let rbcSelectedMapIds = [];
+let rbcQuickPiecePrefs = {};
 let rbcToolScope = 'abo';
 let rbcEditingItemId = null;
 let antigramCase = null;
@@ -1039,6 +1040,7 @@ function hydrateNotesData(data) {
   rbcCustomItems = Array.isArray(notesData.__rbcCustomItems) ? notesData.__rbcCustomItems : [];
   rbcMapCopies = Array.isArray(notesData.__rbcMapCopies) ? notesData.__rbcMapCopies : [];
   rbcHiddenItems = Array.isArray(notesData.__rbcHiddenItems) ? notesData.__rbcHiddenItems : [];
+  rbcQuickPiecePrefs = notesData.__rbcQuickPiecePrefs && typeof notesData.__rbcQuickPiecePrefs === 'object' ? notesData.__rbcQuickPiecePrefs : {};
   ensurePresetRbcItems();
   migrateLegacyRbcMapCopies();
 }
@@ -4881,13 +4883,38 @@ function updateRbcShapePreview() {
   if (copy) copy.textContent = 'Preview uses your selected color, size, and text placement. Add it, then drag it exactly where you want.';
 }
 
+function normalizeRbcQuickColor(value, fallback) {
+  value = String(value || '').trim();
+  fallback = String(fallback || '#c0173d').trim();
+  return /^#[0-9a-f]{6}$/i.test(value) ? value : (/^#[0-9a-f]{6}$/i.test(fallback) ? fallback : '#c0173d');
+}
+
+function rbcQuickPrefsFor(systemKey, fallbackColor) {
+  systemKey = systemKey || rbcToolScope || currentSystemKey || 'abo';
+  var prefs = rbcQuickPiecePrefs && rbcQuickPiecePrefs[systemKey] ? rbcQuickPiecePrefs[systemKey] : {};
+  return {
+    color: normalizeRbcQuickColor(prefs.color, fallbackColor || '#c0173d')
+  };
+}
+
+function rememberRbcQuickColor(systemKey, color) {
+  systemKey = systemKey || rbcToolScope || currentSystemKey || 'abo';
+  if (!rbcQuickPiecePrefs || typeof rbcQuickPiecePrefs !== 'object') rbcQuickPiecePrefs = {};
+  rbcQuickPiecePrefs[systemKey] = Object.assign({}, rbcQuickPiecePrefs[systemKey] || {}, {
+    color: normalizeRbcQuickColor(color, '#c0173d')
+  });
+  notesData.__rbcQuickPiecePrefs = rbcQuickPiecePrefs;
+  scheduleSave();
+}
+
 function renderRbcMaker(systemKey, color) {
   if (!isAdmin) return '';
+  var quickPrefs = rbcQuickPrefsFor(systemKey, color);
   var tray = buildRbcPieceTray(systemKey);
   return '<div class="rbc-maker">' +
     '<div class="rbc-maker-top">' +
       '<input class="rbc-mini-field" id="rbcQuickLabel" placeholder="Text, antigen, or note">' +
-      '<input class="rbc-mini-field" id="rbcQuickColor" type="color" value="' + escText(color || '#c0173d') + '">' +
+      '<input class="rbc-mini-field" id="rbcQuickColor" type="color" value="' + escText(quickPrefs.color) + '" oninput="rememberRbcQuickColor(\'' + systemKey + '\', this.value)" onchange="rememberRbcQuickColor(\'' + systemKey + '\', this.value)">' +
       '<input class="rbc-mini-field" id="rbcQuickSize" type="number" min="4" max="140" value="18" title="Size">' +
       '<button class="btn btn-primary btn-sm" onclick="copySystemRbcToMap(\'' + systemKey + '\', true)">Copy to RBC map</button>' +
     '</div>' +
@@ -4924,7 +4951,8 @@ function quickAddRbcPiece(systemKey, type) {
   var sizeEl = document.getElementById('rbcQuickSize');
   var label = (labelEl && labelEl.value ? labelEl.value : '').trim();
   if (type === 'label' && !label) label = 'Text';
-  var color = (colorEl && colorEl.value) || '#c0173d';
+  var color = normalizeRbcQuickColor(colorEl && colorEl.value, (rbcQuickPrefsFor(systemKey) || {}).color || '#c0173d');
+  rememberRbcQuickColor(systemKey, color);
   var defaultSize = type === 'connector' ? 54 : (type === 'anchor-stem' ? 72 : (type === 'branch' ? 48 : (type === 'adsorbed' ? 58 : 18)));
   var enteredSize = parseFloat(sizeEl && sizeEl.value);
   if ((type === 'anchor-stem' || type === 'branch' || type === 'adsorbed' || type === 'connector') && (!enteredSize || enteredSize === 18)) enteredSize = defaultSize;
@@ -5306,6 +5334,7 @@ function persistRbcBuilder() {
   notesData.__rbcCustomItems = rbcCustomItems;
   notesData.__rbcMapCopies = rbcMapCopies;
   notesData.__rbcHiddenItems = rbcHiddenItems;
+  notesData.__rbcQuickPiecePrefs = rbcQuickPiecePrefs;
   notesData.__rbcLayout = rbcLayout;
   notesData.__rbcLayoutVersion = 2;
   scheduleSave();
