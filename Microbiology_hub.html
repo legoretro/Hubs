@@ -167,8 +167,8 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
           <div class="lab-header"><div class="lab-icon">MB</div><div><div class="lab-name">Microbiology Workflow</div><div class="lab-sub">Organism to identification</div></div></div>
           <p class="lab-copy">Use this as a student-built space for morphology, Gram reaction, colony appearance, media, biochemical tests, and chart-based identification logic.</p>
           <div class="lab-quick-grid">
-            <button class="lab-quick" onclick="showSection('gramPositive')"><strong>Gram Positive</strong><span>Add your organisms, images, colony notes, and ID clues.</span></button>
-            <button class="lab-quick" onclick="showSection('gramNegative')"><strong>Gram Negative</strong><span>Build enteric, non-fermenter, respiratory, and other organism tables.</span></button>
+            <button class="lab-quick" onclick="showSection('gramPositive')"><strong>Gram Positive</strong><span>Organism, morphology, media, tests, diseases, and location/specimen.</span></button>
+            <button class="lab-quick" onclick="showSection('gramNegative')"><strong>Gram Negative</strong><span>Enteric, non-fermenter, respiratory, anaerobe, and special-workup organisms.</span></button>
             <button class="lab-quick" onclick="showSection('charts')"><strong>Organism Flowcharts</strong><span>Build downward ID workups from Gram stain to final bacteria.</span></button>
           </div>
         </article>
@@ -205,14 +205,14 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
   </section>
 
   <section class="section" id="gramPositive">
-    <div class="hero"><h1>Gram Positive</h1><p>Editable organism tables for Gram-positive cocci, rods, spores, morphology, and ID clues.</p></div>
+    <div class="hero"><h1>Gram Positive</h1><p>Editable organism tables with morphology, media, tests, diseases, and location/specimen.</p></div>
     <div class="grid">
       <article class="card"><div class="card-title"><h2>Gram Positive Organisms</h2><span class="tag">Organisms</span></div><div class="table-tools" data-tools-for="gram_positive"></div><div class="table-slot" data-table-id="gram_positive"></div></article>
     </div>
   </section>
 
   <section class="section" id="gramNegative">
-    <div class="hero"><h1>Gram Negative</h1><p>Editable organism tables for Gram-negative rods, cocci, coccobacilli, oxidase patterns, and ID clues.</p></div>
+    <div class="hero"><h1>Gram Negative</h1><p>Editable organism tables with morphology, media, tests, diseases, and location/specimen.</p></div>
     <div class="grid">
       <article class="card"><div class="card-title"><h2>Gram Negative Organisms</h2><span class="tag">Organisms</span></div><div class="table-tools" data-tools-for="gram_negative"></div><div class="table-slot" data-table-id="gram_negative"></div></article>
     </div>
@@ -269,7 +269,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   var safeDoc=null;
   var syncPresence=null;
   var SPECIMEN_BANK_VERSION=6;
-  var WORKUP_REQUIREMENTS_VERSION=2;
+  var WORKUP_REQUIREMENTS_VERSION=3;
   var SITE_WORKUP_VERSION=3;
   var SIMPLE_CHART_VERSION=2;
   var MEDIA_TESTS_VERSION=2;
@@ -338,30 +338,44 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function worksheetGramPositiveRows(){
     return [
-      ['Staphylococcus aureus','Gram-positive cocci in clusters','CM & GS; HM','Catalase (+); Staph Latex (+)','Required-only row from class workup.'],
-      ['Staph coagulase negative','Gram-positive cocci in clusters','CM & GS','Catalase (+); Staph Latex (=)','Required-only row from class workup.'],
-      ['Enterococcus sp.','Gram-positive cocci in pairs/chains','CM & GS','Catalase (=); PYR positive; 6.5% NaCl positive','Required-only row from class workup.'],
-      ['Streptococcus pyogenes','Gram-positive cocci in chains','CM & GS; HM','Catalase (=); StrepPro Reagent A positive','Required Group A Strep workup.'],
-      ['Streptococcus agalactiae','Gram-positive cocci in chains','CM & GS; HM','Catalase (=); StrepPro Reagent B positive','Required Group B Strep workup.'],
-      ['Streptococcus pneumoniae','Gram-positive lancet diplococci/pairs','CM & GS; HM; alpha hemolysis','Catalase (=); bile solubility or Taxo P positive','Required-only row from class workup.'],
-      ['Viridans group Streptococcus','Gram-positive cocci in chains/pairs','CM & GS; HM; alpha hemolysis','Catalase (=); bile solubility or Taxo P negative','Required-only row from class workup.'],
-      ['Corynebacterium sp.','Characteristic pleomorphic Gram-positive rods','CM & GS','Catalase (+); characteristic gram stain','Required-only row from class workup.'],
-      ['Probable Listeria monocytogenes','Small Gram-positive rods/coccobacilli','CM & GS; HM','Catalase (+); tumbling motility at room temp positive','Required-only row from class workup.'],
-      ['Bacillus sp. NOT anthracis','Gram-positive spore-forming rods','CM & GS; HM','Catalase (+); motility positive or beta hemolysis','Required Bacillus-not-anthracis support.']
+      ['Staphylococcus aureus','Gram-positive cocci in clusters; often beta-hemolytic','SBA; MSA when needed','Catalase positive; coagulase or Staph latex positive; mannitol fermentation on MSA','Skin and soft tissue infection, abscess, wound infection, pneumonia, bacteremia, endocarditis, shunt/device infection','Skin, wounds, blood, respiratory specimens, CSF shunts, urine when significant'],
+      ['Coagulase-negative Staphylococcus','Gram-positive cocci in clusters; white/gray and often nonhemolytic','SBA; blood culture bottles; MSA if differentiating staphylococci','Catalase positive; coagulase/Staph latex negative; novobiocin helps separate S. saprophyticus','Common skin flora or contaminant; catheter/device infection; shunt infection; S. saprophyticus UTI','Skin, blood cultures, CSF shunts, urine, device-related specimens'],
+      ['Enterococcus spp.','Gram-positive cocci in pairs/chains; often gamma hemolytic','SBA; bile esculin; 6.5% NaCl broth','Catalase negative; PYR positive; bile esculin positive; growth in 6.5% NaCl','UTI, bacteremia, endocarditis, wound or intra-abdominal infection','Urine, blood, wounds, GI/GU flora sources'],
+      ['Streptococcus pyogenes','Gram-positive cocci in chains; beta-hemolytic','SBA; throat culture plates with anaerobic incubation or stab/cut area','Catalase negative; Group A StrepPro/Lancefield positive; PYR positive; bacitracin susceptible','Pharyngitis, impetigo, cellulitis, erysipelas, scarlet fever, necrotizing fasciitis, post-strep sequelae','Throat, skin, wounds'],
+      ['Streptococcus agalactiae','Gram-positive cocci in chains; beta-hemolytic','SBA; LIM enrichment for genital/rectal screening','Catalase negative; Group B StrepPro/Lancefield positive; CAMP positive; hippurate positive; PYR negative','Neonatal sepsis/meningitis, pregnancy-associated GBS, UTI, invasive disease','Genital/rectal screening, urine, blood, CSF'],
+      ['Streptococcus pneumoniae','Gram-positive lancet-shaped diplococci; alpha-hemolytic','SBA or chocolate agar; CO2 incubation','Catalase negative; optochin/Taxo P susceptible; bile soluble','Pneumonia, meningitis, otitis media, sinusitis, bacteremia','Respiratory specimens, CSF, blood, ear specimens'],
+      ['Viridans group Streptococcus','Gram-positive cocci in chains/pairs; alpha-hemolytic','SBA; blood culture bottles','Catalase negative; optochin resistant; bile insoluble','Subacute endocarditis; oral flora; mixed wound/oral-source infections','Oral/upper respiratory flora, blood cultures, wounds'],
+      ['Nutritionally variant Streptococcus','Gram-positive cocci in chains; fastidious growth','Enriched media with pyridoxal or vitamin B6 support','Satellite/fastidious growth requirement; confirm by advanced ID','Endocarditis and bacteremia','Blood cultures'],
+      ['Listeria monocytogenes','Small gram-positive rods/coccobacilli; narrow beta hemolysis','SBA; enrichment when needed','Catalase positive; tumbling motility at room temperature; umbrella motility; CAMP positive; hippurate positive; esculin positive','Meningitis and sepsis in neonates, older adults, pregnant, or immunocompromised patients','CSF, blood'],
+      ['Corynebacterium diphtheriae / Corynebacterium spp.','Pleomorphic club-shaped gram-positive rods; palisades/Chinese-letter arrangement','SBA; Tinsdale agar; Loeffler agar','Catalase positive; characteristic Gram stain; Elek toxin test for C. diphtheriae','Diphtheria for toxigenic C. diphtheriae; diphtheroids often skin flora/contaminants unless clinically significant','Throat, wounds, skin/urine contaminants'],
+      ['Bacillus spp. NOT anthracis','Large spore-forming gram-positive rods','SBA','Catalase positive; motility positive and/or beta hemolysis support non-anthracis Bacillus','Often environmental contaminant; can matter in traumatic/deep wounds or selected clinical contexts','Wounds, blood culture contaminants, environmental sources'],
+      ['Erysipelothrix rhusiopathiae','Slender gram-positive rods; may form long filaments','SBA and H2S-supporting media/tests','Catalase negative; H2S positive; nonmotile','Erysipeloid after animal, fish, or meat exposure','Skin/wound specimens'],
+      ['Arcanobacterium haemolyticum','Gram-positive rods/coccobacilli; beta-hemolytic','SBA','Catalase negative; reverse CAMP positive','Pharyngitis; wound infection','Throat, wounds'],
+      ['Gardnerella vaginalis','Gram-variable rods/coccobacilli','Vaginal wet prep/Gram stain evaluation; specialized media if cultured','Clue cells; Nugent scoring pattern; hippurate/starch may support ID','Bacterial vaginosis','Vaginal/genital specimens']
     ];
   }
   function worksheetGramNegativeRows(){
     return [
-      ['Probable E. coli','Gram-negative rod','Lactose fermenter positive; bile precipitate','CM & GS; HM; Indole (+)','Required-only row from class workup.'],
-      ['Probable Klebsiella pneumoniae','Gram-negative rod','Mucoid lactose fermenter positive','CM & GS; Indole (=)','Required-only row from class workup.'],
-      ['Probable Proteus mirabilis','Gram-negative rod','Swarming positive','CM & GS; Indole (=)','Required-only row from class workup.'],
-      ['Probable Aeromonas hydrophilia','Gram-negative rod','Oxidase positive','CM & GS; Indole (+); Oxidase (+)','Required oxidase-positive, indole-positive workup.'],
-      ['Probable Salmonella spp.','Gram-negative rod','HE/XLD characteristic growth: H2S black precipitate/black center','CM & GS; HE or XLD characteristic growth','Book source used for the missing HE/XLD result pattern.'],
-      ['Pseudomonas aeruginosa','Gram-negative rod','Oxidase positive; pigment/cetrimide positive','CM & GS; Oxidase (+); pigment; cetrimide','Required-only row from class workup.'],
-      ['Haemophilus influenzae/hemolyticus','Gram-negative coccobacillus','Oxidase positive; requires X and V factors','CM & GS; Oxidase (+); X&V disks: X + V required','Book source used for X/V disk result pattern.'],
-      ['Haemophilus parainfluenzae/parahemolyticus','Gram-negative coccobacillus','Oxidase positive; requires V factor only','CM & GS; Oxidase (+); X&V disks: V required, X not required','Book source used for X/V disk result pattern.'],
-      ['Moraxella catarrhalis','Gram-negative diplococci','Oxidase positive; carbohydrate negative','CM & GS; Oxidase (+); CAT Screen disk positive','Book source supports oxidase-positive GN diplococci and Moraxella butyrate/DNase positive pattern.'],
-      ['Neisseria gonorrhoeae','Gram-negative diplococci','Oxidase positive; CTA glucose only','CM & GS; Oxidase (+); carbohydrate results: glucose positive, maltose/lactose/sucrose negative','Book source used for carbohydrate results.']
+      ['Escherichia coli','Gram-negative rod','SBA; MacConkey/EMB; sorbitol MacConkey for O157:H7','Lactose fermenter; indole positive; bile precipitate pattern; O157:H7 is sorbitol negative','UTI, sepsis, neonatal meningitis, gastroenteritis including E. coli O157:H7','Urine, stool, blood, CSF'],
+      ['Klebsiella pneumoniae','Gram-negative rod; mucoid colonies','SBA; MacConkey','Mucoid lactose fermenter; K. pneumoniae usually indole negative','Pneumonia, UTI, bacteremia/sepsis','Respiratory specimens, urine, blood'],
+      ['Proteus mirabilis','Gram-negative rod; swarming growth','SBA; MacConkey','Swarming; urease positive; H2S positive; indole negative','UTI, wound infection, stone-associated urinary disease','Urine, wounds'],
+      ['Aeromonas hydrophila','Gram-negative rod','SBA; MacConkey','Oxidase positive; indole positive','Gastroenteritis; wound infection after water exposure','Stool, wounds, water-exposure specimens'],
+      ['Salmonella spp.','Gram-negative rod; non-lactose fermenter','HE, XLD, SS, MacConkey, stool culture media','H2S black precipitate/black center on HE/XLD; TSI/LIA support; motile','Gastroenteritis, enteric fever, bacteremia','Stool, blood'],
+      ['Shigella spp.','Gram-negative rod; non-lactose fermenter','HE, XLD, SS, MacConkey, stool culture media','H2S negative; nonmotile; biochemical ID support','Dysentery/gastroenteritis','Stool'],
+      ['Campylobacter jejuni','Curved gram-negative rod','Campy media; microaerophilic incubation','Oxidase positive; characteristic motility; growth at 42 C supports C. jejuni','Gastroenteritis','Stool'],
+      ['Vibrio spp.','Curved gram-negative rod','TCBS agar; stool culture media when indicated','Oxidase positive; TCBS colony reaction and biochemical ID','Cholera/gastroenteritis; marine wound infection or sepsis for some species','Stool, wounds, blood in severe marine-exposure cases'],
+      ['Yersinia enterocolitica','Gram-negative rod','CIN agar; stool culture media when indicated','Urease positive; motility at room temperature more than 35 C','Gastroenteritis, mesenteric adenitis','Stool'],
+      ['Pseudomonas aeruginosa','Gram-negative rod; nonfermenter; pigment/odor may be present','SBA; MacConkey; cetrimide agar','Oxidase positive; pigment positive; cetrimide growth; non-lactose fermenter','Pneumonia, UTI, wound/burn infection, otitis externa, bacteremia','Respiratory specimens, urine, wounds/burns, ear, blood'],
+      ['Haemophilus influenzae','Gram-negative coccobacillus','Chocolate agar; X and V factor testing','Oxidase positive; requires X and V factors','Meningitis, pneumonia/respiratory infection, otitis media','CSF, respiratory specimens, ear specimens'],
+      ['Haemophilus parainfluenzae / parahemolyticus','Gram-negative coccobacillus','Chocolate agar; X and V factor testing','Oxidase positive; requires V factor only','Respiratory flora/opportunistic respiratory association','Respiratory specimens'],
+      ['Moraxella catarrhalis','Gram-negative diplococcus','SBA or chocolate agar','Oxidase positive; CAT Screen/butyrate positive; carbohydrate negative','Otitis media, sinusitis, lower respiratory infection','Respiratory specimens, ear specimens'],
+      ['Neisseria gonorrhoeae','Gram-negative diplococcus','Chocolate agar; Modified Thayer-Martin; NYC; JEMBEC; CO2 incubation','Oxidase positive; CTA carbohydrate glucose positive only','Gonorrhea, cervicitis, urethritis, PID, neonatal conjunctivitis','Genital, throat, rectal, eye specimens'],
+      ['Neisseria meningitidis','Gram-negative diplococcus','Chocolate agar; selective Neisseria media when needed; CO2 incubation','Oxidase positive; glucose and maltose positive carbohydrate use','Meningitis, meningococcemia','CSF, blood, nasopharynx'],
+      ['Bordetella pertussis','Small gram-negative coccobacillus','Regan-Lowe agar; Bordet-Gengou agar; PCR often used','Specialized respiratory culture or molecular testing','Whooping cough/pertussis','Nasopharyngeal specimens'],
+      ['Brucella spp.','Small gram-negative coccobacillus','Blood culture with extended/special handling; enriched media','Slow-growing; advanced ID and biosafety precautions','Brucellosis, fever, bacteremia','Blood cultures; exposure-linked specimens'],
+      ['HACEK organisms','Fastidious gram-negative rods/coccobacilli','Blood culture bottles; chocolate/enriched media','Fastidious growth; MALDI-TOF or biochemical identification','Endocarditis','Blood cultures'],
+      ['Fusobacterium spp.','Anaerobic gram-negative rods','Anaerobic media','Anaerobic culture and identification','Vincent angina, bite/wound or oral-source infections','Throat/oral specimens, wounds'],
+      ['Bacteroides fragilis group','Anaerobic gram-negative rods','Anaerobic media','Anaerobic culture and identification; susceptibility when needed','Intra-abdominal, sterile body fluid, wound/abscess infection','Peritoneal/abdominal sources, wounds, sterile body fluids']
     ];
   }
   function worksheetMediaRows(){
@@ -1182,8 +1196,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
           ['Culture','Growth amount, colony appearance, hemolysis, pigment, odor, and media selectivity.','Guides identification pathway and clinical significance.'],
           ['Testing','Spot tests, biochemical reactions, susceptibility setup, and reporting notes.','Turns growth into an actionable organism ID.']
         ],false),
-        gram_positive:makeTable('Gram Positive Organisms',['Organism','Morphology / Arrangement','Colony / Hemolysis','Key Tests','Clinical Notes'],worksheetGramPositiveRows(),true),
-        gram_negative:makeTable('Gram Negative Organisms',['Organism','Morphology / Arrangement','Oxidase / Fermentation','Key Tests','Clinical Notes'],worksheetGramNegativeRows(),true),
+        gram_positive:makeTable('Gram Positive Organisms',['Organism','Morphology','Media','Tests','Diseases','Location / Specimen'],worksheetGramPositiveRows(),false),
+        gram_negative:makeTable('Gram Negative Organisms',['Organism','Morphology','Media','Tests','Diseases','Location / Specimen'],worksheetGramNegativeRows(),false),
         media_tests:makeTable('Media',['Name','Purpose','Positive Result','Negative Result'],worksheetMediaRows(),true),
         micro_tests:makeTable('Tests',['Name','Purpose','Positive Result','Negative Result'],worksheetTestRows(),true),
         resources:makeTable('Resources',['Type','Title','Notes'],[
