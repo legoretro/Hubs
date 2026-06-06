@@ -99,6 +99,7 @@ textarea{resize:none;overflow:hidden}
 .rbc-piece-chip{border:1px solid var(--rose);background:var(--blush);border-radius:999px;padding:4px 7px;font-size:11px;color:var(--warm-grey);display:inline-flex;align-items:center;gap:5px}
 .rbc-piece-chip strong{color:var(--wine)}.rbc-chip-x{border:none;background:transparent;color:var(--crimson);font-weight:900;padding:0 2px}
 .rbc-map-actions{display:none;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}.admin-mode .rbc-map-actions{display:flex}
+.rbc-map-viewbar{display:flex;justify-content:flex-end;align-items:center;gap:6px;flex-wrap:wrap;margin:0 0 8px}.rbc-map-viewbar button{border:1px solid var(--rose);background:#fff;color:var(--wine);border-radius:999px;padding:5px 10px;font-family:Georgia,serif;font-size:11px;font-weight:900}.rbc-map-viewbar button:hover{border-color:var(--crimson);background:var(--blush)}.rbc-zoom-readout{border:1px solid var(--rose);background:var(--blush);color:var(--wine);border-radius:999px;padding:5px 9px;font-size:11px;font-weight:900}
 .rbc-map-builder{display:flex;gap:6px;align-items:center;flex-wrap:wrap;width:100%}
 .rbc-map-builder .rbc-mini-field{max-width:150px}
 .rbc-map-builder .rbc-mini-field[type="number"]{max-width:78px}
@@ -111,7 +112,7 @@ textarea{resize:none;overflow:hidden}
 .rbc-copy-chip .rbc-chip-mini{border:1px solid var(--rose);background:#fff;color:var(--wine);border-radius:999px;width:auto;height:auto;line-height:1.05;font-size:10px;font-weight:900;padding:3px 7px}
 .rbc-copy-chip .rbc-chip-mini:hover{border-color:var(--crimson);background:var(--blush)}
 .rbc-select-halo{pointer-events:none;fill:#fff7fb;stroke:var(--crimson);stroke-width:2;stroke-dasharray:6 5;opacity:.72}
-.rbc-copy-resize{display:none}.rbc-selected .rbc-copy-resize{display:block}.rbc-resize-handle{fill:#fff;stroke:var(--crimson);stroke-width:3;filter:drop-shadow(0 3px 7px rgba(90,14,32,.18))}.rbc-resize-corner{fill:none;stroke:var(--crimson);stroke-width:3;stroke-linecap:round}.rbc-full-map-shell{overflow-x:auto;border-radius:18px;background:linear-gradient(180deg,#fffdfd 0%,#fff8f6 100%);border:1px solid rgba(247,197,208,.6);padding:4px}.rbc-full-map-shell svg{display:block}
+.rbc-copy-resize,.rbc-copy-rotate{display:none}.rbc-selected .rbc-copy-resize,.rbc-selected .rbc-copy-rotate{display:block}.rbc-resize-handle,.rbc-rotate-handle{fill:#fff;stroke:var(--crimson);stroke-width:3;filter:drop-shadow(0 3px 7px rgba(90,14,32,.18))}.rbc-resize-corner,.rbc-rotate-arrow{fill:none;stroke:var(--crimson);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.rbc-full-map-shell{overflow:auto;max-height:72vh;border-radius:18px;background:linear-gradient(180deg,#fffdfd 0%,#fff8f6 100%);border:1px solid rgba(247,197,208,.6);padding:4px;text-align:center}.rbc-full-map-shell svg{display:block;margin:0 auto}
 .rbc-help{font-size:12px;color:var(--warm-grey);line-height:1.35}
 .export-choice-list{display:grid;gap:8px;text-align:left;margin:14px 0}.export-choice-list label{display:flex;gap:8px;align-items:flex-start;border:1px solid var(--rose);background:#fff;border-radius:10px;padding:9px 10px;font-size:13px;color:var(--dark);cursor:pointer}.export-choice-list input{margin-top:2px;accent-color:var(--crimson)}
 .ency-export-box{max-width:620px;width:min(94vw,620px);max-height:90vh;overflow:auto;text-align:left}.ency-export-box h3{text-align:center}.ency-export-actions{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 4px}.ency-export-mini{border:1px solid var(--rose);background:#fff;color:var(--wine);border-radius:999px;padding:6px 10px;font-size:11px;font-weight:900}.ency-export-mini:hover{border-color:var(--crimson);background:var(--blush)}.export-choice-list .export-group-label{display:block;margin:10px 0 2px;font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--warm-grey);font-weight:900}.export-choice-list label.is-checked{border-color:var(--crimson);background:var(--blush);box-shadow:0 0 0 2px rgba(192,23,61,.08)}.export-choice-main{font-weight:900;color:var(--wine);line-height:1.15}.export-choice-sub{font-size:11px;color:var(--warm-grey);line-height:1.25;margin-top:2px}.ency-export-summary{font-size:12px;color:var(--warm-grey);font-weight:800;text-align:center;margin:8px 0 12px}
@@ -933,6 +934,7 @@ let rbcCustomItems = [];
 let rbcMapCopies = [];
 let rbcHiddenItems = [];
 let rbcSelectedMapIds = [];
+let rbcMapZoom = 0;
 let rbcQuickPiecePrefs = {};
 let rbcToolScope = 'abo';
 let rbcEditingItemId = null;
@@ -4163,14 +4165,55 @@ function renderLesser(area) {
 // ============================================================
 // RBC ANTIGEN DIAGRAM (full creative membrane cross-section)
 // ============================================================
+function clampRbcMapZoom(value) {
+  var next = Number(value);
+  if (!isFinite(next)) next = 1;
+  return Math.max(.55, Math.min(2.2, next));
+}
+
+function readSavedRbcMapZoom() {
+  try {
+    return clampRbcMapZoom(localStorage.getItem('bloodbank-rbc-map-view-zoom') || 1);
+  } catch (err) {
+    return 1;
+  }
+}
+
+function saveRbcMapZoom() {
+  try { localStorage.setItem('bloodbank-rbc-map-view-zoom', String(rbcMapZoom)); } catch (err) {}
+}
+
+function zoomRbcMap(delta) {
+  rbcMapZoom = clampRbcMapZoom(rbcMapZoom + delta);
+  saveRbcMapZoom();
+  renderRbcDiagram();
+}
+
+function resetRbcMapZoom() {
+  rbcMapZoom = .75;
+  saveRbcMapZoom();
+  renderRbcDiagram();
+}
+
+function renderRbcMapViewControls() {
+  var pct = Math.round(rbcMapZoom * 100);
+  return '<div class="rbc-map-viewbar">' +
+    '<button type="button" onclick="zoomRbcMap(-0.15)" title="Zoom out">-</button>' +
+    '<span class="rbc-zoom-readout">Zoom ' + pct + '%</span>' +
+    '<button type="button" onclick="zoomRbcMap(0.15)" title="Zoom in">+</button>' +
+    '<button type="button" onclick="resetRbcMapZoom()">Fit</button>' +
+  '</div>';
+}
+
 function renderRbcDiagram() {
   const container = document.getElementById('rbcDiagramContainer');
-  container.innerHTML = renderRbcMapAdminActions() + buildFullRbcSVG();
+  rbcMapZoom = clampRbcMapZoom(rbcMapZoom || readSavedRbcMapZoom());
+  container.innerHTML = renderRbcMapAdminActions() + renderRbcMapViewControls() + buildFullRbcSVG();
   initRbcDrag(container);
 }
 
-function buildFullRbcSVG() {
-  return buildDraggableRbcSVG();
+function buildFullRbcSVG(options) {
+  return buildDraggableRbcSVG(options);
 }
 
 const RBC_ITEMS = [
@@ -4409,7 +4452,7 @@ function renderRbcMapAdminActions() {
   var size = selected && !selected.children ? (selected.size || 18) : 18;
   var labelPos = selected && !selected.children ? (selected.labelPos || 'top') : 'top';
   return '<div class="rbc-map-actions">' +
-    '<span class="rbc-help">Map-only antigens stay visual here. Check a chip to edit; selected copies show a corner grip you can drag to resize smaller or larger.</span>' +
+    '<span class="rbc-help">Map-only antigens stay visual here. Check a chip to edit; selected copies show rotate and resize handles. Use zoom for close placement.</span>' +
     '<div class="rbc-map-builder">' +
       '<input class="rbc-mini-field" id="rbcMapLabel" placeholder="Antigen / label" value="' + escAttr(label) + '">' +
       '<select class="rbc-mini-field" id="rbcMapShape">' + rbcMapShapeOptions(shape) + '</select>' +
@@ -4758,6 +4801,19 @@ function rbcMapCopyResizeControl(item) {
   '</g>';
 }
 
+function rbcMapCopyRotateControl(item) {
+  if (!isAdmin || !item.mapCopy || rbcSelectedMapIds.indexOf(item.id) === -1) return '';
+  var b = rbcMapCopyBounds(item);
+  var x = Math.max(-118, b.minX - 24);
+  var y = Math.max(-116, b.minY - 24);
+  return '<g class="rbc-copy-rotate" data-rbc-rotate-id="' + escAttr(item.id) + '" onpointerdown="event.stopPropagation()" style="cursor:grab">' +
+    '<circle class="rbc-rotate-handle" cx="' + x + '" cy="' + y + '" r="13"/>' +
+    '<path class="rbc-rotate-arrow" d="M' + (x - 5) + ' ' + (y + 1) + ' A7 7 0 1 1 ' + (x + 5) + ' ' + (y - 5) + '"/>' +
+    '<path class="rbc-rotate-arrow" d="M' + (x + 4) + ' ' + (y - 9) + ' L' + (x + 9) + ' ' + (y - 4) + ' L' + (x + 2) + ' ' + (y - 2) + '"/>' +
+    '<title>Drag to rotate</title>' +
+  '</g>';
+}
+
 function rbcShape(item, options) {
   options = options || {};
   var p = options.position || rbcPos(item);
@@ -4775,6 +4831,7 @@ function rbcShape(item, options) {
         return rbcShape(child, {locked:true, position:{x:child.x || 0, y:child.y || 0, r:child.r || 0}});
       }).join('') +
       rbcMapCopyDeleteControl(item) +
+      rbcMapCopyRotateControl(item) +
       rbcMapCopyResizeControl(item) +
     '</g>';
   }
@@ -4876,6 +4933,7 @@ function rbcShape(item, options) {
     body +
     (label && labelPos !== 'none' ? '<text x="0" y="' + labelY + '" fill="' + item.color + '" font-size="14" text-anchor="middle" font-weight="bold">' + label + '</text>' : '') +
     rbcMapCopyDeleteControl(item) +
+    rbcMapCopyRotateControl(item) +
     rbcMapCopyResizeControl(item) +
   '</g>';
 }
@@ -5040,21 +5098,30 @@ function rbcCurvedMembraneLayer(color, labelX) {
 
 function rbcFullCellLayer() {
   return '<g class="rbc-full-cell-layer">' +
-    '<ellipse cx="690" cy="278" rx="632" ry="218" fill="#fff1f5" stroke="#efb6c2" stroke-width="4"/>' +
-    '<ellipse cx="690" cy="276" rx="522" ry="136" fill="#fffdfd" stroke="#f7c5d0" stroke-width="2" opacity=".96"/>' +
-    '<ellipse cx="690" cy="276" rx="370" ry="78" fill="#fff" opacity=".55"/>' +
-    '<path d="M92 267 C255 232 405 291 572 271 C735 250 881 289 1040 268 C1154 253 1235 254 1288 244" fill="none" stroke="#c0173d" stroke-width="4" stroke-opacity=".2" stroke-linecap="round"/>' +
-    '<path d="M93 334 C248 366 409 319 575 339 C739 360 890 319 1045 340 C1160 356 1241 352 1289 361" fill="none" stroke="#c0173d" stroke-width="4" stroke-opacity=".16" stroke-linecap="round"/>' +
-    '<text x="110" y="86" fill="#d85070" font-size="22" font-weight="bold">Extracellular</text>' +
-    '<text x="105" y="303" fill="#d85070" font-size="18" font-weight="bold" opacity=".78">Cell membrane</text>' +
-    '<text x="110" y="525" fill="#9a8588" font-size="22" font-weight="bold">Inside cell / Cytoplasm</text>' +
-    '<text x="690" y="530" fill="#b18c94" font-size="13" font-weight="bold" text-anchor="middle" letter-spacing="2">MINIMAL RBC MEMBRANE MAP</text>' +
+    '<ellipse cx="690" cy="332" rx="588" ry="286" fill="#fff1f5" stroke="#efb6c2" stroke-width="12" stroke-opacity=".62"/>' +
+    '<ellipse cx="690" cy="332" rx="458" ry="194" fill="#fffdfd" opacity=".92"/>' +
+    '<ellipse cx="690" cy="332" rx="286" ry="102" fill="#fff" opacity=".5"/>' +
+    '<text x="108" y="92" fill="#d85070" font-size="22" font-weight="bold">Extracellular</text>' +
+    '<text x="118" y="548" fill="#9a8588" font-size="22" font-weight="bold">Cytoplasm</text>' +
+    '<g opacity=".78" transform="translate(1035 500) rotate(-11)">' +
+      '<ellipse cx="0" cy="0" rx="46" ry="18" fill="#fff5d8" stroke="#d4860a" stroke-width="3"/>' +
+      '<path d="M-30 1 C-18 -12 -7 11 5 0 C16 -10 25 8 34 -3" fill="none" stroke="#d4860a" stroke-width="3" stroke-linecap="round"/>' +
+      '<text x="0" y="42" fill="#9a8588" font-size="13" font-weight="bold" text-anchor="middle">Mitochondria</text>' +
+    '</g>' +
+    '<g opacity=".72" transform="translate(438 522) rotate(8)">' +
+      '<ellipse cx="0" cy="0" rx="37" ry="15" fill="#fff5d8" stroke="#d4860a" stroke-width="2.6"/>' +
+      '<path d="M-23 0 C-14 -9 -5 8 5 0 C13 -7 20 7 27 -2" fill="none" stroke="#d4860a" stroke-width="2.4" stroke-linecap="round"/>' +
+    '</g>' +
+    '<text x="690" y="610" fill="#b18c94" font-size="13" font-weight="bold" text-anchor="middle" letter-spacing="2">MINIMAL RBC CELL MAP</text>' +
   '</g>';
 }
 
-function buildDraggableRbcSVG() {
-  var editNote = isAdmin ? '<div style="font-size:12px;color:var(--warm-grey);margin-bottom:8px">Admin: drag antigens to reposition. Hold Shift while dragging to rotate. Select a chip, then drag its corner grip to resize. Positions save to Supabase.</div>' : '';
-  return editNote + '<div class="rbc-full-map-shell"><svg id="rbcMembraneSvg" data-rbc-scope="full" viewBox="0 0 1380 560" xmlns="http://www.w3.org/2000/svg" style="min-width:960px;max-width:100%;font-family:Georgia,serif;touch-action:none">' +
+function buildDraggableRbcSVG(options) {
+  options = options || {};
+  var zoom = options.exportMode ? 1 : clampRbcMapZoom(rbcMapZoom || 1);
+  var svgStyle = 'width:' + Math.round(zoom * 100) + '%;min-width:' + Math.round(960 * zoom) + 'px;max-width:none;font-family:Georgia,serif;touch-action:none';
+  var editNote = isAdmin ? '<div style="font-size:12px;color:var(--warm-grey);margin-bottom:8px">Admin: drag antigens to reposition. Select a chip for rotate and resize handles. Hold Shift while dragging still rotates too. Positions save to Supabase.</div>' : '';
+  return editNote + '<div class="rbc-full-map-shell"><svg id="rbcMembraneSvg" data-rbc-scope="full" viewBox="0 0 1380 640" xmlns="http://www.w3.org/2000/svg" style="' + svgStyle + '">' +
     rbcFullCellLayer() +
     getFullRbcMapItems().map(rbcShape).join('') +
     '</svg></div>';
@@ -5103,6 +5170,9 @@ function initRbcDrag(root) {
     p.x = evt.clientX; p.y = evt.clientY;
     return p.matrixTransform(svg.getScreenCTM().inverse());
   }
+  function angleFromCenter(p, pos) {
+    return Math.atan2(p.y - pos.y, p.x - pos.x) * 180 / Math.PI;
+  }
   svg.querySelectorAll('.rbc-copy-resize').forEach(function(handle) {
     handle.addEventListener('pointerdown', function(evt) {
       evt.preventDefault();
@@ -5127,9 +5197,32 @@ function initRbcDrag(root) {
       handle.setPointerCapture(evt.pointerId);
     });
   });
+  svg.querySelectorAll('.rbc-copy-rotate').forEach(function(handle) {
+    handle.addEventListener('pointerdown', function(evt) {
+      evt.preventDefault();
+      evt.stopPropagation();
+      if (scope !== 'full') return;
+      var id = handle.getAttribute('data-rbc-rotate-id');
+      var item = allItems.find(function(i){ return i.id === id; });
+      if (!item || !item.mapCopy) return;
+      var pos = rbcPos(item);
+      var p = pt(evt);
+      active = {
+        mode:'rotate',
+        el:handle.closest('.rbc-item'),
+        item:item,
+        id:id,
+        sx:pos.x,
+        sy:pos.y,
+        sr:pos.r || 0,
+        startAngle:angleFromCenter(p, pos)
+      };
+      handle.setPointerCapture(evt.pointerId);
+    });
+  });
   svg.querySelectorAll('.rbc-draggable').forEach(function(el) {
     el.addEventListener('pointerdown', function(evt) {
-      if (evt.target && evt.target.closest && evt.target.closest('.rbc-copy-resize')) return;
+      if (evt.target && evt.target.closest && evt.target.closest('.rbc-copy-resize,.rbc-copy-rotate')) return;
       evt.preventDefault();
       var id = el.getAttribute('data-rbc-id');
       var item = allItems.find(function(i){ return i.id === id; });
@@ -5150,6 +5243,14 @@ function initRbcDrag(root) {
       if (active.el) active.el.setAttribute('transform', rbcShapeTransform({x:active.sx,y:active.sy,r:active.sr}, active.item));
       return;
     }
+    if (active.mode === 'rotate') {
+      var nextRotation = active.sr + angleFromCenter(p, {x:active.sx, y:active.sy}) - active.startAngle;
+      nextRotation = Math.round(nextRotation * 10) / 10;
+      rbcLayout[active.id] = { x:active.sx, y:active.sy, r:nextRotation };
+      if (active.el) active.el.setAttribute('transform', rbcShapeTransform(rbcLayout[active.id], active.item));
+      active.moved = true;
+      return;
+    }
     var dx = p.x - active.x0;
     var dy = p.y - active.y0;
     if (Math.abs(dx) + Math.abs(dy) > 3) active.moved = true;
@@ -5166,7 +5267,7 @@ function initRbcDrag(root) {
     var finished = active;
     var shouldRenderFullMap = false;
     if (scope === 'full' && finished.item && finished.item.mapCopy) {
-      if (finished.mode === 'resize') shouldRenderFullMap = true;
+      if (finished.mode === 'resize' || finished.mode === 'rotate') shouldRenderFullMap = true;
       else if (!finished.moved) {
         rbcSelectedMapIds = [finished.id];
         shouldRenderFullMap = true;
@@ -6506,7 +6607,7 @@ function buildRbcMapExportPage() {
   var tmp = document.createElement('div');
   var oldAdmin = isAdmin;
   isAdmin = false;
-  tmp.innerHTML = buildFullRbcSVG();
+  tmp.innerHTML = buildFullRbcSVG({exportMode:true});
   isAdmin = oldAdmin;
   return '<div class="page map-page map-rbc"><h1>RBC Antigen Map</h1><div class="map-print">' + tmp.innerHTML + '</div></div>';
 }
