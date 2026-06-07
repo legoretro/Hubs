@@ -112,7 +112,7 @@ textarea{resize:none;overflow:hidden}
 .rbc-copy-chip .rbc-chip-mini{border:1px solid var(--rose);background:#fff;color:var(--wine);border-radius:999px;width:auto;height:auto;line-height:1.05;font-size:10px;font-weight:900;padding:3px 7px}
 .rbc-copy-chip .rbc-chip-mini:hover{border-color:var(--crimson);background:var(--blush)}
 .rbc-select-halo{pointer-events:none;fill:#fff7fb;stroke:var(--crimson);stroke-width:2;stroke-dasharray:6 5;opacity:.72}
-.rbc-copy-resize,.rbc-copy-rotate{display:none}.rbc-selected .rbc-copy-resize,.rbc-selected .rbc-copy-rotate{display:block}.rbc-resize-handle,.rbc-rotate-handle{fill:#fff;stroke:var(--crimson);stroke-width:3;filter:drop-shadow(0 3px 7px rgba(90,14,32,.18))}.rbc-resize-corner,.rbc-rotate-arrow{fill:none;stroke:var(--crimson);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.rbc-full-map-shell{position:relative;overflow:hidden;height:clamp(360px,60vh,620px);border-radius:18px;background:linear-gradient(180deg,#fffdfd 0%,#fff8f6 100%);border:1px solid rgba(247,197,208,.6);padding:0;text-align:left}.rbc-full-map-shell .rbc-map-viewbar{position:absolute;top:8px;right:10px;z-index:5;width:max-content;margin:0;padding:4px;border-radius:999px;background:rgba(255,255,255,.94);box-shadow:0 6px 18px rgba(90,14,32,.12);backdrop-filter:blur(3px)}.rbc-map-scroll{height:100%;overflow:auto;padding:48px 10px 22px;scrollbar-gutter:stable both-edges}.rbc-map-stage{position:relative;margin:0 auto}.rbc-full-map-shell svg{display:block;margin:0 auto}
+.rbc-copy-resize,.rbc-copy-rotate{display:none}.rbc-selected .rbc-copy-resize,.rbc-selected .rbc-copy-rotate{display:block}.rbc-resize-handle,.rbc-rotate-handle{fill:#fff;stroke:var(--crimson);stroke-width:3;filter:drop-shadow(0 3px 7px rgba(90,14,32,.18))}.rbc-resize-corner,.rbc-rotate-arrow{fill:none;stroke:var(--crimson);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.rbc-full-map-shell{position:relative;overflow:hidden;height:clamp(390px,62vh,680px);border-radius:18px;background:linear-gradient(180deg,#fffdfd 0%,#fff8f6 100%);border:1px solid rgba(247,197,208,.6);padding:0;text-align:left}.rbc-full-map-shell .rbc-map-viewbar{position:absolute;top:8px;right:10px;z-index:5;width:max-content;margin:0;padding:4px;border-radius:999px;background:rgba(255,255,255,.94);box-shadow:0 6px 18px rgba(90,14,32,.12);backdrop-filter:blur(3px)}.rbc-map-scroll{height:100%;overflow:auto;padding:62px 18px 28px;scrollbar-gutter:stable both-edges}.rbc-map-stage{position:relative;margin:0 auto}.rbc-full-map-shell svg{display:block;margin:0 auto;overflow:visible}
 .rbc-help{font-size:12px;color:var(--warm-grey);line-height:1.35}
 .export-choice-list{display:grid;gap:8px;text-align:left;margin:14px 0}.export-choice-list label{display:flex;gap:8px;align-items:flex-start;border:1px solid var(--rose);background:#fff;border-radius:10px;padding:9px 10px;font-size:13px;color:var(--dark);cursor:pointer}.export-choice-list input{margin-top:2px;accent-color:var(--crimson)}
 .ency-export-box{max-width:620px;width:min(94vw,620px);max-height:90vh;overflow:auto;text-align:left}.ency-export-box h3{text-align:center}.ency-export-actions{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 4px}.ency-export-mini{border:1px solid var(--rose);background:#fff;color:var(--wine);border-radius:999px;padding:6px 10px;font-size:11px;font-weight:900}.ency-export-mini:hover{border-color:var(--crimson);background:var(--blush)}.export-choice-list .export-group-label{display:block;margin:10px 0 2px;font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--warm-grey);font-weight:900}.export-choice-list label.is-checked{border-color:var(--crimson);background:var(--blush);box-shadow:0 0 0 2px rgba(192,23,61,.08)}.export-choice-main{font-weight:900;color:var(--wine);line-height:1.15}.export-choice-sub{font-size:11px;color:var(--warm-grey);line-height:1.25;margin-top:2px}.ency-export-summary{font-size:12px;color:var(--warm-grey);font-weight:800;text-align:center;margin:8px 0 12px}
@@ -4573,7 +4573,7 @@ function defaultRbcMapOnlyPosition(type) {
   var isMembraneShape = ['glycoprotein','single-pass','multi-pass','aa-chain','sugar-chain','carb','adsorbed','gpi','anchor-stem'].indexOf(type) !== -1;
   return {
     x: Math.min(1310, 120 + col * 120),
-    y: isMembraneShape ? (96 + row * 28) : (76 + row * 34),
+    y: isMembraneShape ? (132 + row * 30) : (118 + row * 36),
     r: 0
   };
 }
@@ -4860,7 +4860,7 @@ function rbcMapCopyDeleteControl(item) {
   if (!isAdmin || !item.mapCopy) return '';
   var b = rbcMapCopyBounds(item);
   var x = Math.min(88, b.maxX + 12);
-  var y = Math.max(-88, b.minY - 8);
+  var y = Math.max(-58, b.minY - 8);
   return '<g class="rbc-copy-delete" onpointerdown="event.stopPropagation()" onclick="event.stopPropagation();deleteRbcMapCopy(\'' + escAttr(item.id) + '\')" style="cursor:pointer">' +
     '<circle cx="' + x + '" cy="' + y + '" r="13" fill="#c0173d" stroke="#fff" stroke-width="3"/>' +
     '<text x="' + x + '" y="' + (y + 4) + '" fill="#fff" font-size="14" text-anchor="middle" font-weight="bold">x</text>' +
@@ -4884,7 +4884,7 @@ function rbcMapCopyRotateControl(item) {
   if (!isAdmin || !item.mapCopy || rbcSelectedMapIds.indexOf(item.id) === -1) return '';
   var b = rbcMapCopyBounds(item);
   var x = Math.max(-118, b.minX - 24);
-  var y = Math.max(-116, b.minY - 24);
+  var y = Math.max(-72, b.minY - 24);
   return '<g class="rbc-copy-rotate" data-rbc-rotate-id="' + escAttr(item.id) + '" onpointerdown="event.stopPropagation()" style="cursor:grab">' +
     '<circle class="rbc-rotate-handle" cx="' + x + '" cy="' + y + '" r="13"/>' +
     '<path class="rbc-rotate-arrow" d="M' + (x - 5) + ' ' + (y + 1) + ' A7 7 0 1 1 ' + (x + 5) + ' ' + (y - 5) + '"/>' +
@@ -5189,8 +5189,12 @@ function rbcFullCellLayer() {
 function buildDraggableRbcSVG(options) {
   options = options || {};
   var zoom = options.exportMode ? 1 : clampRbcMapZoom(rbcMapZoom || 1);
-  var mapWidth = 1380;
-  var mapHeight = 780;
+  var viewX = -130;
+  var viewY = -120;
+  var viewW = 1640;
+  var viewH = 990;
+  var mapWidth = viewW;
+  var mapHeight = viewH;
   var svgStyle = options.exportMode
     ? 'width:100%;max-width:100%;min-width:0;font-family:Georgia,serif;touch-action:none'
     : 'width:' + Math.round(mapWidth * zoom) + 'px;height:' + Math.round(mapHeight * zoom) + 'px;max-width:none;min-width:0;font-family:Georgia,serif;touch-action:none';
@@ -5198,7 +5202,7 @@ function buildDraggableRbcSVG(options) {
     ? 'width:100%;height:100%'
     : 'width:' + Math.round(mapWidth * zoom) + 'px;height:' + Math.round(mapHeight * zoom) + 'px';
   var editNote = (!options.exportMode && isAdmin) ? '<div style="font-size:12px;color:var(--warm-grey);margin-bottom:8px">Admin: drag antigens to reposition. Select a chip for rotate and resize handles. Hold Shift while dragging still rotates too. Positions save to Supabase.</div>' : '';
-  var svgMarkup = '<svg id="rbcMembraneSvg" data-rbc-scope="full" viewBox="0 0 1380 780" xmlns="http://www.w3.org/2000/svg" style="' + svgStyle + '">' +
+  var svgMarkup = '<svg id="rbcMembraneSvg" data-rbc-scope="full" viewBox="' + viewX + ' ' + viewY + ' ' + viewW + ' ' + viewH + '" xmlns="http://www.w3.org/2000/svg" style="' + svgStyle + '">' +
     rbcFullCellLayer() +
     getFullRbcMapItems().map(rbcShape).join('') +
     '</svg>';
@@ -5797,10 +5801,10 @@ function buildFullRbcSVG_legacy() {
 const CHROM_GENES = {
   1:  [{name:'Rh',sub:'RHD/RHCE'},{name:'Duffy',sub:'FY/DARC'},{name:'Scianna',sub:'ERMAP'}],
   2:  [],
-  3:  [{name:'Globoside',sub:'B3GALNT1'}],
+  3:  [{name:'P / Globoside',sub:'B3GALNT1'}],
   4:  [{name:'MNS',sub:'GYPA/GYPB'}],
   5:  [],
-  6:  [{name:'RHAG',sub:'RH-assoc.'},{name:'HLA',sub:'MHC'}],
+  6:  [{name:'I',sub:'GCNT2'},{name:'RHAG',sub:'RH-assoc.'},{name:'HLA',sub:'MHC'}],
   7:  [{name:'Kell',sub:'KEL'}],
   8:  [],
   9:  [{name:'ABO',sub:'ABO locus'}],
@@ -6785,10 +6789,10 @@ function doExport() {
 const CHROM_GENES_DATA = {
   1:  [{name:'Rh'},{name:'Duffy'},{name:'Scianna'}],
   2:  [],
-  3:  [{name:'Globoside'}],
+  3:  [{name:'P / Globoside'}],
   4:  [{name:'MNS'}],
   5:  [],
-  6:  [{name:'RHAG'},{name:'HLA'}],
+  6:  [{name:'I'},{name:'RHAG'},{name:'HLA'}],
   7:  [{name:'Kell'}],
   8:  [],
   9:  [{name:'ABO'}],
@@ -6817,18 +6821,20 @@ function renderChromMap() {
   // Approximate learning map: no exact locus scale, just which chromosome carries the group.
   var GENES = {
     1:  [{gene:'Rh', h1:'D, C, e', h2:'D, c, E', color:'#7b3fa0'}, {gene:'Fy', h1:'Fya', h2:'Fyb', color:'#1a7a5e'}],
+    3:  [{gene:'P / GLOB', h1:'P', h2:'B3GALNT1', color:'#555'}],
     4:  [{gene:'MNS', h1:'M, S', h2:'N, s', color:'#7a3d00'}],
+    6:  [{gene:'I', h1:'I/i', h2:'GCNT2', color:'#0f766e'}],
     7:  [{gene:'KEL', h1:'K', h2:'k', color:'#1a5c8c'}],
     9:  [{gene:'ABO', h1:'A or B', h2:'B or O', color:'#c0173d'}],
     18: [{gene:'JK', h1:'Jka', h2:'Jkb', color:'#c47a00'}],
     19: [{gene:'Lewis', h1:'Lea', h2:'Leb', color:'#d4860a'}, {gene:'Lu', h1:'Lub', h2:'Lua', color:'#5a2070'}],
     22: [{gene:'P1PK', h1:'P1', h2:'P2', color:'#555'}]
   };
-  var NUMS = [1,4,7,9,18,19,22];
+  var NUMS = [1,3,4,6,7,9,18,19,22];
   var HEIGHT_BY_CHR = exportMode
-    ? {1:108,4:94,7:78,9:70,18:56,19:54,22:48}
-    : {1:122,4:104,7:88,9:78,18:62,19:60,22:52};
-  var rows = [NUMS.slice(0,4), NUMS.slice(4)];
+    ? {1:108,3:100,4:94,6:84,7:78,9:70,18:56,19:54,22:48}
+    : {1:122,3:112,4:104,6:94,7:88,9:78,18:62,19:60,22:52};
+  var rows = [NUMS.slice(0,5), NUMS.slice(5)];
   var rowH = rows.map(function(row){return row.map(function(n){return HEIGHT_BY_CHR[n]||110})});
   var CW = exportMode ? 13 : 15;
   var GAP = exportMode ? 4 : 5;
@@ -8327,8 +8333,8 @@ var CHROM_DETAIL = {
     ]
   },
   3: {
-    title: 'Chromosome 3 -- Globoside',
-    systems: [{name:'Globoside (B3GALNT1 gene)',color:'#555',note:'P antigen (now called P in the GLOB system). P and Pk are related biosynthetically.',pairs:[{ag:'P',anti:'P (high incidence) -- rare null is p phenotype',h1:'P+',h2:'P+',note:'Antibody: anti-P (IgM, cold, not clinically significant)'}],haplotypes:[]}]
+    title: 'Chromosome 3 -- P / Globoside',
+    systems: [{name:'Globoside System (B3GALNT1 gene)',color:'#555',note:'P antigen belongs to the GLOB system. It is a glycolipid carbohydrate related to the P1PK pathway, but it is not the same gene as P1/Pk.',pairs:[{ag:'P',anti:'P present / rare p phenotype',h1:'P+',h2:'P+',note:'B3GALNT1 is on chromosome 3. Rare p phenotype can make anti-PP1Pk/anti-Tja, which is clinically significant.'}],haplotypes:[]}]
   },
   4: {
     title: 'Chromosome 4 -- MNS',
@@ -8349,8 +8355,9 @@ var CHROM_DETAIL = {
     }]
   },
   6: {
-    title: 'Chromosome 6 -- RHAG, HLA',
+    title: 'Chromosome 6 -- I, RHAG, HLA',
     systems: [
+      {name:'I Blood Group System (GCNT2 gene)',color:'#0f766e',note:'GCNT2 adds branching to convert fetal/linear i antigen toward adult/branched I antigen expression.',pairs:[{ag:'I / i',anti:'I adult pattern / i fetal pattern',h1:'I',h2:'i',note:'I antigen is common on adult RBCs. Anti-I is usually a cold IgM antibody; anti-i is less common.'}],haplotypes:[]},
       {name:'RHAG (RH-associated glycoprotein)',color:'#1a5c8c',note:'RHAG gene. Encodes the Rh-associated glycoprotein -- required for Rh antigen expression. Not the same as RHD/RHCE.',pairs:[{ag:'Rh29 (high incidence)',anti:'Rh29 is the high-incidence antigen on RHAG. No classical antithetical.',h1:'Rh29+',h2:'Rh29+',note:'RHAG null = Rhnull phenotype (no Rh antigens at all)'}],haplotypes:[]},
       {name:'HLA (HLA-A, B, C locus)',color:'#c0173d',note:'HLA genes. Bg antigens on RBCs are HLA antigens adsorbed from plasma. Not routinely typed in blood banking.',pairs:[{ag:'Bg antigens',anti:'Bga (HLA-B7), Bgb (HLA-B17), Bgc (HLA-A28) -- no classical antithetical',h1:'Bg+/-',h2:'Bg+/-',note:'Bg antibodies are usually clinically insignificant'}],haplotypes:[]}
     ]
@@ -8410,7 +8417,7 @@ var CHROM_DETAIL = {
     ]
   },
   22: {
-    title: 'Chromosome 22 -- P1PK / Glob',
+    title: 'Chromosome 22 -- P1PK',
     systems: [
       {name:'P1PK System (A4GALT gene)',color:'#555',note:'Glycolipid carbohydrate antigens. P1 is polymorphic.',pairs:[{ag:'P1 / P2',anti:'P1 (P1PK1) / P2 (absence) -- P1 positive vs P1 negative',h1:'P1+ or P1\u2013',h2:'P1+ or P1\u2013',note:'Anti-P1 is common, usually IgM, cold, not clinically significant. Rare anti-PP1Pk (anti-Tja) = clinically significant.'}],haplotypes:[]}
     ]
