@@ -600,6 +600,7 @@ textarea{resize:none;overflow:hidden}
     <div class="ency-export-actions">
       <button class="ency-export-mini" onclick="setEncyclopediaExportSelection('current')">Current</button>
       <button class="ency-export-mini" onclick="setEncyclopediaExportSelection('usual')">All Usual</button>
+      <button class="ency-export-mini" onclick="setEncyclopediaExportSelection('history')">All History</button>
       <button class="ency-export-mini" onclick="setEncyclopediaExportSelection('study')">General + Usual</button>
       <button class="ency-export-mini" onclick="setEncyclopediaExportSelection('all')">Everything</button>
       <button class="ency-export-mini" onclick="setEncyclopediaExportSelection('none')">Clear</button>
@@ -5848,6 +5849,7 @@ var ENCY_EXPORT_ALL_KEYS = ['general'].concat(ENCY_EXPORT_USUAL_KEYS).concat(['l
 
 function getEncyclopediaExportLabel(key) {
   if (key === 'general') return 'Comparison Table';
+  if (key === 'histories') return 'All Usual Histories';
   if (key === 'lesser') return 'All Lesser Systems';
   var sys = SYSTEMS[key];
   return sys ? sys.name.replace(' System','') : key;
@@ -5855,6 +5857,7 @@ function getEncyclopediaExportLabel(key) {
 
 function getEncyclopediaExportSub(key) {
   if (key === 'general') return 'General comparison table and shared patterns';
+  if (key === 'histories') return 'History-only page, separate from All Usual';
   if (key === 'lesser') return 'All lesser-known blood group systems table';
   var sys = SYSTEMS[key];
   return sys ? ((sys.isbt || '') + (sys.pun ? ' · ' + sys.pun : '')) : '';
@@ -5881,6 +5884,7 @@ function renderEncyclopediaExportChoices(selectedKeys) {
   root.innerHTML =
     '<div class="export-group-label">General</div>' + item('general') +
     '<div class="export-group-label">Usual Suspects</div>' + ENCY_EXPORT_USUAL_KEYS.map(item).join('') +
+    '<div class="export-group-label">History Separate</div>' + item('histories') +
     '<div class="export-group-label">Lesser Known</div>' + item('lesser');
   updateEncyclopediaExportSummary();
 }
@@ -5893,6 +5897,7 @@ function setEncyclopediaExportSelection(mode) {
   var keys;
   if (mode === 'current') keys = getEncyclopediaExportDefaultKeys();
   else if (mode === 'usual') keys = ENCY_EXPORT_USUAL_KEYS.slice();
+  else if (mode === 'history') keys = ['histories'];
   else if (mode === 'study') keys = ['general'].concat(ENCY_EXPORT_USUAL_KEYS);
   else if (mode === 'all') keys = ENCY_EXPORT_ALL_KEYS.slice();
   else keys = [];
@@ -5918,6 +5923,7 @@ function buildSelectedEncyclopediaExportPage(keys) {
   keys = keys && keys.length ? keys : getEncyclopediaExportDefaultKeys();
   return keys.map(function(key) {
     if (key === 'general') return buildGeneralComparisonExportPage('both');
+    if (key === 'histories') return buildHistoryExportPage();
     if (key === 'lesser') return buildLesserSystemsExportPage();
     return buildFullSystemExportPage(key);
   }).join('');
