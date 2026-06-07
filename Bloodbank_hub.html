@@ -1692,6 +1692,83 @@ function makeField(sysKey, field, rows) {
     placeholder="${isAdmin ? 'Click to add...' : ''}">${escText(val)}</textarea>`;
 }
 
+function cleanStudyValue(value) {
+  return String(value || '').replace(/\u00a0/g, ' ').trim();
+}
+
+function normalizeStudyValue(value) {
+  return cleanStudyValue(value).toLowerCase().replace(/<br\s*\/?>/g, '\n').replace(/[^\w]+/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function studyValuesOverlap(mainValue, extraValue) {
+  var main = normalizeStudyValue(mainValue);
+  var extra = normalizeStudyValue(extraValue);
+  return !extra || main === extra || (main && main.indexOf(extra) !== -1);
+}
+
+function mergeCommaStudyValues(mainValue, extraValue) {
+  var seen = {};
+  var merged = [];
+  String(mainValue + ',' + extraValue).split(',').forEach(function(part) {
+    var item = part.trim();
+    if (!item) return;
+    var key = item.toLowerCase();
+    if (seen[key]) return;
+    seen[key] = true;
+    merged.push(item);
+  });
+  return merged.join(', ');
+}
+
+function combineStudyValues(mainValue, extraValue, field) {
+  var main = cleanStudyValue(mainValue);
+  var extra = cleanStudyValue(extraValue);
+  if (!main) return extra;
+  if (!extra || studyValuesOverlap(main, extra)) return main;
+  if (field === 'antigen_names' || field === 'antithetical_pairs') return mergeCommaStudyValues(main, extra);
+  return 'M/N: ' + main + '\nS/s/U: ' + extra;
+}
+
+function mnsPairedField(field, fields) {
+  var paired = field + '_ss';
+  return fields.indexOf(paired) !== -1 ? paired : '';
+}
+
+function studyDisplayRows(skey, fields) {
+  var data = notesData[skey] || {};
+  var rows = [];
+  fields.forEach(function(field) {
+    if (/_ss$/.test(field)) return;
+    var paired = mnsPairedField(field, fields);
+    var value = paired ? combineStudyValues(data[field], data[paired], field) : cleanStudyValue(data[field]);
+    if (!cleanStudyValue(value)) return;
+    rows.push({
+      field: field,
+      label: FIELD_LABELS[field] || field,
+      value: value,
+      paired: paired
+    });
+  });
+  return rows;
+}
+
+function setStudyNote(sysKey, field, pairedField, value) {
+  if (!isAdmin) return;
+  if (!notesData[sysKey]) notesData[sysKey] = {};
+  notesData[sysKey][field] = value;
+  if (pairedField) notesData[sysKey][pairedField] = '';
+  syncGeneralComparisonFromEncyclopedia({silent:true});
+  scheduleSave();
+}
+
+function makeStudyField(sysKey, row, rows) {
+  var r = rows || 1;
+  if (!isAdmin) {
+    return '<div class="edit-field read-field">' + exportText(row.value) + '</div>';
+  }
+  return '<textarea class="edit-field" rows="' + r + '" oninput="autoGrowTextArea(this);setStudyNote(\'' + sysKey + '\',\'' + row.field + '\',\'' + (row.paired || '') + '\',this.value)" placeholder="Click to add...">' + escText(row.value) + '</textarea>';
+}
+
 function autoGrowTextArea(el) {
   if (!el || !el.tagName || el.tagName.toLowerCase() !== 'textarea') return;
   el.style.height = 'auto';
@@ -3839,13 +3916,15 @@ function renderSystem(key) {
 }
 
 function buildWsTable(skey, fields, label) {
-  const rows = fields.map(f =>
-    `<tr>
-      <td class="ws-label">${FIELD_LABELS[f] || f}</td>
-      <td class="ws-value">${makeField(skey, f, f.includes('assoc') || f.includes('names') || f.includes('notes') ? 2 : 1)}</td>
-    </tr>`
-  ).join('');
-  return `<table class="ws-table">${label ? `<tr><td colspan="2" style="padding:6px 10px;font-size:11px;font-weight:700;color:var(--wine);letter-spacing:1px;background:var(--blush);border-radius:6px;">${label}</td></tr>` : ''}${rows}</table>`;
+  const rows = studyDisplayRows(skey, fields).map(function(row) {
+    var tall = row.field.includes('assoc') || row.field.includes('names') || row.field.includes('notes') || cleanStudyValue(row.value).indexOf('\n') !== -1;
+    return `<tr>
+      <td class="ws-label">${row.label}</td>
+      <td class="ws-value">${makeStudyField(skey, row, tall ? 2 : 1)}</td>
+    </tr>`;
+  }).join('');
+  const empty = rows ? '' : '<tr><td colspan="2"><span class="muted-text">No filled study reference fields yet.</span></td></tr>';
+  return `<table class="ws-table">${label ? `<tr><td colspan="2" style="padding:6px 10px;font-size:11px;font-weight:700;color:var(--wine);letter-spacing:1px;background:var(--blush);border-radius:6px;">${label}</td></tr>` : ''}${rows || empty}</table>`;
 }
 
 function switchMNS(panel, el) {
@@ -4168,14 +4247,14 @@ function renderLesser(area) {
 function clampRbcMapZoom(value) {
   var next = Number(value);
   if (!isFinite(next)) next = 1;
-  return Math.max(.55, Math.min(2.2, next));
+  return Math.max(.25, Math.min(2.2, next));
 }
 
 function readSavedRbcMapZoom() {
   try {
-    return clampRbcMapZoom(localStorage.getItem('bloodbank-rbc-map-view-zoom') || 1);
+    return clampRbcMapZoom(localStorage.getItem('bloodbank-rbc-map-view-zoom') || .42);
   } catch (err) {
-    return 1;
+    return .42;
   }
 }
 
@@ -4190,7 +4269,7 @@ function zoomRbcMap(delta) {
 }
 
 function resetRbcMapZoom() {
-  rbcMapZoom = .75;
+  rbcMapZoom = .35;
   saveRbcMapZoom();
   renderRbcDiagram();
 }
@@ -5098,30 +5177,25 @@ function rbcCurvedMembraneLayer(color, labelX) {
 
 function rbcFullCellLayer() {
   return '<g class="rbc-full-cell-layer">' +
-    '<ellipse cx="690" cy="332" rx="588" ry="286" fill="#fff1f5" stroke="#efb6c2" stroke-width="12" stroke-opacity=".62"/>' +
-    '<ellipse cx="690" cy="332" rx="458" ry="194" fill="#fffdfd" opacity=".92"/>' +
-    '<ellipse cx="690" cy="332" rx="286" ry="102" fill="#fff" opacity=".5"/>' +
+    '<ellipse cx="690" cy="390" rx="540" ry="330" fill="#fff1f5" stroke="#efb6c2" stroke-width="12" stroke-opacity=".62"/>' +
+    '<ellipse cx="690" cy="390" rx="390" ry="218" fill="#fffdfd" opacity=".9"/>' +
+    '<ellipse cx="690" cy="390" rx="245" ry="112" fill="#fff" opacity=".62"/>' +
     '<text x="108" y="92" fill="#d85070" font-size="22" font-weight="bold">Extracellular</text>' +
-    '<text x="118" y="548" fill="#9a8588" font-size="22" font-weight="bold">Cytoplasm</text>' +
-    '<g opacity=".78" transform="translate(1035 500) rotate(-11)">' +
-      '<ellipse cx="0" cy="0" rx="46" ry="18" fill="#fff5d8" stroke="#d4860a" stroke-width="3"/>' +
-      '<path d="M-30 1 C-18 -12 -7 11 5 0 C16 -10 25 8 34 -3" fill="none" stroke="#d4860a" stroke-width="3" stroke-linecap="round"/>' +
-      '<text x="0" y="42" fill="#9a8588" font-size="13" font-weight="bold" text-anchor="middle">Mitochondria</text>' +
-    '</g>' +
-    '<g opacity=".72" transform="translate(438 522) rotate(8)">' +
-      '<ellipse cx="0" cy="0" rx="37" ry="15" fill="#fff5d8" stroke="#d4860a" stroke-width="2.6"/>' +
-      '<path d="M-23 0 C-14 -9 -5 8 5 0 C13 -7 20 7 27 -2" fill="none" stroke="#d4860a" stroke-width="2.4" stroke-linecap="round"/>' +
-    '</g>' +
-    '<text x="690" y="610" fill="#b18c94" font-size="13" font-weight="bold" text-anchor="middle" letter-spacing="2">MINIMAL RBC CELL MAP</text>' +
+    '<text x="118" y="704" fill="#9a8588" font-size="22" font-weight="bold">Cytoplasm</text>' +
+    '<text x="690" y="742" fill="#b18c94" font-size="13" font-weight="bold" text-anchor="middle" letter-spacing="2">MATURE RBC CELL MAP</text>' +
   '</g>';
 }
 
 function buildDraggableRbcSVG(options) {
   options = options || {};
   var zoom = options.exportMode ? 1 : clampRbcMapZoom(rbcMapZoom || 1);
-  var svgStyle = 'width:' + Math.round(zoom * 100) + '%;min-width:' + Math.round(960 * zoom) + 'px;max-width:none;font-family:Georgia,serif;touch-action:none';
+  var mapWidth = 1380;
+  var mapHeight = 780;
+  var svgStyle = options.exportMode
+    ? 'width:100%;max-width:100%;min-width:0;font-family:Georgia,serif;touch-action:none'
+    : 'width:' + Math.round(mapWidth * zoom) + 'px;height:' + Math.round(mapHeight * zoom) + 'px;max-width:none;min-width:0;font-family:Georgia,serif;touch-action:none';
   var editNote = isAdmin ? '<div style="font-size:12px;color:var(--warm-grey);margin-bottom:8px">Admin: drag antigens to reposition. Select a chip for rotate and resize handles. Hold Shift while dragging still rotates too. Positions save to Supabase.</div>' : '';
-  return editNote + '<div class="rbc-full-map-shell"><svg id="rbcMembraneSvg" data-rbc-scope="full" viewBox="0 0 1380 640" xmlns="http://www.w3.org/2000/svg" style="' + svgStyle + '">' +
+  return editNote + '<div class="rbc-full-map-shell"><svg id="rbcMembraneSvg" data-rbc-scope="full" viewBox="0 0 1380 780" xmlns="http://www.w3.org/2000/svg" style="' + svgStyle + '">' +
     rbcFullCellLayer() +
     getFullRbcMapItems().map(rbcShape).join('') +
     '</svg></div>';
@@ -5948,12 +6022,11 @@ function buildExportWsRows(sys, skey) {
     ? (sys.fields_mn || []).concat(sys.fields_ss || [])
     : (sys.fields || []);
   if (!fields.length) return '<tr><td colspan="2">No study reference fields yet.</td></tr>';
-  var rows = fields.map(function(f) {
-    var val = data[f] || '';
-    return '<tr><td class="lbl">' + exportText(FIELD_LABELS[f] || f) + '</td><td>' + (val ? exportText(val) : '<span class="muted">blank</span>') + '</td></tr>';
+  var rows = studyDisplayRows(skey, fields).map(function(row) {
+    return '<tr><td class="lbl">' + exportText(row.label) + '</td><td>' + exportText(row.value) + '</td></tr>';
   }).join('');
   if (data.lab_notes) rows += '<tr><td class="lbl">Transfusion Notes</td><td>' + exportText(data.lab_notes) + '</td></tr>';
-  return rows;
+  return rows || '<tr><td colspan="2" class="muted">No filled study reference fields yet.</td></tr>';
 }
 
 function buildExportFrequencyRows(skey) {
@@ -6163,13 +6236,12 @@ function buildFlashcardDeck() {
   usualKeys.forEach(function(key) {
     var sys = SYSTEMS[key];
     var skey = sys.notes_key;
-    var data = notesData[skey] || {};
     var fields = sys.mns_split ? (sys.fields_mn || []).concat(sys.fields_ss || []) : (sys.fields || []);
-    fields.forEach(function(field) {
+    studyDisplayRows(skey, fields).forEach(function(row) {
       addFlashcard(cards,
-        sys.name + ': ' + (FIELD_LABELS[field] || field),
-        data[field] || '',
-        {id:key + '-' + field, system:sys.name.replace(' System',''), category:'Study Reference', color:sys.color}
+        sys.name + ': ' + row.label,
+        row.value,
+        {id:key + '-' + row.field, system:sys.name.replace(' System',''), category:'Study Reference', color:sys.color}
       );
     });
     getFreqRows(skey).forEach(function(freqRow, idx) {
