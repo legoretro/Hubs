@@ -29,15 +29,17 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
 .hormone-map{display:grid;gap:12px}.hormone-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}.hormone-card{border:1px solid var(--line);border-left:5px solid var(--blue);border-radius:14px;background:#fff;padding:12px;box-shadow:0 8px 18px rgba(11,53,88,.08)}.hormone-source{font-size:11px;color:var(--muted);font-weight:900;text-transform:uppercase;letter-spacing:1px}.hormone-name{font-size:22px;color:var(--deep);font-weight:900;margin:4px 0}.hormone-target{display:inline-flex;border:1px solid rgba(31,116,168,.28);background:var(--sky);color:var(--deep);border-radius:999px;padding:4px 9px;font-size:12px;font-weight:900;margin-bottom:8px}.hormone-action{font-size:13px;line-height:1.45;color:var(--ink)}.hormone-admin{display:none;grid-template-columns:repeat(4,minmax(140px,1fr)) auto;gap:8px;align-items:end;margin-top:10px}.admin-mode .hormone-admin{display:grid}.hormone-admin .mini-btn{align-self:end}.modal-overlay{position:fixed;inset:0;background:rgba(5,29,50,.72);z-index:1000;display:none;align-items:center;justify-content:center}.modal-overlay.visible{display:flex}.modal-box{background:#fff;border-radius:18px;padding:30px;max-width:410px;width:90%;box-shadow:0 20px 60px rgba(5,29,50,.32);text-align:center;border:1px solid rgba(31,116,168,.35)}.modal-box h3{font-size:22px;color:var(--deep);margin-bottom:6px}.modal-box p{font-size:13px;color:var(--muted);margin-bottom:18px}.modal-input{width:100%;border:1.5px solid rgba(31,116,168,.35);border-radius:10px;padding:10px 14px;font-size:15px;text-align:center;background:#fff;margin-bottom:12px;letter-spacing:3px}.modal-error{color:var(--danger);font-size:12px;margin-bottom:10px;min-height:16px}.btn{border:none;border-radius:999px;background:var(--blue);color:#fff;padding:8px 16px;font-size:12px;font-weight:900}.btn.ghost{background:transparent;color:var(--muted);border:1.5px solid rgba(31,116,168,.35)}
 .outline-builder{gap:10px}.outline-help{font-size:12px;color:var(--muted);line-height:1.35}.outline-row{display:grid;grid-template-columns:34px 30px 30px minmax(190px,1fr) auto auto 30px 30px 30px;gap:6px;align-items:center;margin-left:calc(var(--indent,0)*28px)}.outline-number{height:32px;width:32px;border-radius:999px;background:var(--sky);color:var(--deep);display:grid;place-items:center;font-size:12px;font-weight:900}.outline-input{border:1px solid rgba(31,116,168,.35);border-radius:9px;padding:8px 10px;background:#fff;color:var(--ink);font-size:13px;min-width:0}.outline-row .mini-btn{height:32px;min-width:30px;padding:5px 9px}.outline-row .mini-btn.icon{padding:5px 8px}.outline-row .mini-btn:disabled{opacity:.35;cursor:not-allowed}.outline-actions{display:flex;gap:6px;flex-wrap:wrap}.outline-actions .mini-btn{height:auto}.outline-toolbar{display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}
 .outline-builder .outline-row{grid-template-columns:34px minmax(320px,1fr) minmax(280px,auto);align-items:start;gap:8px;margin-left:calc(var(--indent,0)*20px);padding:6px;border:1px solid rgba(31,116,168,.14);border-radius:12px;background:#fbfdff}.outline-fields{display:grid;grid-template-columns:minmax(170px,1fr) minmax(170px,1fr) 44px auto;gap:6px;align-items:center}.outline-note{border:1px solid rgba(31,116,168,.35);border-radius:9px;padding:7px 9px;background:#fff;color:var(--ink);font-size:12px;min-height:34px;height:34px;resize:vertical;line-height:1.15}.outline-color{width:38px;height:34px;padding:2px;border:1px solid rgba(31,116,168,.34);border-radius:9px;background:#fff}.outline-controls{display:flex;gap:5px;align-items:center;justify-content:flex-end;flex-wrap:wrap}.outline-image-tools{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.outline-image-input{position:absolute;left:-9999px}.outline-thumb{width:34px;height:34px;object-fit:cover;border:1px solid rgba(31,116,168,.35);border-radius:8px;background:#fff}.flow-node-title{display:block}.flow-node-note{display:block;margin-top:4px;color:var(--muted);font-size:11px;font-weight:800;white-space:pre-line}.flow-node-image{display:block;width:48px;height:48px;object-fit:contain;margin:6px auto 0;border:1px solid rgba(31,116,168,.2);border-radius:9px;background:#fff}
+.flow-node.has-image{display:grid;grid-template-columns:minmax(0,1fr) 52px;grid-template-rows:auto auto;gap:3px 8px;align-items:center;text-align:left}.flow-node.has-image .flow-node-title,.flow-node.has-image .flow-node-note{min-width:0}.flow-node.has-image .flow-node-image{grid-column:2;grid-row:1/span 2;width:52px;height:52px;margin:0}.flow-node.has-image .flow-node-note{margin-top:0}.chem-flow-link-marker{display:none}.flowchart{position:relative}.flow-root{position:relative;z-index:1}.flow-link-layer{position:absolute;left:0;top:0;z-index:0;pointer-events:none;overflow:visible}.flow-link-layer path{fill:none;stroke:var(--blue);stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}.flow-link-layer g.negative path{stroke:var(--danger)}.flow-link-layer g.positive path{stroke:var(--green)}.flow-link-layer text{font-size:10px;font-weight:900;fill:var(--deep);paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round}.flow-link-layer g.negative text{fill:var(--danger)}.flow-link-layer g.positive text{fill:var(--green)}
+.link-builder{display:grid;gap:10px;margin-top:10px}.link-picker{display:grid;grid-template-columns:minmax(180px,1fr) minmax(180px,1fr) minmax(130px,.7fr) auto;gap:8px;align-items:end}.link-picker label{font-size:10px}.link-picker select,.link-picker input{border:1px solid rgba(31,116,168,.35);border-radius:9px;background:#fff;color:var(--ink);font-size:12px;padding:7px 8px;min-width:0}.link-chip-list{display:flex;flex-wrap:wrap;gap:7px}.link-chip{display:inline-flex;align-items:center;gap:6px;max-width:100%;border:1px solid rgba(31,116,168,.28);border-radius:999px;background:#f8fdff;color:var(--deep);font-size:11px;font-weight:900;padding:5px 7px}.link-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:min(560px,70vw)}.link-chip .mini-btn{height:24px;min-width:24px;padding:2px 7px}
 .flow-card-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.flow-children{width:max-content;max-width:none}.flow-children:before{left:50%!important;right:auto!important;width:calc(100% - 178px);max-width:calc(100% - 178px);min-width:0;transform:translateX(-50%)}.flow-children:has(>.flow-branch:only-child):before{display:none}
 .flowchart .flow-root{zoom:var(--chem-view-scale,.56)}
 .chem-chart-tabs,.chem-branch-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}.chem-branch-tabs{display:none}.chem-chart-tab,.chem-branch-tab{border:1.5px solid rgba(31,116,168,.35);background:#fff;color:var(--deep);border-radius:999px;padding:8px 13px;font-size:12px;font-weight:900}.chem-chart-tab.active,.chem-branch-tab.active{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 8px 18px rgba(31,116,168,.18)}.chem-branch-tab{padding:7px 11px;font-size:11px}.flow-card-head{align-items:center}.flow-card .flowchart{max-height:430px}.flow-node{min-width:128px;max-width:230px;font-size:12px;padding:7px 10px}.flow-node.organ{font-size:13px}.flow-node-note{font-size:10px}.flow-children{gap:12px!important;padding-top:16px}.flow-children:before{border-top-color:#0b3558!important;border-top-width:3px!important;width:calc(100% - 130px)!important}.flow-children>.flow-branch:before{top:-16px!important;height:16px!important;border-left-color:#0b3558!important;border-left-width:3px!important}.flow-branch.has-children>.flow-node+.flow-children:after{content:"";position:absolute;top:-10px;left:50%;height:10px;border-left:3px solid #0b3558;transform:translateX(-50%)}.flow-children>.flow-branch:first-child:after,.flow-children>.flow-branch:last-child:after{content:"";position:absolute;top:0;width:50%;border-top:3px solid #fff}.flow-children>.flow-branch:first-child:after{left:-18px}.flow-children>.flow-branch:last-child:after{right:-18px}.flow-children>.flow-branch:only-child:after{display:none}.flow-editor-details{margin-top:12px}.flow-editor-details:not([open]){padding-bottom:2px}.outline-builder .outline-row{grid-template-columns:28px minmax(280px,1fr);gap:6px;margin-left:calc(var(--indent,0)*16px);padding:5px}.outline-number{height:28px;width:28px;font-size:11px}.outline-fields{grid-template-columns:minmax(150px,1fr) minmax(150px,1fr) 38px auto}.outline-input,.outline-note{font-size:12px;padding:6px 8px}.outline-note{height:30px;min-height:30px}.outline-note:focus{height:66px}.outline-color{width:34px;height:30px}.outline-controls{grid-column:2;justify-content:flex-start}.outline-row .mini-btn{height:28px;min-width:28px;padding:4px 7px;font-size:11px}.outline-thumb{width:30px;height:30px}.flow-admin{padding:8px}.branch-builder{padding:8px}
 .section-actions{display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap;margin:-4px 0 16px}.resource-shell{display:grid;gap:16px}.resource-table-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:0 0 14px}.resource-table-actions.admin-only{display:none}.admin-mode .resource-table-actions.admin-only{display:flex}.resource-table-card{background:rgba(255,255,255,.94);border:1px solid var(--line);border-top:5px solid var(--blue);border-radius:16px;padding:16px;box-shadow:var(--shadow);overflow:hidden}.resource-table-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px}.resource-title-display{color:var(--deep);font-size:24px;line-height:1.05;font-weight:900}.resource-title-input{display:none;width:min(100%,390px);border:1.5px solid rgba(31,116,168,.35);border-radius:10px;background:#fff;color:var(--deep);font-size:18px;font-weight:900;padding:8px 10px}.admin-mode .resource-title-input{display:block}.resource-table-tools{display:none;gap:7px;align-items:center;justify-content:flex-end;flex-wrap:wrap}.admin-mode .resource-table-tools{display:flex}.resource-table-wrap{overflow:auto;border:1px solid rgba(31,116,168,.22);border-radius:14px;background:#fff}.resource-table{width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed;min-width:720px}.resource-table th{background:var(--deep);color:#fff;text-align:left;text-transform:uppercase;letter-spacing:.06em;font-size:12px;line-height:1.05;padding:10px 12px;border-right:1px solid rgba(255,255,255,.2);vertical-align:top}.resource-table th:last-child{border-right:0}.resource-table td{border-top:1px solid rgba(31,116,168,.16);border-right:1px solid rgba(31,116,168,.14);padding:9px 10px;vertical-align:top;background:#fff;font-size:14px;line-height:1.3}.resource-table tr:nth-child(even) td{background:var(--pale)}.resource-table td:last-child{border-right:0}.resource-col-label{width:100%;border:1px solid rgba(31,116,168,.35);border-radius:8px;background:#f8fdff;color:var(--deep);font-size:13px;font-weight:900;padding:6px 8px}.resource-col-tools{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:7px}.cell-text{min-height:34px;white-space:pre-wrap;overflow-wrap:anywhere}.admin-mode .cell-text{border:1px solid rgba(31,116,168,.28);background:#fff;border-radius:8px;padding:7px 8px}.cell-text:focus,.subsection-cell:focus{outline:2px dashed var(--gold);outline-offset:2px}.table-image-preview{display:block;max-width:100%;max-height:120px;object-fit:contain;border:1px solid rgba(31,116,168,.22);border-radius:8px;background:#fff;margin-bottom:7px}.file-input{position:absolute;left:-9999px}.resource-empty{border:1.5px dashed rgba(31,116,168,.36);border-radius:16px;background:#fff;color:var(--muted);padding:26px;text-align:center;font-weight:900}.table-subsection-row td{background:#eaf7ff!important;border-top:4px solid var(--blue)!important;border-bottom:2px solid rgba(31,116,168,.3)!important;color:var(--deep);font-size:20px;font-weight:900;padding:12px 14px!important}.subsection-tools{display:flex;align-items:center;justify-content:space-between;gap:12px;min-width:max-content}.subsection-cell{min-height:0;color:var(--deep);font-size:20px;font-weight:900;line-height:1.1;padding:0;background:transparent;border:0}.subsection-row-actions,.row-actions{display:flex;gap:6px;justify-content:flex-end;align-items:center;flex-wrap:wrap}.row-action-cell{width:150px}.resource-print-page{background:#fff;color:var(--ink);padding:24px;overflow:hidden}.resource-print-page h1{color:var(--deep);font-size:25px;line-height:1;margin:0 0 12px}.resource-print-inner{zoom:var(--chem-resource-print-scale,1)}.resource-print-table{width:100%;border-collapse:collapse;table-layout:fixed;margin:0 0 14px;break-inside:avoid}.resource-print-title{color:var(--deep);font-size:18px;line-height:1.05;margin:0 0 8px}.resource-print-table th{background:var(--deep)!important;color:#fff!important;text-align:left;text-transform:uppercase;letter-spacing:.04em;font-size:10px;line-height:1.05;padding:6px 7px;border:1px solid var(--deep)}.resource-print-table td{border:1px solid rgba(31,116,168,.28);padding:6px 7px;vertical-align:top;font-size:11px;line-height:1.18;white-space:normal;overflow-wrap:anywhere}.resource-print-table tr:nth-child(even) td{background:#f4fbff!important}.resource-print-table img{max-width:100%;max-height:82px;object-fit:contain;display:block;margin:auto}.print-subsection-row td{background:#eaf7ff!important;color:var(--deep)!important;font-weight:900;font-size:13px!important;border-top:3px solid var(--blue)!important;border-bottom:1.5px solid rgba(31,116,168,.35)!important;text-align:left!important}
 #printArea{display:none}
-.hub-pdf-preview-content.chem-print-preview{display:flex;justify-content:center;align-items:flex-start;background:#fff!important;padding:0!important}.hub-pdf-preview-content.chem-print-preview .print-page{width:1056px!important;height:816px!important;overflow:hidden!important;background:#fff!important;color:#0b3558!important;padding:24px!important}.hub-pdf-preview-content.chem-print-preview .print-page h1{font-size:24px!important;line-height:1!important;margin:0 0 8px!important;color:#0b3558!important}.hub-pdf-preview-content.chem-print-preview .print-page .flowchart{border:0!important;padding:3px!important;overflow:hidden!important;display:flex!important;justify-content:center!important;align-items:flex-start!important;max-height:none!important}.hub-pdf-preview-content.chem-print-preview .print-page .flow-root{zoom:var(--chem-print-scale,.58)!important;transform:none!important;transform-origin:top center!important;min-width:max-content!important;gap:7px!important}.hub-pdf-preview-content.chem-print-preview .print-page .flow-branch{gap:4px!important}.hub-pdf-preview-content.chem-print-preview .print-page .flow-children{gap:8px!important;padding-top:12px!important}.hub-pdf-preview-content.chem-print-preview .print-page .flow-children:before{border-top-color:#0b3558!important;border-top-width:1.5px!important;width:calc(100% - 102px)!important}.hub-pdf-preview-content.chem-print-preview .print-page .flow-children>.flow-branch:before{top:-12px!important;height:12px!important;border-left-color:#0b3558!important;border-left-width:1.5px!important}.hub-pdf-preview-content.chem-print-preview .print-page .flow-node{box-shadow:none!important;background:#fff!important;min-width:91px!important;max-width:149px!important;border-width:1.5px!important;border-left-width:4px!important;border-radius:8px!important;font-size:10px!important;line-height:1.05!important;padding:3px 5px!important}.hub-pdf-preview-content.chem-print-preview .print-page .flow-node.organ{font-size:11px!important}.hub-pdf-preview-content.chem-print-preview .print-page .flow-node-note{font-size:8px!important;margin-top:2px!important}.hub-pdf-preview-content.chem-print-preview .print-page .flow-node-image{width:40px!important;height:40px!important;margin-top:3px!important;border-radius:5px!important}
+.hub-pdf-preview-content.chem-print-preview{display:flex;justify-content:center;align-items:flex-start;background:#fff!important;padding:0!important}.hub-pdf-preview-content.chem-print-preview .print-page{width:1056px!important;height:816px!important;overflow:hidden!important;background:#fff!important;color:#0b3558!important;padding:24px!important}.hub-pdf-preview-content.chem-print-preview .print-page h1{font-size:24px!important;line-height:1!important;margin:0 0 8px!important;color:#0b3558!important}.hub-pdf-preview-content.chem-print-preview .print-page .flowchart{border:0!important;padding:3px!important;overflow:hidden!important;display:flex!important;justify-content:center!important;align-items:flex-start!important;max-height:none!important}.hub-pdf-preview-content.chem-print-preview .print-page .flow-root{zoom:var(--chem-print-scale,.58)!important;transform:none!important;transform-origin:top center!important;min-width:max-content!important;gap:7px!important}.hub-pdf-preview-content.chem-print-preview .print-page .flow-branch{gap:4px!important}.hub-pdf-preview-content.chem-print-preview .print-page .flow-children{gap:8px!important;padding-top:12px!important}.hub-pdf-preview-content.chem-print-preview .print-page .flow-children:before{border-top-color:#0b3558!important;border-top-width:1.5px!important;width:calc(100% - 102px)!important}.hub-pdf-preview-content.chem-print-preview .print-page .flow-children>.flow-branch:before{top:-12px!important;height:12px!important;border-left-color:#0b3558!important;border-left-width:1.5px!important}.hub-pdf-preview-content.chem-print-preview .print-page .flow-node{box-shadow:none!important;background:#fff!important;min-width:91px!important;max-width:149px!important;border-width:1.5px!important;border-left-width:4px!important;border-radius:8px!important;font-size:10px!important;line-height:1.05!important;padding:3px 5px!important}.hub-pdf-preview-content.chem-print-preview .print-page .flow-node.organ{font-size:11px!important}.hub-pdf-preview-content.chem-print-preview .print-page .flow-node-note{font-size:8px!important;margin-top:2px!important}.hub-pdf-preview-content.chem-print-preview .print-page .flow-node-image{width:40px!important;height:40px!important;margin-top:3px!important;border-radius:5px!important}.hub-pdf-preview-content.chem-print-preview .print-page .flow-node.has-image{display:grid!important;grid-template-columns:minmax(0,1fr) 38px!important;gap:2px 4px!important;text-align:left!important}.hub-pdf-preview-content.chem-print-preview .print-page .flow-node.has-image .flow-node-image{grid-column:2!important;grid-row:1/span 2!important;width:38px!important;height:38px!important;margin:0!important}.hub-pdf-preview-content.chem-print-preview .print-page .flow-link-layer path{stroke-width:1.25!important}.hub-pdf-preview-content.chem-print-preview .print-page .flow-link-layer text{font-size:8px!important;stroke-width:3px!important}
 .hub-pdf-preview-content.chem-resource-print-preview{background:#fff!important;padding:0!important}.hub-pdf-preview-content.chem-resource-print-preview .resource-print-page{width:100%!important;height:100%!important;padding:22px!important;overflow:hidden!important}.hub-pdf-preview-content.chem-resource-print-preview .resource-print-table{margin-bottom:10px!important}.hub-pdf-preview-content.chem-resource-print-preview.chem-resource-export-portrait .resource-print-page{padding:20px!important}.hub-pdf-preview-content.chem-resource-print-preview.chem-resource-export-portrait .resource-print-table td{font-size:9.3px!important;line-height:1.1!important}.hub-pdf-preview-content.chem-resource-print-preview.chem-resource-export-portrait .resource-print-table th{font-size:8.5px!important;padding:5px!important}
 @page{size:letter landscape;margin:0}
-@media print{body.printing{background:#fff!important}body.printing .site-header,body.printing .wrap,body.printing .modal-overlay,body.printing .save-indicator{display:none!important}body.printing #printArea{display:block!important}.print-page{width:11in;height:8.5in;overflow:hidden;background:#fff;color:#0b3558;padding:.25in}.print-page h1{font-size:17pt;line-height:1;margin-bottom:.08in;color:#0b3558}.print-page .flowchart{border:0!important;padding:.03in!important;overflow:hidden!important;display:flex;justify-content:center;align-items:flex-start;max-height:none!important}.print-page .flow-root{zoom:var(--chem-print-scale,.58)!important;transform:none!important;transform-origin:top center;min-width:max-content;gap:.07in}.print-page .flow-branch{gap:.045in}.print-page .flow-children{gap:.08in!important;padding-top:.12in!important}.print-page .flow-children:before{border-top-color:#0b3558!important;border-top-width:1.5px!important;width:calc(100% - 1.05in)!important}.print-page .flow-children>.flow-branch:before{top:-.12in!important;height:.12in!important;border-left-color:#0b3558!important;border-left-width:1.5px!important}.print-page .flow-node{box-shadow:none!important;background:#fff!important;min-width:.95in!important;max-width:1.55in!important;border-width:1.5px!important;border-left-width:4px!important;border-radius:.08in!important;font-size:7.5pt!important;line-height:1.05!important;padding:.035in .055in!important}.print-page .flow-node.organ{font-size:8pt!important}.print-page .flow-node-note{font-size:6pt!important;margin-top:.025in!important}.print-page .flow-node-image{width:.42in!important;height:.42in!important;margin-top:.035in!important;border-radius:.05in!important}}
+@media print{body.printing{background:#fff!important}body.printing .site-header,body.printing .wrap,body.printing .modal-overlay,body.printing .save-indicator{display:none!important}body.printing #printArea{display:block!important}.print-page{width:11in;height:8.5in;overflow:hidden;background:#fff;color:#0b3558;padding:.25in}.print-page h1{font-size:17pt;line-height:1;margin-bottom:.08in;color:#0b3558}.print-page .flowchart{border:0!important;padding:.03in!important;overflow:hidden!important;display:flex;justify-content:center;align-items:flex-start;max-height:none!important}.print-page .flow-root{zoom:var(--chem-print-scale,.58)!important;transform:none!important;transform-origin:top center;min-width:max-content;gap:.07in}.print-page .flow-branch{gap:.045in}.print-page .flow-children{gap:.08in!important;padding-top:.12in!important}.print-page .flow-children:before{border-top-color:#0b3558!important;border-top-width:1.5px!important;width:calc(100% - 1.05in)!important}.print-page .flow-children>.flow-branch:before{top:-.12in!important;height:.12in!important;border-left-color:#0b3558!important;border-left-width:1.5px!important}.print-page .flow-node{box-shadow:none!important;background:#fff!important;min-width:.95in!important;max-width:1.55in!important;border-width:1.5px!important;border-left-width:4px!important;border-radius:.08in!important;font-size:7.5pt!important;line-height:1.05!important;padding:.035in .055in!important}.print-page .flow-node.organ{font-size:8pt!important}.print-page .flow-node-note{font-size:6pt!important;margin-top:.025in!important}.print-page .flow-node-image{width:.42in!important;height:.42in!important;margin-top:.035in!important;border-radius:.05in!important}.print-page .flow-node.has-image{display:grid!important;grid-template-columns:minmax(0,1fr) .4in!important;gap:.015in .04in!important;text-align:left!important}.print-page .flow-node.has-image .flow-node-image{grid-column:2!important;grid-row:1/span 2!important;width:.4in!important;height:.4in!important;margin:0!important}.print-page .flow-link-layer path{stroke-width:1.1!important}.print-page .flow-link-layer text{font-size:6pt!important;stroke-width:2.6px!important}}
 @media print{body.chem-resources-printing #printArea .resource-print-page{width:11in;height:8.5in;padding:.22in;color:var(--ink);background:#fff}body.chem-resources-printing.chem-resource-export-portrait #printArea .resource-print-page{width:8.5in;height:11in;padding:.2in}body.chem-resources-printing #printArea .resource-print-inner{zoom:var(--chem-resource-print-scale,1)}body.chem-resources-printing #printArea .resource-print-table th{font-size:7.4pt;padding:.045in .055in}body.chem-resources-printing #printArea .resource-print-table td{font-size:8pt;line-height:1.12;padding:.045in .055in}body.chem-resources-printing.chem-resource-export-portrait #printArea .resource-print-table th{font-size:6.8pt}body.chem-resources-printing.chem-resource-export-portrait #printArea .resource-print-table td{font-size:7pt;line-height:1.08}.hub-pdf-modal{display:none!important}}
 @media(max-width:760px){.site-header{align-items:flex-start}.nav-tabs{width:100%}.hormone-admin,.flow-admin{grid-template-columns:1fr}.flowchart{padding:12px}.flow-children{gap:10px}}
 </style>
@@ -342,14 +344,105 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       return Object.keys(row.cells||{}).some(function(key){return plainCellText(row.cells[key]);});
     });
   }
-  function defaultState(){return{version:5,starter:'minimal-liver-v1',updatedAt:Date.now(),charts:[
-    {id:'liver',title:'Liver',organ:'Liver',note:'',nodeMeta:{},paths:[
-      'Liver > Anatomy',
-      'Liver > Biochemical functions',
-      'Liver > Drug / Disease',
-      'Liver > Tests'
-    ]}
-  ],hormones:[],resourceTables:starterResourceTables()}}
+  function starterHormoneFlowcharts(){
+    return [
+      {id:'gonadal-axis',title:'Gonadal Axis',organ:'Gonadal Axis',note:'GnRH branches to FSH/LH, then ovarian/testicular steroid and inhibin feedback.',nodeMeta:{},paths:[
+        'Gonadal Axis > Hypothalamus > GnRH > Anterior pituitary: gonadotroph cell > FSH > Ovary: follicle cells > Estrogen (estradiol)',
+        'Gonadal Axis > Hypothalamus > GnRH > Anterior pituitary: gonadotroph cell > FSH > Testes: Sertoli cells > Inhibin',
+        'Gonadal Axis > Hypothalamus > GnRH > Anterior pituitary: gonadotroph cell > LH > Ovary: corpus luteum > Progesterone',
+        'Gonadal Axis > Hypothalamus > GnRH > Anterior pituitary: gonadotroph cell > LH > Testes: Leydig cells > Testosterone'
+      ],links:[
+        {from:'Gonadal Axis > Hypothalamus > GnRH > Anterior pituitary: gonadotroph cell > FSH > Testes: Sertoli cells > Inhibin',to:'Gonadal Axis > Hypothalamus > GnRH > Anterior pituitary: gonadotroph cell > FSH',label:'Negative feedback'},
+        {from:'Gonadal Axis > Hypothalamus > GnRH > Anterior pituitary: gonadotroph cell > FSH > Ovary: follicle cells > Estrogen (estradiol)',to:'Gonadal Axis > Hypothalamus',label:'Negative feedback'},
+        {from:'Gonadal Axis > Hypothalamus > GnRH > Anterior pituitary: gonadotroph cell > LH > Ovary: corpus luteum > Progesterone',to:'Gonadal Axis > Hypothalamus',label:'Negative feedback'},
+        {from:'Gonadal Axis > Hypothalamus > GnRH > Anterior pituitary: gonadotroph cell > LH > Testes: Leydig cells > Testosterone',to:'Gonadal Axis > Hypothalamus',label:'Negative feedback'}
+      ]},
+      {id:'thyroid-axis',title:'Thyroid Axis',organ:'Thyroid Axis',note:'TRH to TSH to thyroid follicular cells; T3/T4 feeds back to hypothalamus and pituitary.',nodeMeta:{},paths:[
+        'Thyroid Axis > Hypothalamus > TRH > Anterior pituitary: thyrotroph cell > TSH > Thyroid follicular cells > T3/T4 > Target tissues'
+      ],links:[
+        {from:'Thyroid Axis > Hypothalamus > TRH > Anterior pituitary: thyrotroph cell > TSH > Thyroid follicular cells > T3/T4',to:'Thyroid Axis > Hypothalamus',label:'Negative feedback'},
+        {from:'Thyroid Axis > Hypothalamus > TRH > Anterior pituitary: thyrotroph cell > TSH > Thyroid follicular cells > T3/T4',to:'Thyroid Axis > Hypothalamus > TRH > Anterior pituitary: thyrotroph cell',label:'Negative feedback'}
+      ]},
+      {id:'adrenal-cortisol-axis',title:'Adrenal Cortisol Axis',organ:'Adrenal Cortisol Axis',note:'CRH to ACTH to zona fasciculata; cortisol is the feedback hormone.',nodeMeta:{},paths:[
+        'Adrenal Cortisol Axis > Hypothalamus > CRH > Anterior pituitary: corticotroph cell > ACTH > Adrenal cortex: zona fasciculata > Cortisol > Target tissues'
+      ],links:[
+        {from:'Adrenal Cortisol Axis > Hypothalamus > CRH > Anterior pituitary: corticotroph cell > ACTH > Adrenal cortex: zona fasciculata > Cortisol',to:'Adrenal Cortisol Axis > Hypothalamus',label:'Negative feedback'},
+        {from:'Adrenal Cortisol Axis > Hypothalamus > CRH > Anterior pituitary: corticotroph cell > ACTH > Adrenal cortex: zona fasciculata > Cortisol',to:'Adrenal Cortisol Axis > Hypothalamus > CRH > Anterior pituitary: corticotroph cell',label:'Negative feedback'}
+      ]},
+      {id:'growth-hormone-axis',title:'Growth Hormone Axis',organ:'Growth Hormone Axis',note:'GHRH stimulates GH; somatostatin inhibits GH; GH stimulates liver IGF-1.',nodeMeta:{},paths:[
+        'Growth Hormone Axis > Hypothalamus > GHRH > Anterior pituitary: somatotroph cell > Growth hormone (GH) > Liver > IGF-1 > Bone and tissue growth',
+        'Growth Hormone Axis > Hypothalamus > Somatostatin > Anterior pituitary: somatotroph cell > Growth hormone (GH)'
+      ],links:[
+        {from:'Growth Hormone Axis > Hypothalamus > GHRH > Anterior pituitary: somatotroph cell > Growth hormone (GH) > Liver > IGF-1',to:'Growth Hormone Axis > Hypothalamus',label:'Negative feedback'},
+        {from:'Growth Hormone Axis > Hypothalamus > Somatostatin',to:'Growth Hormone Axis > Hypothalamus > GHRH > Anterior pituitary: somatotroph cell',label:'Inhibits GH'}
+      ]},
+      {id:'prolactin-axis',title:'Prolactin Axis',organ:'Prolactin Axis',note:'Dopamine tonically inhibits lactotrophs; prolactin acts on breast/lactation.',nodeMeta:{},paths:[
+        'Prolactin Axis > Hypothalamus > Dopamine > Anterior pituitary: lactotroph cell > Prolactin (PRL) > Breast > Lactation',
+        'Prolactin Axis > Hypothalamus > TRH > Anterior pituitary: lactotroph cell > Prolactin (PRL) > Breast > Lactation'
+      ],links:[
+        {from:'Prolactin Axis > Hypothalamus > Dopamine',to:'Prolactin Axis > Hypothalamus > Dopamine > Anterior pituitary: lactotroph cell',label:'Inhibits PRL'},
+        {from:'Prolactin Axis > Hypothalamus > Dopamine > Anterior pituitary: lactotroph cell > Prolactin (PRL) > Breast > Lactation',to:'Prolactin Axis > Hypothalamus',label:'Suckling reduces dopamine'}
+      ]},
+      {id:'adh-axis',title:'ADH Axis',organ:'ADH Axis',note:'Osmoreceptors/baroreceptors trigger posterior pituitary ADH release to kidneys.',nodeMeta:{},paths:[
+        'ADH Axis > Osmoreceptors and vascular baroreceptors > Hypothalamus nerve impulses > Posterior pituitary > AVP (ADH/vasopressin) > Kidneys > Water reabsorption',
+        'ADH Axis > Low blood pressure or low blood volume > Hypothalamus nerve impulses > Posterior pituitary > AVP (ADH/vasopressin) > Kidneys > Water reabsorption'
+      ],links:[
+        {from:'ADH Axis > Osmoreceptors and vascular baroreceptors > Hypothalamus nerve impulses > Posterior pituitary > AVP (ADH/vasopressin) > Kidneys > Water reabsorption',to:'ADH Axis > Osmoreceptors and vascular baroreceptors',label:'Negative feedback'},
+        {from:'ADH Axis > Low blood pressure or low blood volume > Hypothalamus nerve impulses > Posterior pituitary > AVP (ADH/vasopressin) > Kidneys > Water reabsorption',to:'ADH Axis > Low blood pressure or low blood volume',label:'Negative feedback'}
+      ]},
+      {id:'oxytocin-axis',title:'Oxytocin Axis',organ:'Oxytocin Axis',note:'Posterior pituitary oxytocin supports uterine contraction and milk letdown.',nodeMeta:{},paths:[
+        'Oxytocin Axis > Uterine contractions propagate > Hypothalamus nerve impulses > Posterior pituitary > Oxytocin > Uterus > More uterine contractions',
+        'Oxytocin Axis > Suckling stimulus > Hypothalamus nerve impulses > Posterior pituitary > Oxytocin > Breast > Milk letdown'
+      ],links:[
+        {from:'Oxytocin Axis > Uterine contractions propagate > Hypothalamus nerve impulses > Posterior pituitary > Oxytocin > Uterus > More uterine contractions',to:'Oxytocin Axis > Uterine contractions propagate',label:'Positive feedback'}
+      ]},
+      {id:'raas-aldosterone-axis',title:'RAAS Aldosterone Axis',organ:'RAAS Aldosterone Axis',note:'Renin converts angiotensinogen pathway to angiotensin II, then aldosterone.',nodeMeta:{},paths:[
+        'RAAS Aldosterone Axis > Low blood pressure or low blood volume > Kidneys > Renin > Angiotensinogen > Angiotensin I > ACE: lungs and vascular endothelium > Angiotensin II > Adrenal cortex: zona glomerulosa > Aldosterone > Kidneys > Sodium and water retention',
+        'RAAS Aldosterone Axis > Low blood pressure or low blood volume > Kidneys > Renin > Angiotensinogen > Angiotensin I > ACE: lungs and vascular endothelium > Angiotensin II > Direct effector: vasoconstriction'
+      ],links:[
+        {from:'RAAS Aldosterone Axis > Low blood pressure or low blood volume > Kidneys > Renin > Angiotensinogen > Angiotensin I > ACE: lungs and vascular endothelium > Angiotensin II > Adrenal cortex: zona glomerulosa > Aldosterone > Kidneys > Sodium and water retention',to:'RAAS Aldosterone Axis > Low blood pressure or low blood volume',label:'Negative feedback'}
+      ]},
+      {id:'adrenal-androgens-axis',title:'Adrenal Androgens Axis',organ:'Adrenal Androgens Axis',note:'ACTH also stimulates zona reticularis DHEA/androgens; contribution differs by sex.',nodeMeta:{},paths:[
+        'Adrenal Androgens Axis > Hypothalamus > CRH > Anterior pituitary: corticotroph cell > ACTH > Adrenal cortex: zona reticularis > DHEA/Androgens > Testosterone contribution',
+        'Adrenal Androgens Axis > DHEA/Androgens > Testosterone: <5% men',
+        'Adrenal Androgens Axis > DHEA/Androgens > Testosterone: 40% to 65% women'
+      ],links:[
+        {from:'Adrenal Androgens Axis > Hypothalamus > CRH > Anterior pituitary: corticotroph cell > ACTH > Adrenal cortex: zona reticularis > DHEA/Androgens',to:'Adrenal Androgens Axis > Hypothalamus',label:'ACTH axis feedback mainly cortisol'}
+      ]}
+    ];
+  }
+  function defaultState(){return{version:6,starter:'hormone-flowcharts-v1',updatedAt:Date.now(),charts:starterHormoneFlowcharts(),hormones:[],resourceTables:starterResourceTables()}}
+  function looksLikeMinimalLiverStarter(data){
+    var charts=data&&Array.isArray(data.charts)?data.charts:[];
+    if(charts.length!==1)return false;
+    var chart=charts[0]||{};
+    var joined=[chart.id,chart.title,chart.organ,(chart.paths||[]).join(' ')].join(' ');
+    return /minimal-liver-v1|^liver\b|Liver > Anatomy|Biochemical functions|Drug \/ Disease/.test((data&&data.starter||'')+' '+joined);
+  }
+  function normalizeLinks(links){
+    if(!Array.isArray(links))return [];
+    return links.map(function(link){
+      if(!link||typeof link!=='object')return null;
+      var from=String(link.from||'').trim(),to=String(link.to||'').trim();
+      if(!from||!to)return null;
+      return {from:from,to:to,label:String(link.label||'').trim()};
+    }).filter(Boolean);
+  }
+  function linksText(chart){
+    return normalizeLinks(chart&&chart.links).map(function(link){
+      return link.from+' -> '+link.to+(link.label?' | '+link.label:'');
+    }).join('\n');
+  }
+  function parseLinksText(value){
+    return String(value||'').split(/\n+/).map(function(line){
+      line=line.trim();
+      if(!line)return null;
+      var parts=line.split('|'),main=parts.shift().trim(),label=parts.join('|').trim();
+      var arrow=main.split(/\s*->\s*/);
+      if(arrow.length<2)return null;
+      return {from:arrow[0].trim(),to:arrow.slice(1).join(' -> ').trim(),label:label};
+    }).filter(function(link){return link&&link.from&&link.to});
+  }
   function looksLikeOldStarter(data){
     var charts=data&&Array.isArray(data.charts)?data.charts:[];
     var joined=charts.map(function(chart){return [chart.id,chart.title,chart.note,(chart.paths||[]).join(' ')].join(' ')}).join(' ');
@@ -357,18 +450,20 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function normalize(data){
     var base=defaultState(),incoming=data&&typeof data==='object'?data:{};
-    if(incoming.starter!=='minimal-liver-v1'&&looksLikeOldStarter(incoming))return base;
-    var charts=(Array.isArray(incoming.charts)?incoming.charts:base.charts).map(function(chart){
+    if(incoming.starter!=='hormone-flowcharts-v1'&&(looksLikeOldStarter(incoming)||looksLikeMinimalLiverStarter(incoming)))return base;
+    var sourceCharts=Array.isArray(incoming.charts)&&incoming.charts.length?incoming.charts:base.charts;
+    var charts=sourceCharts.map(function(chart){
       var copy=Object.assign({},chart);
       copy.id=copy.id||uid('chart');
       copy.title=copy.title||copy.organ||'Organ Flowchart';
       copy.organ=copy.organ||copy.title||'Organ';
       copy.note=copy.note||'';
       copy.nodeMeta=copy.nodeMeta&&typeof copy.nodeMeta==='object'?copy.nodeMeta:{};
+      copy.links=normalizeLinks(copy.links);
       copy.paths=Array.isArray(copy.paths)&&copy.paths.length?copy.paths:[copy.organ+' > New branch'];
       return copy;
     });
-    return {version:5,starter:incoming.starter||base.starter,updatedAt:incoming.updatedAt||Date.now(),charts:charts,hormones:Array.isArray(incoming.hormones)?incoming.hormones:base.hormones,resourceTables:normalizeResourceTables(incoming.resourceTables||base.resourceTables,{upgradeStarters:Number(incoming.version||0)<5})};
+    return {version:6,starter:incoming.starter||base.starter,updatedAt:incoming.updatedAt||Date.now(),charts:charts,hormones:Array.isArray(incoming.hormones)?incoming.hormones:base.hormones,resourceTables:normalizeResourceTables(incoming.resourceTables||base.resourceTables,{upgradeStarters:Number(incoming.version||0)<5})};
   }
   function saveLocal(){try{localStorage.setItem('chemistryHubState',JSON.stringify(state))}catch(e){}}
   function markDirty(){state.updatedAt=Date.now();saveLocal();if(safeDoc)safeDoc.scheduleSave(4000,'auto')}
@@ -415,6 +510,12 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       return selected?{key:root.key,label:root.label,path:root.path,children:[cloneNode(selected)]}:cloneNode(root);
     });
   }
+  function linkMarkersHtml(chart){
+    return normalizeLinks(chart&&chart.links).map(function(link){
+      var kind=/positive|stimulates|releases/i.test(link.label||'')?'positive':(/negative|inhibit/i.test(link.label||'')?'negative':'');
+      return '<span class="chem-flow-link-marker" data-from="'+escapeHtml(link.from)+'" data-to="'+escapeHtml(link.to)+'" data-label="'+escapeHtml(link.label||'')+'" data-kind="'+escapeHtml(kind)+'"></span>';
+    }).join('');
+  }
   function nodeHtml(node,depth,chart){
     var cls=depth===0?'organ':(node.children.length?'branch':'endpoint');
     var meta=(chart.nodeMeta&&chart.nodeMeta[node.path])||{};
@@ -422,13 +523,69 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var note=meta.note?'<span class="flow-node-note">'+escapeHtml(meta.note)+'</span>':'';
     var image=meta.image?'<img class="flow-node-image" src="'+escapeHtml(meta.image)+'" alt="">':'';
     var children=node.children.length?'<div class="flow-children">'+node.children.map(function(child){return nodeHtml(child,depth+1,chart)}).join('')+'</div>':'';
-    return '<div class="flow-branch '+(node.children.length?'has-children':'')+'"><div class="flow-node '+cls+'" style="--node-color:'+escapeHtml(color)+'"><span class="flow-node-title">'+escapeHtml(node.label)+'</span>'+note+image+'</div>'+children+'</div>';
+    return '<div class="flow-branch '+(node.children.length?'has-children':'')+'"><div class="flow-node '+cls+(meta.image?' has-image':'')+'" data-flow-node-path="'+escapeHtml(node.path)+'" style="--node-color:'+escapeHtml(color)+'"><span class="flow-node-title">'+escapeHtml(node.label)+'</span>'+note+image+'</div>'+children+'</div>';
   }
   function flowHtml(chart,viewScale,branchPath){
     var tree=focusedTree(chart,branchPath);
     if(!tree.length)return '<div class="flowchart"><p style="color:var(--muted)">No flowchart paths yet.</p></div>';
     var style=Number(viewScale)?' style="--chem-view-scale:'+Number(viewScale).toFixed(2)+'"':'';
-    return '<div class="flowchart"'+style+'><div class="flow-root">'+tree.map(function(node){return nodeHtml(node,0,chart)}).join('')+'</div></div>';
+    return '<div class="flowchart"'+style+'><svg class="flow-link-layer" aria-hidden="true"></svg><div class="flow-root">'+tree.map(function(node){return nodeHtml(node,0,chart)}).join('')+'</div>'+linkMarkersHtml(chart)+'</div>';
+  }
+  function drawChemFlowLinks(scope){
+    var rootScope=scope&&scope.querySelectorAll?scope:document;
+    rootScope.querySelectorAll('.flowchart').forEach(function(box){
+      var svg=box.querySelector('.flow-link-layer');
+      if(!svg)return;
+      var markers=Array.from(box.querySelectorAll('.chem-flow-link-marker'));
+      var nodes=Array.from(box.querySelectorAll('.flow-node[data-flow-node-path]'));
+      var nodeByPath={};
+      nodes.forEach(function(node){nodeByPath[node.dataset.flowNodePath]=node});
+      var width=Math.max(box.scrollWidth,box.clientWidth,1);
+      var height=Math.max(box.scrollHeight,box.clientHeight,1);
+      svg.setAttribute('width',String(width));
+      svg.setAttribute('height',String(height));
+      svg.style.width=width+'px';
+      svg.style.height=height+'px';
+      svg.innerHTML='<defs><marker id="chemFlowArrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"></path></marker></defs>';
+      if(!markers.length)return;
+      var boxRect=box.getBoundingClientRect();
+      function point(el,side){
+        var rect=el.getBoundingClientRect();
+        var x=rect.left-boxRect.left+box.scrollLeft+rect.width/2;
+        var y=rect.top-boxRect.top+box.scrollTop+rect.height/2;
+        if(side==='bottom')y=rect.bottom-boxRect.top+box.scrollTop;
+        if(side==='top')y=rect.top-boxRect.top+box.scrollTop;
+        return {x:x,y:y};
+      }
+      function addSvg(tag,attrs,parent){
+        var el=document.createElementNS('http://www.w3.org/2000/svg',tag);
+        Object.keys(attrs||{}).forEach(function(key){el.setAttribute(key,attrs[key])});
+        (parent||svg).appendChild(el);
+        return el;
+      }
+      markers.forEach(function(marker,index){
+        var from=nodeByPath[marker.dataset.from],to=nodeByPath[marker.dataset.to];
+        if(!from||!to)return;
+        var start=point(from,'bottom'),end=point(to,'top');
+        var upward=end.y<start.y;
+        var lift=Math.min(150,Math.max(46,Math.abs(start.y-end.y)*.32+36));
+        var side=Math.max(70,Math.abs(start.x-end.x)*.24+54);
+        var c1x=start.x+(end.x>=start.x?side:-side),c2x=end.x-(end.x>=start.x?side:-side);
+        var c1y=upward?start.y-lift:start.y+lift*.35;
+        var c2y=upward?end.y-lift:end.y-lift*.2;
+        var d='M '+start.x.toFixed(1)+' '+start.y.toFixed(1)+' C '+c1x.toFixed(1)+' '+c1y.toFixed(1)+', '+c2x.toFixed(1)+' '+c2y.toFixed(1)+', '+end.x.toFixed(1)+' '+end.y.toFixed(1);
+        var group=addSvg('g',{'class':marker.dataset.kind||''});
+        addSvg('path',{d:d,'marker-end':'url(#chemFlowArrow)'},group);
+        if(marker.dataset.label){
+          var labelX=((start.x+end.x)/2).toFixed(1);
+          var labelY=(Math.min(start.y,end.y)-Math.min(78,lift*.65)-index%3*12).toFixed(1);
+          addSvg('text',{x:labelX,y:labelY,'text-anchor':'middle'},group).textContent=marker.dataset.label;
+        }
+      });
+    });
+  }
+  function scheduleChemFlowLinks(scope){
+    requestAnimationFrame(function(){drawChemFlowLinks(scope||document)});
   }
   function branchText(chart,path){
     var parts=splitPath(path);
@@ -559,6 +716,38 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     }).join('');
     return '<div class="outline-toolbar"><h3>Flow steps</h3><button type="button" class="mini-btn" data-action="add-branch" data-chart="'+escapeHtml(chart.id)+'">+ Branch</button></div><div class="outline-help">Use the first row as the starting organ or title. Notes print as a second line. Add images only where you want a visual on that node.</div>'+rowHtml;
   }
+  function flatChartNodes(chart){
+    var out=[];
+    function walk(nodes,depth){
+      (nodes||[]).forEach(function(node){
+        out.push({path:node.path,label:node.label,depth:depth});
+        walk(node.children,depth+1);
+      });
+    }
+    walk(chartTree(chart),0);
+    return out;
+  }
+  function nodeSelectOptions(nodes,selected){
+    return nodes.map(function(node){
+      var prefix=node.depth?Array(node.depth+1).join('  ')+'- ':'';
+      return '<option value="'+escapeHtml(node.path)+'" '+(node.path===selected?'selected':'')+'>'+escapeHtml(prefix+node.label)+'</option>';
+    }).join('');
+  }
+  function shortPathLabel(path){
+    var parts=splitPath(path);
+    if(parts.length<=2)return parts.join(' > ');
+    return parts.slice(-2).join(' > ');
+  }
+  function linkBuilderHtml(chart){
+    var nodes=flatChartNodes(chart);
+    var options=nodeSelectOptions(nodes,'');
+    var list=normalizeLinks(chart.links).map(function(link,index){
+      var text=shortPathLabel(link.from)+' -> '+shortPathLabel(link.to)+(link.label?' | '+link.label:'');
+      return '<span class="link-chip"><span title="'+escapeHtml(link.from+' -> '+link.to)+'">'+escapeHtml(text)+'</span><button type="button" class="mini-btn danger" data-action="delete-chart-link" data-chart="'+escapeHtml(chart.id)+'" data-index="'+index+'">x</button></span>';
+    }).join('');
+    if(!nodes.length)options='<option value="">Add flow nodes first</option>';
+    return '<details class="advanced-paths"><summary>Feedback / loopback connections</summary><div class="link-builder"><div class="outline-help">Pick two existing nodes and add a clean solid connection line. Use labels like Negative feedback, Positive feedback, Inhibits, or Stimulates.</div><div class="link-picker"><label>From node<select data-link-from="1">'+options+'</select></label><label>To node<select data-link-to="1">'+options+'</select></label><label>Label<input data-link-label="1" value="Negative feedback" placeholder="Negative feedback"></label><button type="button" class="mini-btn" data-action="add-chart-link" data-chart="'+escapeHtml(chart.id)+'" '+(nodes.length?'':'disabled')+'>+ Link</button></div><div class="link-chip-list">'+(list||'<span class="outline-help">No extra connections yet.</span>')+'</div><details class="advanced-paths"><summary>Advanced: paste/edit connection lines</summary><textarea data-action="chart-links" data-chart="'+escapeHtml(chart.id)+'" placeholder="Node path -> Another node path | Negative feedback">'+escapeHtml(linksText(chart))+'</textarea></details></div></details>';
+  }
   function chartTabsHtml(){
     var charts=state.charts||[];
     if(!charts.length)return '';
@@ -585,8 +774,9 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var paths=(chart.paths||[]).join('\n');
     var note=chart.note?'<p>'+escapeHtml(chart.note)+'</p>':'';
     var preview='<div class="flow-preview-panel"><div class="flow-view-tools"><button type="button" class="mini-btn" data-action="flow-zoom" data-dir="-1">-</button><span class="flow-zoom-value">'+Math.round(chemFlowZoom*100)+'%</span><button type="button" class="mini-btn" data-action="flow-zoom" data-dir="1">+</button><button type="button" class="mini-btn" data-action="flow-zoom-reset">Reset</button></div>'+flowHtml(chart,chemFlowZoom,'__all__')+'</div>';
-    var html=chartTabsHtml()+'<article class="flow-card" data-chart="'+escapeHtml(chart.id)+'"><div class="flow-card-head"><div><h2>'+escapeHtml(chart.title||'Untitled Flowchart')+'</h2>'+note+'</div><div class="flow-card-actions"><button type="button" class="mini-btn" data-action="export-chart" data-chart="'+escapeHtml(chart.id)+'">Export</button><button type="button" class="mini-btn danger admin-only" data-action="delete-chart" data-chart="'+escapeHtml(chart.id)+'">Delete</button></div></div>'+preview+'<details class="flow-editor-details" data-editor-chart="'+escapeHtml(chart.id)+'"'+editorOpenAttr(chart.id)+'><summary>Edit flowchart</summary><div class="flow-admin"><label>Title<input data-action="chart-field" data-chart="'+escapeHtml(chart.id)+'" data-field="title" value="'+escapeHtml(chart.title||'')+'"></label><label>Optional note<input data-action="chart-field" data-chart="'+escapeHtml(chart.id)+'" data-field="note" value="'+escapeHtml(chart.note||'')+'"></label><div class="branch-builder outline-builder">'+branchOutlineHtml(chart)+'</div><details class="advanced-paths"><summary>Advanced: edit full paths</summary><textarea data-action="chart-paths" data-chart="'+escapeHtml(chart.id)+'">'+escapeHtml(paths)+'</textarea></details></div></details></article>';
+    var html=chartTabsHtml()+'<article class="flow-card" data-chart="'+escapeHtml(chart.id)+'"><div class="flow-card-head"><div><h2>'+escapeHtml(chart.title||'Untitled Flowchart')+'</h2>'+note+'</div><div class="flow-card-actions"><button type="button" class="mini-btn" data-action="export-chart" data-chart="'+escapeHtml(chart.id)+'">Export</button><button type="button" class="mini-btn danger admin-only" data-action="delete-chart" data-chart="'+escapeHtml(chart.id)+'">Delete</button></div></div>'+preview+'<details class="flow-editor-details" data-editor-chart="'+escapeHtml(chart.id)+'"'+editorOpenAttr(chart.id)+'><summary>Edit flowchart</summary><div class="flow-admin"><label>Title<input data-action="chart-field" data-chart="'+escapeHtml(chart.id)+'" data-field="title" value="'+escapeHtml(chart.title||'')+'"></label><label>Optional note<input data-action="chart-field" data-chart="'+escapeHtml(chart.id)+'" data-field="note" value="'+escapeHtml(chart.note||'')+'"></label><div class="branch-builder outline-builder">'+branchOutlineHtml(chart)+'</div>'+linkBuilderHtml(chart)+'<details class="advanced-paths"><summary>Advanced: edit full paths</summary><textarea data-action="chart-paths" data-chart="'+escapeHtml(chart.id)+'">'+escapeHtml(paths)+'</textarea></details></div></details></article>';
     document.getElementById('flowcharts').innerHTML=html;
+    scheduleChemFlowLinks(document.getElementById('flowcharts'));
   }
   function renderHormones(){
     var rows=(state.hormones||[]).map(function(item){
@@ -762,16 +952,21 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     setTimeout(function(){document.body.classList.remove('printing','chem-resources-printing','chem-resource-export-landscape');area.innerHTML=''},1200);
   }
   function renderAll(){renderFlowcharts();renderHormones();renderResources();renderTables();document.body.classList.toggle('admin-mode',isAdmin)}
+  function chartPrintHtml(chart){
+    var exportTitle=(chart&&chart.title)||'Organ Flowchart';
+    return '<div class="print-page"><h1>'+escapeHtml(exportTitle)+'</h1>'+flowHtml(chart,null,'__all__')+'</div>';
+  }
   function exportChart(chart){
     if(!chart)return;
     var area=document.getElementById('printArea');
     var exportTitle=chart.title||'Organ Flowchart';
-    area.innerHTML='<div class="print-page"><h1>'+escapeHtml(exportTitle)+'</h1>'+flowHtml(chart,null,'__all__')+'</div>';
+    area.innerHTML=chartPrintHtml(chart);
     area.style.display='block';
     area.style.position='fixed';
     area.style.left='-10000px';
     area.style.top='0';
     area.style.visibility='hidden';
+    drawChemFlowLinks(area);
     var root=area.querySelector('.flow-root'),scale=.58;
     if(root){
       var pageWidth=10.05*96,pageHeight=7.42*96;
@@ -785,7 +980,6 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     area.style.left='';
     area.style.top='';
     area.style.visibility='';
-    var content=area.innerHTML;
     area.innerHTML='';
     if(window.HubPdfExport){
       window.HubPdfExport.open({
@@ -797,18 +991,20 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         step:.01,
         persistKey:'chemistry-flowchart-scale',
         printArea:area,
-        contentHtml:content,
+        buildContent:function(){return chartPrintHtml(chart)},
         bodyClass:'printing',
         scaleVar:'--chem-print-scale',
         previewClass:'chem-print-preview',
         hint:'Preview updates with the scale. If the page edge cuts content, lower the scale before opening Save as PDF.',
-        beforePrint:function(printScale,printArea){printArea.style.setProperty('--chem-print-scale',printScale.toFixed(3));},
+        previewReady:function(printScale,previewContent){drawChemFlowLinks(previewContent);},
+        beforePrint:function(printScale,printArea){printArea.style.setProperty('--chem-print-scale',printScale.toFixed(3));drawChemFlowLinks(printArea);},
         afterPrint:function(printArea){printArea.style.removeProperty('--chem-print-scale')}
       });
       return;
     }
-    area.innerHTML=content;
+    area.innerHTML=chartPrintHtml(chart);
     area.style.setProperty('--chem-print-scale',scale.toFixed(3));
+    drawChemFlowLinks(area);
     document.body.classList.add('printing');
     showToast('Opening flowchart export');
     window.print();
@@ -927,8 +1123,31 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(act==='move-resource-subsection'){moveResourceSubsection(findResourceTable(action.dataset.table),action.dataset.row,Number(action.dataset.dir)||0);renderAll();markDirty();return}
     if(act==='delete-resource-row'){deleteResourceRow(findResourceTable(action.dataset.table),action.dataset.row);renderAll();markDirty();return}
     if(act==='clear-resource-image'){var imgTable=findResourceTable(action.dataset.table),imgRow=findResourceRow(imgTable,action.dataset.row);if(imgRow&&imgRow.cells){imgRow.cells[action.dataset.col]='';renderAll();markDirty()}return}
-    if(act==='add-chart'){var newChart={id:uid('chart'),title:'New Organ Flowchart',organ:'New Organ',note:'',nodeMeta:{},paths:['New Organ > Anatomy','New Organ > Biochemical functions','New Organ > Drug / Disease','New Organ > Tests']};state.charts.push(newChart);activeChartId=newChart.id;localStorage.setItem('chemistryActiveChart',activeChartId);renderAll();markDirty()}
+    if(act==='add-chart'){var newChart={id:uid('chart'),title:'New Hormone Flowchart',organ:'New Hormone Flowchart',note:'',nodeMeta:{},links:[],paths:['New Hormone Flowchart > Stimulus > Source organ > Hormone > Target organ > Effect']};state.charts.push(newChart);activeChartId=newChart.id;localStorage.setItem('chemistryActiveChart',activeChartId);renderAll();markDirty()}
     if(act==='delete-chart'){state.charts=state.charts.filter(function(chart){return chart.id!==action.dataset.chart});if(activeChartId===action.dataset.chart)activeChartId=(state.charts[0]&&state.charts[0].id)||'';localStorage.setItem('chemistryActiveChart',activeChartId);renderAll();markDirty()}
+    if(act==='add-chart-link'){
+      var addLinkChart=findChart(action.dataset.chart),addLinkCard=action.closest('article[data-chart]');
+      if(addLinkChart&&addLinkCard){
+        var fromSelect=addLinkCard.querySelector('[data-link-from]'),toSelect=addLinkCard.querySelector('[data-link-to]'),labelInput=addLinkCard.querySelector('[data-link-label]');
+        var fromValue=fromSelect?fromSelect.value:'',toValue=toSelect?toSelect.value:'';
+        if(fromValue&&toValue&&fromValue!==toValue){
+          rememberEditorOpen(addLinkChart.id,true);
+          addLinkChart.links=normalizeLinks(addLinkChart.links);
+          addLinkChart.links.push({from:fromValue,to:toValue,label:labelInput?labelInput.value:''});
+          renderAll();markDirty();
+        }else showToast('Choose two different nodes',true);
+      }
+      return;
+    }
+    if(act==='delete-chart-link'){
+      var deleteLinkChart=findChart(action.dataset.chart);
+      if(deleteLinkChart){
+        rememberEditorOpen(deleteLinkChart.id,true);
+        deleteLinkChart.links=normalizeLinks(deleteLinkChart.links).filter(function(link,index){return index!==Number(action.dataset.index)});
+        renderAll();markDirty();
+      }
+      return;
+    }
     if(act==='add-path'){var chart=findChart(action.dataset.chart);if(chart){chart.paths=chart.paths||[];chart.paths.push((chart.organ||chart.title||'Organ')+' > New branch > New endpoint');renderAll();markDirty()}}
     if(act==='add-branch'){var branchChart=findChart(action.dataset.chart);if(branchChart){rememberEditorOpen(branchChart.id,true);var rows=outlineRowsFromDom(branchChart.id)||outlineRowsFromPaths(branchChart);rows.push({label:'New branch',depth:rows.length?1:0,note:'',image:'',color:defaultNodeColor('New branch',rows.length?1:0)});applyOutlineRows(branchChart,rows);renderAll();markDirty()}}
     if(act==='delete-branch'){var deleteChart=findChart(action.dataset.chart);if(deleteChart){deleteChart.paths=(deleteChart.paths||[]).filter(function(path,pathIndex){return pathIndex!==Number(action.dataset.index)});renderAll();markDirty()}}
@@ -966,6 +1185,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var el=event.target,act=el.dataset.action;
     if(act==='chart-field'){var chart=findChart(el.dataset.chart);if(chart){if(el.dataset.field==='organ')setChartOrgan(chart,el.value);else chart[el.dataset.field]=el.value;markDirty()}}
     if(act==='chart-paths'){var pathChart=findChart(el.dataset.chart);if(pathChart){pathChart.paths=el.value.split(/\n+/).map(function(line){return line.trim()}).filter(Boolean);var first=splitPath(pathChart.paths[0]||'')[0];if(first)pathChart.organ=first;markDirty()}}
+    if(act==='chart-links'){var linkChart=findChart(el.dataset.chart);if(linkChart){linkChart.links=parseLinksText(el.value);markDirty();scheduleChemFlowLinks(document.getElementById('flowcharts'))}}
     if(act==='branch-field'){var editChart=findChart(el.dataset.chart);if(editChart){editChart.paths=editChart.paths||[];editChart.paths[Number(el.dataset.index)]=makePath(editChart,el.value);markDirty()}}
     if(act==='outline-field'||act==='outline-note'||act==='outline-color'){var outlineChart=findChart(el.dataset.chart);if(outlineChart){var rows=outlineRowsFromDom(outlineChart.id);if(rows){applyOutlineRows(outlineChart,rows);markDirty()}}}
     if(act==='hormone-field'){var item=findHormone(el.dataset.id);if(item){item[el.dataset.field]=el.value;markDirty()}}
@@ -1002,8 +1222,9 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       }
       return;
     }
-    if(event.target.dataset.action==='chart-field'||event.target.dataset.action==='chart-paths'||event.target.dataset.action==='branch-field'||event.target.dataset.action==='outline-field'||event.target.dataset.action==='outline-note'||event.target.dataset.action==='outline-color'||event.target.dataset.action==='hormone-field')renderAll();
+    if(event.target.dataset.action==='chart-field'||event.target.dataset.action==='chart-paths'||event.target.dataset.action==='chart-links'||event.target.dataset.action==='branch-field'||event.target.dataset.action==='outline-field'||event.target.dataset.action==='outline-note'||event.target.dataset.action==='outline-color'||event.target.dataset.action==='hormone-field')renderAll();
   });
+  window.addEventListener('resize',function(){scheduleChemFlowLinks(document)});
   window.addEventListener('hashchange',function(){showSection(location.hash.replace(/^#/,''),true)});
   document.addEventListener('keydown',function(event){if(event.key==='Enter'&&document.getElementById('adminModal').classList.contains('visible'))attemptLogin();if(event.key==='Escape')closeAdmin()});
   async function init(){
