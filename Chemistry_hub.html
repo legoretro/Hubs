@@ -29,8 +29,9 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
 .hormone-map{display:grid;gap:12px}.hormone-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}.hormone-card{border:1px solid var(--line);border-left:5px solid var(--blue);border-radius:14px;background:#fff;padding:12px;box-shadow:0 8px 18px rgba(11,53,88,.08)}.hormone-source{font-size:11px;color:var(--muted);font-weight:900;text-transform:uppercase;letter-spacing:1px}.hormone-name{font-size:22px;color:var(--deep);font-weight:900;margin:4px 0}.hormone-target{display:inline-flex;border:1px solid rgba(31,116,168,.28);background:var(--sky);color:var(--deep);border-radius:999px;padding:4px 9px;font-size:12px;font-weight:900;margin-bottom:8px}.hormone-action{font-size:13px;line-height:1.45;color:var(--ink)}.hormone-admin{display:none;grid-template-columns:repeat(4,minmax(140px,1fr)) auto;gap:8px;align-items:end;margin-top:10px}.admin-mode .hormone-admin{display:grid}.hormone-admin .mini-btn{align-self:end}.modal-overlay{position:fixed;inset:0;background:rgba(5,29,50,.72);z-index:1000;display:none;align-items:center;justify-content:center}.modal-overlay.visible{display:flex}.modal-box{background:#fff;border-radius:18px;padding:30px;max-width:410px;width:90%;box-shadow:0 20px 60px rgba(5,29,50,.32);text-align:center;border:1px solid rgba(31,116,168,.35)}.modal-box h3{font-size:22px;color:var(--deep);margin-bottom:6px}.modal-box p{font-size:13px;color:var(--muted);margin-bottom:18px}.modal-input{width:100%;border:1.5px solid rgba(31,116,168,.35);border-radius:10px;padding:10px 14px;font-size:15px;text-align:center;background:#fff;margin-bottom:12px;letter-spacing:3px}.modal-error{color:var(--danger);font-size:12px;margin-bottom:10px;min-height:16px}.btn{border:none;border-radius:999px;background:var(--blue);color:#fff;padding:8px 16px;font-size:12px;font-weight:900}.btn.ghost{background:transparent;color:var(--muted);border:1.5px solid rgba(31,116,168,.35)}
 .outline-builder{gap:10px}.outline-help{font-size:12px;color:var(--muted);line-height:1.35}.outline-row{display:grid;grid-template-columns:34px 30px 30px minmax(190px,1fr) auto auto 30px 30px 30px;gap:6px;align-items:center;margin-left:calc(var(--indent,0)*28px)}.outline-number{height:32px;width:32px;border-radius:999px;background:var(--sky);color:var(--deep);display:grid;place-items:center;font-size:12px;font-weight:900}.outline-input{border:1px solid rgba(31,116,168,.35);border-radius:9px;padding:8px 10px;background:#fff;color:var(--ink);font-size:13px;min-width:0}.outline-row .mini-btn{height:32px;min-width:30px;padding:5px 9px}.outline-row .mini-btn.icon{padding:5px 8px}.outline-row .mini-btn:disabled{opacity:.35;cursor:not-allowed}.outline-actions{display:flex;gap:6px;flex-wrap:wrap}.outline-actions .mini-btn{height:auto}.outline-toolbar{display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}
 .outline-builder .outline-row{grid-template-columns:34px minmax(320px,1fr) minmax(280px,auto);align-items:start;gap:8px;margin-left:calc(var(--indent,0)*20px);padding:6px;border:1px solid rgba(31,116,168,.14);border-radius:12px;background:#fbfdff}.outline-fields{display:grid;grid-template-columns:minmax(170px,1fr) minmax(170px,1fr) 44px auto;gap:6px;align-items:center}.outline-note{border:1px solid rgba(31,116,168,.35);border-radius:9px;padding:7px 9px;background:#fff;color:var(--ink);font-size:12px;min-height:34px;height:34px;resize:vertical;line-height:1.15}.outline-color{width:38px;height:34px;padding:2px;border:1px solid rgba(31,116,168,.34);border-radius:9px;background:#fff}.outline-controls{display:flex;gap:5px;align-items:center;justify-content:flex-end;flex-wrap:wrap}.outline-image-tools{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.outline-image-input{position:absolute;left:-9999px}.outline-thumb{width:34px;height:34px;object-fit:cover;border:1px solid rgba(31,116,168,.35);border-radius:8px;background:#fff}.flow-node-title{display:block}.flow-node-note{display:block;margin-top:4px;color:var(--muted);font-size:11px;font-weight:800;white-space:pre-line}.flow-node-image{display:block;width:48px;height:48px;object-fit:contain;margin:6px auto 0;border:1px solid rgba(31,116,168,.2);border-radius:9px;background:#fff}
-.flow-node.has-image{display:grid;grid-template-columns:minmax(0,1fr) 52px;grid-template-rows:auto auto;gap:3px 8px;align-items:center;text-align:left}.flow-node.has-image .flow-node-title,.flow-node.has-image .flow-node-note{min-width:0}.flow-node.has-image .flow-node-image{grid-column:2;grid-row:1/span 2;width:52px;height:52px;margin:0}.flow-node.has-image .flow-node-note{margin-top:0}.chem-flow-link-marker{display:none}.flowchart{position:relative}.flow-root{position:relative;z-index:1}.flow-link-layer{position:absolute;left:0;top:0;z-index:0;pointer-events:none;overflow:visible}.flow-link-layer path{fill:none;stroke:var(--blue);stroke-width:1.55;stroke-linecap:round;stroke-linejoin:round}.flow-link-layer g.inhibit path{stroke:var(--danger)}.flow-link-layer g.stimulate path{stroke:var(--green)}.flow-link-layer g.neutral path{stroke:#527b92}.flow-link-layer .flow-link-label-bg{fill:#fff;stroke:currentColor;stroke-width:1.2;rx:8;ry:8;filter:drop-shadow(0 2px 3px rgba(11,53,88,.12))}.flow-link-layer text{font-size:10px;font-weight:900;fill:var(--deep);dominant-baseline:middle}.flow-link-layer g.inhibit{color:var(--danger)}.flow-link-layer g.inhibit text{fill:var(--danger)}.flow-link-layer g.stimulate{color:var(--green)}.flow-link-layer g.stimulate text{fill:var(--green)}.flow-link-layer g.neutral{color:#527b92}.flow-link-layer g.neutral text{fill:#35596c}
+.flow-node.has-image{display:grid;grid-template-columns:minmax(0,1fr) 52px;grid-template-rows:auto auto;gap:3px 8px;align-items:center;text-align:left}.flow-node.has-image .flow-node-title,.flow-node.has-image .flow-node-note{min-width:0}.flow-node.has-image .flow-node-image{grid-column:2;grid-row:1/span 2;width:52px;height:52px;margin:0}.flow-node.has-image .flow-node-note{margin-top:0}.flow-node.selected{box-shadow:0 0 0 4px rgba(244,194,74,.45),0 8px 20px rgba(11,53,88,.14);outline:2px solid var(--gold);outline-offset:2px}.admin-mode .flow-node{cursor:pointer}.admin-mode .flow-node-title[contenteditable="true"]{outline:0;border-radius:7px;padding:1px 3px}.admin-mode .flow-node-title[contenteditable="true"]:focus{background:#fffbe8;box-shadow:0 0 0 2px rgba(244,194,74,.45)}.chem-flow-link-marker{display:none}.flowchart{position:relative}.flow-root{position:relative;z-index:1}.flow-link-layer{position:absolute;left:0;top:0;z-index:0;pointer-events:none;overflow:visible}.flow-link-layer path{fill:none;stroke:var(--blue);stroke-width:1.55;stroke-linecap:round;stroke-linejoin:round}.flow-link-layer g.inhibit path{stroke:var(--danger)}.flow-link-layer g.stimulate path{stroke:var(--green)}.flow-link-layer g.neutral path{stroke:#527b92}.flow-link-layer .flow-link-label-bg{fill:#fff;stroke:currentColor;stroke-width:1.2;rx:8;ry:8;filter:drop-shadow(0 2px 3px rgba(11,53,88,.12))}.flow-link-layer text{font-size:10px;font-weight:900;fill:var(--deep);dominant-baseline:middle}.flow-link-layer g.inhibit{color:var(--danger)}.flow-link-layer g.inhibit text{fill:var(--danger)}.flow-link-layer g.stimulate{color:var(--green)}.flow-link-layer g.stimulate text{fill:var(--green)}.flow-link-layer g.neutral{color:#527b92}.flow-link-layer g.neutral text{fill:#35596c}
 .link-builder{display:grid;gap:10px;margin-top:10px}.link-picker{display:grid;grid-template-columns:minmax(170px,1fr) minmax(170px,1fr) minmax(110px,.55fr) minmax(120px,.7fr) auto;gap:8px;align-items:end}.link-picker label{font-size:10px}.link-picker select,.link-picker input{border:1px solid rgba(31,116,168,.35);border-radius:9px;background:#fff;color:var(--ink);font-size:12px;padding:7px 8px;min-width:0}.link-chip-list{display:flex;flex-wrap:wrap;gap:7px}.link-chip{display:inline-flex;align-items:center;gap:6px;max-width:100%;border:1px solid rgba(31,116,168,.28);border-radius:999px;background:#f8fdff;color:var(--deep);font-size:11px;font-weight:900;padding:5px 7px}.link-chip.inhibit{border-color:rgba(155,18,56,.35);color:var(--danger);background:#fff7fa}.link-chip.stimulate{border-color:rgba(15,123,97,.35);color:var(--green);background:#f5fffb}.link-chip.neutral{color:#35596c}.link-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:min(560px,70vw)}.link-chip .mini-btn{height:24px;min-width:24px;padding:2px 7px}
+.chem-direct-admin{grid-template-columns:repeat(2,minmax(160px,1fr))}.chem-flow-selection-panel{grid-column:1/-1;border:1px solid rgba(31,116,168,.24);border-radius:14px;background:#fff;padding:12px;display:grid;gap:10px}.chem-flow-selected-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.chem-flow-selected-title{font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);font-weight:900}.chem-flow-selected-title strong{display:block;text-transform:none;letter-spacing:0;color:var(--deep);font-size:14px;margin-top:2px}.chem-flow-selected-grid{display:grid;grid-template-columns:minmax(190px,1fr) minmax(220px,1.2fr) 46px auto;gap:8px;align-items:end}.chem-flow-selected-grid label{font-size:10px}.chem-flow-selected-grid input,.chem-flow-selected-grid textarea{border:1px solid rgba(31,116,168,.35);border-radius:10px;background:#fff;color:var(--ink);font-size:13px;padding:8px 10px;min-width:0}.chem-flow-selected-grid textarea{min-height:38px;resize:vertical;line-height:1.2}.chem-flow-selected-color{width:42px;height:38px;padding:2px!important}.chem-flow-selected-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}.chem-node-image-input{position:absolute;left:-9999px}.chem-node-image-preview{width:44px;height:44px;object-fit:contain;border:1px solid rgba(31,116,168,.24);border-radius:8px;background:#fff}.chem-advanced-outline{grid-column:1/-1;border:1px solid rgba(31,116,168,.18);border-radius:12px;background:#fbfdff;padding:8px}.chem-advanced-outline>summary{cursor:pointer;color:var(--muted);font-size:12px;font-weight:900}
 .flow-card-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.flow-children{width:max-content;max-width:none}.flow-children:before{left:50%!important;right:auto!important;width:calc(100% - 178px);max-width:calc(100% - 178px);min-width:0;transform:translateX(-50%)}.flow-children:has(>.flow-branch:only-child):before{display:none}
 .flowchart .flow-root{zoom:var(--chem-view-scale,.56)}
 .chem-chart-tabs,.chem-branch-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}.chem-branch-tabs{display:none}.chem-chart-tab,.chem-branch-tab{border:1.5px solid rgba(31,116,168,.35);background:#fff;color:var(--deep);border-radius:999px;padding:8px 13px;font-size:12px;font-weight:900}.chem-chart-tab.active,.chem-branch-tab.active{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 8px 18px rgba(31,116,168,.18)}.chem-branch-tab{padding:7px 11px;font-size:11px}.flow-card-head{align-items:center}.flow-card .flowchart{max-height:430px}.flow-node{min-width:128px;max-width:230px;font-size:12px;padding:7px 10px}.flow-node.organ{font-size:13px}.flow-node-note{font-size:10px}.flow-children{gap:12px!important;padding-top:16px}.flow-children:before{border-top-color:#0b3558!important;border-top-width:3px!important;width:calc(100% - 130px)!important}.flow-children>.flow-branch:before{top:-16px!important;height:16px!important;border-left-color:#0b3558!important;border-left-width:3px!important}.flow-branch.has-children>.flow-node+.flow-children:after{content:"";position:absolute;top:-10px;left:50%;height:10px;border-left:3px solid #0b3558;transform:translateX(-50%)}.flow-children>.flow-branch:first-child:after,.flow-children>.flow-branch:last-child:after{content:"";position:absolute;top:0;width:50%;border-top:3px solid #fff}.flow-children>.flow-branch:first-child:after{left:-18px}.flow-children>.flow-branch:last-child:after{right:-18px}.flow-children>.flow-branch:only-child:after{display:none}.flow-editor-details{margin-top:12px}.flow-editor-details:not([open]){padding-bottom:2px}.outline-builder .outline-row{grid-template-columns:28px minmax(280px,1fr);gap:6px;margin-left:calc(var(--indent,0)*16px);padding:5px}.outline-number{height:28px;width:28px;font-size:11px}.outline-fields{grid-template-columns:minmax(150px,1fr) minmax(150px,1fr) 38px auto}.outline-input,.outline-note{font-size:12px;padding:6px 8px}.outline-note{height:30px;min-height:30px}.outline-note:focus{height:66px}.outline-color{width:34px;height:30px}.outline-controls{grid-column:2;justify-content:flex-start}.outline-row .mini-btn{height:28px;min-width:28px;padding:4px 7px;font-size:11px}.outline-thumb{width:30px;height:30px}.flow-admin{padding:8px}.branch-builder{padding:8px}
@@ -131,13 +132,15 @@ const CHEM_ROW_ID='chemistry_hub';
 const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c675';
 (function(){
   var isAdmin=false,state=defaultState(),safeDoc=null,syncPresence=null,needsStarterSync=false;
-  var chemFlowZoom=Number(localStorage.getItem('chemistryFlowZoom4')||0.64);
+  var chemFlowZoom=Number(localStorage.getItem('chemistryFlowZoom5')||0.78);
   var activeChartId=localStorage.getItem('chemistryActiveChart')||'';
   var activeResourceTableId=localStorage.getItem('chemistryActiveResourceTable')||'';
   var activeBranchByChart={};
   try{activeBranchByChart=JSON.parse(localStorage.getItem('chemistryActiveBranches')||'{}')||{}}catch(e){activeBranchByChart={}}
   var editorOpenByChart={};
   try{editorOpenByChart=JSON.parse(localStorage.getItem('chemistryEditorOpen')||'{}')||{}}catch(e){editorOpenByChart={}}
+  var chemSelectedNodeByChart={};
+  try{chemSelectedNodeByChart=JSON.parse(localStorage.getItem('chemistrySelectedNodes')||'{}')||{}}catch(e){chemSelectedNodeByChart={}}
   function uid(prefix){return prefix+'_'+Math.random().toString(36).slice(2,9)}
   function escapeHtml(value){return String(value||'').replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]})}
   function showToast(message,isError){var el=document.getElementById('saveIndicator');el.textContent=message;el.style.background=isError?'#9b1238':'#0f7b61';el.classList.add('show');clearTimeout(showToast.timer);showToast.timer=setTimeout(function(){el.classList.remove('show')},2200)}
@@ -336,42 +339,48 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function starterHormoneFlowcharts(){
     return [
-      {id:'gonadal-axis',title:'Gonadal Axis',organ:'Gonadal Axis',note:'From the uploaded hormone diagram: GnRH drives FSH/LH; gonadal steroids and inhibin loop back as feedback.',nodeMeta:{},paths:[
-        'Gonadal Axis > Hypothalamus > GnRH (peptide) > Anterior pituitary > Gonadotroph cell > FSH (glycoprotein) > Ovary: follicle cells > Estrogen / estradiol (steroid)',
-        'Gonadal Axis > Hypothalamus > GnRH (peptide) > Anterior pituitary > Gonadotroph cell > FSH (glycoprotein) > Testes: Sertoli cells > Inhibin (peptide)',
-        'Gonadal Axis > Hypothalamus > GnRH (peptide) > Anterior pituitary > Gonadotroph cell > LH (glycoprotein) > Ovary: corpus luteum > Progesterone (steroid)',
-        'Gonadal Axis > Hypothalamus > GnRH (peptide) > Anterior pituitary > Gonadotroph cell > LH (glycoprotein) > Testes: Leydig cells > Testosterone (steroid)'
+      {id:'gonadal-axis',title:'Gonadal',organ:'Hypothalamus',note:'GnRH drives FSH/LH; gonadal steroids and inhibin can be added as feedback lines when needed.',nodeMeta:{},paths:[
+        'Hypothalamus > GnRH (peptide) > Anterior pituitary > Gonadotroph cell > FSH (glycoprotein) > Ovary: follicle cells > Estrogen / estradiol (steroid)',
+        'Hypothalamus > GnRH (peptide) > Anterior pituitary > Gonadotroph cell > FSH (glycoprotein) > Testes: Sertoli cells > Inhibin (peptide)',
+        'Hypothalamus > GnRH (peptide) > Anterior pituitary > Gonadotroph cell > LH (glycoprotein) > Ovary: corpus luteum > Progesterone (steroid)',
+        'Hypothalamus > GnRH (peptide) > Anterior pituitary > Gonadotroph cell > LH (glycoprotein) > Testes: Leydig cells > Testosterone (steroid)'
       ],links:[]},
-      {id:'thyroid-axis',title:'Thyroid Axis',organ:'Thyroid Axis',note:'TRH stimulates thyrotroph cells; TSH stimulates thyroid follicular cells; T3/T4 inhibits the upstream axis.',nodeMeta:{},paths:[
-        'Thyroid Axis > Hypothalamus > TRH (peptide) > Anterior pituitary > Thyrotroph cell > TSH (glycoprotein) > Thyroid follicular cells > T3/T4 (amine) > Target tissues'
+      {id:'thyroid-axis',title:'Thyroid',organ:'Hypothalamus',note:'TRH stimulates thyrotroph cells; TSH stimulates thyroid follicular cells; T3/T4 feedback can be added as an inhibit line.',nodeMeta:{},paths:[
+        'Hypothalamus > TRH (peptide) > Anterior pituitary > Thyrotroph cell > TSH (glycoprotein) > Thyroid follicular cells > T3/T4 (amine) > Target tissues'
       ],links:[]},
-      {id:'adrenal-cortisol-axis',title:'Adrenal Cortisol Axis',organ:'Adrenal Cortisol Axis',note:'CRH stimulates corticotroph cells; ACTH stimulates zona fasciculata; cortisol inhibits hypothalamus and pituitary.',nodeMeta:{},paths:[
-        'Adrenal Cortisol Axis > Hypothalamus > CRH (peptide) > Anterior pituitary > Corticotroph cell > ACTH (peptide) > Adrenal glands > Zona fasciculata > Cortisol (steroid) > Target tissues'
+      {id:'adrenal-cortisol-axis',title:'Adrenal Cortisol',organ:'Hypothalamus',note:'CRH stimulates corticotroph cells; ACTH stimulates zona fasciculata; cortisol feedback can be added as an inhibit line.',nodeMeta:{},paths:[
+        'Hypothalamus > CRH (peptide) > Anterior pituitary > Corticotroph cell > ACTH (peptide) > Adrenal glands > Zona fasciculata > Cortisol (steroid) > Target tissues'
       ],links:[]},
-      {id:'growth-hormone-axis',title:'Growth Hormone Axis',organ:'Growth Hormone Axis',note:'The diagram shows both GHRH stimulation and somatostatin inhibition of somatotroph GH release.',nodeMeta:{},paths:[
-        'Growth Hormone Axis > Hypothalamus > GHRH (peptide) > Anterior pituitary > Somatotroph cell > Growth hormone / GH (peptide) > Liver > IGF-1 (peptide) > Bone and tissue growth',
-        'Growth Hormone Axis > Hypothalamus > Somatostatin (peptide) > Anterior pituitary > Somatotroph cell > Growth hormone / GH (peptide)'
+      {id:'growth-hormone-axis',title:'Growth Hormone',organ:'Hypothalamus',note:'GHRH stimulates GH release; somatostatin inhibits GH release.',nodeMeta:{},paths:[
+        'Hypothalamus > GHRH (peptide) > Anterior pituitary > Somatotroph cell > Growth hormone / GH (peptide) > Liver > IGF-1 (peptide) > Bone and tissue growth',
+        'Hypothalamus > Somatostatin (peptide) > Anterior pituitary > Somatotroph cell > Growth hormone / GH (peptide)'
       ],links:[]},
-      {id:'prolactin-axis',title:'Prolactin Axis',organ:'Prolactin Axis',note:'Dopamine inhibits lactotroph PRL; TRH can stimulate PRL; PRL targets breast/lactation.',nodeMeta:{},paths:[
-        'Prolactin Axis > Hypothalamus > Dopamine (amine) > Anterior pituitary > Lactotroph cell > Prolactin / PRL (peptide) > Breast > Lactation',
-        'Prolactin Axis > Hypothalamus > TRH (peptide) > Anterior pituitary > Lactotroph cell > Prolactin / PRL (peptide) > Breast > Lactation'
+      {id:'prolactin-axis',title:'Prolactin',organ:'Hypothalamus',note:'Dopamine inhibits lactotroph PRL; TRH can stimulate PRL; PRL targets breast/lactation.',nodeMeta:{},paths:[
+        'Hypothalamus > Dopamine (amine) > Anterior pituitary > Lactotroph cell > Prolactin / PRL (peptide) > Breast > Lactation',
+        'Hypothalamus > TRH (peptide) > Anterior pituitary > Lactotroph cell > Prolactin / PRL (peptide) > Breast > Lactation'
       ],links:[]},
-      {id:'adh-axis',title:'AVP / ADH Axis',organ:'AVP / ADH Axis',note:'Posterior pituitary pathway from osmoreceptors/baroreceptors to AVP release and kidney water retention.',nodeMeta:{},paths:[
-        'AVP / ADH Axis > Osmoreceptors and vascular baroreceptors > Hypothalamus nerve impulses > Posterior pituitary > AVP / ADH / vasopressin (peptide) > Kidneys > Water reabsorption',
-        'AVP / ADH Axis > Decreased blood pressure or blood volume > Hypothalamus nerve impulses > Posterior pituitary > AVP / ADH / vasopressin (peptide) > Kidneys > Water reabsorption'
+      {id:'adh-axis',title:'AVP / ADH',organ:'Osmoreceptors and vascular baroreceptors',note:'Posterior pituitary pathway to AVP/ADH release and kidney water retention.',nodeMeta:{
+        'Osmoreceptors and vascular baroreceptors > Posterior pituitary':{note:'Via hypothalamus nerve impulses',color:'#1f74a8'},
+        'Decreased blood pressure or blood volume > Posterior pituitary':{note:'Via hypothalamus nerve impulses',color:'#1f74a8'}
+      },paths:[
+        'Osmoreceptors and vascular baroreceptors > Posterior pituitary > AVP / ADH / vasopressin (peptide) > Kidneys > Water reabsorption',
+        'Decreased blood pressure or blood volume > Posterior pituitary > AVP / ADH / vasopressin (peptide) > Kidneys > Water reabsorption'
       ],links:[]},
-      {id:'oxytocin-axis',title:'Oxytocin Axis',organ:'Oxytocin Axis',note:'The diagram shows uterine contraction stimulus through posterior pituitary oxytocin release.',nodeMeta:{},paths:[
-        'Oxytocin Axis > Uterine contractions propagate > Hypothalamus nerve impulses > Posterior pituitary > Oxytocin (peptide) > Uterus > More uterine contractions',
-        'Oxytocin Axis > Suckling stimulus > Hypothalamus nerve impulses > Posterior pituitary > Oxytocin (peptide) > Breast > Milk letdown'
+      {id:'oxytocin-axis',title:'Oxytocin',organ:'Uterine contractions propagate',note:'Uterine contraction and suckling stimuli trigger posterior pituitary oxytocin release.',nodeMeta:{
+        'Uterine contractions propagate > Posterior pituitary':{note:'Via hypothalamus nerve impulses',color:'#1f74a8'},
+        'Suckling stimulus > Posterior pituitary':{note:'Via hypothalamus nerve impulses',color:'#1f74a8'}
+      },paths:[
+        'Uterine contractions propagate > Posterior pituitary > Oxytocin (peptide) > Uterus > More uterine contractions',
+        'Suckling stimulus > Posterior pituitary > Oxytocin (peptide) > Breast > Milk letdown'
       ],links:[]},
-      {id:'raas-aldosterone-axis',title:'RAAS / Aldosterone Axis',organ:'RAAS / Aldosterone Axis',note:'Low pressure/volume triggers renin, angiotensin II, zona glomerulosa aldosterone, then kidney retention.',nodeMeta:{},paths:[
-        'RAAS / Aldosterone Axis > Low blood pressure or low blood volume > Kidneys > Renin (peptide) > Angiotensinogen > Angiotensin I > ACE: lungs and vascular endothelium > Angiotensin II > Adrenal glands > Zona glomerulosa > Aldosterone (steroid) > Kidneys > Sodium and water retention',
-        'RAAS / Aldosterone Axis > Low blood pressure or low blood volume > Kidneys > Renin (peptide) > Angiotensinogen > Angiotensin I > ACE: lungs and vascular endothelium > Angiotensin II > Direct effector: vasoconstriction'
+      {id:'raas-aldosterone-axis',title:'RAAS / Aldosterone',organ:'Low blood pressure or low blood volume',note:'Low pressure/volume triggers renin, angiotensin II, zona glomerulosa aldosterone, then kidney retention.',nodeMeta:{},paths:[
+        'Low blood pressure or low blood volume > Kidneys > Renin (peptide) > Angiotensinogen > Angiotensin I > ACE: lungs and vascular endothelium > Angiotensin II > Adrenal glands > Zona glomerulosa > Aldosterone (steroid) > Kidneys > Sodium and water retention',
+        'Low blood pressure or low blood volume > Kidneys > Renin (peptide) > Angiotensinogen > Angiotensin I > ACE: lungs and vascular endothelium > Angiotensin II > Direct effector: vasoconstriction'
       ],links:[]},
-      {id:'adrenal-androgens-axis',title:'Adrenal Androgens Axis',organ:'Adrenal Androgens Axis',note:'ACTH also stimulates zona reticularis DHEA/androgens; the PDF lists testosterone contribution by sex.',nodeMeta:{},paths:[
-        'Adrenal Androgens Axis > Hypothalamus > CRH (peptide) > Anterior pituitary > Corticotroph cell > ACTH (peptide) > Adrenal glands > Zona reticularis > DHEA / androgens (steroid) > Testosterone contribution',
-        'Adrenal Androgens Axis > DHEA / androgens (steroid) > Testosterone: <5% men',
-        'Adrenal Androgens Axis > DHEA / androgens (steroid) > Testosterone: 40-65% women'
+      {id:'adrenal-androgens-axis',title:'Adrenal Androgens',organ:'Hypothalamus',note:'ACTH also stimulates zona reticularis DHEA/androgens; the PDF lists testosterone contribution by sex.',nodeMeta:{},paths:[
+        'Hypothalamus > CRH (peptide) > Anterior pituitary > Corticotroph cell > ACTH (peptide) > Adrenal glands > Zona reticularis > DHEA / androgens (steroid) > Testosterone contribution',
+        'Hypothalamus > CRH (peptide) > Anterior pituitary > Corticotroph cell > ACTH (peptide) > Adrenal glands > Zona reticularis > DHEA / androgens (steroid) > Testosterone: <5% men',
+        'Hypothalamus > CRH (peptide) > Anterior pituitary > Corticotroph cell > ACTH (peptide) > Adrenal glands > Zona reticularis > DHEA / androgens (steroid) > Testosterone: 40-65% women'
       ],links:[]}
     ];
   }
@@ -398,7 +407,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     starters.forEach(function(chart){if(!byId[chart.id])needsStarterSync=true});
     return starters.map(function(chart){return byId[chart.id]||chart}).concat(customCharts);
   }
-  function defaultState(){return{version:8,starter:'hormone-flowcharts-v3',updatedAt:Date.now(),charts:starterHormoneFlowcharts(),hormones:[],resourceTables:starterResourceTables()}}
+  function defaultState(){return{version:10,starter:'hormone-flowcharts-v5',updatedAt:Date.now(),charts:starterHormoneFlowcharts(),hormones:[],resourceTables:starterResourceTables()}}
   function looksLikeMinimalLiverStarter(data){
     var charts=data&&Array.isArray(data.charts)?data.charts:[];
     if(charts.length!==1)return false;
@@ -484,7 +493,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       copy.paths=Array.isArray(copy.paths)&&copy.paths.length?copy.paths:[copy.organ+' > New branch'];
       return copy;
     });
-    return {version:8,starter:base.starter,updatedAt:incoming.updatedAt||Date.now(),charts:charts,hormones:Array.isArray(incoming.hormones)?incoming.hormones:base.hormones,resourceTables:normalizeResourceTables(incoming.resourceTables||base.resourceTables,{upgradeStarters:Number(incoming.version||0)<5})};
+    return {version:10,starter:base.starter,updatedAt:incoming.updatedAt||Date.now(),charts:charts,hormones:Array.isArray(incoming.hormones)?incoming.hormones:base.hormones,resourceTables:normalizeResourceTables(incoming.resourceTables||base.resourceTables,{upgradeStarters:Number(incoming.version||0)<5})};
   }
   function saveLocal(){try{localStorage.setItem('chemistryHubState',JSON.stringify(state))}catch(e){}}
   function markDirty(){state.updatedAt=Date.now();saveLocal();if(safeDoc)safeDoc.scheduleSave(4000,'auto')}
@@ -544,7 +553,9 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var note=meta.note?'<span class="flow-node-note">'+escapeHtml(meta.note)+'</span>':'';
     var image=meta.image?'<img class="flow-node-image" src="'+escapeHtml(meta.image)+'" alt="">':'';
     var children=node.children.length?'<div class="flow-children">'+node.children.map(function(child){return nodeHtml(child,depth+1,chart)}).join('')+'</div>':'';
-    return '<div class="flow-branch '+(node.children.length?'has-children':'')+'"><div class="flow-node '+cls+(meta.image?' has-image':'')+'" data-flow-node-path="'+escapeHtml(node.path)+'" style="--node-color:'+escapeHtml(color)+'"><span class="flow-node-title">'+escapeHtml(node.label)+'</span>'+note+image+'</div>'+children+'</div>';
+    var selected=chemSelectedNodeByChart[chart.id]===node.path?' selected':'';
+    var editTitle=isAdmin?' contenteditable="true" spellcheck="false" data-direct-node-title="1" data-chart="'+escapeHtml(chart.id)+'" data-path="'+escapeHtml(node.path)+'"':'';
+    return '<div class="flow-branch '+(node.children.length?'has-children':'')+'"><div class="flow-node '+cls+(meta.image?' has-image':'')+selected+'" data-flow-node-path="'+escapeHtml(node.path)+'" style="--node-color:'+escapeHtml(color)+'"><span class="flow-node-title"'+editTitle+'>'+escapeHtml(node.label)+'</span>'+note+image+'</div>'+children+'</div>';
   }
   function flowHtml(chart,viewScale,branchPath){
     var tree=focusedTree(chart,branchPath);
@@ -720,6 +731,109 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       if(row.note||row.image||row.color)chart.nodeMeta[path]={note:row.note||'',image:row.image||'',color:sanitizeColor(row.color,defaultNodeColor(row.label,row.depth))};
     });
   }
+  function outlineRowPath(rows,index){
+    rows=normalizeOutlineRows(rows);
+    var stack=[];
+    for(var i=0;i<=index&&i<rows.length;i++){
+      stack[rows[i].depth]=rows[i].label;
+      stack.length=rows[i].depth+1;
+    }
+    return stack.join(' > ');
+  }
+  function outlineRowIndexByPath(rows,path){
+    rows=normalizeOutlineRows(rows);
+    for(var i=0;i<rows.length;i++){
+      if(outlineRowPath(rows,i)===path)return i;
+    }
+    return -1;
+  }
+  function saveChemSelectedNodes(){
+    try{localStorage.setItem('chemistrySelectedNodes',JSON.stringify(chemSelectedNodeByChart))}catch(e){}
+  }
+  function selectedChemNode(chart){
+    var nodes=flatChartNodes(chart);
+    if(!nodes.length)return null;
+    var selected=chemSelectedNodeByChart[chart.id];
+    var node=nodes.find(function(item){return item.path===selected});
+    if(!node){
+      node=nodes[0];
+      chemSelectedNodeByChart[chart.id]=node.path;
+      saveChemSelectedNodes();
+    }
+    return node;
+  }
+  function retargetChartPathRefs(chart,oldPath,newPath){
+    if(!oldPath||!newPath||oldPath===newPath)return;
+    chart.links=normalizeLinks(chart.links).map(function(link){
+      ['from','to'].forEach(function(key){
+        if(link[key]===oldPath)link[key]=newPath;
+        else if(link[key].indexOf(oldPath+' > ')===0)link[key]=newPath+link[key].slice(oldPath.length);
+      });
+      return link;
+    });
+  }
+  function updateChemSelectionDom(chartId,path){
+    chemSelectedNodeByChart[chartId]=path;
+    saveChemSelectedNodes();
+    document.querySelectorAll('article[data-chart="'+chartId+'"] .flow-node.selected').forEach(function(node){node.classList.remove('selected')});
+    document.querySelectorAll('article[data-chart="'+chartId+'"] .flow-node[data-flow-node-path]').forEach(function(node){
+      if(node.dataset.flowNodePath===path)node.classList.add('selected');
+    });
+    var chart=findChart(chartId),panel=document.querySelector('article[data-chart="'+chartId+'"] [data-selected-panel]');
+    if(chart&&panel)panel.outerHTML=selectedNodePanelHtml(chart);
+  }
+  function setSelectedNodeLabel(chart,path,label){
+    label=String(label||'').replace(/[>\n\r]+/g,' ').replace(/\s+/g,' ').trim();
+    if(!chart||!path||!label)return path;
+    var rows=outlineRowsFromPaths(chart);
+    var index=outlineRowIndexByPath(rows,path);
+    if(index<0)return path;
+    var oldPath=outlineRowPath(rows,index);
+    rows[index].label=label;
+    var newPath=outlineRowPath(rows,index);
+    applyOutlineRows(chart,rows);
+    retargetChartPathRefs(chart,oldPath,newPath);
+    chemSelectedNodeByChart[chart.id]=newPath;
+    saveChemSelectedNodes();
+    return newPath;
+  }
+  function setSelectedNodeMeta(chart,path,field,value){
+    if(!chart||!path)return;
+    chart.nodeMeta=chart.nodeMeta||{};
+    var existing=chart.nodeMeta[path]||{};
+    existing[field]=field==='color'?sanitizeColor(value,defaultNodeColor(splitPath(path).slice(-1)[0]||'',splitPath(path).length-1)):String(value||'');
+    if(!existing.note&&!existing.image&&!existing.color)delete chart.nodeMeta[path];
+    else chart.nodeMeta[path]=existing;
+  }
+  function addNodeFromSelected(chart,path,mode){
+    if(!chart)return;
+    var rows=outlineRowsFromPaths(chart);
+    var index=outlineRowIndexByPath(rows,path);
+    if(index<0)index=rows.length-1;
+    var depth=mode==='sibling'&&rows[index]?rows[index].depth:((rows[index]?rows[index].depth:0)+1);
+    var insert=mode==='sibling'?outlineBlockEnd(rows,index):index+1;
+    var label=mode==='sibling'?'New branch':'New step';
+    rows.splice(insert,0,{label:label,depth:depth,note:'',image:'',color:defaultNodeColor(label,depth)});
+    var newPath=outlineRowPath(rows,insert);
+    applyOutlineRows(chart,rows);
+    chemSelectedNodeByChart[chart.id]=newPath;
+    saveChemSelectedNodes();
+  }
+  function deleteSelectedNode(chart,path){
+    if(!chart||!path)return;
+    var rows=outlineRowsFromPaths(chart);
+    var index=outlineRowIndexByPath(rows,path);
+    if(index<0)return;
+    if(index===0&&rows.length>1){showToast('Keep the first box as the start',true);return}
+    rows.splice(index,outlineBlockEnd(rows,index)-index);
+    if(!rows.length)rows=[{label:'New start',depth:0,note:'',image:'',color:defaultNodeColor('New start',0)}];
+    var nextIndex=Math.max(0,Math.min(index-1,rows.length-1));
+    var nextPath=outlineRowPath(rows,nextIndex);
+    applyOutlineRows(chart,rows);
+    chart.links=normalizeLinks(chart.links).filter(function(link){return link.from.indexOf(path)!==0&&link.to.indexOf(path)!==0});
+    chemSelectedNodeByChart[chart.id]=nextPath;
+    saveChemSelectedNodes();
+  }
   function outlineBlockEnd(rows,index){
     var depth=rows[index]?rows[index].depth:0;
     var end=index+1;
@@ -787,6 +901,30 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(!nodes.length)options='<option value="">Add flow nodes first</option>';
     return '<details class="advanced-paths"><summary>Feedback / loopback lines</summary><div class="link-builder"><div class="outline-help">Pick two nodes, then choose the line type. Inhibits = red stop line. Stimulates = green arrow. Regular line = blue-gray connector.</div><div class="link-picker"><label>From node<select data-link-from="1">'+options+'</select></label><label>To node<select data-link-to="1">'+options+'</select></label><label>Line type<select data-link-type="1"><option value="inhibit">Inhibits</option><option value="stimulate">Stimulates</option><option value="neutral">Regular line</option></select></label><label>Text<input data-link-label="1" value="" placeholder="Optional"></label><button type="button" class="mini-btn" data-action="add-chart-link" data-chart="'+escapeHtml(chart.id)+'" '+(nodes.length?'':'disabled')+'>+ Line</button></div><div class="link-chip-list">'+(list||'<span class="outline-help">No extra lines yet.</span>')+'</div><details class="advanced-paths"><summary>Advanced: paste/edit connection lines</summary><textarea data-action="chart-links" data-chart="'+escapeHtml(chart.id)+'" placeholder="Node path -> Another node path | inhibit | optional label">'+escapeHtml(linksText(chart))+'</textarea></details></div></details>';
   }
+  function selectedNodePanelHtml(chart){
+    var selected=selectedChemNode(chart);
+    if(!selected)return '<div class="chem-flow-selection-panel" data-selected-panel="1"><div class="outline-help">Click a box in the flowchart to edit it.</div></div>';
+    var meta=(chart.nodeMeta&&chart.nodeMeta[selected.path])||{};
+    var color=sanitizeColor(meta.color,defaultNodeColor(selected.label,selected.depth));
+    var canDelete=selected.depth>0||flatChartNodes(chart).length===1;
+    var preview=meta.image?'<img class="chem-node-image-preview" src="'+escapeHtml(meta.image)+'" alt="">':'';
+    return '<div class="chem-flow-selection-panel" data-selected-panel="1">'+
+      '<div class="chem-flow-selected-head"><div class="chem-flow-selected-title">Current selected<strong>'+escapeHtml(selected.label||'Box')+'</strong></div><div class="outline-help">Click any box, then edit it here. You can also type directly inside the selected box.</div></div>'+
+      '<div class="chem-flow-selected-grid">'+
+        '<label>Text<input data-action="selected-node-text" data-chart="'+escapeHtml(chart.id)+'" data-path="'+escapeHtml(selected.path)+'" value="'+escapeHtml(selected.label||'')+'"></label>'+
+        '<label>Note<textarea rows="1" data-action="selected-node-note" data-chart="'+escapeHtml(chart.id)+'" data-path="'+escapeHtml(selected.path)+'" placeholder="Optional note beside/inside the box">'+escapeHtml(meta.note||'')+'</textarea></label>'+
+        '<label>Color<input class="chem-flow-selected-color" type="color" data-action="selected-node-color" data-chart="'+escapeHtml(chart.id)+'" data-path="'+escapeHtml(selected.path)+'" value="'+escapeHtml(color)+'"></label>'+
+        '<div class="chem-flow-selected-actions">'+
+          '<button type="button" class="mini-btn" data-action="selected-add-child" data-chart="'+escapeHtml(chart.id)+'" data-path="'+escapeHtml(selected.path)+'">+ Next</button>'+
+          '<button type="button" class="mini-btn" data-action="selected-add-sibling" data-chart="'+escapeHtml(chart.id)+'" data-path="'+escapeHtml(selected.path)+'">+ Branch</button>'+
+          '<label class="mini-btn">+ Image<input class="chem-node-image-input" type="file" accept="image/*" data-action="selected-node-image" data-chart="'+escapeHtml(chart.id)+'" data-path="'+escapeHtml(selected.path)+'"></label>'+
+          preview+
+          (meta.image?'<button type="button" class="mini-btn danger" data-action="selected-clear-image" data-chart="'+escapeHtml(chart.id)+'" data-path="'+escapeHtml(selected.path)+'">Clear image</button>':'')+
+          '<button type="button" class="mini-btn danger" data-action="selected-delete-node" data-chart="'+escapeHtml(chart.id)+'" data-path="'+escapeHtml(selected.path)+'" '+(canDelete?'':'disabled')+'>Delete</button>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  }
   function chartTabsHtml(){
     var charts=state.charts||[];
     if(!charts.length)return '';
@@ -803,7 +941,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     try{localStorage.setItem('chemistryEditorOpen',JSON.stringify(editorOpenByChart))}catch(e){}
   }
   function editorOpenAttr(chartId){
-    return editorOpenByChart[chartId] ? ' open' : '';
+    return editorOpenByChart[chartId]===false ? '' : ' open';
   }
   function renderFlowcharts(){
     var charts=state.charts||[];
@@ -813,7 +951,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var paths=(chart.paths||[]).join('\n');
     var note=chart.note?'<p>'+escapeHtml(chart.note)+'</p>':'';
     var preview='<div class="flow-preview-panel"><div class="flow-view-tools"><button type="button" class="mini-btn" data-action="flow-zoom" data-dir="-1">-</button><span class="flow-zoom-value">'+Math.round(chemFlowZoom*100)+'%</span><button type="button" class="mini-btn" data-action="flow-zoom" data-dir="1">+</button><button type="button" class="mini-btn" data-action="flow-zoom-reset">Reset</button></div>'+flowHtml(chart,chemFlowZoom,'__all__')+'</div>';
-    var html=chartTabsHtml()+'<article class="flow-card" data-chart="'+escapeHtml(chart.id)+'"><div class="flow-card-head"><div><h2>'+escapeHtml(chart.title||'Untitled Flowchart')+'</h2>'+note+'</div><div class="flow-card-actions"><button type="button" class="mini-btn" data-action="export-chart" data-chart="'+escapeHtml(chart.id)+'">Export</button><button type="button" class="mini-btn danger admin-only" data-action="delete-chart" data-chart="'+escapeHtml(chart.id)+'">Delete</button></div></div>'+preview+'<details class="flow-editor-details" data-editor-chart="'+escapeHtml(chart.id)+'"'+editorOpenAttr(chart.id)+'><summary>Edit flowchart</summary><div class="flow-admin"><label>Title<input data-action="chart-field" data-chart="'+escapeHtml(chart.id)+'" data-field="title" value="'+escapeHtml(chart.title||'')+'"></label><label>Optional note<input data-action="chart-field" data-chart="'+escapeHtml(chart.id)+'" data-field="note" value="'+escapeHtml(chart.note||'')+'"></label><div class="branch-builder outline-builder">'+branchOutlineHtml(chart)+'</div>'+linkBuilderHtml(chart)+'<details class="advanced-paths"><summary>Advanced: edit full paths</summary><textarea data-action="chart-paths" data-chart="'+escapeHtml(chart.id)+'">'+escapeHtml(paths)+'</textarea></details></div></details></article>';
+    var html=chartTabsHtml()+'<article class="flow-card" data-chart="'+escapeHtml(chart.id)+'"><div class="flow-card-head"><div><h2>'+escapeHtml(chart.title||'Untitled Flowchart')+'</h2>'+note+'</div><div class="flow-card-actions"><button type="button" class="mini-btn" data-action="export-chart" data-chart="'+escapeHtml(chart.id)+'">Export</button><button type="button" class="mini-btn danger admin-only" data-action="delete-chart" data-chart="'+escapeHtml(chart.id)+'">Delete</button></div></div>'+preview+'<details class="flow-editor-details" data-editor-chart="'+escapeHtml(chart.id)+'"'+editorOpenAttr(chart.id)+'><summary>Edit flowchart</summary><div class="flow-admin chem-direct-admin"><label>Title<input data-action="chart-field" data-chart="'+escapeHtml(chart.id)+'" data-field="title" value="'+escapeHtml(chart.title||'')+'"></label><label>Optional note<input data-action="chart-field" data-chart="'+escapeHtml(chart.id)+'" data-field="note" value="'+escapeHtml(chart.note||'')+'"></label>'+selectedNodePanelHtml(chart)+linkBuilderHtml(chart)+'<details class="chem-advanced-outline"><summary>Advanced outline editor</summary><div class="branch-builder outline-builder">'+branchOutlineHtml(chart)+'</div></details><details class="advanced-paths"><summary>Advanced: edit full paths</summary><textarea data-action="chart-paths" data-chart="'+escapeHtml(chart.id)+'">'+escapeHtml(paths)+'</textarea></details></div></details></article>';
     document.getElementById('flowcharts').innerHTML=html;
     scheduleChemFlowLinks(document.getElementById('flowcharts'));
   }
@@ -994,13 +1132,13 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function renderAll(){renderFlowcharts();renderHormones();renderResources();renderTables();document.body.classList.toggle('admin-mode',isAdmin)}
   function chartPrintHtml(chart){
-    var exportTitle=(chart&&chart.title)||'Organ Flowchart';
+    var exportTitle=(chart&&chart.title)||'Hormone Flowchart';
     return '<div class="print-page"><h1>'+escapeHtml(exportTitle)+'</h1>'+flowHtml(chart,null,'__all__')+'</div>';
   }
   function exportChart(chart){
     if(!chart)return;
     var area=document.getElementById('printArea');
-    var exportTitle=chart.title||'Organ Flowchart';
+    var exportTitle=chart.title||'Hormone Flowchart';
     area.innerHTML=chartPrintHtml(chart);
     area.style.display='block';
     area.style.position='fixed';
@@ -1090,6 +1228,15 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   function findHormone(id){return (state.hormones||[]).find(function(item){return item.id===id})}
   document.addEventListener('click',function(event){
     var nav=event.target.closest('.nav-tab');if(nav){showSection(nav.dataset.section);return}
+    var clickedFlowNode=event.target.closest('.flow-node[data-flow-node-path]');
+    if(isAdmin&&clickedFlowNode){
+      var chartArticle=clickedFlowNode.closest('article[data-chart]');
+      if(chartArticle){
+        updateChemSelectionDom(chartArticle.dataset.chart,clickedFlowNode.dataset.flowNodePath);
+        if(event.target.closest('[data-direct-node-title]'))return;
+        return;
+      }
+    }
     var action=event.target.closest('[data-ui-action],[data-action]');if(!action)return;
     var ui=action.dataset.uiAction,act=action.dataset.action;
     if(ui==='admin-login'){openAdmin();return}
@@ -1117,9 +1264,9 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       return;
     }
     if(act==='flow-zoom'||act==='flow-zoom-reset'){
-      if(act==='flow-zoom-reset')chemFlowZoom=.64;
+      if(act==='flow-zoom-reset')chemFlowZoom=.78;
       else chemFlowZoom=Math.max(.34,Math.min(.98,chemFlowZoom+(Number(action.dataset.dir)||0)*.08));
-      localStorage.setItem('chemistryFlowZoom4',String(chemFlowZoom));
+      localStorage.setItem('chemistryFlowZoom5',String(chemFlowZoom));
       renderAll();
       return;
     }
@@ -1166,6 +1313,30 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(act==='clear-resource-image'){var imgTable=findResourceTable(action.dataset.table),imgRow=findResourceRow(imgTable,action.dataset.row);if(imgRow&&imgRow.cells){imgRow.cells[action.dataset.col]='';renderAll();markDirty()}return}
     if(act==='add-chart'){var newChart={id:uid('chart'),title:'New Hormone Flowchart',organ:'New Hormone Flowchart',note:'',nodeMeta:{},links:[],paths:['New Hormone Flowchart > Stimulus > Source organ > Hormone > Target organ > Effect']};state.charts.push(newChart);activeChartId=newChart.id;localStorage.setItem('chemistryActiveChart',activeChartId);renderAll();markDirty()}
     if(act==='delete-chart'){state.charts=state.charts.filter(function(chart){return chart.id!==action.dataset.chart});if(activeChartId===action.dataset.chart)activeChartId=(state.charts[0]&&state.charts[0].id)||'';localStorage.setItem('chemistryActiveChart',activeChartId);renderAll();markDirty()}
+    if(act==='selected-add-child'||act==='selected-add-sibling'){
+      var addSelectedChart=findChart(action.dataset.chart);
+      if(addSelectedChart){
+        addNodeFromSelected(addSelectedChart,action.dataset.path,act==='selected-add-sibling'?'sibling':'child');
+        renderAll();markDirty();
+      }
+      return;
+    }
+    if(act==='selected-delete-node'){
+      var deleteSelectedChart=findChart(action.dataset.chart);
+      if(deleteSelectedChart){
+        deleteSelectedNode(deleteSelectedChart,action.dataset.path);
+        renderAll();markDirty();
+      }
+      return;
+    }
+    if(act==='selected-clear-image'){
+      var clearImageChart=findChart(action.dataset.chart);
+      if(clearImageChart){
+        setSelectedNodeMeta(clearImageChart,action.dataset.path,'image','');
+        renderAll();markDirty();
+      }
+      return;
+    }
     if(act==='add-chart-link'){
       var addLinkChart=findChart(action.dataset.chart),addLinkCard=action.closest('article[data-chart]');
       if(addLinkChart&&addLinkCard){
@@ -1230,6 +1401,18 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(act==='chart-links'){var linkChart=findChart(el.dataset.chart);if(linkChart){linkChart.links=parseLinksText(el.value);markDirty();scheduleChemFlowLinks(document.getElementById('flowcharts'))}}
     if(act==='branch-field'){var editChart=findChart(el.dataset.chart);if(editChart){editChart.paths=editChart.paths||[];editChart.paths[Number(el.dataset.index)]=makePath(editChart,el.value);markDirty()}}
     if(act==='outline-field'||act==='outline-note'||act==='outline-color'){var outlineChart=findChart(el.dataset.chart);if(outlineChart){var rows=outlineRowsFromDom(outlineChart.id);if(rows){applyOutlineRows(outlineChart,rows);markDirty()}}}
+    if(act==='selected-node-note'||act==='selected-node-color'){
+      var selectedMetaChart=findChart(el.dataset.chart);
+      if(selectedMetaChart){
+        setSelectedNodeMeta(selectedMetaChart,el.dataset.path,act==='selected-node-color'?'color':'note',el.value);
+        if(act==='selected-node-color'){
+          document.querySelectorAll('article[data-chart="'+selectedMetaChart.id+'"] .flow-node[data-flow-node-path]').forEach(function(node){
+            if(node.dataset.flowNodePath===el.dataset.path)node.style.setProperty('--node-color',sanitizeColor(el.value,'#1f74a8'));
+          });
+        }
+        markDirty();
+      }
+    }
     if(act==='hormone-field'){var item=findHormone(el.dataset.id);if(item){item[el.dataset.field]=el.value;markDirty()}}
     if(act==='resource-table-title'){var titleTable=findResourceTable(el.dataset.table);if(titleTable){titleTable.title=plainCellText(el.value)||'Chemistry Table';markDirty()}}
     if(act==='resource-col-label'){var labelTable=findResourceTable(el.dataset.table);if(labelTable){var labelCol=(labelTable.columns||[]).find(function(col){return col.id===el.dataset.col});if(labelCol){labelCol.label=plainCellText(el.value)||'Column';markDirty()}}}
@@ -1238,11 +1421,34 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   });
   document.addEventListener('change',function(event){
     if(!isAdmin)return;
+    if(event.target.dataset.action==='selected-node-text'){
+      var selectedTextInput=event.target,selectedTextChart=findChart(selectedTextInput.dataset.chart);
+      if(selectedTextChart){
+        setSelectedNodeLabel(selectedTextChart,selectedTextInput.dataset.path,selectedTextInput.value);
+        renderAll();markDirty();
+      }
+      return;
+    }
+    if(event.target.dataset.action==='selected-node-note'||event.target.dataset.action==='selected-node-color'){
+      renderAll();
+      return;
+    }
     if(event.target.dataset.action==='resource-image'){
       var resourceInput=event.target,resourceTable=findResourceTable(resourceInput.dataset.table),resourceRow=findResourceRow(resourceTable,resourceInput.dataset.row);
       if(resourceRow&&resourceRow.cells&&resourceInput.files&&resourceInput.files[0]){
         resizeImageFile(resourceInput.files[0],900,.82).then(function(dataUrl){
           resourceRow.cells[resourceInput.dataset.col]=dataUrl;
+          renderAll();
+          markDirty();
+        }).catch(function(error){showToast(error.message||'Image failed',true)});
+      }
+      return;
+    }
+    if(event.target.dataset.action==='selected-node-image'){
+      var selectedImageInput=event.target,selectedImageChart=findChart(selectedImageInput.dataset.chart);
+      if(selectedImageChart&&selectedImageInput.files&&selectedImageInput.files[0]){
+        resizeImageFile(selectedImageInput.files[0],850,.8).then(function(dataUrl){
+          setSelectedNodeMeta(selectedImageChart,selectedImageInput.dataset.path,'image',dataUrl);
           renderAll();
           markDirty();
         }).catch(function(error){showToast(error.message||'Image failed',true)});
@@ -1266,9 +1472,20 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     }
     if(event.target.dataset.action==='chart-field'||event.target.dataset.action==='chart-paths'||event.target.dataset.action==='chart-links'||event.target.dataset.action==='branch-field'||event.target.dataset.action==='outline-field'||event.target.dataset.action==='outline-note'||event.target.dataset.action==='outline-color'||event.target.dataset.action==='hormone-field')renderAll();
   });
+  document.addEventListener('blur',function(event){
+    if(!isAdmin)return;
+    var title=event.target.closest&&event.target.closest('[data-direct-node-title]');
+    if(!title)return;
+    var chart=findChart(title.dataset.chart);
+    if(chart){
+      setSelectedNodeLabel(chart,title.dataset.path,plainCellText(title.innerHTML));
+      renderAll();
+      markDirty();
+    }
+  },true);
   window.addEventListener('resize',function(){scheduleChemFlowLinks(document)});
   window.addEventListener('hashchange',function(){showSection(location.hash.replace(/^#/,''),true)});
-  document.addEventListener('keydown',function(event){if(event.key==='Enter'&&document.getElementById('adminModal').classList.contains('visible'))attemptLogin();if(event.key==='Escape')closeAdmin()});
+  document.addEventListener('keydown',function(event){if(event.key==='Enter'&&event.target&&event.target.closest&&event.target.closest('[data-direct-node-title]')){event.preventDefault();event.target.blur();return}if(event.key==='Enter'&&document.getElementById('adminModal').classList.contains('visible'))attemptLogin();if(event.key==='Escape')closeAdmin()});
   async function init(){
     try{var local=localStorage.getItem('chemistryHubState');if(local)state=normalize(JSON.parse(local))}catch(e){}
     renderAll();
