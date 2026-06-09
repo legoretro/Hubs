@@ -1422,14 +1422,27 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       var org=siteOrganismById(el.dataset.site,el.dataset.organism);
       if(org)org[el.dataset.siteOrganismField]=el.dataset.siteOrganismField==='status'?el.value:normalizeCellText(el.value);
     });
+    document.querySelectorAll('[data-action="simple-tree-label"]').forEach(function(el){
+      simpleCommitTreeLabelElement(el);
+    });
+    document.querySelectorAll('[data-action="simple-node-note"]').forEach(function(el){
+      var chart=simpleChartById(el.dataset.chart);
+      if(chart){
+        var note=simpleNodeNoteRecord(chart,el.dataset.pathKey,true);
+        note.text=normalizeCellText(el.textContent);
+        note.open=true;
+      }
+    });
     var touchedSimple={};
     document.querySelectorAll('[data-simple-card]').forEach(function(card){
+      if(!card.querySelector('.simple-flow-editor[open]'))return;
       if(card.dataset.simpleCard&&!touchedSimple[card.dataset.simpleCard]){
         simplePersistChartFromDom(card.dataset.simpleCard);
         touchedSimple[card.dataset.simpleCard]=true;
       }
     });
   }
+  function saveLiveDraft(){touchState();if(isAdmin)scheduleSave()}
   function saveDraft(){collectVisibleState();touchState();saveLocal();if(isAdmin)scheduleSave()}
   function scheduleSave(){clearTimeout(saveTimer);saveTimer=setTimeout(function(){saveNow('auto')},4000)}
   async function saveNow(reason){
@@ -2746,6 +2759,22 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       }
     });
   }
+  function simpleCommitTreeLabelElement(el){
+    if(!el||el.dataset.action!=='simple-tree-label')return false;
+    var chart=simpleChartById(el.dataset.chart);
+    var label=normalizeCellText(el.textContent).replace(/[>\n\r]+/g,' ').replace(/\s+/g,' ').trim();
+    if(!chart||!label)return false;
+    var oldPrefix=simplePathParts(el.dataset.pathKey);
+    if(!oldPrefix.length)return false;
+    var oldStep=oldPrefix[oldPrefix.length-1]||'';
+    var suffix=(oldStep.match(/\s*\{[^}]+\}\s*$/)||[''])[0];
+    var newPrefix=oldPrefix.slice();
+    newPrefix[newPrefix.length-1]=label+suffix;
+    simpleUpdateTreeNodeLabel(chart,el.dataset.pathKey,label);
+    simpleRetargetTreeDom(chart.id,oldPrefix,newPrefix);
+    el.dataset.pathKey=simplePathKey(newPrefix);
+    return true;
+  }
   function simpleRewriteKeyPrefix(map,oldPrefix,newPrefix){
     if(!map||!oldPrefix.length||!newPrefix.length)return;
     Object.keys(map).forEach(function(key){
@@ -3768,7 +3797,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         var liveNote=simpleNodeNoteRecord(noteTextChart,el.dataset.pathKey,true);
         liveNote.text=normalizeCellText(el.textContent);
         liveNote.open=true;
-        saveDraft();
+        saveLiveDraft();
       }
       return;
     }
@@ -3785,7 +3814,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         simpleUpdateTreeNodeLabel(selectedTextChart,el.dataset.pathKey,selectedText);
         simpleRetargetTreeDom(selectedTextChart.id,selectedOldPrefix,selectedNewPrefix);
         el.dataset.pathKey=simplePathKey(selectedNewPrefix);
-        saveDraft();
+        saveLiveDraft();
       }
       return;
     }
@@ -3794,15 +3823,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       var liveTreeChart=simpleChartById(el.dataset.chart);
       var liveLabel=normalizeCellText(el.textContent).replace(/[>\n\r]+/g,' ').replace(/\s+/g,' ').trim();
       if(liveTreeChart&&liveLabel){
-        var oldPrefix=simplePathParts(el.dataset.pathKey);
-        var oldStep=oldPrefix[oldPrefix.length-1]||'';
-        var suffix=(oldStep.match(/\s*\{[^}]+\}\s*$/)||[''])[0];
-        var newPrefix=oldPrefix.slice();
-        newPrefix[newPrefix.length-1]=liveLabel+suffix;
-        simpleUpdateTreeNodeLabel(liveTreeChart,el.dataset.pathKey,liveLabel);
-        simpleRetargetTreeDom(liveTreeChart.id,oldPrefix,newPrefix);
-        simpleFlowSelectedPathKey=simplePathKey(newPrefix);
-        saveDraft();
+        simpleFlowSelectedPathKey=el.dataset.pathKey;
+        touchState();
       }
       return;
     }
@@ -3817,7 +3839,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         if(step)step.style.setProperty('--step-color',el.value);
         if(group&&el.dataset.colorKey&&el.dataset.colorKey.split(' > ').length<=2)group.style.setProperty('--group-color',el.value);
         if(root)root.style.setProperty('--step-color',el.value);
-        saveDraft();
+        saveLiveDraft();
       }
       return;
     }
@@ -3825,15 +3847,15 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       if(!isAdmin||!editMode)return;
       var simpleId=el.dataset.chart;
       var simpleChart=simplePersistChartFromDom(simpleId);
-      if(simpleChart){saveDraft()}
+      if(simpleChart){saveLiveDraft()}
       return;
     }
     if(!isAdmin||!editMode)return;
-    if(el.dataset.action==='edit-cell'){var table=findTable(el.dataset.table);var row=table&&table.rows.find(function(item){return item.id===el.dataset.row});if(row){row.cells[el.dataset.col]=normalizeCellText(el.innerHTML);saveDraft()}}
-    if(el.dataset.action==='edit-col'){var t=findTable(el.dataset.table);var col=t&&t.columns.find(function(item){return item.id===el.dataset.col});if(col){col.label=el.value;saveDraft()}}
-    if(el.dataset.action==='edit-path-step'){var stepChart=state.charts.find(function(item){return item.id===el.dataset.chart});var stepSpecies=stepChart&&ensureChartSpecies(stepChart).species.find(function(item){return item.id===el.dataset.species});if(stepSpecies){var stepList=splitPathSteps(stepSpecies.path);var stepIndex=Number(el.dataset.step)||0;stepList[stepIndex]=composeStep(el.value,stepDisplayBadge(stepList[stepIndex]));setSpeciesSteps(stepSpecies,stepList);generatedChartId=null;saveDraft()}return}
-    if(el.dataset.chartField){var chart=state.charts.find(function(item){return item.id===el.dataset.chart});if(chart){chart[el.dataset.chartField]=el.value;saveDraft()}}
-    if(el.dataset.speciesField){var chart2=state.charts.find(function(item){return item.id===el.dataset.chart});var sp=chart2&&ensureChartSpecies(chart2).species.find(function(item){return item.id===el.dataset.species});if(sp){sp[el.dataset.speciesField]=el.value;saveDraft()}}
+    if(el.dataset.action==='edit-cell'){var table=findTable(el.dataset.table);var row=table&&table.rows.find(function(item){return item.id===el.dataset.row});if(row){row.cells[el.dataset.col]=normalizeCellText(el.innerHTML);saveLiveDraft()}}
+    if(el.dataset.action==='edit-col'){var t=findTable(el.dataset.table);var col=t&&t.columns.find(function(item){return item.id===el.dataset.col});if(col){col.label=el.value;saveLiveDraft()}}
+    if(el.dataset.action==='edit-path-step'){var stepChart=state.charts.find(function(item){return item.id===el.dataset.chart});var stepSpecies=stepChart&&ensureChartSpecies(stepChart).species.find(function(item){return item.id===el.dataset.species});if(stepSpecies){var stepList=splitPathSteps(stepSpecies.path);var stepIndex=Number(el.dataset.step)||0;stepList[stepIndex]=composeStep(el.value,stepDisplayBadge(stepList[stepIndex]));setSpeciesSteps(stepSpecies,stepList);generatedChartId=null;saveLiveDraft()}return}
+    if(el.dataset.chartField){var chart=state.charts.find(function(item){return item.id===el.dataset.chart});if(chart){chart[el.dataset.chartField]=el.value;saveLiveDraft()}}
+    if(el.dataset.speciesField){var chart2=state.charts.find(function(item){return item.id===el.dataset.chart});var sp=chart2&&ensureChartSpecies(chart2).species.find(function(item){return item.id===el.dataset.species});if(sp){sp[el.dataset.speciesField]=el.value;saveLiveDraft()}}
     if(el.dataset.specimenField){
       var specimen=(state.specimenBank||[]).find(function(item){return item.id===el.dataset.specimen});
       if(specimen){
@@ -3846,16 +3868,16 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
             if(!chart.title||chart.title===oldTitle||/New Specimen \/ Fluid Flowchart/i.test(chart.title))chart.title=(specimen.name||oldName)+' Flowchart';
           });
         }
-        saveDraft();
+        saveLiveDraft();
       }
     }
     if(el.dataset.siteField){
       var workup=siteWorkupById(el.dataset.site);
-      if(workup){workup[el.dataset.siteField]=normalizeCellText(el.value);saveDraft()}
+      if(workup){workup[el.dataset.siteField]=normalizeCellText(el.value);saveLiveDraft()}
     }
     if(el.dataset.siteOrganismField){
       var siteOrg=siteOrganismById(el.dataset.site,el.dataset.organism);
-      if(siteOrg){siteOrg[el.dataset.siteOrganismField]=el.dataset.siteOrganismField==='status'?el.value:normalizeCellText(el.value);saveDraft()}
+      if(siteOrg){siteOrg[el.dataset.siteOrganismField]=el.dataset.siteOrganismField==='status'?el.value:normalizeCellText(el.value);saveLiveDraft()}
     }
   });
   document.addEventListener('focusout',function(e){
@@ -3870,8 +3892,10 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
           var noteRecord=simpleNodeNoteRecord(treeLabelChart,el.dataset.pathKey,true);
           noteRecord.text=normalizeCellText(el.textContent);
           noteRecord.open=true;
+        }else if(el.dataset.action==='simple-tree-label'){
+          simpleCommitTreeLabelElement(el);
         }else{
-          simpleUpdateTreeNodeLabel(treeLabelChart,el.dataset.pathKey,el.dataset.action==='simple-selected-text'?el.value:el.textContent);
+          simpleUpdateTreeNodeLabel(treeLabelChart,el.dataset.pathKey,el.value);
         }
         if(before&&before!==simpleChartSnapshot(treeLabelChart))simplePushSnapshot(treeLabelChart.id,before);
         delete simpleFlowTextStart[historyKey];
