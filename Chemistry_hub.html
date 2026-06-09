@@ -140,7 +140,7 @@ const TABLE_NAME='mls_blood_bank';
 const CHEM_ROW_ID='chemistry_hub';
 const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c675';
 (function(){
-  var isAdmin=false,state=defaultState(),safeDoc=null,syncPresence=null;
+  var isAdmin=false,state=defaultState(),safeDoc=null,syncPresence=null,needsStarterSync=false;
   var chemFlowZoom=Number(localStorage.getItem('chemistryFlowZoom4')||0.64);
   var activeChartId=localStorage.getItem('chemistryActiveChart')||'';
   var activeResourceTableId=localStorage.getItem('chemistryActiveResourceTable')||'';
@@ -346,72 +346,95 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function starterHormoneFlowcharts(){
     return [
-      {id:'gonadal-axis',title:'Gonadal Axis',organ:'Gonadal Axis',note:'GnRH branches to FSH/LH, then ovarian/testicular steroid and inhibin feedback.',nodeMeta:{},paths:[
-        'Gonadal Axis > Hypothalamus > GnRH > Anterior pituitary: gonadotroph cell > FSH > Ovary: follicle cells > Estrogen (estradiol)',
-        'Gonadal Axis > Hypothalamus > GnRH > Anterior pituitary: gonadotroph cell > FSH > Testes: Sertoli cells > Inhibin',
-        'Gonadal Axis > Hypothalamus > GnRH > Anterior pituitary: gonadotroph cell > LH > Ovary: corpus luteum > Progesterone',
-        'Gonadal Axis > Hypothalamus > GnRH > Anterior pituitary: gonadotroph cell > LH > Testes: Leydig cells > Testosterone'
+      {id:'gonadal-axis',title:'Gonadal Axis',organ:'Gonadal Axis',note:'From the uploaded hormone diagram: GnRH drives FSH/LH; gonadal steroids and inhibin loop back as feedback.',nodeMeta:{},paths:[
+        'Gonadal Axis > Hypothalamus > GnRH (peptide) > Anterior pituitary > Gonadotroph cell > FSH (glycoprotein) > Ovary: follicle cells > Estrogen / estradiol (steroid)',
+        'Gonadal Axis > Hypothalamus > GnRH (peptide) > Anterior pituitary > Gonadotroph cell > FSH (glycoprotein) > Testes: Sertoli cells > Inhibin (peptide)',
+        'Gonadal Axis > Hypothalamus > GnRH (peptide) > Anterior pituitary > Gonadotroph cell > LH (glycoprotein) > Ovary: corpus luteum > Progesterone (steroid)',
+        'Gonadal Axis > Hypothalamus > GnRH (peptide) > Anterior pituitary > Gonadotroph cell > LH (glycoprotein) > Testes: Leydig cells > Testosterone (steroid)'
       ],links:[
-        {from:'Gonadal Axis > Hypothalamus > GnRH > Anterior pituitary: gonadotroph cell > FSH > Testes: Sertoli cells > Inhibin',to:'Gonadal Axis > Hypothalamus > GnRH > Anterior pituitary: gonadotroph cell > FSH',label:'Negative feedback'},
-        {from:'Gonadal Axis > Hypothalamus > GnRH > Anterior pituitary: gonadotroph cell > FSH > Ovary: follicle cells > Estrogen (estradiol)',to:'Gonadal Axis > Hypothalamus',label:'Negative feedback'},
-        {from:'Gonadal Axis > Hypothalamus > GnRH > Anterior pituitary: gonadotroph cell > LH > Ovary: corpus luteum > Progesterone',to:'Gonadal Axis > Hypothalamus',label:'Negative feedback'},
-        {from:'Gonadal Axis > Hypothalamus > GnRH > Anterior pituitary: gonadotroph cell > LH > Testes: Leydig cells > Testosterone',to:'Gonadal Axis > Hypothalamus',label:'Negative feedback'}
+        {from:'Gonadal Axis > Hypothalamus > GnRH (peptide) > Anterior pituitary > Gonadotroph cell > FSH (glycoprotein) > Testes: Sertoli cells > Inhibin (peptide)',to:'Gonadal Axis > Hypothalamus > GnRH (peptide) > Anterior pituitary > Gonadotroph cell > FSH (glycoprotein)',label:'Negative feedback'},
+        {from:'Gonadal Axis > Hypothalamus > GnRH (peptide) > Anterior pituitary > Gonadotroph cell > FSH (glycoprotein) > Ovary: follicle cells > Estrogen / estradiol (steroid)',to:'Gonadal Axis > Hypothalamus',label:'Negative feedback'},
+        {from:'Gonadal Axis > Hypothalamus > GnRH (peptide) > Anterior pituitary > Gonadotroph cell > LH (glycoprotein) > Ovary: corpus luteum > Progesterone (steroid)',to:'Gonadal Axis > Hypothalamus',label:'Negative feedback'},
+        {from:'Gonadal Axis > Hypothalamus > GnRH (peptide) > Anterior pituitary > Gonadotroph cell > LH (glycoprotein) > Testes: Leydig cells > Testosterone (steroid)',to:'Gonadal Axis > Hypothalamus',label:'Negative feedback'}
       ]},
-      {id:'thyroid-axis',title:'Thyroid Axis',organ:'Thyroid Axis',note:'TRH to TSH to thyroid follicular cells; T3/T4 feeds back to hypothalamus and pituitary.',nodeMeta:{},paths:[
-        'Thyroid Axis > Hypothalamus > TRH > Anterior pituitary: thyrotroph cell > TSH > Thyroid follicular cells > T3/T4 > Target tissues'
+      {id:'thyroid-axis',title:'Thyroid Axis',organ:'Thyroid Axis',note:'TRH stimulates thyrotroph cells; TSH stimulates thyroid follicular cells; T3/T4 inhibits the upstream axis.',nodeMeta:{},paths:[
+        'Thyroid Axis > Hypothalamus > TRH (peptide) > Anterior pituitary > Thyrotroph cell > TSH (glycoprotein) > Thyroid follicular cells > T3/T4 (amine) > Target tissues'
       ],links:[
-        {from:'Thyroid Axis > Hypothalamus > TRH > Anterior pituitary: thyrotroph cell > TSH > Thyroid follicular cells > T3/T4',to:'Thyroid Axis > Hypothalamus',label:'Negative feedback'},
-        {from:'Thyroid Axis > Hypothalamus > TRH > Anterior pituitary: thyrotroph cell > TSH > Thyroid follicular cells > T3/T4',to:'Thyroid Axis > Hypothalamus > TRH > Anterior pituitary: thyrotroph cell',label:'Negative feedback'}
+        {from:'Thyroid Axis > Hypothalamus > TRH (peptide) > Anterior pituitary > Thyrotroph cell > TSH (glycoprotein) > Thyroid follicular cells > T3/T4 (amine)',to:'Thyroid Axis > Hypothalamus',label:'Negative feedback'},
+        {from:'Thyroid Axis > Hypothalamus > TRH (peptide) > Anterior pituitary > Thyrotroph cell > TSH (glycoprotein) > Thyroid follicular cells > T3/T4 (amine)',to:'Thyroid Axis > Hypothalamus > TRH (peptide) > Anterior pituitary',label:'Negative feedback'}
       ]},
-      {id:'adrenal-cortisol-axis',title:'Adrenal Cortisol Axis',organ:'Adrenal Cortisol Axis',note:'CRH to ACTH to zona fasciculata; cortisol is the feedback hormone.',nodeMeta:{},paths:[
-        'Adrenal Cortisol Axis > Hypothalamus > CRH > Anterior pituitary: corticotroph cell > ACTH > Adrenal cortex: zona fasciculata > Cortisol > Target tissues'
+      {id:'adrenal-cortisol-axis',title:'Adrenal Cortisol Axis',organ:'Adrenal Cortisol Axis',note:'CRH stimulates corticotroph cells; ACTH stimulates zona fasciculata; cortisol inhibits hypothalamus and pituitary.',nodeMeta:{},paths:[
+        'Adrenal Cortisol Axis > Hypothalamus > CRH (peptide) > Anterior pituitary > Corticotroph cell > ACTH (peptide) > Adrenal glands > Zona fasciculata > Cortisol (steroid) > Target tissues'
       ],links:[
-        {from:'Adrenal Cortisol Axis > Hypothalamus > CRH > Anterior pituitary: corticotroph cell > ACTH > Adrenal cortex: zona fasciculata > Cortisol',to:'Adrenal Cortisol Axis > Hypothalamus',label:'Negative feedback'},
-        {from:'Adrenal Cortisol Axis > Hypothalamus > CRH > Anterior pituitary: corticotroph cell > ACTH > Adrenal cortex: zona fasciculata > Cortisol',to:'Adrenal Cortisol Axis > Hypothalamus > CRH > Anterior pituitary: corticotroph cell',label:'Negative feedback'}
+        {from:'Adrenal Cortisol Axis > Hypothalamus > CRH (peptide) > Anterior pituitary > Corticotroph cell > ACTH (peptide) > Adrenal glands > Zona fasciculata > Cortisol (steroid)',to:'Adrenal Cortisol Axis > Hypothalamus',label:'Negative feedback'},
+        {from:'Adrenal Cortisol Axis > Hypothalamus > CRH (peptide) > Anterior pituitary > Corticotroph cell > ACTH (peptide) > Adrenal glands > Zona fasciculata > Cortisol (steroid)',to:'Adrenal Cortisol Axis > Hypothalamus > CRH (peptide) > Anterior pituitary',label:'Negative feedback'}
       ]},
-      {id:'growth-hormone-axis',title:'Growth Hormone Axis',organ:'Growth Hormone Axis',note:'GHRH stimulates GH; somatostatin inhibits GH; GH stimulates liver IGF-1.',nodeMeta:{},paths:[
-        'Growth Hormone Axis > Hypothalamus > GHRH > Anterior pituitary: somatotroph cell > Growth hormone (GH) > Liver > IGF-1 > Bone and tissue growth',
-        'Growth Hormone Axis > Hypothalamus > Somatostatin > Anterior pituitary: somatotroph cell > Growth hormone (GH)'
+      {id:'growth-hormone-axis',title:'Growth Hormone Axis',organ:'Growth Hormone Axis',note:'The diagram shows both GHRH stimulation and somatostatin inhibition of somatotroph GH release.',nodeMeta:{},paths:[
+        'Growth Hormone Axis > Hypothalamus > GHRH (peptide) > Anterior pituitary > Somatotroph cell > Growth hormone / GH (peptide) > Liver > IGF-1 (peptide) > Bone and tissue growth',
+        'Growth Hormone Axis > Hypothalamus > Somatostatin (peptide) > Anterior pituitary > Somatotroph cell > Growth hormone / GH (peptide)'
       ],links:[
-        {from:'Growth Hormone Axis > Hypothalamus > GHRH > Anterior pituitary: somatotroph cell > Growth hormone (GH) > Liver > IGF-1',to:'Growth Hormone Axis > Hypothalamus',label:'Negative feedback'},
-        {from:'Growth Hormone Axis > Hypothalamus > Somatostatin',to:'Growth Hormone Axis > Hypothalamus > GHRH > Anterior pituitary: somatotroph cell',label:'Inhibits GH'}
+        {from:'Growth Hormone Axis > Hypothalamus > GHRH (peptide) > Anterior pituitary > Somatotroph cell > Growth hormone / GH (peptide) > Liver > IGF-1 (peptide)',to:'Growth Hormone Axis > Hypothalamus',label:'Negative feedback'},
+        {from:'Growth Hormone Axis > Hypothalamus > Somatostatin (peptide)',to:'Growth Hormone Axis > Hypothalamus > GHRH (peptide) > Anterior pituitary > Somatotroph cell',label:'Inhibits GH'}
       ]},
-      {id:'prolactin-axis',title:'Prolactin Axis',organ:'Prolactin Axis',note:'Dopamine tonically inhibits lactotrophs; prolactin acts on breast/lactation.',nodeMeta:{},paths:[
-        'Prolactin Axis > Hypothalamus > Dopamine > Anterior pituitary: lactotroph cell > Prolactin (PRL) > Breast > Lactation',
-        'Prolactin Axis > Hypothalamus > TRH > Anterior pituitary: lactotroph cell > Prolactin (PRL) > Breast > Lactation'
+      {id:'prolactin-axis',title:'Prolactin Axis',organ:'Prolactin Axis',note:'Dopamine inhibits lactotroph PRL; TRH can stimulate PRL; PRL targets breast/lactation.',nodeMeta:{},paths:[
+        'Prolactin Axis > Hypothalamus > Dopamine (amine) > Anterior pituitary > Lactotroph cell > Prolactin / PRL (peptide) > Breast > Lactation',
+        'Prolactin Axis > Hypothalamus > TRH (peptide) > Anterior pituitary > Lactotroph cell > Prolactin / PRL (peptide) > Breast > Lactation'
       ],links:[
-        {from:'Prolactin Axis > Hypothalamus > Dopamine',to:'Prolactin Axis > Hypothalamus > Dopamine > Anterior pituitary: lactotroph cell',label:'Inhibits PRL'},
-        {from:'Prolactin Axis > Hypothalamus > Dopamine > Anterior pituitary: lactotroph cell > Prolactin (PRL) > Breast > Lactation',to:'Prolactin Axis > Hypothalamus',label:'Suckling reduces dopamine'}
+        {from:'Prolactin Axis > Hypothalamus > Dopamine (amine)',to:'Prolactin Axis > Hypothalamus > Dopamine (amine) > Anterior pituitary > Lactotroph cell',label:'Inhibits PRL'},
+        {from:'Prolactin Axis > Hypothalamus > Dopamine (amine) > Anterior pituitary > Lactotroph cell > Prolactin / PRL (peptide) > Breast > Lactation',to:'Prolactin Axis > Hypothalamus',label:'Suckling reduces dopamine'}
       ]},
-      {id:'adh-axis',title:'ADH Axis',organ:'ADH Axis',note:'Osmoreceptors/baroreceptors trigger posterior pituitary ADH release to kidneys.',nodeMeta:{},paths:[
-        'ADH Axis > Osmoreceptors and vascular baroreceptors > Hypothalamus nerve impulses > Posterior pituitary > AVP (ADH/vasopressin) > Kidneys > Water reabsorption',
-        'ADH Axis > Low blood pressure or low blood volume > Hypothalamus nerve impulses > Posterior pituitary > AVP (ADH/vasopressin) > Kidneys > Water reabsorption'
+      {id:'adh-axis',title:'AVP / ADH Axis',organ:'AVP / ADH Axis',note:'Posterior pituitary pathway from osmoreceptors/baroreceptors to AVP release and kidney water retention.',nodeMeta:{},paths:[
+        'AVP / ADH Axis > Osmoreceptors and vascular baroreceptors > Hypothalamus nerve impulses > Posterior pituitary > AVP / ADH / vasopressin (peptide) > Kidneys > Water reabsorption',
+        'AVP / ADH Axis > Decreased blood pressure or blood volume > Hypothalamus nerve impulses > Posterior pituitary > AVP / ADH / vasopressin (peptide) > Kidneys > Water reabsorption'
       ],links:[
-        {from:'ADH Axis > Osmoreceptors and vascular baroreceptors > Hypothalamus nerve impulses > Posterior pituitary > AVP (ADH/vasopressin) > Kidneys > Water reabsorption',to:'ADH Axis > Osmoreceptors and vascular baroreceptors',label:'Negative feedback'},
-        {from:'ADH Axis > Low blood pressure or low blood volume > Hypothalamus nerve impulses > Posterior pituitary > AVP (ADH/vasopressin) > Kidneys > Water reabsorption',to:'ADH Axis > Low blood pressure or low blood volume',label:'Negative feedback'}
+        {from:'AVP / ADH Axis > Osmoreceptors and vascular baroreceptors > Hypothalamus nerve impulses > Posterior pituitary > AVP / ADH / vasopressin (peptide) > Kidneys > Water reabsorption',to:'AVP / ADH Axis > Osmoreceptors and vascular baroreceptors',label:'Negative feedback'},
+        {from:'AVP / ADH Axis > Decreased blood pressure or blood volume > Hypothalamus nerve impulses > Posterior pituitary > AVP / ADH / vasopressin (peptide) > Kidneys > Water reabsorption',to:'AVP / ADH Axis > Decreased blood pressure or blood volume',label:'Negative feedback'}
       ]},
-      {id:'oxytocin-axis',title:'Oxytocin Axis',organ:'Oxytocin Axis',note:'Posterior pituitary oxytocin supports uterine contraction and milk letdown.',nodeMeta:{},paths:[
-        'Oxytocin Axis > Uterine contractions propagate > Hypothalamus nerve impulses > Posterior pituitary > Oxytocin > Uterus > More uterine contractions',
-        'Oxytocin Axis > Suckling stimulus > Hypothalamus nerve impulses > Posterior pituitary > Oxytocin > Breast > Milk letdown'
+      {id:'oxytocin-axis',title:'Oxytocin Axis',organ:'Oxytocin Axis',note:'The diagram shows uterine contraction stimulus through posterior pituitary oxytocin release.',nodeMeta:{},paths:[
+        'Oxytocin Axis > Uterine contractions propagate > Hypothalamus nerve impulses > Posterior pituitary > Oxytocin (peptide) > Uterus > More uterine contractions',
+        'Oxytocin Axis > Suckling stimulus > Hypothalamus nerve impulses > Posterior pituitary > Oxytocin (peptide) > Breast > Milk letdown'
       ],links:[
-        {from:'Oxytocin Axis > Uterine contractions propagate > Hypothalamus nerve impulses > Posterior pituitary > Oxytocin > Uterus > More uterine contractions',to:'Oxytocin Axis > Uterine contractions propagate',label:'Positive feedback'}
+        {from:'Oxytocin Axis > Uterine contractions propagate > Hypothalamus nerve impulses > Posterior pituitary > Oxytocin (peptide) > Uterus > More uterine contractions',to:'Oxytocin Axis > Uterine contractions propagate',label:'Positive feedback'}
       ]},
-      {id:'raas-aldosterone-axis',title:'RAAS Aldosterone Axis',organ:'RAAS Aldosterone Axis',note:'Renin converts angiotensinogen pathway to angiotensin II, then aldosterone.',nodeMeta:{},paths:[
-        'RAAS Aldosterone Axis > Low blood pressure or low blood volume > Kidneys > Renin > Angiotensinogen > Angiotensin I > ACE: lungs and vascular endothelium > Angiotensin II > Adrenal cortex: zona glomerulosa > Aldosterone > Kidneys > Sodium and water retention',
-        'RAAS Aldosterone Axis > Low blood pressure or low blood volume > Kidneys > Renin > Angiotensinogen > Angiotensin I > ACE: lungs and vascular endothelium > Angiotensin II > Direct effector: vasoconstriction'
+      {id:'raas-aldosterone-axis',title:'RAAS / Aldosterone Axis',organ:'RAAS / Aldosterone Axis',note:'Low pressure/volume triggers renin, angiotensin II, zona glomerulosa aldosterone, then kidney retention.',nodeMeta:{},paths:[
+        'RAAS / Aldosterone Axis > Low blood pressure or low blood volume > Kidneys > Renin (peptide) > Angiotensinogen > Angiotensin I > ACE: lungs and vascular endothelium > Angiotensin II > Adrenal glands > Zona glomerulosa > Aldosterone (steroid) > Kidneys > Sodium and water retention',
+        'RAAS / Aldosterone Axis > Low blood pressure or low blood volume > Kidneys > Renin (peptide) > Angiotensinogen > Angiotensin I > ACE: lungs and vascular endothelium > Angiotensin II > Direct effector: vasoconstriction'
       ],links:[
-        {from:'RAAS Aldosterone Axis > Low blood pressure or low blood volume > Kidneys > Renin > Angiotensinogen > Angiotensin I > ACE: lungs and vascular endothelium > Angiotensin II > Adrenal cortex: zona glomerulosa > Aldosterone > Kidneys > Sodium and water retention',to:'RAAS Aldosterone Axis > Low blood pressure or low blood volume',label:'Negative feedback'}
+        {from:'RAAS / Aldosterone Axis > Low blood pressure or low blood volume > Kidneys > Renin (peptide) > Angiotensinogen > Angiotensin I > ACE: lungs and vascular endothelium > Angiotensin II > Adrenal glands > Zona glomerulosa > Aldosterone (steroid) > Kidneys > Sodium and water retention',to:'RAAS / Aldosterone Axis > Low blood pressure or low blood volume',label:'Negative feedback'}
       ]},
-      {id:'adrenal-androgens-axis',title:'Adrenal Androgens Axis',organ:'Adrenal Androgens Axis',note:'ACTH also stimulates zona reticularis DHEA/androgens; contribution differs by sex.',nodeMeta:{},paths:[
-        'Adrenal Androgens Axis > Hypothalamus > CRH > Anterior pituitary: corticotroph cell > ACTH > Adrenal cortex: zona reticularis > DHEA/Androgens > Testosterone contribution',
-        'Adrenal Androgens Axis > DHEA/Androgens > Testosterone: <5% men',
-        'Adrenal Androgens Axis > DHEA/Androgens > Testosterone: 40% to 65% women'
+      {id:'adrenal-androgens-axis',title:'Adrenal Androgens Axis',organ:'Adrenal Androgens Axis',note:'ACTH also stimulates zona reticularis DHEA/androgens; the PDF lists testosterone contribution by sex.',nodeMeta:{},paths:[
+        'Adrenal Androgens Axis > Hypothalamus > CRH (peptide) > Anterior pituitary > Corticotroph cell > ACTH (peptide) > Adrenal glands > Zona reticularis > DHEA / androgens (steroid) > Testosterone contribution',
+        'Adrenal Androgens Axis > DHEA / androgens (steroid) > Testosterone: <5% men',
+        'Adrenal Androgens Axis > DHEA / androgens (steroid) > Testosterone: 40-65% women'
       ],links:[
-        {from:'Adrenal Androgens Axis > Hypothalamus > CRH > Anterior pituitary: corticotroph cell > ACTH > Adrenal cortex: zona reticularis > DHEA/Androgens',to:'Adrenal Androgens Axis > Hypothalamus',label:'ACTH axis feedback mainly cortisol'}
+        {from:'Adrenal Androgens Axis > Hypothalamus > CRH (peptide) > Anterior pituitary > Corticotroph cell > ACTH (peptide) > Adrenal glands > Zona reticularis > DHEA / androgens (steroid)',to:'Adrenal Androgens Axis > Hypothalamus',label:'ACTH axis feedback mainly cortisol'}
       ]}
     ];
   }
-  function defaultState(){return{version:6,starter:'hormone-flowcharts-v1',updatedAt:Date.now(),charts:starterHormoneFlowcharts(),hormones:[],resourceTables:starterResourceTables()}}
+  function starterHormoneChartIds(){return starterHormoneFlowcharts().map(function(chart){return chart.id})}
+  function mergeStarterHormoneCharts(incoming){
+    var starters=starterHormoneFlowcharts();
+    var starterMap={};
+    starters.forEach(function(chart){starterMap[chart.id]=chart});
+    var incomingCharts=Array.isArray(incoming&&incoming.charts)?incoming.charts:[];
+    if(!incomingCharts.length){
+      if(incoming&&incoming.charts&&incoming.starter!==defaultState().starter)needsStarterSync=true;
+      return starters;
+    }
+    if((incoming&&incoming.starter)!==defaultState().starter){
+      needsStarterSync=true;
+      var custom=incomingCharts.filter(function(chart){return !starterMap[chart&&chart.id]});
+      return starters.concat(custom);
+    }
+    var byId={},customCharts=[];
+    incomingCharts.forEach(function(chart){
+      if(chart&&starterMap[chart.id]&&!byId[chart.id])byId[chart.id]=chart;
+      else customCharts.push(chart);
+    });
+    starters.forEach(function(chart){if(!byId[chart.id])needsStarterSync=true});
+    return starters.map(function(chart){return byId[chart.id]||chart}).concat(customCharts);
+  }
+  function defaultState(){return{version:7,starter:'hormone-flowcharts-v2',updatedAt:Date.now(),charts:starterHormoneFlowcharts(),hormones:[],resourceTables:starterResourceTables()}}
   function looksLikeMinimalLiverStarter(data){
     var charts=data&&Array.isArray(data.charts)?data.charts:[];
     if(charts.length!==1)return false;
@@ -450,8 +473,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function normalize(data){
     var base=defaultState(),incoming=data&&typeof data==='object'?data:{};
-    if(incoming.starter!=='hormone-flowcharts-v1'&&(looksLikeOldStarter(incoming)||looksLikeMinimalLiverStarter(incoming)))return base;
-    var sourceCharts=Array.isArray(incoming.charts)&&incoming.charts.length?incoming.charts:base.charts;
+    if(incoming.starter!==base.starter&&(looksLikeOldStarter(incoming)||looksLikeMinimalLiverStarter(incoming))){needsStarterSync=true;return base}
+    var sourceCharts=mergeStarterHormoneCharts(incoming);
     var charts=sourceCharts.map(function(chart){
       var copy=Object.assign({},chart);
       copy.id=copy.id||uid('chart');
@@ -463,7 +486,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       copy.paths=Array.isArray(copy.paths)&&copy.paths.length?copy.paths:[copy.organ+' > New branch'];
       return copy;
     });
-    return {version:6,starter:incoming.starter||base.starter,updatedAt:incoming.updatedAt||Date.now(),charts:charts,hormones:Array.isArray(incoming.hormones)?incoming.hormones:base.hormones,resourceTables:normalizeResourceTables(incoming.resourceTables||base.resourceTables,{upgradeStarters:Number(incoming.version||0)<5})};
+    return {version:7,starter:base.starter,updatedAt:incoming.updatedAt||Date.now(),charts:charts,hormones:Array.isArray(incoming.hormones)?incoming.hormones:base.hormones,resourceTables:normalizeResourceTables(incoming.resourceTables||base.resourceTables,{upgradeStarters:Number(incoming.version||0)<5})};
   }
   function saveLocal(){try{localStorage.setItem('chemistryHubState',JSON.stringify(state))}catch(e){}}
   function markDirty(){state.updatedAt=Date.now();saveLocal();if(safeDoc)safeDoc.scheduleSave(4000,'auto')}
@@ -1231,7 +1254,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     try{var local=localStorage.getItem('chemistryHubState');if(local)state=normalize(JSON.parse(local))}catch(e){}
     renderAll();
     safeDoc=createSafeSupabaseDoc({url:SUPABASE_URL,key:SUPABASE_KEY,table:TABLE_NAME,id:CHEM_ROW_ID,defaultData:defaultState,normalize:normalize,getLocal:function(){return state},setLocal:function(data){state=normalize(data);saveLocal();renderAll()},toast:showToast,onConflict:function(info){console.warn('Chemistry save conflict:',info.paths)}});
-    try{await safeDoc.load();safeDoc.subscribe()}catch(e){console.warn('Chemistry remote load failed:',e);renderAll()}
+    try{await safeDoc.load();if(needsStarterSync){state.updatedAt=Date.now();saveLocal();safeDoc.scheduleSave(1200,'starter-upgrade');needsStarterSync=false}safeDoc.subscribe()}catch(e){console.warn('Chemistry remote load failed:',e);renderAll()}
     if(window.createSafeSupabasePresence)syncPresence=createSafeSupabasePresence({url:SUPABASE_URL,key:SUPABASE_KEY,hubId:'chemistry',hubName:'Clinical Chemistry',getSection:function(){var active=document.querySelector('.section.active');return active?active.id.replace(/^sec-/,''):'chemistry'},toast:showToast});
     showSection(location.hash.replace(/^#/,''),true);
   }
