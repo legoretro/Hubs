@@ -619,7 +619,7 @@ textarea{resize:none;overflow:hidden}
   <div class="modal-box" style="max-width:560px">
     <div style="font-size:26px;margin-bottom:6px">🧫</div>
     <h3 style="margin-bottom:4px">Gel Card (Column Agglutination)</h3>
-    <p style="font-size:12px;color:var(--warm-grey);margin-bottom:14px">Same patient, same antibodies -- gel format. Agglutinated cells trapped at top = positive. Unagglutinated cells pellet at bottom = negative.</p>
+    <p style="font-size:12px;color:var(--warm-grey);margin-bottom:14px">Same patient, same antibodies -- gel format. Strong reactions stay high, weaker agglutinates travel lower, and negative cells pellet at the bottom.</p>
     <div id="gelCardContent" style="overflow-x:auto;margin-bottom:14px"></div>
     <button class="btn btn-primary" onclick="document.getElementById('gelModal').classList.remove('visible')">Close</button>
   </div>
@@ -908,6 +908,7 @@ textarea{resize:none;overflow:hidden}
 const SUPABASE_URL = 'https://fjrdlasmdhqjqqlvuxwj.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_UnXRXK6It0PKVmZmixYZeg_WDx9frO2';
 const TABLE_NAME = 'mls_blood_bank';
+const XM_LOCAL_CACHE_KEY = 'mls-blood-bank-crossmatch-cache-v1';
 
 // SHA-256 hash of password "cats"
 const PASS_HASH = 'd936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c675';
@@ -924,6 +925,8 @@ let xmCorrect = 0;
 let xmTotal   = 0;
 let saveTimer  = null;
 let xmSaveTimer = null;
+let xmLocalCacheTimer = null;
+let xmUpdatedAt = 0;
 let notesSaveInFlight = null;
 let xmSaveInFlight = null;
 let notesDoc = null;
@@ -1104,6 +1107,7 @@ function cleanRemoteCalcScenarios(list) {
 }
 
 function applyRemoteXm(data) {
+  xmUpdatedAt = Number(data && data.updatedAt) || 0;
   xmCases = data && Array.isArray(data.cases) && data.cases.length > 0 ? data.cases : defaultXmCases();
   aboCustomCases = cleanRemoteAboCases(data && data.aboCases);
   calcCustomScenarios = cleanRemoteCalcScenarios(data && data.calcScenarios);
@@ -1120,7 +1124,44 @@ function applyRemoteXm(data) {
   if (typeof renderAntigramSim === 'function' && document.getElementById('antigramContent') && document.getElementById('antigramContent').style.display !== 'none') renderAntigramSim();
 }
 
+function getXmStateSnapshot() {
+  syncActiveAntigramLot();
+  return {
+    cases: xmCases,
+    aboCases: aboCustomCases,
+    calcScenarios: calcCustomScenarios,
+    antigramCase: cleanRemoteAntigramCase(antigramCase),
+    antigramLots: cleanRemoteAntigramLots(antigramLots, antigramCase),
+    updatedAt: xmUpdatedAt || Date.now()
+  };
+}
+
+function writeXmLocalCache(reason) {
+  try {
+    localStorage.setItem(XM_LOCAL_CACHE_KEY, JSON.stringify({
+      data: getXmStateSnapshot(),
+      savedAt: Date.now(),
+      reason: reason || 'auto'
+    }));
+    return true;
+  } catch (error) {
+    console.error('Blood Bank local case save failed:', error);
+    return false;
+  }
+}
+
+function readXmLocalCache() {
+  try {
+    var cached = JSON.parse(localStorage.getItem(XM_LOCAL_CACHE_KEY) || 'null');
+    return cached && cached.data ? cached : null;
+  } catch (error) {
+    console.error('Blood Bank local case recovery failed:', error);
+    return null;
+  }
+}
+
 async function initApp() {
+  var cachedXmBeforeLoad = readXmLocalCache();
   notesDoc = createSafeSupabaseDoc({
     url: SUPABASE_URL,
     key: SUPABASE_KEY,
@@ -1147,16 +1188,32 @@ async function initApp() {
       antigramLots: cleanRemoteAntigramLots(data && data.antigramLots, data && data.antigramCase),
       updatedAt: data && data.updatedAt || Date.now()
     }),
-    getLocal: () => {
-      syncActiveAntigramLot();
-      return { cases: xmCases, aboCases: aboCustomCases, calcScenarios: calcCustomScenarios, antigramCase: cleanRemoteAntigramCase(antigramCase), antigramLots: cleanRemoteAntigramLots(antigramLots, antigramCase), updatedAt: Date.now() };
-    },
+    getLocal: () => getXmStateSnapshot(),
     setLocal: data => applyRemoteXm(data),
     toast: showToast,
     onConflict: info => console.warn('Blood Bank crossmatch save conflict:', info.paths)
   });
   try { await notesDoc.load(); notesDoc.subscribe(); } catch(e) { showToast(`Supabase load failed: ${e.message}`, true); console.error(e); hydrateNotesData({}); }
-  try { await xmDoc.load(); xmDoc.subscribe(); } catch(e) { showToast(`Supabase load failed: ${e.message}`, true); console.error(e); applyRemoteXm({ cases: defaultXmCases(), aboCases: [], calcScenarios: [], antigramCase: defaultAntigramCase() }); }
+  try {
+    await xmDoc.load();
+    if (cachedXmBeforeLoad && Number(cachedXmBeforeLoad.data.updatedAt) > xmUpdatedAt) {
+      applyRemoteXm(cachedXmBeforeLoad.data);
+      var replayedLocal = await xmDoc.saveNow({ reason: 'recover-newer-device-copy' });
+      showToast(replayedLocal ? 'Recovered newer cases from this device and synced them.' : 'Recovered newer cases saved on this device.', !replayedLocal);
+    }
+    writeXmLocalCache('cloud-load');
+    xmDoc.subscribe();
+  } catch(e) {
+    console.error(e);
+    var cachedXm = readXmLocalCache();
+    if (cachedXm) {
+      applyRemoteXm(cachedXm.data);
+      showToast('Cloud offline. Recovered your cases saved on this device.', true);
+    } else {
+      applyRemoteXm({ cases: defaultXmCases(), aboCases: [], calcScenarios: [], antigramCase: defaultAntigramCase() });
+      showToast('Cloud offline. New edits will still save on this device.', true);
+    }
+  }
   if (window.createSafeSupabasePresence) syncPresence = createSafeSupabasePresence({
     url: SUPABASE_URL,
     key: SUPABASE_KEY,
@@ -1191,15 +1248,24 @@ async function saveNotesNow(reason = 'auto') {
 }
 
 function scheduleXmSave() {
+  xmUpdatedAt = Date.now();
+  clearTimeout(xmLocalCacheTimer);
+  xmLocalCacheTimer = setTimeout(() => writeXmLocalCache('auto'), 250);
   clearTimeout(xmSaveTimer);
   xmSaveTimer = setTimeout(() => saveXmCasesNow('auto'), 4000);
 }
 
 async function saveXmCasesNow(reason = 'auto') {
+  clearTimeout(xmLocalCacheTimer);
   clearTimeout(xmSaveTimer);
+  xmUpdatedAt = Date.now();
+  var localSaved = writeXmLocalCache(reason);
   if (xmSaveInFlight) await xmSaveInFlight;
   xmSaveInFlight = (xmDoc ? xmDoc.saveNow({ reason }) : Promise.resolve(false)).finally(() => { xmSaveInFlight = null; });
-  return await xmSaveInFlight;
+  var cloudSaved = await xmSaveInFlight;
+  if (!cloudSaved && localSaved) showToast('Saved on this device. Cloud connection is unavailable.', false);
+  if (!cloudSaved && !localSaved) showToast('Save failed on this device and in the cloud.', true);
+  return cloudSaved;
 }
 
 async function saveAllNow(reason = 'manual') {
@@ -8250,77 +8316,106 @@ async function saveXmCases2(){
 // GEL CARD VIEWER
 // ────────────────────────────────────────────────────────────────
 function showGelCard() {
-  var d = xmSelectedDonor;
-  var isABO = d && !d.compat && /ABO INCOMPAT|IS phase/i.test(d.reason||'');
-  var hasAHG = d && !d.compat && !isABO;
+  var d = xmSelectedDonor || {compat:true, reason:''};
+  var labels = xmTubeLabels();
+  var results = labels.map(function(label, index) {
+    return {label:label, grade:normalizeGelGrade(getSimResult(index, d.compat, d.reason).ahg)};
+  });
+  var ccGrade = normalizeGelGrade(getSimResult(0, d.compat, d.reason).cc);
+  var cols = results.concat([{label:'CC', grade:ccGrade, isControl:true}]);
 
-  // Column results: SC1, SC2, SC3 then CC
-  var cols = [
-    {lbl:'SC I',   pos: hasAHG,   cc: false},
-    {lbl:'SC II',  pos: false,    cc: false},
-    {lbl:'SC III', pos: false,    cc: false},
-    {lbl:'CC',     pos: !hasAHG, cc: true},  // CC positive only when AHG negative tubes present
-  ];
+  function normalizeGelGrade(value) {
+    var grade = String(value == null ? '' : value).trim().toUpperCase().replace(/\s+/g, '');
+    if (grade === 'NEG' || grade === 'NEGATIVE' || grade === '-') return '0';
+    if (grade === 'POS' || grade === 'POSITIVE' || grade === '+') return '2+';
+    if (grade === 'MIXEDFIELD' || grade === 'MIXED-FIELD') return 'MF';
+    return /^(4\+|3\+|2\+|1\+|MF|0|NT)$/.test(grade) ? grade : '0';
+  }
+
+  function positiveGelGrade(grade) {
+    return grade !== '0' && grade !== 'NT';
+  }
+
+  function gelPattern(grade) {
+    var red = '#a70d32';
+    var dark = '#76051f';
+    var dot = function(x, y, r, opacity) {
+      return '<circle cx="' + x + '" cy="' + y + '" r="' + r + '" fill="' + red + '" opacity="' + opacity + '"/>';
+    };
+    if (grade === '4+') {
+      return '<path d="M31 75 C38 69 50 69 57 75 C51 82 37 82 31 75Z" fill="' + dark + '"/>' +
+        dot(35,76,3,.95) + dot(41,73,3.3,.98) + dot(47,76,3.5,.98) + dot(53,73,2.8,.94);
+    }
+    if (grade === '3+') {
+      return dot(35,81,4,.95) + dot(43,84,4.8,.97) + dot(51,79,3.6,.92) +
+        dot(39,91,3.2,.88) + dot(49,93,3.8,.9) + dot(44,101,2.6,.82);
+    }
+    if (grade === '2+') {
+      return dot(35,83,3.2,.92) + dot(48,87,3.6,.9) + dot(41,98,3.1,.86) +
+        dot(52,108,3.2,.84) + dot(36,119,3,.82) + dot(46,130,3.4,.8) +
+        dot(38,142,2.8,.78) + dot(51,151,3.2,.78);
+    }
+    if (grade === '1+') {
+      return dot(37,133,3,.82) + dot(49,137,3.2,.85) + dot(42,146,3.4,.88) +
+        dot(52,153,3,.88) + dot(36,158,3.2,.9) + dot(45,164,4,.94) +
+        '<path d="M35 172 Q44 166 53 172 Q51 179 44 180 Q37 179 35 172Z" fill="' + dark + '" opacity=".92"/>';
+    }
+    if (grade === 'MF') {
+      return '<path d="M32 75 Q44 68 56 75 Q52 82 44 82 Q36 82 32 75Z" fill="' + dark + '"/>' +
+        '<ellipse cx="44" cy="184" rx="10" ry="5" fill="' + dark + '"/>';
+    }
+    if (grade === 'NT') {
+      return '<text x="44" y="132" text-anchor="middle" font-size="13" font-weight="700" fill="#7d7280">NT</text>';
+    }
+    return '<ellipse cx="44" cy="184" rx="11" ry="5.5" fill="' + dark + '"/>' +
+      '<ellipse cx="44" cy="182" rx="8" ry="2.5" fill="#c43150" opacity=".8"/>';
+  }
+
+  function gradeDescription(grade) {
+    if (grade === '4+') return 'solid agglutinate band at the top';
+    if (grade === '3+') return 'agglutinates retained in the upper gel';
+    if (grade === '2+') return 'agglutinates dispersed through the gel';
+    if (grade === '1+') return 'small agglutinates low in the gel above the pellet';
+    if (grade === 'MF') return 'a top agglutinate band plus a bottom pellet';
+    if (grade === 'NT') return 'not tested';
+    return 'a compact red-cell pellet at the bottom';
+  }
 
   function gelCol(col) {
-    var isPos = col.pos;
-    var isCC  = col.cc;
-    var colColor = isCC ? '#2a8c4a' : '#1a5c8c';
-    var topCellColor = '#c0173d';
-    // Card body: narrow tube with wider loading chamber at top
-    return '<div style="display:flex;flex-direction:column;align-items:center;gap:4px">' +
-      '<svg width="54" height="180" viewBox="0 0 54 180" xmlns="http://www.w3.org/2000/svg">' +
-      // Loading chamber (top funnel/reservoir)
-      '<path d="M10,4 L44,4 L44,38 L31,52 L31,165 L23,165 L23,52 L10,38 Z" fill="rgba(210,228,248,.7)" stroke="' + colColor + '" stroke-width="1.5"/>' +
-      // AHG gel zone (colored band in middle of column)
-      '<rect x="23" y="100" width="8" height="50" fill="' + (isCC?'rgba(42,140,74,.25)':'rgba(26,92,140,.2)') + '"/>' +
-      // Column tube vertical
-      '<rect x="23" y="52" width="8" height="115" rx="0" fill="rgba(220,235,250,.6)" stroke="' + colColor + '" stroke-width="1"/>' +
-      // Gel label
-      '<text x="27" y="132" text-anchor="middle" font-size="6" fill="' + colColor + '" opacity=".7" font-style="italic">gel</text>' +
-      // POSITIVE: cells trapped at TOP of gel column (red band near top)
-      (isPos ? (
-        '<rect x="23" y="52" width="8" height="22" rx="0" fill="' + topCellColor + '" opacity=".85"/>' +
-        '<text x="27" y="67" text-anchor="middle" font-size="7" fill="#fff" font-weight="bold">+</text>'
-      ) : '') +
-      // NEGATIVE: cells pellet at BOTTOM of column
-      (!isPos ? (
-        '<ellipse cx="27" cy="164" rx="5" ry="3.5" fill="' + topCellColor + '" opacity=".75"/>' +
-        '<text x="27" y="175" text-anchor="middle" font-size="7" fill="#8b0a26">0</text>'
-      ) : '') +
-      // Loading chamber plasma/reagent color
-      '<rect x="11" y="5" width="32" height="32" rx="2" fill="rgba(200,220,245,.5)"/>' +
-      // Small dots in chamber (cells loading)
-      '<circle cx="20" cy="20" r="2" fill="' + topCellColor + '" opacity=".4"/>' +
-      '<circle cx="27" cy="17" r="2" fill="' + topCellColor + '" opacity=".4"/>' +
-      '<circle cx="34" cy="22" r="2" fill="' + topCellColor + '" opacity=".4"/>' +
+    var positive = positiveGelGrade(col.grade);
+    var accent = col.isControl ? '#278c59' : '#246494';
+    var statusColor = col.grade === 'NT' ? '#746b73' : (positive ? '#b20d38' : '#16834f');
+    return '<div style="display:flex;flex-direction:column;align-items:center;min-width:88px">' +
+      '<svg width="88" height="218" viewBox="0 0 88 218" role="img" aria-label="' + col.label + ' gel reaction ' + col.grade + '" xmlns="http://www.w3.org/2000/svg">' +
+      '<defs><linearGradient id="gel-' + col.label.replace(/[^A-Za-z0-9]/g,'') + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f9fcff"/><stop offset="1" stop-color="#dbeaf5"/></linearGradient></defs>' +
+      '<path d="M17 11 H71 V58 L58 75 V188 Q58 199 44 204 Q30 199 30 188 V75 L17 58Z" fill="#fff" stroke="' + accent + '" stroke-width="2.4"/>' +
+      '<path d="M20 16 H68 V55 L55 72 V185 Q55 193 44 197 Q33 193 33 185 V72 L20 55Z" fill="url(#gel-' + col.label.replace(/[^A-Za-z0-9]/g,'') + ')"/>' +
+      '<rect x="33" y="74" width="22" height="114" rx="10" fill="#dcecf5" opacity=".82"/>' +
+      '<path d="M20 51 Q44 56 68 51" fill="none" stroke="#bfd4df" stroke-width="1.4"/>' +
+      '<rect x="13" y="5" width="62" height="10" rx="3" fill="#f7f7f7" stroke="#a8afb5" stroke-width="2"/>' +
+      '<rect x="9" y="1" width="70" height="7" rx="2" fill="#fff" stroke="#a8afb5" stroke-width="2"/>' +
+      gelPattern(col.grade) +
+      '<text x="44" y="214" text-anchor="middle" font-size="13" font-weight="800" fill="' + statusColor + '">' + col.grade + '</text>' +
       '</svg>' +
-      '<div style="font-size:10px;font-weight:700;color:' + (isCC ? '#2a8c4a' : 'var(--wine)') + ';text-align:center">' + col.lbl + '</div>' +
-      '<div style="font-size:9px;font-weight:700;color:' + (isPos ? 'var(--crimson)' : 'var(--good)') + '">' + (isPos ? 'POS' : 'NEG') + '</div>' +
+      '<div style="font-size:12px;font-weight:800;color:' + (col.isControl ? '#24794d' : 'var(--wine)') + ';text-align:center">' + col.label + '</div>' +
     '</div>';
   }
 
-  // Build the gel card visual (card housing with all columns)
   var gelHTML =
-    '<div style="background:linear-gradient(180deg,#f0f4ff,#e0e8f8);border:2px solid #8899cc;border-radius:10px;padding:14px;display:inline-block;margin:0 auto">' +
-    // Card label bar
-    '<div style="background:#1a5c8c;color:#fff;font-size:10px;font-weight:700;letter-spacing:1px;text-align:center;padding:4px 8px;border-radius:4px;margin-bottom:10px">AHG GEL CARD</div>' +
-    // Columns row
-    '<div style="display:flex;gap:6px;justify-content:center">' +
-    cols.map(gelCol).join('') +
-    '</div>' +
-    // Bottom AHG bar label
-    '<div style="background:rgba(26,92,140,.15);border:1px solid #8899cc;border-radius:4px;text-align:center;font-size:9px;font-weight:700;color:#1a5c8c;padding:3px;margin-top:6px;letter-spacing:1px">ANTI-HUMAN GLOBULIN (AHG)</div>' +
+    '<div style="background:#eef4fb;border:2px solid #8ba0cc;border-radius:12px;padding:16px;display:inline-block;margin:0 auto;max-width:100%">' +
+    '<div style="background:#236493;color:#fff;font-size:12px;font-weight:800;letter-spacing:1px;text-align:center;padding:7px 12px;border-radius:5px;margin-bottom:12px">AHG GEL CARD</div>' +
+    '<div style="display:flex;gap:10px;justify-content:center;align-items:flex-end;flex-wrap:wrap">' + cols.map(gelCol).join('') + '</div>' +
+    '<div style="background:#d8e5f5;border:1px solid #8ba0cc;border-radius:5px;text-align:center;font-size:11px;font-weight:800;color:#245d8b;padding:5px;margin-top:10px;letter-spacing:1px">ANTI-HUMAN GLOBULIN (AHG)</div>' +
     '</div>';
 
-  var resultText = hasAHG
-    ? 'SC I shows cells trapped at <strong>top of gel column</strong> (2+) -- antibody-sensitized cells cannot migrate through the gel matrix. INCOMPATIBLE.'
-    : 'All screen cells show pellet at <strong>bottom</strong> (0) -- no antibody sensitization. CC column validates AHG reagent is active. COMPATIBLE.';
+  var resultText = cols.map(function(col) {
+    return '<strong>' + col.label + ' ' + col.grade + ':</strong> ' + gradeDescription(col.grade) + '.';
+  }).join(' ');
 
   document.getElementById('gelCardContent').innerHTML =
     '<div style="text-align:center;margin-bottom:14px">' + gelHTML + '</div>' +
-    '<div style="font-size:12px;color:var(--warm-grey);background:var(--blush);border-radius:8px;padding:10px;line-height:1.6">' +
-    '<strong>How gel works:</strong> After incubation and centrifugation, sensitized (antibody-coated) RBCs are too large to pass through the gel matrix -- they stay at the top of the column (<strong>positive</strong>). Unsensitized RBCs migrate freely and form a pellet at the bottom (<strong>negative</strong>). Check Cell (CC) confirms AHG is active on negative columns.<br><br>' +
+    '<div style="font-size:12px;color:var(--warm-grey);background:var(--blush);border-radius:8px;padding:12px;line-height:1.6">' +
+    '<strong>How to read the card:</strong> Strong reactions remain high in the column. As reaction strength decreases, smaller agglutinates travel farther down the gel. A negative reaction forms a compact pellet at the bottom.<br><br>' +
     resultText +
     '</div>';
 
