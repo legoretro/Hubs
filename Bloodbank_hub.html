@@ -8321,8 +8321,7 @@ function showGelCard() {
   var results = labels.map(function(label, index) {
     return {label:label, grade:normalizeGelGrade(getSimResult(index, d.compat, d.reason).ahg)};
   });
-  var ccGrade = normalizeGelGrade(getSimResult(0, d.compat, d.reason).cc);
-  var cols = results.concat([{label:'CC', grade:ccGrade, isControl:true}]);
+  var cols = results;
 
   function normalizeGelGrade(value) {
     var grade = String(value == null ? '' : value).trim().toUpperCase().replace(/\s+/g, '');
@@ -8383,7 +8382,7 @@ function showGelCard() {
 
   function gelCol(col) {
     var positive = positiveGelGrade(col.grade);
-    var accent = col.isControl ? '#278c59' : '#246494';
+    var accent = '#246494';
     var statusColor = col.grade === 'NT' ? '#746b73' : (positive ? '#b20d38' : '#16834f');
     return '<div style="display:flex;flex-direction:column;align-items:center;min-width:88px">' +
       '<svg width="88" height="218" viewBox="0 0 88 218" role="img" aria-label="' + col.label + ' gel reaction ' + col.grade + '" xmlns="http://www.w3.org/2000/svg">' +
@@ -8397,7 +8396,7 @@ function showGelCard() {
       gelPattern(col.grade) +
       '<text x="44" y="214" text-anchor="middle" font-size="13" font-weight="800" fill="' + statusColor + '">' + col.grade + '</text>' +
       '</svg>' +
-      '<div style="font-size:12px;font-weight:800;color:' + (col.isControl ? '#24794d' : 'var(--wine)') + ';text-align:center">' + col.label + '</div>' +
+      '<div style="font-size:12px;font-weight:800;color:var(--wine);text-align:center">' + col.label + '</div>' +
     '</div>';
   }
 
