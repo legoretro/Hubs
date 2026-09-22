@@ -30,7 +30,6 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
 .save-indicator{position:fixed;right:18px;bottom:18px;background:var(--green);color:#fff;border-radius:999px;padding:9px 15px;font-size:13px;font-weight:900;opacity:0;pointer-events:none;transition:.2s;z-index:70}.save-indicator.show{opacity:1}.modal-overlay{position:fixed;inset:0;background:rgba(32,10,44,.72);z-index:1000;display:none;align-items:center;justify-content:center}.modal-overlay.visible{display:flex}.modal-box{background:#fff;border-radius:18px;padding:30px;max-width:430px;width:90%;box-shadow:0 20px 60px rgba(32,10,44,.32);text-align:center;border:1px solid rgba(123,63,160,.35)}.modal-box h3{font-size:22px;color:var(--deep);margin-bottom:6px}.modal-box p{font-size:13px;color:var(--muted);margin-bottom:18px}.modal-input{width:100%;border:1.5px solid rgba(123,63,160,.35);border-radius:10px;padding:10px 14px;font-size:15px;text-align:center;background:#fff;margin-bottom:12px;letter-spacing:3px}.modal-error{color:var(--danger);font-size:12px;margin-bottom:10px;min-height:16px}.btn{border:none;border-radius:999px;background:var(--purple);color:#fff;padding:8px 16px;font-size:12px;font-weight:900}.btn.ghost{background:transparent;color:var(--muted);border:1.5px solid rgba(123,63,160,.35)}.export-options{display:grid;gap:8px;margin:14px 0;text-align:left}.export-options label{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink);cursor:pointer}.export-options input{accent-color:var(--purple)}
 #printArea{display:none}@media print{body{background:#fff;color:#000;-webkit-print-color-adjust:exact;print-color-adjust:exact}body.printing #intro,body.printing .site-header,body.printing .wrap,body.printing .save-indicator,body.printing .modal-overlay{display:none!important}body.printing #printArea{display:block!important}#printArea{font-family:Georgia,"Times New Roman",serif;color:#241322;padding:18px 24px}.print-page{break-after:page}.print-page:last-child{break-after:auto}.print-section-title{font-size:22px;color:#5a0e52;margin:0 0 12px}.print-card{border:1px solid #7b3fa0;border-top:4px solid #7b3fa0;margin-bottom:12px;padding:10px;break-inside:avoid;background:#fff}.print-card h2{font-size:15px;color:#5a0e52;margin-bottom:8px}#printArea table{width:100%;border-collapse:collapse}#printArea th{background:#321047!important;color:#fff;padding:5px 6px;text-align:left;font-size:9px;border:1px solid #321047}#printArea td{padding:5px 6px;border:1px solid #d8bde0;vertical-align:top;font-size:10px}#printArea img{display:block;max-width:105px;max-height:80px;border:1px solid #d8bde0}}
 @media(max-width:800px){.grid-2{grid-template-columns:1fr}.site-header{align-items:flex-start}.wrap{padding:22px 14px}}
-
 /* Hematology laboratory workflow simulation */
 #sec-simulation{--lab-blue:#5e8fa6;--lab-green:#44a07a;--lab-screen:#0c222a;--lab-shell:#edf1f2;--lab-edge:#aeb8bc;--lab-dark:#303a3e}
 .heme-sim{width:min(1420px,calc(100vw - 30px));margin-left:50%;transform:translateX(-50%);color:#1f2a2e}
@@ -55,6 +54,16 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
 @media(max-width:1050px){.sim-casebar{grid-template-columns:repeat(3,1fr)}.sim-casebar .sim-case-actions{grid-column:span 3}.lab-room{min-height:1040px;background:linear-gradient(180deg,#e9eef0 0 83%,#747b7c 83% 85%,#aeb5b5 85%)}.lab-room:after{top:83%}.lab-chain{display:none}.specimen-station{left:4%;bottom:90px}.sysmex-unit{left:18%;top:80px;width:53%}.slide-unit{left:74%;top:130px;width:23%}.cellavision-unit{left:12%;bottom:265px;width:57%}.printer-unit{right:6%;bottom:75px}.sim-lower,.focus-grid,.cell-workspace{grid-template-columns:1fr}}
 @media(max-width:680px){.heme-sim{width:calc(100vw - 16px)}.sim-casebar{grid-template-columns:1fr 1fr}.sim-casebar .sim-case-actions{grid-column:span 2}.lab-room{min-height:1480px}.specimen-station{left:calc(50% - 75px);top:55px}.sysmex-unit{left:3%;top:300px;width:94%;height:410px}.slide-unit{left:23%;top:740px;width:54%;height:360px}.cellavision-unit{left:3%;top:1130px;width:94%;height:300px}.cv-monitor{width:70%}.printer-unit{display:none}.sim-lower{grid-template-columns:1fr}.workflow-strip{flex-wrap:wrap}.workflow-step{min-width:92px}.cell-grid{grid-template-columns:repeat(4,1fr)}.result-grid{grid-template-columns:repeat(3,1fr)}.plots{grid-template-columns:1fr}}
 @media print{body.sim-report-printing>*:not(.sim-focus){display:none!important}body.sim-report-printing .sim-focus{position:static;display:block!important;background:#fff;padding:0}body.sim-report-printing .focus-head,body.sim-report-printing .console-actions{display:none!important}body.sim-report-printing .focus-shell{width:100%;max-height:none;border:0;box-shadow:none}body.sim-report-printing .focus-body{padding:0}}
+
+
+
+/* Full-image coagulation slideshow */
+.coag-gallery{width:min(1380px,calc(100vw - 30px));margin-left:50%;transform:translateX(-50%);border:1px solid var(--line);border-top:5px solid var(--purple);border-radius:18px;background:#fff;box-shadow:0 16px 36px rgba(50,16,71,.1);overflow:hidden}
+.coag-gallery-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:11px 14px;border-bottom:1px solid var(--line);background:#fffafd}.coag-gallery-title{color:var(--wine);font-weight:900;font-size:15px}.coag-gallery-controls{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.coag-gallery-btn{border:1.5px solid rgba(123,63,160,.34);border-radius:999px;background:#fff;color:var(--wine);padding:7px 12px;font-size:12px;font-weight:900}.coag-gallery-btn.primary{background:var(--purple);color:#fff;border-color:var(--purple)}.coag-gallery-btn:disabled{opacity:.35;cursor:not-allowed}.coag-admin{display:none}.admin-mode .coag-admin{display:flex}
+.coag-slide-stage{position:relative;min-height:520px;height:min(76vh,900px);display:grid;place-items:center;background:linear-gradient(135deg,#fbf8fc,#f0edf2);overflow:hidden}.coag-slide-stage img{display:block;width:100%;height:100%;object-fit:contain}.coag-slide-empty{max-width:620px;padding:40px;text-align:center;color:var(--muted);font-weight:800;line-height:1.6}.coag-slide-empty strong{display:block;color:var(--wine);font-size:24px;margin-bottom:8px}.coag-slide-caption{position:absolute;left:14px;right:14px;bottom:12px;display:flex;justify-content:space-between;gap:12px;border-radius:9px;background:rgba(33,18,34,.82);color:#fff;padding:8px 12px;font-size:12px;font-weight:800;backdrop-filter:blur(3px)}
+.coag-thumbs{display:flex;gap:8px;overflow:auto;padding:10px 12px;border-top:1px solid var(--line);background:#fff}.coag-thumb{flex:0 0 130px;height:76px;border:2px solid transparent;border-radius:7px;background:#eee;overflow:hidden;padding:0}.coag-thumb.active{border-color:var(--purple);box-shadow:0 0 0 2px rgba(123,63,160,.15)}.coag-thumb img{width:100%;height:100%;object-fit:cover}.coag-upload-panel{display:none;gap:8px;align-items:end;flex-wrap:wrap;padding:11px 13px;border-top:1px solid var(--line);background:#fbf2ff}.admin-mode .coag-upload-panel{display:flex}.coag-upload-panel label{display:grid;gap:4px;color:var(--muted);font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.7px}.coag-upload-panel input[type=text],.coag-upload-panel input[type=url]{min-width:210px;border:1px solid var(--line);border-radius:8px;background:#fff;padding:8px 10px;color:var(--ink);font-size:12px}.coag-upload-panel input[type=file]{max-width:270px;font-size:11px}
+.coag-gallery:fullscreen{background:#151017;padding:0}.coag-gallery:fullscreen .coag-slide-stage{height:calc(100vh - 116px);border:0}.coag-gallery:fullscreen .coag-gallery-toolbar,.coag-gallery:fullscreen .coag-thumbs{background:#211724;border-color:#49354d}.coag-gallery:fullscreen .coag-gallery-title{color:#fff}
+@media(max-width:700px){.coag-slide-stage{height:62vh;min-height:360px}.coag-upload-panel label,.coag-upload-panel input[type=text],.coag-upload-panel input[type=url]{width:100%}.coag-gallery-toolbar{align-items:flex-start}.coag-thumb{flex-basis:100px;height:62px}}
 
 </style>
 <style>
@@ -180,35 +189,29 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
   </section>
   <section class="section" id="sec-coagulation">
     <div class="section-hero">
-      <h2><span class="hero-emoji">🧬</span> Coagulation Cascade</h2>
-      <p>Build and edit the cascade directly on the chart, the same way the Blood Bank flowchart works.</p>
+      <h2>Coagulation Cascade</h2>
+      <p>View full Canva cascade images at their natural proportions.</p>
     </div>
-    <div class="flow-shell">
-      <div class="sys-card flow-builder-card" id="coagFlowBuilder">
-        <div class="flow-topbar">
-          <div>
-            <div class="sec-label">Visual flowchart</div>
-            <div class="flow-meta" id="flowchartMeta">Ready</div>
-          </div>
-          <div class="flow-toolbar">
-            <button type="button" class="flow-btn" data-flow-action="zoom-out">−</button>
-            <span class="flow-btn" id="flowZoomBadge">100%</span>
-            <button type="button" class="flow-btn" data-flow-action="zoom-in">+</button>
-            <button type="button" class="flow-btn" data-flow-action="fit">Fit</button>
-            <button type="button" class="flow-btn" data-flow-action="page-fit">Page Fit</button>
-            <button type="button" class="flow-btn flow-admin-action" data-flow-action="add-pathway-split">+ Intrinsic / Extrinsic</button>
-            <button type="button" class="flow-btn flow-admin-action" data-flow-action="add-complex">+ Complex</button>
-            <button type="button" class="flow-btn flow-admin-action" data-flow-action="toggle-image">+ Image</button>
-            <button type="button" class="flow-btn flow-admin-action" data-flow-action="undo" id="flowUndoBtn" disabled>Undo</button>
-            <button type="button" class="flow-btn flow-admin-action" data-flow-action="redo" id="flowRedoBtn" disabled>Redo</button>
-            <button type="button" class="flow-btn flow-admin-action" data-flow-action="reset">Reset</button>
-            <button type="button" class="flow-btn primary" data-flow-action="export">Export</button>
-          </div>
+    <div class="coag-gallery" id="coagGallery">
+      <div class="coag-gallery-toolbar">
+        <div class="coag-gallery-title" id="coagSlideTitle">Coagulation image slideshow</div>
+        <div class="coag-gallery-controls">
+          <button class="coag-gallery-btn" id="coagPrev" type="button">Previous</button>
+          <span id="coagCounter">0 / 0</span>
+          <button class="coag-gallery-btn" id="coagNext" type="button">Next</button>
+          <button class="coag-gallery-btn primary" id="coagFullscreen" type="button">Full Screen</button>
+          <button class="coag-gallery-btn coag-admin" id="coagDelete" type="button">Delete Image</button>
         </div>
-        <div class="flow-selection-panel flow-admin-action" id="flowSelectionPanel"></div>
-        <div class="flow-canvas" id="flowchartViewport">
-          <div id="flowchartPreview" class="flow-tree" data-flow-preview></div>
-        </div>
+      </div>
+      <div class="coag-slide-stage" id="coagSlideStage">
+        <div class="coag-slide-empty"><strong>Add your Canva cascade images</strong>Unlock Admin, then upload one or more exported Canva images. Each image is shown large and fitted to its own proportions.</div>
+      </div>
+      <div class="coag-thumbs" id="coagThumbs"></div>
+      <div class="coag-upload-panel">
+        <label>Image title<input id="coagImageTitle" type="text" placeholder="Intrinsic pathway, overview…"></label>
+        <label>Upload Canva image(s)<input id="coagImageFiles" type="file" accept="image/*" multiple></label>
+        <label>Or image URL<input id="coagImageUrl" type="url" placeholder="https://…"></label>
+        <button class="coag-gallery-btn primary" id="coagAddUrl" type="button">Add Image</button>
       </div>
     </div>
   </section>
@@ -432,9 +435,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   function beginFlowLink(){if(!isAdmin)return;flowConnectFromId=flowSelectedNodeId;document.body.classList.add('flow-connecting');showToast('Click another box to connect')}
   function clearFlowSelection(){flowSelectedConnection=null;flowConnectFromId=null;document.body.classList.remove('flow-connecting');renderFlowchart()}
   function handleFlowAction(action,nodeId){if(action==='zoom-out')zoomFlowchart(-.1);else if(action==='zoom-in')zoomFlowchart(.1);else if(action==='fit')fitFlowchart();else if(action==='page-fit')pageFitFlowchart();else if(action==='export')exportFlowchart();else if(action==='undo')undoFlowchartChange();else if(action==='redo')redoFlowchartChange();else if(action==='reset')resetFlowchart();else if(action==='add-step')addFlowBranch(nodeId||flowSelectedNodeId,'step','Next');else if(action==='add-complex')addFlowBranch(nodeId||flowSelectedNodeId,'complex','Complex');else if(action==='add-pathway-split')addCoagPathwaySplit(nodeId||flowSelectedNodeId);else if(action==='add-question')addFlowBranch(nodeId||flowSelectedNodeId,'question','Next');else if(action==='toggle-note')toggleFlowNote(nodeId||flowSelectedNodeId);else if(action==='toggle-image')toggleFlowImage(nodeId||flowSelectedNodeId);else if(action==='remove-image')removeFlowImage(nodeId||flowSelectedNodeId);else if(action==='remove-note'){var data=getFlowchartData();var node=data.nodes[nodeId];if(node){pushFlowHistory();node.noteOpen=false;saveFlowchartData(data,true)}}else if(action==='begin-link')beginFlowLink();else if(action==='delete-node')deleteFlowNode(nodeId||flowSelectedNodeId);else if(action==='delete-link'||action==='delete-branch')deleteSelectedLink();else if(action==='clear-selection')clearFlowSelection()}
-  function exportFlowchart(){renderFlowchart();setTimeout(function(){drawFlowLinkOverlays();var source=document.getElementById('flowchartPreview');if(!source)return;var clone=source.cloneNode(true);clone.removeAttribute('id');clone.style.transform='scale(1)';var styles=Array.from(document.querySelectorAll('style')).map(function(s){return s.textContent}).join('\n');var win=window.open('','_blank');if(!win){showToast('Allow pop-ups to export',true);return}var html='<!doctype html><html><head><title>Coagulation Cascade</title><style>'+styles+' body{background:#fff!important;margin:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}.flow-print-sheet{padding:.2in}.flow-export-page{border:0}.flow-tree{transition:none!important}.flow-add-handle,.flow-node-tools,.flow-note-remove,.flow-image-remove,.flow-image-placeholder,.flow-image-replace,.flow-image-card.empty{display:none!important}@page{size:letter landscape;margin:.25in}</style></head><body><div class="flow-print-sheet"><h1 class="flow-export-title">Coagulation Cascade</h1><div class="flow-export-page">'+clone.outerHTML+'</div></div><script>function fit(){var page=document.querySelector(".flow-export-page");var tree=document.querySelector(".flow-tree");if(!page||!tree)return;tree.style.transform="scale(1)";var rect=tree.getBoundingClientRect();var scale=Math.min(1.05,(page.clientWidth-18)/Math.max(1,rect.width),(page.clientHeight-18)/Math.max(1,rect.height));tree.style.transform="scale("+Math.max(.18,scale)+")";}window.addEventListener("load",function(){setTimeout(function(){fit();window.focus();window.print();},350)});<\/script>
-
-</body></html>';win.document.open();win.document.write(html);win.document.close()},30)}
+  function exportFlowchart(){renderFlowchart();setTimeout(function(){drawFlowLinkOverlays();var source=document.getElementById('flowchartPreview');if(!source)return;var clone=source.cloneNode(true);clone.removeAttribute('id');clone.style.transform='scale(1)';var styles=Array.from(document.querySelectorAll('style')).map(function(s){return s.textContent}).join('\n');var win=window.open('','_blank');if(!win){showToast('Allow pop-ups to export',true);return}var html='<!doctype html><html><head><title>Coagulation Cascade</title><style>'+styles+' body{background:#fff!important;margin:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}.flow-print-sheet{padding:.2in}.flow-export-page{border:0}.flow-tree{transition:none!important}.flow-add-handle,.flow-node-tools,.flow-note-remove,.flow-image-remove,.flow-image-placeholder,.flow-image-replace,.flow-image-card.empty{display:none!important}@page{size:letter landscape;margin:.25in}</style></head><body><div class="flow-print-sheet"><h1 class="flow-export-title">Coagulation Cascade</h1><div class="flow-export-page">'+clone.outerHTML+'</div></div><script>function fit(){var page=document.querySelector(".flow-export-page");var tree=document.querySelector(".flow-tree");if(!page||!tree)return;tree.style.transform="scale(1)";var rect=tree.getBoundingClientRect();var scale=Math.min(1.05,(page.clientWidth-18)/Math.max(1,rect.width),(page.clientHeight-18)/Math.max(1,rect.height));tree.style.transform="scale("+Math.max(.18,scale)+")";}window.addEventListener("load",function(){setTimeout(function(){fit();window.focus();window.print();},350)});<\/script></body></html>';win.document.open();win.document.write(html);win.document.close()},30)}
   function renderAll(){Object.keys(state.tables).forEach(renderTable);renderExportOptions();renderFlowchart();document.body.classList.toggle('admin-mode',editMode)}
   function setEditMode(on){if(on&&!isAdmin){toggleAdminLogin();return}if(!on)collectVisibleState();editMode=!!on;document.body.classList.toggle('admin-mode',editMode);renderAll()}
   function hasBlockedSave(){return !!(safeDoc&&safeDoc.isBlocked&&safeDoc.isBlocked())}
@@ -481,6 +482,34 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   window.addEventListener('beforeunload',function(){collectVisibleState()});
   window.addEventListener('load',function(){setTimeout(function(){var left=document.getElementById('doorLeft');var right=document.getElementById('doorRight');if(left)left.classList.add('open');if(right)right.classList.add('open');setTimeout(function(){var intro=document.getElementById('intro');document.body.classList.remove('intro-active');if(intro){intro.style.opacity='0';intro.style.transition='opacity .5s';setTimeout(function(){intro.style.display='none'},500)}},1100)},1200)});
   init();
+})();
+</script>
+<script>
+(function(){
+  'use strict';
+  var KEY='hematology_coagulation_slides_v1',slides=[],index=0;
+  var gallery=document.getElementById('coagGallery');if(!gallery)return;
+  function el(id){return document.getElementById(id)}
+  function esc(v){return String(v||'').replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+  function load(){try{slides=JSON.parse(localStorage.getItem(KEY)||'[]');if(!Array.isArray(slides))slides=[]}catch(e){slides=[]}render()}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(slides));return true}catch(e){alert('These images exceed browser storage. Export smaller Canva PNG or JPG files and try again.');return false}}
+  function render(){
+    if(index>=slides.length)index=Math.max(0,slides.length-1);
+    el('coagCounter').textContent=slides.length?(index+1)+' / '+slides.length:'0 / 0';
+    el('coagPrev').disabled=slides.length<2;el('coagNext').disabled=slides.length<2;el('coagDelete').disabled=!slides.length;
+    if(!slides.length){el('coagSlideTitle').textContent='Coagulation image slideshow';el('coagSlideStage').innerHTML='<div class="coag-slide-empty"><strong>Add your Canva cascade images</strong>Unlock Admin, then upload one or more exported Canva images. Each image is shown large and fitted to its own proportions.</div>';el('coagThumbs').innerHTML='';return}
+    var s=slides[index];el('coagSlideTitle').textContent=s.title||('Cascade image '+(index+1));el('coagSlideStage').innerHTML='<img src="'+esc(s.src)+'" alt="'+esc(s.title||'Coagulation cascade image')+'"><div class="coag-slide-caption"><span>'+esc(s.title||'Coagulation cascade')+'</span><span>'+(index+1)+' of '+slides.length+'</span></div>';
+    el('coagThumbs').innerHTML=slides.map(function(x,i){return'<button class="coag-thumb '+(i===index?'active':'')+'" data-coag-index="'+i+'" title="'+esc(x.title||('Image '+(i+1)))+'"><img src="'+esc(x.src)+'" alt=""></button>'}).join('')
+  }
+  function resize(file){return new Promise(function(resolve,reject){var reader=new FileReader();reader.onerror=reject;reader.onload=function(){var img=new Image();img.onerror=reject;img.onload=function(){var max=2400,scale=Math.min(1,max/Math.max(img.width,img.height)),canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(img.width*scale));canvas.height=Math.max(1,Math.round(img.height*scale));canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);resolve(canvas.toDataURL('image/jpeg',.9))};img.src=reader.result};reader.readAsDataURL(file)})}
+  el('coagPrev').onclick=function(){if(slides.length){index=(index-1+slides.length)%slides.length;render()}};
+  el('coagNext').onclick=function(){if(slides.length){index=(index+1)%slides.length;render()}};
+  el('coagFullscreen').onclick=function(){if(document.fullscreenElement)document.exitFullscreen();else gallery.requestFullscreen().catch(function(){})};
+  el('coagThumbs').onclick=function(e){var b=e.target.closest('[data-coag-index]');if(b){index=Number(b.dataset.coagIndex);render()}};
+  el('coagDelete').onclick=function(){if(!slides.length)return;slides.splice(index,1);save();render()};
+  el('coagAddUrl').onclick=function(){var url=el('coagImageUrl').value.trim();if(!url)return;slides.push({id:Date.now(),title:el('coagImageTitle').value.trim()||'Coagulation cascade',src:url});index=slides.length-1;if(save()){el('coagImageUrl').value='';el('coagImageTitle').value='';render()}};
+  el('coagImageFiles').onchange=async function(){var files=Array.from(this.files||[]),base=el('coagImageTitle').value.trim();for(var i=0;i<files.length;i++){try{var src=await resize(files[i]);slides.push({id:Date.now()+i,title:base||(files[i].name.replace(/\.[^.]+$/,'')),src:src})}catch(e){console.warn(e)}}index=Math.max(0,slides.length-files.length);if(save()){this.value='';el('coagImageTitle').value='';render()}};
+  load();
 })();
 </script>
 
