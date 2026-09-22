@@ -1098,8 +1098,25 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       return !row.cells||Object.keys(row.cells).every(function(key){return !String(row.cells[key]||'').trim()||/Primary Reference|Textbook|Additional Resource/.test(String(row.cells[key]||''))});
     });
   }
+  var UA_RECOVERY_KEY='ua_hub_recovery_backup_v1';
+  function loadRecoveryState(){
+    try{
+      var saved=localStorage.getItem(UA_RECOVERY_KEY);
+      if(saved){
+        var parsed=JSON.parse(saved);
+        if(parsed&&parsed.tables)return mergeState(parsed);
+      }
+    }catch(e){console.warn('UA recovery backup could not be read',e)}
+    return defaultState();
+  }
   function saveLocal(){
-    return true;
+    try{
+      localStorage.setItem(UA_RECOVERY_KEY,JSON.stringify(state));
+      return true;
+    }catch(e){
+      console.warn('UA recovery backup could not be written',e);
+      return false;
+    }
   }
   function touchState(){state.updatedAt=Date.now()}
   function collectVisibleState(){
@@ -1200,13 +1217,13 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     });
   }
 	  async function loadRemote(){
-	    state=defaultState();
+	    state=loadRecoveryState();
 	    renderAll();
 	    renderSimulation();
 	    try{
         var syncReady=await waitForSafeSync(7000);
         if(!syncReady){console.warn('safe sync script did not load in time');return}
-	      safeDoc=createSafeSupabaseDoc({url:SUPABASE_URL,key:SUPABASE_KEY,table:TABLE_NAME,id:UA_ROW_ID,defaultData:defaultState,normalize:mergeState,getLocal:function(){return state},setLocal:function(data){state=data;renderAll();renderSimulation()},toast:showToast,onConflict:function(info){console.warn('UA save conflict:',info.paths)}});
+	      safeDoc=createSafeSupabaseDoc({url:SUPABASE_URL,key:SUPABASE_KEY,table:TABLE_NAME,id:UA_ROW_ID,defaultData:defaultState,normalize:mergeState,getLocal:function(){return state},setLocal:function(data){state=data;saveLocal();renderAll();renderSimulation()},toast:showToast,onConflict:function(info){console.warn('UA save conflict:',info.paths)}});
 	      await safeDoc.load();
 	      safeDoc.subscribe();
 	    }catch(e){console.warn('remote load failed',e)}
@@ -1218,6 +1235,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     clearTimeout(saveTimer);
     collectVisibleState();
     touchState();
+    saveLocal();
     if(saveInFlight)await saveInFlight;
 	    saveInFlight=(safeDoc?safeDoc.saveNow({reason:reason||'auto'}):Promise.resolve(false)).finally(function(){saveInFlight=null});
 	    return saveInFlight;
@@ -1498,10 +1516,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     }).join('');
     var tableTitle=renalTableDisplayTitle(chart);
     content.innerHTML='<article class="card renal-card">'+
-      '<div class="renal-card-head"><div><h2>'+escapeHtml(chart.title||'Renal Section')+'</h2>'+(chart.note?'<p class="renal-note">'+cellDisplayHtml(chart.note)+'</p>':'')+'</div><button type="button" class="mini-btn" data-renal-action="export-chart" data-chart="'+chart.id+'">Print / Save PDF</button></div>'+
-      renalFlowHtml(chart)+
+      '<div class="renal-card-head"><div><h2>'+escapeHtml(chart.title||'Renal Section')+'</h2>'+(chart.note?'<p class="renal-note">'+cellDisplayHtml(chart.note)+'</p>':'')+'</div></div>'+
       '<article class="card renal-table-card"><div class="card-title"><h2><span class="custom-title-text">'+escapeHtml(tableTitle)+'</span><input class="custom-table-title" data-action="edit-table-title" data-table="'+chart.tableId+'" value="'+escapeHtml(tableTitle)+'"></h2><span class="tag">Table</span></div><div class="table-tools" data-tools-for="'+chart.tableId+'"></div><div class="table-slot" data-table-id="'+chart.tableId+'"></div></article>'+
-      renalEditorHtml(chart)+
     '</article>';
   }
   function simProgress(){
@@ -2970,7 +2986,6 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     return '<div class="print-page renal-print-page">'+
       '<h1 class="print-section-title">'+escapeHtml(chart.title||'Renal Diseases')+'</h1>'+
       (chart.note?'<p class="renal-note">'+cellDisplayHtml(chart.note)+'</p>':'')+
-      renalFlowHtml(chart)+
       (table?'<div class="renal-print-table">'+tablePrintHtml(chart.tableId)+'</div>':'')+
       '</div>';
   }
