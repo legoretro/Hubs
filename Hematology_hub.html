@@ -30,6 +30,41 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
 .save-indicator{position:fixed;right:18px;bottom:18px;background:var(--green);color:#fff;border-radius:999px;padding:9px 15px;font-size:13px;font-weight:900;opacity:0;pointer-events:none;transition:.2s;z-index:70}.save-indicator.show{opacity:1}.modal-overlay{position:fixed;inset:0;background:rgba(32,10,44,.72);z-index:1000;display:none;align-items:center;justify-content:center}.modal-overlay.visible{display:flex}.modal-box{background:#fff;border-radius:18px;padding:30px;max-width:430px;width:90%;box-shadow:0 20px 60px rgba(32,10,44,.32);text-align:center;border:1px solid rgba(123,63,160,.35)}.modal-box h3{font-size:22px;color:var(--deep);margin-bottom:6px}.modal-box p{font-size:13px;color:var(--muted);margin-bottom:18px}.modal-input{width:100%;border:1.5px solid rgba(123,63,160,.35);border-radius:10px;padding:10px 14px;font-size:15px;text-align:center;background:#fff;margin-bottom:12px;letter-spacing:3px}.modal-error{color:var(--danger);font-size:12px;margin-bottom:10px;min-height:16px}.btn{border:none;border-radius:999px;background:var(--purple);color:#fff;padding:8px 16px;font-size:12px;font-weight:900}.btn.ghost{background:transparent;color:var(--muted);border:1.5px solid rgba(123,63,160,.35)}.export-options{display:grid;gap:8px;margin:14px 0;text-align:left}.export-options label{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink);cursor:pointer}.export-options input{accent-color:var(--purple)}
 #printArea{display:none}@media print{body{background:#fff;color:#000;-webkit-print-color-adjust:exact;print-color-adjust:exact}body.printing #intro,body.printing .site-header,body.printing .wrap,body.printing .save-indicator,body.printing .modal-overlay{display:none!important}body.printing #printArea{display:block!important}#printArea{font-family:Georgia,"Times New Roman",serif;color:#241322;padding:18px 24px}.print-page{break-after:page}.print-page:last-child{break-after:auto}.print-section-title{font-size:22px;color:#5a0e52;margin:0 0 12px}.print-card{border:1px solid #7b3fa0;border-top:4px solid #7b3fa0;margin-bottom:12px;padding:10px;break-inside:avoid;background:#fff}.print-card h2{font-size:15px;color:#5a0e52;margin-bottom:8px}#printArea table{width:100%;border-collapse:collapse}#printArea th{background:#321047!important;color:#fff;padding:5px 6px;text-align:left;font-size:9px;border:1px solid #321047}#printArea td{padding:5px 6px;border:1px solid #d8bde0;vertical-align:top;font-size:10px}#printArea img{display:block;max-width:105px;max-height:80px;border:1px solid #d8bde0}}
 @media(max-width:800px){.grid-2{grid-template-columns:1fr}.site-header{align-items:flex-start}.wrap{padding:22px 14px}}
+/* Hematology laboratory workflow simulation */
+#sec-simulation{--lab-blue:#5e8fa6;--lab-green:#44a07a;--lab-screen:#0c222a;--lab-shell:#edf1f2;--lab-edge:#aeb8bc;--lab-dark:#303a3e}
+.heme-sim{width:min(1420px,calc(100vw - 30px));margin-left:50%;transform:translateX(-50%);color:#1f2a2e}
+.sim-casebar{display:grid;grid-template-columns:minmax(180px,1.35fr) repeat(5,minmax(105px,.7fr)) auto;gap:1px;background:#c7d0d3;border:1px solid #aeb9bd;border-radius:12px;overflow:hidden;box-shadow:0 9px 24px rgba(31,43,48,.11);margin-bottom:12px}
+.sim-casebar>div{background:#f9fbfb;padding:9px 11px;min-width:0}.sim-casebar label{display:block;font:800 9px/1.2 Arial,sans-serif;letter-spacing:1.2px;color:#66757a;text-transform:uppercase;margin-bottom:3px}.sim-casebar strong,.sim-casebar select{display:block;width:100%;font:700 12px/1.25 Arial,sans-serif;color:#18252a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sim-casebar select{border:0;background:transparent;padding:0;outline:none}.sim-casebar .sim-case-actions{display:flex;align-items:center;gap:6px;padding:7px;background:#eef2f3}
+.sim-btn{border:1px solid #77878d;border-radius:5px;background:linear-gradient(#fff,#dfe5e7);color:#233238;padding:7px 10px;font:800 11px/1 Arial,sans-serif;letter-spacing:.15px;box-shadow:0 2px 3px rgba(24,37,42,.12);cursor:pointer}.sim-btn:hover{filter:brightness(1.02);transform:translateY(-1px)}.sim-btn:disabled{opacity:.38;cursor:not-allowed;transform:none}.sim-btn.primary{color:#fff;border-color:#336f89;background:linear-gradient(#669bb2,#39768f)}.sim-btn.success{color:#fff;border-color:#287459;background:linear-gradient(#55a989,#318063)}.sim-btn.danger{color:#fff;border-color:#7e3341;background:linear-gradient(#b95a6a,#8d3c4b)}.sim-btn.dark{color:#eef7f8;border-color:#1f343b;background:linear-gradient(#43565d,#293a40)}
+.sim-message{min-height:34px;display:flex;align-items:center;padding:8px 12px;margin-bottom:10px;border:1px solid #b7c9cf;border-left:5px solid var(--lab-blue);border-radius:7px;background:#f3f8f9;color:#29424c;font:700 12px/1.35 Arial,sans-serif}.sim-message.alert{border-left-color:#a94f5f;background:#fff6f7;color:#71303b}
+.lab-room{position:relative;min-height:570px;border:1px solid #aab5b9;border-radius:18px 18px 8px 8px;overflow:hidden;background:linear-gradient(180deg,#e9eef0 0 58%,#cbd2d3 58% 61%,#737a7b 61% 64%,#aeb5b5 64% 100%);box-shadow:inset 0 0 70px rgba(35,48,52,.12),0 20px 42px rgba(50,16,71,.12)}
+.lab-room:before{content:"HEMATOLOGY";position:absolute;left:24px;top:19px;color:#78858a;font:800 11px/1 Arial,sans-serif;letter-spacing:3px}.lab-room:after{content:"";position:absolute;left:4%;right:4%;top:61%;height:7px;background:linear-gradient(#333d40,#151c1e);box-shadow:0 14px 22px rgba(0,0,0,.28);z-index:2}
+.lab-chain{position:absolute;left:17%;right:5%;top:49%;height:15px;border:3px solid #65767c;border-radius:9px;background:repeating-linear-gradient(90deg,#c8d2d5 0 18px,#728187 18px 22px);box-shadow:0 4px 8px rgba(0,0,0,.2);z-index:3}
+.lab-chain .chain-light{position:absolute;right:5%;top:-6px;width:8px;height:8px;border-radius:50%;background:#56bf8c;box-shadow:0 0 10px #56bf8c}
+.instrument{position:absolute;z-index:5;color:#17252a;font-family:Arial,sans-serif;filter:drop-shadow(0 14px 13px rgba(25,35,38,.25))}.instrument button{font-family:Arial,sans-serif}.instrument-label{position:absolute;color:#34464d;font-weight:900;letter-spacing:1.3px;font-size:11px}.status-led{width:8px;height:8px;border-radius:50%;background:#7e898c;box-shadow:inset 0 0 2px #fff}.status-led.on{background:#47c989;box-shadow:0 0 9px #47c989}
+.specimen-station{left:2.5%;bottom:80px;width:150px;height:242px}.sample-rack{position:absolute;left:8px;bottom:0;width:132px;height:73px;border:5px solid #59666b;border-top:12px solid #7b878b;border-radius:6px;background:linear-gradient(#c5cdd0,#899599);box-shadow:inset 0 12px 0 #677478}.sample-rack:before{content:"";position:absolute;left:10px;right:10px;top:-27px;height:19px;background:radial-gradient(circle at 10px 9px,#242e31 0 5px,transparent 6px) 0 0/27px 19px repeat-x}.edta-tube{position:absolute;left:43px;bottom:46px;width:38px;height:154px;border:2px solid #a8b0b4;border-radius:4px 4px 17px 17px;background:linear-gradient(90deg,rgba(255,255,255,.75),rgba(224,230,232,.42) 48%,rgba(168,178,182,.6));transition:.35s;cursor:pointer}.edta-tube:before{content:"";position:absolute;left:-5px;right:-5px;top:-15px;height:24px;border-radius:5px 5px 3px 3px;background:linear-gradient(#b87acb,#733b88);box-shadow:inset 0 -4px 0 rgba(0,0,0,.18)}.edta-tube:after{content:"";position:absolute;left:4px;right:4px;bottom:5px;height:68px;border-radius:0 0 12px 12px;background:linear-gradient(90deg,#6d1422,#a92d3e 58%,#5b101d)}.tube-label{position:absolute;left:3px;right:3px;top:35px;height:48px;background:#f5f1e9;border:1px solid #c7c4ba;z-index:2;font:700 7px/1.15 Arial,sans-serif;padding:4px 2px;text-align:center}.tube-label i{display:block;height:13px;margin-top:3px;background:repeating-linear-gradient(90deg,#111 0 1px,transparent 1px 3px)}.edta-tube.selected{transform:translateY(-12px);filter:drop-shadow(0 0 7px #6aa9c3)}.sample-caption{position:absolute;left:0;right:0;top:0;text-align:center;color:#435158;font:800 10px/1.3 Arial,sans-serif}
+.sysmex-unit{left:14%;bottom:78px;width:34%;height:425px}.sysmex-shell{position:absolute;inset:0;clip-path:polygon(4% 3%,91% 3%,98% 11%,98% 93%,91% 99%,5% 99%,1% 93%,1% 10%);background:linear-gradient(112deg,#fafcfc 0 48%,#d5dcde 49% 78%,#b9c4c7 100%);border:1px solid #aeb8bc;box-shadow:inset 10px 0 22px rgba(255,255,255,.9),inset -9px 0 18px rgba(73,88,93,.16)}.sysmex-shell:before{content:"";position:absolute;left:4%;right:4%;bottom:18%;height:1px;background:#9ba7aa;box-shadow:0 5px 0 rgba(255,255,255,.8)}.sysmex-shell:after{content:"";position:absolute;right:5%;bottom:4%;width:23%;height:10%;background:repeating-linear-gradient(0deg,#778589 0 2px,transparent 2px 6px);opacity:.75}.sysmex-label{left:8%;top:7%;font-size:15px;color:#375d70}.sysmex-screen{position:absolute;left:8%;top:15%;width:57%;height:31%;border:9px solid #2e3b40;border-radius:7px;background:linear-gradient(160deg,#142d35,#07191f);box-shadow:inset 0 0 17px #000,0 2px 0 #fff;color:#9fe7d0;padding:10px;overflow:hidden}.screen-top{display:flex;justify-content:space-between;color:#77b7c8;font:700 9px Arial,sans-serif;border-bottom:1px solid #36535c;padding-bottom:4px}.screen-status{display:flex;align-items:center;gap:7px;margin-top:10px;font:800 12px Arial,sans-serif}.screen-progress{height:7px;border:1px solid #50717a;border-radius:4px;margin-top:10px;overflow:hidden}.screen-progress span{display:block;height:100%;width:0;background:#64c99e;transition:.35s}.screen-mini{margin-top:9px;display:grid;grid-template-columns:repeat(3,1fr);gap:5px;color:#b9dce4;font:700 9px Arial,sans-serif}.sample-bay{position:absolute;left:8%;bottom:8%;width:54%;height:31%;border-radius:8px 8px 4px 4px;background:linear-gradient(#4f5e63,#202b2f);border:4px solid #aeb8bb;box-shadow:inset 0 11px 18px rgba(0,0,0,.5)}.sample-bay:before{content:"SAMPLE LOADER";position:absolute;left:8px;top:6px;color:#d4dcde;font:700 8px Arial,sans-serif;letter-spacing:1px}.sample-bay:after{content:"";position:absolute;left:10%;right:10%;bottom:12%;height:35%;border:2px solid #0e1517;border-radius:3px;background:repeating-linear-gradient(90deg,#829095 0 9px,#273337 9px 14px)}.sysmex-controls{position:absolute;right:7%;top:16%;width:22%;display:grid;gap:8px}.sysmex-controls .status-panel{display:flex;align-items:center;justify-content:space-between;border:1px solid #9aa7aa;border-radius:4px;background:#d9dfe0;padding:7px;font:800 8px Arial,sans-serif}
+.slide-unit{left:48%;bottom:78px;width:19%;height:382px}.slide-shell{position:absolute;inset:0 0 0 0;border-radius:13px 13px 5px 5px;background:linear-gradient(100deg,#cbd3d5,#f9fbfb 42%,#c4ced1);border:1px solid #9ea9ad;box-shadow:inset 8px 0 15px rgba(255,255,255,.8),inset -9px 0 15px rgba(60,75,80,.14)}.slide-shell:before{content:"";position:absolute;left:8%;right:8%;top:33%;height:34%;border:5px solid #6c7a7f;border-radius:6px;background:linear-gradient(145deg,#25343a,#10191c);box-shadow:inset 0 0 24px #000}.slide-shell:after{content:"";position:absolute;left:15%;right:15%;bottom:8%;height:17%;border:1px solid #879397;background:repeating-linear-gradient(0deg,#b5c0c3 0 4px,#909da1 4px 7px)}.slide-label{left:10%;top:7%;color:#4b5c63}.slide-display{position:absolute;left:10%;right:10%;top:13%;height:15%;border:5px solid #3d4b50;border-radius:4px;background:#10272e;color:#9fe7d0;padding:7px;font:700 9px/1.3 Arial,sans-serif}.slide-window{position:absolute;left:18%;right:18%;top:42%;height:17%;border:1px solid #789099;background:linear-gradient(110deg,rgba(108,166,185,.3),rgba(255,255,255,.08));overflow:hidden}.slide-window span{position:absolute;left:-50%;top:45%;width:72%;height:10px;background:#f5f7f2;border-left:18px solid #dde8ed;transition:1s}.slide-window.active span{left:55%}
+.cellavision-unit{right:2.5%;bottom:80px;width:29%;height:425px}.cv-monitor{position:absolute;left:2%;top:0;width:74%;height:56%;border:12px solid #303c40;border-bottom-width:19px;border-radius:8px;background:#0b1b21;box-shadow:inset 0 0 20px #000}.cv-monitor:after{content:"";position:absolute;left:40%;bottom:-55px;width:22%;height:40px;background:linear-gradient(90deg,#7e8b8f,#c7cfd1,#778589);box-shadow:0 38px 0 15px #7b878a}.cv-screen{position:absolute;inset:8px;background:linear-gradient(135deg,#e8f0f1,#b8c8cd);display:grid;grid-template-columns:1.3fr .7fr;gap:4px;padding:5px}.cv-image{border:1px solid #89989d;background:radial-gradient(circle at 52% 51%,#625181 0 11%,#9e8db5 12% 24%,transparent 25%),radial-gradient(circle at 45% 45%,#f3b0b9 0 3%,#ead5d8 4% 8%,transparent 9%) 0 0/20px 20px,#f1cbd0}.cv-list{background:#f8fbfb;border:1px solid #95a4a8;padding:4px;font:700 6px/1.7 Arial,sans-serif;color:#33474f}.cv-label{left:7%;top:61%;color:#5b6870}.cv-scanner{position:absolute;right:0;bottom:0;width:42%;height:41%;border-radius:7px 7px 4px 4px;background:linear-gradient(120deg,#e9eeee,#aebabc);border:1px solid #8f9b9f;box-shadow:inset 5px 0 10px #fff}.cv-scanner:before{content:"SLIDE IMAGER";position:absolute;left:9px;top:10px;font:800 8px Arial,sans-serif;color:#4b5b61}.cv-scanner:after{content:"";position:absolute;left:13%;right:13%;top:35%;height:13px;border-radius:2px;background:#172328;box-shadow:inset 0 0 0 2px #4e5d62}
+.printer-unit{right:4%;bottom:13px;width:225px;height:94px}.printer-shell{position:absolute;inset:0;border-radius:8px 8px 4px 4px;background:linear-gradient(115deg,#dbe1e2,#f8f9f9 52%,#aeb8ba);border:1px solid #929da0}.printer-shell:before{content:"RESULT PRINTER";position:absolute;left:10px;top:10px;color:#58666b;font:800 8px Arial,sans-serif;letter-spacing:1px}.printer-slot{position:absolute;left:18%;right:18%;top:38%;height:11px;border-radius:3px;background:#263136;box-shadow:inset 0 2px 5px #000}.printer-paper{position:absolute;left:23%;right:23%;top:43%;height:0;background:#fff;border:0 solid #c9ced0;overflow:hidden;transition:1s;z-index:-1;font:700 5px/1.5 Arial,sans-serif;padding:0 5px}.printer-unit.printing .printer-paper{height:62px;border-width:1px;padding-top:5px;transform:translateY(13px);z-index:3}.printer-led{position:absolute;right:10px;top:10px}
+.machine-hit{position:absolute;inset:0;border:0;background:transparent;cursor:pointer}.machine-hit:focus-visible{outline:4px solid #5f9cb6;outline-offset:3px}.machine-actions{position:absolute;z-index:8;display:flex;gap:5px;flex-wrap:wrap}.specimen-station .machine-actions{left:2px;top:27px}.sysmex-unit .machine-actions{right:6%;bottom:22%}.slide-unit .machine-actions{left:9%;bottom:30%}.cellavision-unit .machine-actions{left:3%;bottom:1%}.printer-unit .machine-actions{left:-108px;bottom:10px}.machine-actions .sim-btn{padding:6px 8px;font-size:9px}
+.sim-lower{display:grid;grid-template-columns:1.2fr .8fr;gap:12px;margin-top:12px}.sim-status-panel,.sim-log-panel{border:1px solid #b6c1c4;border-radius:10px;background:#f9fbfb;padding:12px;box-shadow:0 7px 18px rgba(26,38,42,.07)}.sim-status-panel h3,.sim-log-panel h3{font:900 12px/1 Arial,sans-serif;letter-spacing:1.4px;text-transform:uppercase;color:#44555b;margin-bottom:9px}.workflow-strip{display:flex;align-items:center;gap:4px}.workflow-step{flex:1;min-width:0;border:1px solid #b9c4c7;border-radius:5px;background:#e9edef;padding:7px 5px;text-align:center;font:800 9px/1.15 Arial,sans-serif;color:#6b777a}.workflow-step.done{background:#dff3e9;border-color:#73ae94;color:#2e6d55}.workflow-step.active{background:#dcecf2;border-color:#5d94aa;color:#2e6074;box-shadow:0 0 0 2px rgba(75,137,162,.13)}.workflow-arrow{color:#77868b;font:900 12px Arial,sans-serif}.activity-log{height:102px;overflow:auto;border-top:1px solid #d2dadc}.activity-log div{display:grid;grid-template-columns:45px 1fr;gap:6px;padding:4px 2px;border-bottom:1px solid #e5eaeb;font:700 10px/1.25 Arial,sans-serif;color:#4d5d62}.activity-log time{color:#688a98}
+.sim-focus{position:fixed;inset:0;z-index:1500;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(10,20,24,.78);backdrop-filter:blur(4px)}.sim-focus.open{display:flex}.focus-shell{width:min(1120px,96vw);max-height:92vh;overflow:auto;border:1px solid #7f9096;border-radius:13px;background:#eef2f3;box-shadow:0 30px 80px rgba(0,0,0,.48)}.focus-head{position:sticky;top:0;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:#303e43;color:#f4f8f9}.focus-head h3{font:900 16px Arial,sans-serif}.focus-body{padding:16px}.focus-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:14px}.instrument-console{border:10px solid #344348;border-radius:8px;background:#0b2027;color:#b9e3e9;padding:14px;min-height:310px;box-shadow:inset 0 0 25px #000}.console-title{display:flex;justify-content:space-between;border-bottom:1px solid #48646c;padding-bottom:7px;font:800 11px Arial,sans-serif;color:#72b3c4}.result-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}.result-cell{border:1px solid #37535b;background:#102b33;padding:7px}.result-cell span{display:block;color:#6fa6b5;font:700 8px Arial,sans-serif}.result-cell strong{display:block;color:#e5f4f5;font:800 13px Arial,sans-serif;margin-top:3px}.plots{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}.plot{height:100px;border:1px solid #36525a;background:#08191f;padding:5px}.plot svg{width:100%;height:100%}.flag-box{border:1px solid #90525d;background:#3b1d24;color:#ffbbc4;padding:8px;margin-top:9px;font:700 10px Arial,sans-serif}.console-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.bench-detail{border:1px solid #bbc5c8;border-radius:8px;background:#fff;padding:13px}.bench-detail h4{font:900 12px Arial,sans-serif;color:#394b52;margin-bottom:8px}.bench-detail p{font:700 11px/1.45 Arial,sans-serif;color:#607075}
+.cell-workspace{display:grid;grid-template-columns:1.45fr .55fr;gap:12px}.cell-grid{display:grid;grid-template-columns:repeat(5,minmax(74px,1fr));gap:7px}.cell-thumb{position:relative;aspect-ratio:1;border:3px solid #6e7d82;border-radius:3px;background:#e8c6ca;padding:0;overflow:hidden}.cell-thumb.selected{border-color:#4a91ad;box-shadow:0 0 0 3px rgba(74,145,173,.28)}.cell-thumb.reviewed:after{content:attr(data-class);position:absolute;left:2px;right:2px;bottom:2px;background:rgba(15,29,34,.82);color:#fff;padding:3px 2px;font:800 7px/1 Arial,sans-serif;text-transform:uppercase}.cell-thumb img{width:100%;height:100%;object-fit:cover;display:block}.class-list{display:grid;gap:5px}.class-btn{display:flex;justify-content:space-between;gap:8px;border:1px solid #9eaaae;border-radius:4px;background:#fff;padding:8px;font:800 10px Arial,sans-serif;color:#34474e}.class-btn:hover{background:#e6f1f4}.cell-counter{padding:10px;margin-bottom:8px;border:1px solid #8ea4ab;background:#dcebee;color:#315868;font:900 13px Arial,sans-serif;text-align:center}.diff-table{width:100%;margin-top:10px;font-family:Arial,sans-serif}.diff-table th,.diff-table td{min-width:0;padding:6px;font-size:9px}.report-sheet{max-width:820px;margin:auto;background:#fff;border:1px solid #aeb8bb;padding:28px;color:#18252a;font-family:Arial,sans-serif}.report-sheet h2{font-size:20px;border-bottom:2px solid #2f4d58;padding-bottom:8px}.report-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.report-meta div{border:1px solid #c8d0d2;padding:8px;font-size:10px}.report-meta strong{display:block;font-size:12px;margin-top:3px}.report-table{width:100%;font-size:10px}.report-table th{background:#354b54;min-width:0}.report-table td{min-width:0}.report-note{margin-top:12px;border:1px solid #c8d0d2;padding:9px;font-size:10px}
+@media(max-width:1050px){.sim-casebar{grid-template-columns:repeat(3,1fr)}.sim-casebar .sim-case-actions{grid-column:span 3}.lab-room{min-height:1040px;background:linear-gradient(180deg,#e9eef0 0 83%,#747b7c 83% 85%,#aeb5b5 85%)}.lab-room:after{top:83%}.lab-chain{display:none}.specimen-station{left:4%;bottom:90px}.sysmex-unit{left:18%;top:80px;width:53%}.slide-unit{left:74%;top:130px;width:23%}.cellavision-unit{left:12%;bottom:265px;width:57%}.printer-unit{right:6%;bottom:75px}.sim-lower,.focus-grid,.cell-workspace{grid-template-columns:1fr}}
+@media(max-width:680px){.heme-sim{width:calc(100vw - 16px)}.sim-casebar{grid-template-columns:1fr 1fr}.sim-casebar .sim-case-actions{grid-column:span 2}.lab-room{min-height:1480px}.specimen-station{left:calc(50% - 75px);top:55px}.sysmex-unit{left:3%;top:300px;width:94%;height:410px}.slide-unit{left:23%;top:740px;width:54%;height:360px}.cellavision-unit{left:3%;top:1130px;width:94%;height:300px}.cv-monitor{width:70%}.printer-unit{display:none}.sim-lower{grid-template-columns:1fr}.workflow-strip{flex-wrap:wrap}.workflow-step{min-width:92px}.cell-grid{grid-template-columns:repeat(4,1fr)}.result-grid{grid-template-columns:repeat(3,1fr)}.plots{grid-template-columns:1fr}}
+@media print{body.sim-report-printing>*:not(.sim-focus){display:none!important}body.sim-report-printing .sim-focus{position:static;display:block!important;background:#fff;padding:0}body.sim-report-printing .focus-head,body.sim-report-printing .console-actions{display:none!important}body.sim-report-printing .focus-shell{width:100%;max-height:none;border:0;box-shadow:none}body.sim-report-printing .focus-body{padding:0}}
+
+
+
+/* Full-image coagulation slideshow */
+.coag-gallery{width:min(1380px,calc(100vw - 30px));margin-left:50%;transform:translateX(-50%);border:1px solid var(--line);border-top:5px solid var(--purple);border-radius:18px;background:#fff;box-shadow:0 16px 36px rgba(50,16,71,.1);overflow:hidden}
+.coag-gallery-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:11px 14px;border-bottom:1px solid var(--line);background:#fffafd}.coag-gallery-title{color:var(--wine);font-weight:900;font-size:15px}.coag-gallery-controls{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.coag-gallery-btn{border:1.5px solid rgba(123,63,160,.34);border-radius:999px;background:#fff;color:var(--wine);padding:7px 12px;font-size:12px;font-weight:900}.coag-gallery-btn.primary{background:var(--purple);color:#fff;border-color:var(--purple)}.coag-gallery-btn:disabled{opacity:.35;cursor:not-allowed}.coag-admin{display:none}.admin-mode .coag-admin{display:flex}
+.coag-slide-stage{position:relative;min-height:520px;height:min(76vh,900px);display:grid;place-items:center;background:linear-gradient(135deg,#fbf8fc,#f0edf2);overflow:hidden}.coag-slide-stage img{display:block;width:100%;height:100%;object-fit:contain}.coag-slide-empty{max-width:620px;padding:40px;text-align:center;color:var(--muted);font-weight:800;line-height:1.6}.coag-slide-empty strong{display:block;color:var(--wine);font-size:24px;margin-bottom:8px}.coag-slide-caption{position:absolute;left:14px;right:14px;bottom:12px;display:flex;justify-content:space-between;gap:12px;border-radius:9px;background:rgba(33,18,34,.82);color:#fff;padding:8px 12px;font-size:12px;font-weight:800;backdrop-filter:blur(3px)}
+.coag-thumbs{display:flex;gap:8px;overflow:auto;padding:10px 12px;border-top:1px solid var(--line);background:#fff}.coag-thumb{flex:0 0 130px;height:76px;border:2px solid transparent;border-radius:7px;background:#eee;overflow:hidden;padding:0}.coag-thumb.active{border-color:var(--purple);box-shadow:0 0 0 2px rgba(123,63,160,.15)}.coag-thumb img{width:100%;height:100%;object-fit:cover}.coag-upload-panel{display:none;gap:8px;align-items:end;flex-wrap:wrap;padding:11px 13px;border-top:1px solid var(--line);background:#fbf2ff}.admin-mode .coag-upload-panel{display:flex}.coag-upload-panel label{display:grid;gap:4px;color:var(--muted);font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.7px}.coag-upload-panel input[type=text],.coag-upload-panel input[type=url]{min-width:210px;border:1px solid var(--line);border-radius:8px;background:#fff;padding:8px 10px;color:var(--ink);font-size:12px}.coag-upload-panel input[type=file]{max-width:270px;font-size:11px}
+.coag-gallery:fullscreen{background:#151017;padding:0}.coag-gallery:fullscreen .coag-slide-stage{height:calc(100vh - 116px);border:0}.coag-gallery:fullscreen .coag-gallery-toolbar,.coag-gallery:fullscreen .coag-thumbs{background:#211724;border-color:#49354d}.coag-gallery:fullscreen .coag-gallery-title{color:#fff}
+@media(max-width:700px){.coag-slide-stage{height:62vh;min-height:360px}.coag-upload-panel label,.coag-upload-panel input[type=text],.coag-upload-panel input[type=url]{width:100%}.coag-gallery-toolbar{align-items:flex-start}.coag-thumb{flex-basis:100px;height:62px}}
+
 </style>
 <style>
 .flow-image-card{position:absolute;right:calc(100% + 12px);top:10px;width:154px;min-height:112px;background:#fff;border:2px dashed rgba(123,63,160,.34);border-radius:12px;padding:9px;box-shadow:0 8px 18px rgba(50,16,71,.1);z-index:7;text-align:center;color:var(--wine)}
@@ -154,48 +189,110 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
   </section>
   <section class="section" id="sec-coagulation">
     <div class="section-hero">
-      <h2><span class="hero-emoji">🧬</span> Coagulation Cascade</h2>
-      <p>Build and edit the cascade directly on the chart, the same way the Blood Bank flowchart works.</p>
+      <h2>Coagulation Cascade</h2>
+      <p>View full Canva cascade images at their natural proportions.</p>
     </div>
-    <div class="flow-shell">
-      <div class="sys-card flow-builder-card" id="coagFlowBuilder">
-        <div class="flow-topbar">
-          <div>
-            <div class="sec-label">Visual flowchart</div>
-            <div class="flow-meta" id="flowchartMeta">Ready</div>
-          </div>
-          <div class="flow-toolbar">
-            <button type="button" class="flow-btn" data-flow-action="zoom-out">−</button>
-            <span class="flow-btn" id="flowZoomBadge">100%</span>
-            <button type="button" class="flow-btn" data-flow-action="zoom-in">+</button>
-            <button type="button" class="flow-btn" data-flow-action="fit">Fit</button>
-            <button type="button" class="flow-btn" data-flow-action="page-fit">Page Fit</button>
-            <button type="button" class="flow-btn flow-admin-action" data-flow-action="add-pathway-split">+ Intrinsic / Extrinsic</button>
-            <button type="button" class="flow-btn flow-admin-action" data-flow-action="add-complex">+ Complex</button>
-            <button type="button" class="flow-btn flow-admin-action" data-flow-action="toggle-image">+ Image</button>
-            <button type="button" class="flow-btn flow-admin-action" data-flow-action="undo" id="flowUndoBtn" disabled>Undo</button>
-            <button type="button" class="flow-btn flow-admin-action" data-flow-action="redo" id="flowRedoBtn" disabled>Redo</button>
-            <button type="button" class="flow-btn flow-admin-action" data-flow-action="reset">Reset</button>
-            <button type="button" class="flow-btn primary" data-flow-action="export">Export</button>
-          </div>
+    <div class="coag-gallery" id="coagGallery">
+      <div class="coag-gallery-toolbar">
+        <div class="coag-gallery-title" id="coagSlideTitle">Coagulation image slideshow</div>
+        <div class="coag-gallery-controls">
+          <button class="coag-gallery-btn" id="coagPrev" type="button">Previous</button>
+          <span id="coagCounter">0 / 0</span>
+          <button class="coag-gallery-btn" id="coagNext" type="button">Next</button>
+          <button class="coag-gallery-btn primary" id="coagFullscreen" type="button">Full Screen</button>
+          <button class="coag-gallery-btn coag-admin" id="coagDelete" type="button">Delete Image</button>
         </div>
-        <div class="flow-selection-panel flow-admin-action" id="flowSelectionPanel"></div>
-        <div class="flow-canvas" id="flowchartViewport">
-          <div id="flowchartPreview" class="flow-tree" data-flow-preview></div>
-        </div>
+      </div>
+      <div class="coag-slide-stage" id="coagSlideStage">
+        <div class="coag-slide-empty"><strong>Add your Canva cascade images</strong>Unlock Admin, then upload one or more exported Canva images. Each image is shown large and fitted to its own proportions.</div>
+      </div>
+      <div class="coag-thumbs" id="coagThumbs"></div>
+      <div class="coag-upload-panel">
+        <label>Image title<input id="coagImageTitle" type="text" placeholder="Intrinsic pathway, overview…"></label>
+        <label>Upload Canva image(s)<input id="coagImageFiles" type="file" accept="image/*" multiple></label>
+        <label>Or image URL<input id="coagImageUrl" type="url" placeholder="https://…"></label>
+        <button class="coag-gallery-btn primary" id="coagAddUrl" type="button">Add Image</button>
       </div>
     </div>
   </section>
   <section class="section" id="sec-simulation">
     <div class="section-hero">
       <h2>Simulation</h2>
-      <p>Practice mode will come after the core cell review is stable.</p>
+      <p>Process a specimen through a connected hematology laboratory workflow.</p>
     </div>
-    <div class="panel sim-card">
-      <div>
-        <span class="badge">Coming Soon</span>
-        <h3>Smear Review Simulation</h3>
-        <p>Planned flow: CBC clue -> smear field -> identify cells -> choose interpretation -> reveal teaching notes.</p>
+    <div class="heme-sim" id="hemeSimulator">
+      <div class="sim-casebar" aria-label="Active simulation case">
+        <div><label for="simCaseSelect">Development case</label><select id="simCaseSelect"></select></div>
+        <div><label>Accession</label><strong id="simAccession">—</strong></div>
+        <div><label>Patient ID</label><strong id="simPatient">—</strong></div>
+        <div><label>Specimen</label><strong id="simSpecimen">—</strong></div>
+        <div><label>Current stage</label><strong id="simStage">Ready</strong></div>
+        <div><label>Run / status</label><strong id="simRunStatus">0 / Ready</strong></div>
+        <div class="sim-case-actions"><button class="sim-btn danger" data-sim-action="reset">Reset Case</button></div>
+      </div>
+      <div class="sim-message" id="simMessage" role="status" aria-live="polite">Select the EDTA tube to begin.</div>
+      <div class="lab-room" aria-label="Virtual hematology laboratory bench">
+        <div class="lab-chain" aria-hidden="true"><span class="chain-light"></span></div>
+        <div class="instrument specimen-station" data-machine="sample">
+          <div class="sample-caption">EDTA specimen rack<br><span id="tubeStatus">READY</span></div>
+          <button class="machine-hit" data-sim-focus="sample" aria-label="Focus on EDTA specimen"></button>
+          <div class="edta-tube" id="edtaTube"><div class="tube-label"><span id="tubeAccession">H26-0001</span><i></i></div></div>
+          <div class="sample-rack"></div>
+          <div class="machine-actions"><button class="sim-btn" data-sim-action="select-tube">Select Tube</button></div>
+        </div>
+        <div class="instrument sysmex-unit" data-machine="sysmex">
+          <div class="sysmex-shell">
+            <span class="instrument-label sysmex-label">HEMATOLOGY ANALYZER</span>
+            <div class="sysmex-screen">
+              <div class="screen-top"><span>ANALYSIS</span><span id="sysmexRunLabel">RUN 0</span></div>
+              <div class="screen-status"><span class="status-led" id="sysmexLed"></span><span id="sysmexStatus">STANDBY</span></div>
+              <div class="screen-progress"><span id="sysmexProgress"></span></div>
+              <div class="screen-mini" id="sysmexMini"><span>WBC --</span><span>HGB --</span><span>PLT --</span></div>
+            </div>
+            <div class="sample-bay"></div>
+            <div class="sysmex-controls"><div class="status-panel"><span>READY</span><span class="status-led" id="sysmexPanelLed"></span></div></div>
+          </div>
+          <button class="machine-hit" data-sim-focus="sysmex" aria-label="Open hematology analyzer workstation"></button>
+          <div class="machine-actions"><button class="sim-btn dark" data-sim-action="load-sample">Load Sample</button><button class="sim-btn primary" data-sim-action="start-run">Start</button></div>
+        </div>
+        <div class="instrument slide-unit" data-machine="slide">
+          <div class="slide-shell">
+            <span class="instrument-label slide-label">SLIDE MAKER / STAINER</span>
+            <div class="slide-display"><span class="status-led" id="slideLed"></span> <span id="slideStatus">WAITING FOR SAMPLE</span></div>
+            <div class="slide-window" id="slideWindow"><span></span></div>
+          </div>
+          <button class="machine-hit" data-sim-focus="slide" aria-label="Open slide maker and stainer"></button>
+          <div class="machine-actions"><button class="sim-btn success" data-sim-action="slide-process">Prepare &amp; Stain</button></div>
+        </div>
+        <div class="instrument cellavision-unit" data-machine="cellavision">
+          <div class="cv-monitor"><div class="cv-screen"><div class="cv-image"></div><div class="cv-list">NEUT<br>LYMPH<br>MONO<br>EOS<br>BASO<br>IG<br>NRBC<br>OTHER</div></div></div>
+          <span class="instrument-label cv-label">MORPHOLOGY WORKSTATION</span>
+          <div class="cv-scanner"></div>
+          <button class="machine-hit" data-sim-focus="cellavision" aria-label="Open morphology workstation"></button>
+          <div class="machine-actions"><button class="sim-btn primary" data-sim-action="open-cellavision">Review Slide</button></div>
+        </div>
+        <div class="instrument printer-unit" id="simPrinter" data-machine="printer">
+          <div class="printer-shell"><span class="status-led printer-led" id="printerLed"></span><div class="printer-slot"></div><div class="printer-paper" id="printerPaper">CBC RESULT<br>ACCESSION<br>WBC RBC HGB HCT<br>DIFFERENTIAL</div></div>
+          <div class="machine-actions"><button class="sim-btn" data-sim-action="print">Print Results</button></div>
+        </div>
+      </div>
+      <div class="sim-lower">
+        <div class="sim-status-panel">
+          <h3>Connected workflow</h3>
+          <div class="workflow-strip" id="workflowStrip">
+            <span class="workflow-step" data-step="sample">Specimen</span><span class="workflow-arrow">›</span>
+            <span class="workflow-step" data-step="sysmex">Analyzer</span><span class="workflow-arrow">›</span>
+            <span class="workflow-step" data-step="slide">Slide / Stain</span><span class="workflow-arrow">›</span>
+            <span class="workflow-step" data-step="cellavision">CellaVision</span>
+          </div>
+        </div>
+        <div class="sim-log-panel"><h3>Activity log</h3><div class="activity-log" id="simActivityLog"></div></div>
+      </div>
+    </div>
+    <div class="sim-focus" id="simFocus" aria-hidden="true">
+      <div class="focus-shell" role="dialog" aria-modal="true" aria-labelledby="simFocusTitle">
+        <div class="focus-head"><h3 id="simFocusTitle">Workstation</h3><button class="sim-btn dark" data-sim-action="close-focus">Return to Full Lab</button></div>
+        <div class="focus-body" id="simFocusBody"></div>
       </div>
     </div>
   </section>
@@ -385,6 +482,167 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   window.addEventListener('beforeunload',function(){collectVisibleState()});
   window.addEventListener('load',function(){setTimeout(function(){var left=document.getElementById('doorLeft');var right=document.getElementById('doorRight');if(left)left.classList.add('open');if(right)right.classList.add('open');setTimeout(function(){var intro=document.getElementById('intro');document.body.classList.remove('intro-active');if(intro){intro.style.opacity='0';intro.style.transition='opacity .5s';setTimeout(function(){intro.style.display='none'},500)}},1100)},1200)});
   init();
+})();
+</script>
+<script>
+(function(){
+  'use strict';
+  var KEY='hematology_coagulation_slides_v1',slides=[],index=0;
+  var gallery=document.getElementById('coagGallery');if(!gallery)return;
+  function el(id){return document.getElementById(id)}
+  function esc(v){return String(v||'').replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+  function load(){try{slides=JSON.parse(localStorage.getItem(KEY)||'[]');if(!Array.isArray(slides))slides=[]}catch(e){slides=[]}render()}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(slides));return true}catch(e){alert('These images exceed browser storage. Export smaller Canva PNG or JPG files and try again.');return false}}
+  function render(){
+    if(index>=slides.length)index=Math.max(0,slides.length-1);
+    el('coagCounter').textContent=slides.length?(index+1)+' / '+slides.length:'0 / 0';
+    el('coagPrev').disabled=slides.length<2;el('coagNext').disabled=slides.length<2;el('coagDelete').disabled=!slides.length;
+    if(!slides.length){el('coagSlideTitle').textContent='Coagulation image slideshow';el('coagSlideStage').innerHTML='<div class="coag-slide-empty"><strong>Add your Canva cascade images</strong>Unlock Admin, then upload one or more exported Canva images. Each image is shown large and fitted to its own proportions.</div>';el('coagThumbs').innerHTML='';return}
+    var s=slides[index];el('coagSlideTitle').textContent=s.title||('Cascade image '+(index+1));el('coagSlideStage').innerHTML='<img src="'+esc(s.src)+'" alt="'+esc(s.title||'Coagulation cascade image')+'"><div class="coag-slide-caption"><span>'+esc(s.title||'Coagulation cascade')+'</span><span>'+(index+1)+' of '+slides.length+'</span></div>';
+    el('coagThumbs').innerHTML=slides.map(function(x,i){return'<button class="coag-thumb '+(i===index?'active':'')+'" data-coag-index="'+i+'" title="'+esc(x.title||('Image '+(i+1)))+'"><img src="'+esc(x.src)+'" alt=""></button>'}).join('')
+  }
+  function resize(file){return new Promise(function(resolve,reject){var reader=new FileReader();reader.onerror=reject;reader.onload=function(){var img=new Image();img.onerror=reject;img.onload=function(){var max=2400,scale=Math.min(1,max/Math.max(img.width,img.height)),canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(img.width*scale));canvas.height=Math.max(1,Math.round(img.height*scale));canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);resolve(canvas.toDataURL('image/jpeg',.9))};img.src=reader.result};reader.readAsDataURL(file)})}
+  el('coagPrev').onclick=function(){if(slides.length){index=(index-1+slides.length)%slides.length;render()}};
+  el('coagNext').onclick=function(){if(slides.length){index=(index+1)%slides.length;render()}};
+  el('coagFullscreen').onclick=function(){if(document.fullscreenElement)document.exitFullscreen();else gallery.requestFullscreen().catch(function(){})};
+  el('coagThumbs').onclick=function(e){var b=e.target.closest('[data-coag-index]');if(b){index=Number(b.dataset.coagIndex);render()}};
+  el('coagDelete').onclick=function(){if(!slides.length)return;slides.splice(index,1);save();render()};
+  el('coagAddUrl').onclick=function(){var url=el('coagImageUrl').value.trim();if(!url)return;slides.push({id:Date.now(),title:el('coagImageTitle').value.trim()||'Coagulation cascade',src:url});index=slides.length-1;if(save()){el('coagImageUrl').value='';el('coagImageTitle').value='';render()}};
+  el('coagImageFiles').onchange=async function(){var files=Array.from(this.files||[]),base=el('coagImageTitle').value.trim();for(var i=0;i<files.length;i++){try{var src=await resize(files[i]);slides.push({id:Date.now()+i,title:base||(files[i].name.replace(/\.[^.]+$/,'')),src:src})}catch(e){console.warn(e)}}index=Math.max(0,slides.length-files.length);if(save()){this.value='';el('coagImageTitle').value='';render()}};
+  load();
+})();
+</script>
+
+<script>
+(function(){
+  'use strict';
+  var CATEGORIES=['Neutrophil','Lymphocyte','Monocyte','Eosinophil','Basophil','Immature Granulocyte','NRBC','Other'];
+  function makeCells(types,prefix){return types.map(function(type,i){return{id:i+1,image:'',correctType:type,assetPath:'assets/hematology-simulation/cells/'+prefix+'/cell'+String(i+1).padStart(2,'0')+'.jpg'}})}
+  var CASES=[
+    {id:'HEM001',label:'Example 1 — Platelet clumps',patient:{id:'SIM-0001',accession:'H26-0001'},specimen:{type:'EDTA Whole Blood'},sysmex:{run1:{results:{WBC:'11.8',RBC:'4.22',HGB:'12.6',HCT:'38.1',MCV:'90.3',MCH:'29.9',MCHC:'33.1',RDW:'14.2',PLT:'54',MPV:'—',NEUT:'58',LYMPH:'31',MONO:'7',EOS:'3',BASO:'1'},flags:['PLT CLUMPS','PLT ABN DISTRIBUTION']},run2:{results:{WBC:'11.5',RBC:'4.18',HGB:'12.5',HCT:'37.8',MCV:'90.4',MCH:'29.9',MCHC:'33.0',RDW:'14.3',PLT:'188',MPV:'10.1',NEUT:'57',LYMPH:'32',MONO:'7',EOS:'3',BASO:'1'},flags:['ATYP LYMPH?']}} ,morphology:{slideRequired:true},cellavision:{cells:makeCells(['Neutrophil','Neutrophil','Neutrophil','Neutrophil','Neutrophil','Neutrophil','Neutrophil','Neutrophil','Neutrophil','Neutrophil','Neutrophil','Lymphocyte','Lymphocyte','Lymphocyte','Lymphocyte','Lymphocyte','Lymphocyte','Monocyte','Eosinophil','Basophil'],'case001')}},
+    {id:'HEM002',label:'Example 2 — Neutrophilia',patient:{id:'SIM-0002',accession:'H26-0002'},specimen:{type:'EDTA Whole Blood'},sysmex:{run1:{results:{WBC:'24.6',RBC:'4.61',HGB:'13.7',HCT:'41.2',MCV:'89.4',MCH:'29.7',MCHC:'33.3',RDW:'13.1',PLT:'326',MPV:'9.2',NEUT:'82',LYMPH:'10',MONO:'6',EOS:'1',BASO:'1'},flags:['NEUTROPHILIA','IG PRESENT']},run2:null},morphology:{slideRequired:true},cellavision:{cells:makeCells(['Neutrophil','Neutrophil','Neutrophil','Neutrophil','Neutrophil','Neutrophil','Neutrophil','Neutrophil','Neutrophil','Neutrophil','Neutrophil','Neutrophil','Neutrophil','Neutrophil','Immature Granulocyte','Immature Granulocyte','Lymphocyte','Lymphocyte','Monocyte','Monocyte'],'case002')}},
+    {id:'HEM003',label:'Example 3 — Routine CBC',patient:{id:'SIM-0003',accession:'H26-0003'},specimen:{type:'EDTA Whole Blood'},sysmex:{run1:{results:{WBC:'6.9',RBC:'4.73',HGB:'14.4',HCT:'43.0',MCV:'90.9',MCH:'30.4',MCHC:'33.5',RDW:'12.8',PLT:'242',MPV:'9.5',NEUT:'58',LYMPH:'32',MONO:'6',EOS:'3',BASO:'1'},flags:[]},run2:null},morphology:{slideRequired:false},cellavision:{cells:makeCells(['Neutrophil','Neutrophil','Neutrophil','Neutrophil','Neutrophil','Neutrophil','Neutrophil','Neutrophil','Neutrophil','Neutrophil','Neutrophil','Neutrophil','Lymphocyte','Lymphocyte','Lymphocyte','Lymphocyte','Lymphocyte','Lymphocyte','Monocyte','Eosinophil'],'case003')}}
+  ];
+  var hematologyRules=[
+    {id:'example-platelet-clump-repeat',description:'Development example only: repeat when the first run reports platelet clumps.',action:'rerun',evaluate:function(c,run){return run===1&&c.sysmex.run1.flags.indexOf('PLT CLUMPS')>-1}},
+    {id:'example-slide-review',description:'Development example only: route cases marked for morphology review to slide preparation.',action:'slide',evaluate:function(c){return !!c.morphology.slideRequired}}
+  ];
+  var sim={caseIndex:0,state:'ready',run:0,selectedCell:null,classifications:{},log:[],clock:490,token:0,message:'Select the EDTA tube to begin.',alert:false,slideMade:false,printed:false};
+  var root=document.getElementById('hemeSimulator');if(!root)return;
+  function currentCase(){return CASES[sim.caseIndex]}
+  function byId(id){return document.getElementById(id)}
+  function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+  function setMessage(msg,alert){sim.message=msg;sim.alert=!!alert;render()}
+  function timeText(){var h=Math.floor(sim.clock/60)%24,m=sim.clock%60;return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')}
+  function addLog(text){sim.clock+=1;sim.log.push({time:timeText(),text:text});renderLog()}
+  function wait(ms,token){return new Promise(function(resolve){setTimeout(function(){resolve(token===sim.token)},ms)})}
+  function allowed(states){return states.indexOf(sim.state)>-1}
+  function resultSet(){var c=currentCase();return sim.run===2&&c.sysmex.run2?c.sysmex.run2:c.sysmex.run1}
+  function stageLabel(){var map={ready:'Ready',sample_selected:'Specimen selected',sysmex_loaded:'Sysmex loaded',sysmex_running:'Sysmex analysis',sysmex_complete:'Analysis complete',rerun_required:'Repeat required',sysmex_rerunning:'Repeat analysis',rerun_complete:'Repeat complete',slide_required:'Slide required',slide_requested:'Slide requested',slide_processing:'Slide preparation',staining:'Staining',slide_complete:'Slide complete',cellavision_ready:'CellaVision ready',cellavision_review:'Morphology review',cellavision_complete:'Review complete',case_complete:'Case complete'};return map[sim.state]||sim.state}
+  function resetCase(index){
+    sim.token++;sim.caseIndex=typeof index==='number'?index:sim.caseIndex;sim.state='ready';sim.run=0;sim.selectedCell=null;sim.classifications={};sim.log=[];sim.clock=490;sim.message='Select the EDTA tube to begin.';sim.alert=false;sim.slideMade=false;sim.printed=false;
+    byId('sysmexProgress').style.width='0';byId('slideWindow').classList.remove('active');byId('simPrinter').classList.remove('printing');addLog('Case loaded: '+currentCase().patient.accession);render();
+  }
+  function evaluateRules(){
+    var c=currentCase(),actions=hematologyRules.filter(function(rule){return rule.evaluate(c,sim.run)}).map(function(rule){return rule.action});
+    if(actions.indexOf('rerun')>-1){sim.state='rerun_required';setMessage('Analyzer hold: repeat analysis required before results can be released.',true);addLog('Analyzer rule placed results on hold for repeat analysis');return}
+    if(actions.indexOf('slide')>-1){sim.state='slide_required';setMessage('Results available. A stained peripheral smear is required for this accession.',false);addLog('Slide review required');return}
+    sim.state='sysmex_complete';setMessage('Analysis complete. Results may be printed or released.',false);addLog('Results available for release');
+  }
+  async function runAnalyzer(rerun){
+    var c=currentCase();if(rerun){if(sim.state!=='rerun_required'||!c.sysmex.run2){setMessage('No repeat analysis is available for this accession.',true);return}sim.state='sysmex_rerunning';sim.run=2;addLog('Repeat analysis initiated')}else{if(sim.state!=='sysmex_loaded'){setMessage('Load the selected EDTA specimen before starting analysis.',true);return}sim.state='sysmex_running';sim.run=1;addLog('Analysis started')}
+    var token=++sim.token,stages=['Sample detected','Mixing','Aspirating','CBC analysis','Differential analysis','Generating flags','Processing','Complete'];
+    for(var i=0;i<stages.length;i++){byId('sysmexProgress').style.width=((i+1)/stages.length*100)+'%';sim.message=stages[i];sim.alert=false;render();if(!(await wait(420,token)))return}
+    addLog((rerun?'Repeat':'Initial')+' analysis complete');evaluateRules();renderFocus('sysmex');
+  }
+  function selectTube(){if(sim.state!=='ready'){setMessage('The active specimen has already been selected.',true);return}sim.state='sample_selected';addLog('Specimen selected');setMessage('Specimen selected. Load the tube into the hematology analyzer.')}
+  function loadSample(){if(sim.state!=='sample_selected'){setMessage('Select the EDTA tube before loading the analyzer.',true);return}sim.state='sysmex_loaded';addLog('Sample loaded into Sysmex');setMessage('Tube detected. Analyzer is ready to start.')}
+  async function processSlide(){
+    if(sim.state!=='slide_required'){setMessage(sim.slideMade?'A stained slide already exists for this accession.':'No slide request is available for this accession.',true);return}
+    sim.state='slide_requested';addLog('Slide preparation requested');var token=++sim.token,steps=[['slide_processing','Preparing slide'],['slide_processing','Creating smear'],['slide_processing','Drying'],['staining','Staining'],['staining','Finalizing']];
+    byId('slideWindow').classList.add('active');
+    for(var i=0;i<steps.length;i++){sim.state=steps[i][0];sim.message=steps[i][1];render();if(!(await wait(520,token)))return}
+    sim.slideMade=true;sim.state='cellavision_ready';addLog('Stained slide complete');setMessage('Stained slide is available at the morphology workstation.');renderFocus('slide')
+  }
+  function printResults(){
+    if(sim.run<1||allowed(['sysmex_running','sysmex_rerunning','sysmex_loaded'])){setMessage('No completed analyzer result is available to print.',true);return}
+    byId('simPrinter').classList.add('printing');byId('printerLed').classList.add('on');sim.printed=true;addLog('Results sent to separate printer');setMessage('Printer received Run '+sim.run+' results.');setTimeout(function(){openFocus('printer')},850)
+  }
+  function releaseCase(){if(currentCase().morphology.slideRequired&&!allowed(['cellavision_complete','case_complete'])){setMessage('Morphology review must be completed before release.',true);return}if(sim.run<1){setMessage('No analyzer result is available to release.',true);return}sim.state='case_complete';addLog('Case completed and released');setMessage('Case complete. Results released.');closeFocus()}
+  function cellSvg(type,n){
+    var colors={Neutrophil:['#604477','#967fa9'],Lymphocyte:['#433067','#6c5790'],Monocyte:['#64577b','#9589a8'],Eosinophil:['#c25d63','#ea8d82'],Basophil:['#46366b','#6e5a95'],'Immature Granulocyte':['#725078','#a77da1'],NRBC:['#4d3970','#7b649d'],Other:['#75636f','#a6939e']};var c=colors[type]||colors.Other;
+    var svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><defs><radialGradient id="b"><stop stop-color="#f7dfe2"/><stop offset="1" stop-color="#d8aeb6"/></radialGradient><filter id="g"><feTurbulence baseFrequency=".45" numOctaves="2" seed="'+n+'"/><feBlend mode="multiply" in2="SourceGraphic"/></filter></defs><rect width="120" height="120" fill="url(#b)"/><g opacity=".32" fill="#b96470">'+Array.from({length:26},function(_,i){var x=(i*37+n*13)%116,y=(i*53+n*7)%116;return'<circle cx="'+x+'" cy="'+y+'" r="3"/>'}).join('')+'</g><circle cx="60" cy="60" r="39" fill="#e8ccd1" stroke="#c6949e" stroke-width="2"/><path d="M35 62c4-24 21-35 38-27 18 8 24 31 8 45-13 12-44 7-46-18z" fill="'+c[1]+'"/><path d="M43 54c10-13 23-15 32-7 7 7 4 17-3 22-12 8-28 2-29-15z" fill="'+c[0]+'" opacity=".9"/><circle cx="76" cy="74" r="5" fill="'+c[0]+'" opacity=".65"/></svg>';
+    return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg)
+  }
+  function classify(type){if(sim.selectedCell==null){setMessage('Select a cell image before assigning a classification.',true);return}sim.classifications[sim.selectedCell]=type;var reviewed=Object.keys(sim.classifications).length;setMessage('Cell '+(sim.selectedCell+1)+' classified as '+type+'. '+reviewed+' of 20 reviewed.');sim.selectedCell=reviewed<20?firstUnreviewed():sim.selectedCell;renderFocus('cellavision')}
+  function firstUnreviewed(){for(var i=0;i<20;i++)if(!sim.classifications.hasOwnProperty(i))return i;return null}
+  function completeReview(){if(Object.keys(sim.classifications).length!==20){setMessage('Complete all 20 cell classifications before finishing the review.',true);return}sim.state='cellavision_complete';addLog('20-cell morphology review completed');setMessage('Morphology review complete. The case is ready for release.');renderFocus('cellavision')}
+  function counts(){var c={};CATEGORIES.forEach(function(k){c[k]=0});Object.keys(sim.classifications).forEach(function(k){c[sim.classifications[k]]=(c[sim.classifications[k]]||0)+1});return c}
+  function resultHtml(){
+    var r=resultSet(),keys=['WBC','RBC','HGB','HCT','MCV','MCH','MCHC','RDW','PLT','MPV','NEUT','LYMPH','MONO','EOS','BASO'];
+    return'<div class="result-grid">'+keys.map(function(k){return'<div class="result-cell"><span>'+k+'</span><strong>'+esc(r.results[k])+'</strong></div>'}).join('')+'</div>'
+  }
+  function plotHtml(){
+    return'<div class="plots"><div class="plot" aria-label="Data-driven differential scatterplot placeholder"><svg viewBox="0 0 180 90"><g fill="#59b7cc" opacity=".6">'+Array.from({length:38},function(_,i){return'<circle cx="'+(14+(i*37)%155)+'" cy="'+(70-(i*19)%55)+'" r="'+(2+i%3)+'"/>'}).join('')+'</g><path d="M8 78H173M9 78V7" stroke="#6b8e97" fill="none"/></svg></div><div class="plot" aria-label="Data-driven platelet histogram placeholder"><svg viewBox="0 0 180 90"><path d="M7 79 C28 77 35 20 57 18 S87 68 111 74 S148 78 174 79" stroke="#7fd1ad" stroke-width="3" fill="none"/><path d="M8 79H174M9 79V7" stroke="#6b8e97" fill="none"/></svg></div></div>'
+  }
+  function sysmexFocus(){
+    var r=sim.run?resultSet():null,flags=r&&r.flags.length?r.flags.join(' • '):'No analyzer flags';
+    return'<div class="focus-grid"><div class="instrument-console"><div class="console-title"><span>HEMATOLOGY ANALYZER</span><span>'+esc(currentCase().patient.accession)+' / RUN '+sim.run+'</span></div>'+(r?resultHtml()+plotHtml():'<p style="margin-top:80px;text-align:center">NO COMPLETED RESULT</p>')+(r?'<div class="flag-box">FLAGS: '+esc(flags)+'</div>':'')+'</div><div class="bench-detail"><h4>Analyzer controls</h4><p id="focusAnalyzerStatus">'+esc(stageLabel())+'</p><div class="console-actions"><button class="sim-btn primary" data-sim-action="start-run">Start Analysis</button><button class="sim-btn primary" data-sim-action="rerun">Rerun Sample</button><button class="sim-btn" data-sim-action="print">Print Results</button><button class="sim-btn success" data-sim-action="request-slide">Send for Slide</button><button class="sim-btn success" data-sim-action="release">Release</button></div><p style="margin-top:12px">Scatterplots and histograms are data-driven SVG placeholders that can be replaced by case assets without changing the simulation engine.</p></div></div>'
+  }
+  function slideFocus(){
+    return'<div class="focus-grid"><div class="instrument-console"><div class="console-title"><span>SLIDE MAKER / STAINER</span><span>'+esc(currentCase().patient.accession)+'</span></div><div style="margin:55px auto 20px;width:80%;height:34px;border:6px solid #61767d;background:#07171c;position:relative"><span style="display:block;width:62%;height:12px;margin:5px auto;background:#eef3ef;border-left:28px solid #c8dce2"></span></div><p style="text-align:center;font:800 14px Arial,sans-serif;color:#9fe7d0">'+esc(byId('slideStatus').textContent)+'</p></div><div class="bench-detail"><h4>Connected slide workflow</h4><p>The accession follows the analyzer request through smear preparation, drying, staining, and finalization.</p><div class="console-actions"><button class="sim-btn success" data-sim-action="slide-process">Prepare &amp; Stain Slide</button><button class="sim-btn primary" data-sim-action="open-cellavision">Send to CellaVision</button></div></div></div>'
+  }
+  function cvFocus(){
+    var cells=currentCase().cellavision.cells,c=counts(),reviewed=Object.keys(sim.classifications).length;
+    var grid=cells.map(function(cell,i){var assigned=sim.classifications[i]||'',src=cell.image||cellSvg(cell.correctType,cell.id);return'<button class="cell-thumb '+(sim.selectedCell===i?'selected ':'')+(assigned?'reviewed':'')+'" data-sim-cell="'+i+'" data-class="'+esc(assigned)+'" aria-label="Cell '+cell.id+(assigned?', classified '+assigned:'')+'"><img src="'+src+'" alt="Microscope cell '+cell.id+'"></button>'}).join('');
+    var classes=CATEGORIES.map(function(k){return'<button class="class-btn" data-sim-class="'+esc(k)+'"><span>'+esc(k)+'</span><span>'+c[k]+' / '+(c[k]*5)+'%</span></button>'}).join('');
+    var rows=CATEGORIES.filter(function(k){return c[k]>0}).map(function(k){return'<tr><td>'+esc(k)+'</td><td>'+c[k]+'</td><td>'+c[k]*5+'%</td></tr>'}).join('')||'<tr><td colspan="3">No cells classified</td></tr>';
+    return'<div class="cell-workspace"><div><div class="cell-counter">Cells Reviewed: '+reviewed+' / 20</div><div class="cell-grid">'+grid+'</div></div><div><div class="class-list">'+classes+'</div><table class="diff-table"><thead><tr><th>Class</th><th>Count</th><th>%</th></tr></thead><tbody>'+rows+'</tbody></table><div class="console-actions"><button class="sim-btn success" data-sim-action="complete-review">Complete Review</button><button class="sim-btn primary" data-sim-action="release">Release Case</button></div></div></div>'
+  }
+  function reportFocus(){
+    var c=currentCase(),r=resultSet(),keys=Object.keys(r.results);
+    return'<div class="report-sheet" id="simReport"><h2>Hematology Analyzer Report</h2><div class="report-meta"><div>Accession<strong>'+esc(c.patient.accession)+'</strong></div><div>Patient ID<strong>'+esc(c.patient.id)+'</strong></div><div>Specimen<strong>'+esc(c.specimen.type)+'</strong></div><div>Run<strong>'+sim.run+'</strong></div><div>Status<strong>'+esc(stageLabel())+'</strong></div><div>Flags<strong>'+esc(r.flags.join(', ')||'None')+'</strong></div></div><table class="report-table"><thead><tr><th>Parameter</th><th>Result</th><th>Parameter</th><th>Result</th></tr></thead><tbody>'+Array.from({length:Math.ceil(keys.length/2)},function(_,i){var a=keys[i],b=keys[i+Math.ceil(keys.length/2)];return'<tr><td>'+a+'</td><td>'+esc(r.results[a])+'</td><td>'+(b||'')+'</td><td>'+(b?esc(r.results[b]):'')+'</td></tr>'}).join('')+'</tbody></table><div class="report-note">Development simulation report. Reference ranges and final report styling can be added independently of case data.</div><div class="console-actions"><button class="sim-btn primary" data-sim-action="browser-print">Print This Report</button></div></div>'
+  }
+  function sampleFocus(){return'<div class="focus-grid"><div class="bench-detail"><h4>EDTA whole blood specimen</h4><div style="height:250px;display:grid;place-items:center"><div class="edta-tube selected" style="position:relative;left:auto;bottom:auto"><div class="tube-label">'+esc(currentCase().patient.accession)+'<i></i></div></div></div></div><div class="bench-detail"><h4>Specimen information</h4><p><strong>Accession:</strong> '+esc(currentCase().patient.accession)+'</p><p><strong>Patient:</strong> '+esc(currentCase().patient.id)+'</p><p><strong>Type:</strong> '+esc(currentCase().specimen.type)+'</p><div class="console-actions"><button class="sim-btn" data-sim-action="select-tube">Select Tube</button><button class="sim-btn primary" data-sim-action="load-sample">Load Sample</button></div></div></div>'}
+  function renderFocus(machine){
+    if(!byId('simFocus').classList.contains('open'))return;
+    var active=byId('simFocus').dataset.machine||machine||'sysmex';byId('simFocus').dataset.machine=active;
+    var title={sample:'Specimen Work Area',sysmex:'Hematology Analyzer',slide:'Slide Maker / Stainer',cellavision:'CellaVision Morphology Workstation',printer:'Result Printer'}[active]||'Workstation';
+    byId('simFocusTitle').textContent=title;
+    byId('simFocusBody').innerHTML=active==='sysmex'?sysmexFocus():active==='slide'?slideFocus():active==='cellavision'?cvFocus():active==='printer'?reportFocus():sampleFocus()
+  }
+  function openFocus(machine){
+    if(machine==='cellavision'&&!allowed(['cellavision_ready','cellavision_review','cellavision_complete','case_complete'])){setMessage('No stained slide is available for this accession.',true);return}
+    if(machine==='printer'&&sim.run<1){setMessage('No completed analyzer result is available at the printer.',true);return}
+    if(machine==='cellavision'&&sim.state==='cellavision_ready'){sim.state='cellavision_review';addLog('CellaVision review started')}
+    byId('simFocus').dataset.machine=machine;byId('simFocus').classList.add('open');byId('simFocus').setAttribute('aria-hidden','false');renderFocus(machine)
+  }
+  function closeFocus(){byId('simFocus').classList.remove('open');byId('simFocus').setAttribute('aria-hidden','true')}
+  function requestSlide(){if(sim.state==='slide_required'){setMessage('Slide request accepted. Start the slide maker / stainer.');openFocus('slide')}else setMessage('The analyzer has not produced a slide-review request for this accession.',true)}
+  function renderLog(){byId('simActivityLog').innerHTML=sim.log.slice().reverse().map(function(x){return'<div><time>'+x.time+'</time><span>'+esc(x.text)+'</span></div>'}).join('')}
+  function render(){
+    var c=currentCase(),r=sim.run?resultSet():null;
+    byId('simAccession').textContent=c.patient.accession;byId('simPatient').textContent=c.patient.id;byId('simSpecimen').textContent=c.specimen.type;byId('simStage').textContent=stageLabel();byId('simRunStatus').textContent=sim.run+' / '+(sim.state==='case_complete'?'Released':stageLabel());byId('tubeAccession').textContent=c.patient.accession;byId('tubeStatus').textContent=sim.state==='ready'?'READY':sim.state==='sample_selected'?'SELECTED':sim.run?'PROCESSED':'IN WORK';
+    byId('edtaTube').classList.toggle('selected',sim.state==='sample_selected');byId('simMessage').textContent=sim.message;byId('simMessage').classList.toggle('alert',sim.alert);
+    byId('sysmexRunLabel').textContent='RUN '+sim.run;byId('sysmexStatus').textContent=stageLabel().toUpperCase();byId('sysmexLed').classList.toggle('on',allowed(['sysmex_running','sysmex_rerunning','sysmex_complete','rerun_required','slide_required','cellavision_ready','cellavision_review','cellavision_complete','case_complete']));byId('sysmexPanelLed').classList.toggle('on',sim.state==='sysmex_loaded');
+    byId('sysmexMini').innerHTML=r?'<span>WBC '+esc(r.results.WBC)+'</span><span>HGB '+esc(r.results.HGB)+'</span><span>PLT '+esc(r.results.PLT)+'</span>':'<span>WBC --</span><span>HGB --</span><span>PLT --</span>';
+    byId('slideStatus').textContent=sim.slideMade?'SLIDE COMPLETE':allowed(['slide_processing','staining'])?stageLabel().toUpperCase():sim.state==='slide_required'?'REQUEST RECEIVED':'WAITING FOR SAMPLE';byId('slideLed').classList.toggle('on',sim.state==='slide_required'||sim.slideMade||allowed(['slide_processing','staining']));
+    var rank={ready:0,sample_selected:0,sysmex_loaded:1,sysmex_running:1,sysmex_complete:1,rerun_required:1,sysmex_rerunning:1,rerun_complete:1,slide_required:2,slide_requested:2,slide_processing:2,staining:2,slide_complete:2,cellavision_ready:3,cellavision_review:3,cellavision_complete:3,case_complete:4},active=rank[sim.state]||0;
+    document.querySelectorAll('#workflowStrip .workflow-step').forEach(function(el,i){el.classList.toggle('done',i<active||(sim.state==='case_complete'));el.classList.toggle('active',i===active&&sim.state!=='case_complete')});
+    renderLog();renderFocus()
+  }
+  root.addEventListener('click',function(e){
+    var focus=e.target.closest('[data-sim-focus]');if(focus&&!e.target.closest('.machine-actions')){openFocus(focus.dataset.simFocus);return}
+    var cell=e.target.closest('[data-sim-cell]');if(cell){sim.selectedCell=Number(cell.dataset.simCell);renderFocus('cellavision');return}
+    var cls=e.target.closest('[data-sim-class]');if(cls){classify(cls.dataset.simClass);return}
+    var btn=e.target.closest('[data-sim-action]');if(!btn)return;var a=btn.dataset.simAction;
+    if(a==='reset')resetCase();else if(a==='select-tube')selectTube();else if(a==='load-sample')loadSample();else if(a==='start-run')runAnalyzer(false);else if(a==='rerun')runAnalyzer(true);else if(a==='print')printResults();else if(a==='request-slide')requestSlide();else if(a==='slide-process')processSlide();else if(a==='open-cellavision')openFocus('cellavision');else if(a==='complete-review')completeReview();else if(a==='release')releaseCase();else if(a==='close-focus')closeFocus();else if(a==='browser-print'){document.body.classList.add('sim-report-printing');window.print();setTimeout(function(){document.body.classList.remove('sim-report-printing')},800)}
+  });
+  byId('simFocus').addEventListener('click',function(e){if(e.target===byId('simFocus'))closeFocus()});
+  byId('simCaseSelect').innerHTML=CASES.map(function(c,i){return'<option value="'+i+'">'+esc(c.label)+'</option>'}).join('');
+  byId('simCaseSelect').addEventListener('change',function(){resetCase(Number(this.value))});
+  window.addEventListener('afterprint',function(){document.body.classList.remove('sim-report-printing')});
+  resetCase(0);
 })();
 </script>
 </body>
