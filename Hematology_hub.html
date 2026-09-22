@@ -638,7 +638,13 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var btn=e.target.closest('[data-sim-action]');if(!btn)return;var a=btn.dataset.simAction;
     if(a==='reset')resetCase();else if(a==='select-tube')selectTube();else if(a==='load-sample')loadSample();else if(a==='start-run')runAnalyzer(false);else if(a==='rerun')runAnalyzer(true);else if(a==='print')printResults();else if(a==='request-slide')requestSlide();else if(a==='slide-process')processSlide();else if(a==='open-cellavision')openFocus('cellavision');else if(a==='complete-review')completeReview();else if(a==='release')releaseCase();else if(a==='close-focus')closeFocus();else if(a==='browser-print'){document.body.classList.add('sim-report-printing');window.print();setTimeout(function(){document.body.classList.remove('sim-report-printing')},800)}
   });
-  byId('simFocus').addEventListener('click',function(e){if(e.target===byId('simFocus'))closeFocus()});
+  byId('simFocus').addEventListener('click',function(e){
+    if(e.target===byId('simFocus')){closeFocus();return}
+    var cell=e.target.closest('[data-sim-cell]');if(cell){sim.selectedCell=Number(cell.dataset.simCell);renderFocus('cellavision');return}
+    var cls=e.target.closest('[data-sim-class]');if(cls){classify(cls.dataset.simClass);return}
+    var btn=e.target.closest('[data-sim-action]');if(!btn)return;var a=btn.dataset.simAction;
+    if(a==='reset')resetCase();else if(a==='select-tube')selectTube();else if(a==='load-sample')loadSample();else if(a==='start-run')runAnalyzer(false);else if(a==='rerun')runAnalyzer(true);else if(a==='print')printResults();else if(a==='request-slide')requestSlide();else if(a==='slide-process')processSlide();else if(a==='open-cellavision')openFocus('cellavision');else if(a==='complete-review')completeReview();else if(a==='release')releaseCase();else if(a==='close-focus')closeFocus();else if(a==='browser-print'){document.body.classList.add('sim-report-printing');window.print();setTimeout(function(){document.body.classList.remove('sim-report-printing')},800)}
+  });
   byId('simCaseSelect').innerHTML=CASES.map(function(c,i){return'<option value="'+i+'">'+esc(c.label)+'</option>'}).join('');
   byId('simCaseSelect').addEventListener('change',function(){resetCase(Number(this.value))});
   window.addEventListener('afterprint',function(){document.body.classList.remove('sim-report-printing')});
