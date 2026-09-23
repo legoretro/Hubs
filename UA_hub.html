@@ -377,6 +377,7 @@ button,input{font-family:inherit}button{cursor:pointer}
 <script async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script async src="shared/pdf-export.js"></script>
 <script async src="safe-supabase-sync.js"></script>
+<script src="assets/ua-recovered-state.js?v=483"></script>
 <script>
 const SUPABASE_URL='https://fjrdlasmdhqjqqlvuxwj.supabase.co';
 const SUPABASE_KEY='sb_publishable_UnXRXK6It0PKVmZmixYZeg_WDx9frO2';
@@ -649,6 +650,20 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     chart.nodes=[{id:uid('renal_node'),label:'General Terms',note:'',level:0,color:'#d4860a',image:''}];
     data.renal.charts.push(chart);
   }
+  function exposeRecoveredRenalTables(data){
+    if(!data||!data.tables||!data.renal||!Array.isArray(data.renal.charts))return;
+    var linked={};
+    data.renal.charts.forEach(function(chart){if(chart&&chart.tableId)linked[chart.tableId]=true});
+    Object.keys(data.tables).forEach(function(id){
+      var table=data.tables[id];
+      if(linked[id]||tableSection(id,table)!=='renal'||!tableHasMeaningfulRows(table))return;
+      var title=normalizeCellText(table.title||'Recovered Renal Table')||'Recovered Renal Table';
+      var chart=makeRenalChart('renal_recovered_'+id.replace(/[^a-z0-9_]+/gi,'_'),title,id);
+      chart.nodes=[{id:uid('renal_node'),label:title,note:'Recovered table',level:0,color:'#d4860a',image:''}];
+      data.renal.charts.push(chart);
+      linked[id]=true;
+    });
+  }
   function orderRenalCharts(data){
     if(!data||!data.renal||!Array.isArray(data.renal.charts))return;
     data.renal.charts.sort(function(a,b){
@@ -712,6 +727,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(!Array.isArray(data.renal.charts)||!data.renal.charts.length)data.renal.charts=defaultRenalCharts();
     data.renal.charts=data.renal.charts.map(normalizeRenalChart);
     ensureBroadTermsRenalTab(data);
+    exposeRecoveredRenalTables(data);
     data.renal.charts=data.renal.charts.map(normalizeRenalChart);
     normalizePhenylalanineRenalTabs(data);
     orderRenalCharts(data);
@@ -1099,15 +1115,38 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     });
   }
   var UA_RECOVERY_KEY='ua_hub_recovery_backup_v1';
+  function recoveryStateScore(candidate){
+    if(!candidate||!candidate.tables)return 0;
+    var score=0;
+    Object.keys(candidate.tables).forEach(function(id){
+      var table=candidate.tables[id];
+      if(!validTable(table))return;
+      score+=100;
+      score+=table.rows.length*5;
+      table.rows.forEach(function(row){
+        Object.keys(row&&row.cells||{}).forEach(function(key){
+          var value=String(row.cells[key]||'').trim();
+          if(!value)return;
+          score+=2;
+          if(/^data:image\//i.test(value))score+=50;
+        });
+      });
+    });
+    return score;
+  }
   function loadRecoveryState(){
+    var candidates=[];
     try{
       var saved=localStorage.getItem(UA_RECOVERY_KEY);
       if(saved){
         var parsed=JSON.parse(saved);
-        if(parsed&&parsed.tables)return mergeState(parsed);
+        if(parsed&&parsed.tables)candidates.push(parsed);
       }
     }catch(e){console.warn('UA recovery backup could not be read',e)}
-    return defaultState();
+    if(window.UA_RECOVERED_STATE&&window.UA_RECOVERED_STATE.tables)candidates.push(window.UA_RECOVERED_STATE);
+    if(!candidates.length)return defaultState();
+    candidates.sort(function(a,b){return recoveryStateScore(b)-recoveryStateScore(a)});
+    return mergeState(candidates[0]);
   }
   function saveLocal(){
     try{
