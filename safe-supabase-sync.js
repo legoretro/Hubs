@@ -202,6 +202,29 @@
       });
     }
 
+    function legacyDirectSave(data) {
+      var legacyHeaders = Object.assign({}, headers, { Prefer:'resolution=merge-duplicates,return=representation' });
+      return fetchJson(url + '/rest/v1/' + table + '?on_conflict=id', {
+        method:'POST',
+        headers:legacyHeaders,
+        body:JSON.stringify({ id:id, data:data })
+      }).then(function(rows) {
+        var row = rows && rows[0];
+        if (!row) throw new Error('Supabase did not confirm the legacy save.');
+        doc.baseData = normalize(row.data || data);
+        doc.version = Number(row.version || doc.version || 0);
+        doc.updatedAt = row.updated_at || null;
+        doc.blocked = false;
+        doc.lastConflict = null;
+        toast('Saved to Supabase');
+        return true;
+      });
+    }
+
+    function missingSafeSaveRpc(error) {
+      return /mls_safe_save_doc|could not find the function|schema cache|pgrst202|404/i.test((error && error.message) || '');
+    }
+
     function loadLegacyWithoutVersion() {
       return fetchJson(url + '/rest/v1/' + table + '?id=eq.' + encodeURIComponent(id) + '&select=id,data', {
         headers:{ apikey:key, Authorization:'Bearer ' + key }
@@ -254,6 +277,13 @@
       var dirty = dirtyAgainstBase(data);
       if (!dirty.length) return Promise.resolve(true);
       doc.saveInFlight = saveAttempt(data, doc.version, false, reason).catch(function(error) {
+        if (missingSafeSaveRpc(error)) {
+          return legacyDirectSave(data).catch(function(legacyError) {
+            console.error('Legacy Supabase save failed for ' + id + ':', legacyError);
+            toast('Supabase save failed: ' + legacyError.message, true);
+            return false;
+          });
+        }
         console.error('Safe Supabase save failed for ' + id + ':', error);
         toast('Supabase save failed: ' + error.message, true);
         return false;
