@@ -140,3 +140,44 @@ end;
 $$;
 
 notify pgrst, 'reload schema';
+
+-- Hematology Hub page-builder and morphology image library.
+-- Page structure and image metadata remain in the hematology_hub JSON document.
+-- Original image files are stored here instead of inside browser storage or JSON.
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values (
+  'hematology-hub-media',
+  'hematology-hub-media',
+  true,
+  15728640,
+  array['image/jpeg','image/png','image/webp','image/gif','image/avif']
+)
+on conflict (id) do update
+set public = excluded.public,
+    file_size_limit = excluded.file_size_limit,
+    allowed_mime_types = excluded.allowed_mime_types;
+
+drop policy if exists "hematology hub media read" on storage.objects;
+create policy "hematology hub media read"
+on storage.objects for select
+to anon, authenticated
+using (bucket_id = 'hematology-hub-media');
+
+drop policy if exists "hematology hub media upload" on storage.objects;
+create policy "hematology hub media upload"
+on storage.objects for insert
+to anon, authenticated
+with check (bucket_id = 'hematology-hub-media');
+
+drop policy if exists "hematology hub media update" on storage.objects;
+create policy "hematology hub media update"
+on storage.objects for update
+to anon, authenticated
+using (bucket_id = 'hematology-hub-media')
+with check (bucket_id = 'hematology-hub-media');
+
+drop policy if exists "hematology hub media delete" on storage.objects;
+create policy "hematology hub media delete"
+on storage.objects for delete
+to anon, authenticated
+using (bucket_id = 'hematology-hub-media');
