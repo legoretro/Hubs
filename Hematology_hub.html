@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hematology Hub</title>
+<title>Hematology / Hemostasis Hub</title>
 <style>
 :root{--deep:#321047;--purple:#7b3fa0;--wine:#5a0e52;--plum:#9b5fc0;--rose:#f0c7eb;--soft:#fff7fd;--pale:#fbf2ff;--ink:#241322;--muted:#786575;--line:#e7d2e8;--gold:#d4860a;--green:#1a8c5c;--danger:#8b0a26;--crimson:#7b3fa0;--dark:#241322;--warm-grey:#786575;--warn:#d4860a;--good:#1a8c5c;--good-lt:#e8fff3;--blush:#fff7fd;--card-bg:rgba(255,255,255,.86)}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -102,18 +102,19 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
 .cellavision-tabs{display:flex;gap:7px;margin:0 0 14px;border-bottom:1px solid #b9c5c8}.cellavision-tab{border:0;border-bottom:3px solid transparent;background:transparent;color:#6c7d82;padding:9px 15px;font:800 11px Arial,sans-serif}.cellavision-tab.active{border-bottom-color:#347f99;color:#214d5f}.cellavision-panel[hidden]{display:none!important}.cellavision-workspace{grid-template-columns:minmax(225px,.48fr) minmax(0,1.52fr)}.cellavision-classifier{max-height:570px}.classification-bins{display:grid;gap:5px}.classification-bin{min-height:0;padding:0;overflow:hidden}.classification-bin.active{border-color:#397f99;background:#e8f3f6;box-shadow:0 0 0 1px #397f99 inset}.classification-bin-head{padding:10px 11px;cursor:pointer}.classification-bin-head strong{font-size:11px}.classification-bin-head span{background:#dce6e9}.classification-bin.active .classification-bin-head span{background:#397f99;color:#fff}.morph-monitor{min-height:510px}.morph-grid{min-height:430px;align-content:start}.morph-cell.assigned{opacity:1}.morph-cell.preidentified{border-color:transparent}.morph-cell .preidentified-label{display:none}.cell-category-caption{color:#b8d2d9;font-size:10px}.cell-category-caption strong{color:#fff}.rbc-placeholder{min-height:440px;display:grid;place-items:center;border:1px solid #b7c4c8;border-radius:16px;background:#f7f9f9;text-align:center;padding:30px;color:#65777d}.rbc-placeholder strong{display:block;margin-bottom:8px;color:#273d45;font-size:24px}.morph-admin.admin-only{display:none!important;margin-top:18px}.admin-mode .morph-admin.admin-only{display:block!important}.morph-admin>summary{cursor:pointer;font:800 14px Arial,sans-serif;color:#29434c}.morph-admin-body{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,.5fr);gap:18px;margin-top:14px}.morph-admin-panel{min-width:0}.morph-admin-panel h4{margin-bottom:5px}.scenario-admin-form{display:grid;gap:8px;margin-top:12px}.scenario-admin-form input,.scenario-admin-form textarea{width:100%;border:1px solid #b6c4c8;border-radius:7px;background:#fff;padding:9px;color:#263c45;font:700 11px Arial,sans-serif}.scenario-admin-form textarea{min-height:94px;resize:vertical}.scenario-admin-form button{border:0;border-radius:7px;background:#2f738c;color:#fff;padding:9px;font:800 11px Arial,sans-serif}.scenario-admin-list{display:grid;gap:7px;margin-top:10px}.scenario-admin-item{position:relative;border:1px solid #c6d0d3;border-radius:8px;background:#fff;padding:9px 34px 9px 10px}.scenario-admin-item strong{display:block;font-size:11px}.scenario-admin-item p{margin-top:4px;color:#697a7f;font-size:9px;line-height:1.4}.scenario-admin-item button{position:absolute;right:7px;top:7px;border:0;border-radius:50%;background:#7d263b;color:#fff;width:20px;height:20px}.scenario-default{border-left:3px solid #397f99}.admin-helper{color:#65777d;font:700 10px/1.45 Arial,sans-serif}
 @media(max-width:980px){.cellavision-workspace{grid-template-columns:210px minmax(0,1fr)}.morph-admin-body{grid-template-columns:1fr}.morph-admin-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:700px){.cellavision-workspace{grid-template-columns:1fr}.cellavision-classifier{max-height:none}.classification-bins{grid-template-columns:repeat(2,1fr)}.morph-grid{grid-template-columns:repeat(4,1fr);min-height:360px}}
+/* Main section subtabs */
+.section-subtabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px;padding:7px;border:1px solid var(--line);border-radius:14px;background:#fff}.section-subtab{border:1px solid transparent;border-radius:9px;background:transparent;color:var(--muted);padding:10px 16px;font-size:13px;font-weight:900}.section-subtab.active{background:var(--purple);color:#fff;box-shadow:0 5px 13px rgba(90,14,82,.18)}.study-subpanel[hidden],.simulation-subpanel[hidden]{display:none!important}.simulation-subpanel-placeholder{min-height:380px;display:grid;place-items:center;border:1px solid var(--line);border-radius:18px;background:#fff;text-align:center;padding:30px;color:var(--muted)}.simulation-subpanel-placeholder strong{display:block;margin-bottom:8px;color:var(--wine);font-size:26px}.github-upload-link{display:inline-flex;align-items:center;justify-content:center;border:1.5px solid #24292f;border-radius:999px;background:#24292f;color:#fff;text-decoration:none;padding:8px 13px;font-size:11px;font-weight:900}.coag-upload-help{width:100%;border-top:1px solid rgba(123,63,160,.18);padding-top:9px;color:var(--muted);font-size:11px;line-height:1.45}.coag-upload-status{min-height:16px;color:var(--wine);font-size:11px;font-weight:800}
 </style>
 </head>
 <body>
 <header class="site-header">
   <div class="site-logo">H</div>
-  <div class="site-title">Hematology <em>Lab Hub</em></div>
+  <div class="site-title">Hematology / <em>Hemostasis Hub</em></div>
   <a class="mls-home-link" href="index.html">Back to Hub Home</a>
   <nav class="nav-tabs">
     <button type="button" class="nav-tab active" data-section="home">Home</button>
-    <button type="button" class="nav-tab" data-section="rbc">RBC</button>
-    <button type="button" class="nav-tab" data-section="wbc">WBC</button>
-    <button type="button" class="nav-tab" data-section="coagulation" title="Coagulation Cascade">Coag Cascade</button>
+    <button type="button" class="nav-tab" data-section="hematology">Hematology</button>
+    <button type="button" class="nav-tab" data-section="hemostasis">Hemostasis</button>
     <button type="button" class="nav-tab" data-section="simulation">Simulation</button>
     <button type="button" class="nav-tab" data-section="resources">Resources</button>
   </nav>
@@ -151,9 +152,9 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
   <section class="section active" id="sec-home">
     <div class="home-page-shell">
       <div class="home-page-hero">
-        <p class="home-page-kicker">Hematology and Coagulation</p>
+        <p class="home-page-kicker">Hematology and Hemostasis</p>
         <h1 id="homePageTitle">Welcome to the Hematology Hub</h1>
-        <p id="homePageSubtitle">Where we talk all hematology and coag!</p>
+        <p id="homePageSubtitle">Where we talk hematology and hemostasis.</p>
       </div>
       <div class="home-builder-toolbar admin-only" aria-label="Add a home page section">
         <strong>Add a section</strong>
@@ -166,7 +167,9 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
       <div class="home-empty admin-only" id="homePageEmpty">Add a section above to start building this page.</div>
     </div>
   </section>
-  <section class="section" id="sec-rbc">
+  <section class="section" id="sec-hematology">
+    <div class="section-subtabs" role="tablist" aria-label="Hematology study sections"><button type="button" class="section-subtab active" data-study-tab="rbc">RBC</button><button type="button" class="section-subtab" data-study-tab="wbc">WBC</button></div>
+    <div class="study-subpanel" data-study-panel="rbc">
     <div class="section-hero">
       <h2>RBC</h2>
       <p>Start with size, color, shape, inclusions, and the reticulocyte response.</p>
@@ -193,8 +196,8 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
     </div>
     <div id="table-rbc_morphology"></div>
     <div id="table-rbc_indices"></div>
-  </section>
-  <section class="section" id="sec-wbc">
+    </div>
+    <div class="study-subpanel" data-study-panel="wbc" hidden>
     <div class="section-hero">
       <h2>WBC</h2>
       <p>Keep the differential clean: lineage, maturity, quantity, and reactive clues.</p>
@@ -220,15 +223,16 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
     </div>
     <div id="table-wbc_differential"></div>
     <div id="table-wbc_morphology"></div>
+    </div>
   </section>
-  <section class="section" id="sec-coagulation">
+  <section class="section" id="sec-hemostasis">
     <div class="section-hero">
-      <h2>Coagulation Cascade</h2>
-      <p>View full Canva cascade images at their natural proportions.</p>
+      <h2>Hemostasis</h2>
+      <p>View full hemostasis images at their natural proportions.</p>
     </div>
     <div class="coag-gallery" id="coagGallery">
       <div class="coag-gallery-toolbar">
-        <div class="coag-gallery-title" id="coagSlideTitle">Coagulation image slideshow</div>
+        <div class="coag-gallery-title" id="coagSlideTitle">Hemostasis image slideshow</div>
         <div class="coag-gallery-controls">
           <button class="coag-gallery-btn" id="coagPrev" type="button">Previous</button>
           <span id="coagCounter">0 / 0</span>
@@ -238,18 +242,22 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
         </div>
       </div>
       <div class="coag-slide-stage" id="coagSlideStage">
-        <div class="coag-slide-empty"><strong>Add your Canva cascade images</strong>Unlock Admin, then upload one or more exported Canva images. Each image is shown large and fitted to its own proportions.</div>
+        <div class="coag-slide-empty"><strong>Add your hemostasis images</strong>Unlock Admin to upload directly to Supabase Storage, or use the GitHub upload link and paste the file URL.</div>
       </div>
       <div class="coag-thumbs" id="coagThumbs"></div>
       <div class="coag-upload-panel">
         <label>Image title<input id="coagImageTitle" type="text" placeholder="Intrinsic pathway, overview…"></label>
-        <label>Upload Canva image(s)<input id="coagImageFiles" type="file" accept="image/*" multiple></label>
-        <label>Or image URL<input id="coagImageUrl" type="url" placeholder="https://…"></label>
+        <label>Upload image(s)<input id="coagImageFiles" type="file" accept="image/*" multiple></label>
+        <label>Or GitHub/image URL<input id="coagImageUrl" type="url" placeholder="https://github.com/…/blob/main/…"></label>
         <button class="coag-gallery-btn primary" id="coagAddUrl" type="button">Add Image</button>
+        <a class="github-upload-link" href="https://github.com/legoretro/Hubs/upload/main/assets" target="_blank" rel="noopener">Upload images to GitHub</a>
+        <div class="coag-upload-help">Direct upload uses Supabase Storage. If that service is unavailable, use the GitHub link, commit the image, then paste its GitHub file URL here. GitHub file links are converted automatically.</div><div class="coag-upload-status" id="coagUploadStatus"></div>
       </div>
     </div>
   </section>
   <section class="section" id="sec-simulation">
+    <div class="section-subtabs" role="tablist" aria-label="Simulation subjects"><button type="button" class="section-subtab active" data-simulation-tab="hematology">Hematology Simulation</button><button type="button" class="section-subtab" data-simulation-tab="hemostasis">Hemostasis Simulation</button></div>
+    <div class="simulation-subpanel" data-simulation-panel="hematology">
     <div class="simulation-heading">
       <div><span class="simulation-eyebrow">One case · connected workflow</span><h2>Hematology Laboratory Simulation</h2></div>
       <button type="button" class="sim-reset" data-lab-action="reset">Reset case</button>
@@ -300,6 +308,8 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
       </div>
       <div class="lab-carousel-controls"><button type="button" data-lab-action="previous">Previous</button><div class="lab-stage-position" id="labStagePosition">Stage 1 of 4</div><button type="button" data-lab-action="next">Next</button></div>
     </div>
+    </div>
+    <div class="simulation-subpanel" data-simulation-panel="hemostasis" hidden><div class="simulation-subpanel-placeholder"><div><strong>Hemostasis Simulation</strong><span>This space is ready for the hemostasis scenario when you add it.</span></div></div></div>
   </section>
   <section class="section" id="sec-resources">
     <div class="section-hero">
@@ -350,7 +360,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   const FLOW_BORDER_COLORS=[['#7b3fa0','Purple'],['#5a0e52','Wine'],['#9b5fc0','Plum'],['#d4860a','Gold'],['#1a8c5c','Green'],['#2f6fa3','Blue'],['#c91446','Red'],['#9a8d92','Gray'],['#241322','Ink'],['#ffffff','White']];
   const FLOW_NOTE_COLORS=[['#fff6bb','Yellow'],['#e8f2ff','Blue'],['#e8fff3','Green'],['#fde8ef','Pink'],['#f4e7ff','Purple']];
   var flowZoom=.64,flowSelectedNodeId='coag_start',flowSelectedConnection=null,flowConnectFromId=null,flowUndoStack=[],flowRedoStack=[],flowDragState=null,flowTextHistoryNode=null;
-	  var isAdmin=false,editMode=false,saveTimer=null,saveInFlight=null,state=defaultState(),safeDoc=null,syncPresence=null;
+	  var isAdmin=false,editMode=false,saveTimer=null,saveInFlight=null,lastOnlineSave=true,state=defaultState(),safeDoc=null,syncPresence=null;
+  var LOCAL_STATE_KEY='hematology_hub_local_backup_v2';
   var EXPORT_ITEMS=[['rbc_morphology','RBC Morphology'],['rbc_indices','RBC Indices'],['wbc_differential','WBC Differential'],['wbc_morphology','WBC Morphology'],['resources','Resources']];
   function uid(prefix){return prefix+'_'+Math.random().toString(36).slice(2,9)}
   function escapeHtml(value){return String(value||'').replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]})}
@@ -399,18 +410,19 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       ['Smudge cells','Lymphocytes','Fragile lymphocytes; classic association with CLL but not exclusive.','Broken-looking lymph cells.'],
       ['Auer rods','Myeloid blasts','Myeloid lineage clue in acute leukemia workup.','Needle-like azurophilic rods.']
     ],true)
-  }}}
+  },hemostasisSlides:[]}}
   async function hashString(text){var bytes=new TextEncoder().encode(text);var digest=await crypto.subtle.digest('SHA-256',bytes);return Array.from(new Uint8Array(digest)).map(function(b){return b.toString(16).padStart(2,'0')}).join('')}
   async function supabaseError(r){var d='';try{var b=await r.json();d=b.message||b.details||b.hint||JSON.stringify(b)}catch(e){d=await r.text()}return new Error(d||('HTTP '+r.status))}
 	  function showToast(msg,isError){var t=document.getElementById('saveIndicator');t.textContent=msg||'Saved';t.style.background=isError?'#8b0a26':'#1a8c5c';t.classList.add('show');setTimeout(function(){t.classList.remove('show')},1600)}
   function touchState(){state.updatedAt=Date.now()}
-  function saveLocal(){}
+  function saveLocal(){try{localStorage.setItem(LOCAL_STATE_KEY,JSON.stringify(state));return true}catch(e){console.warn('Hematology local backup failed:',e);return false}}
+  function restoreLocalIfNewer(){try{var raw=localStorage.getItem(LOCAL_STATE_KEY);if(!raw)return false;var backup=JSON.parse(raw);if(!backup||!backup.tables)return false;if(Number(backup.updatedAt||0)<=Number(state.updatedAt||0))return false;state=backup;state.coagulationFlowchart=normalizeFlowchartData(state.coagulationFlowchart||defaultState().coagulationFlowchart);if(!Array.isArray(state.hemostasisSlides))state.hemostasisSlides=[];Object.keys(defaultState().tables).forEach(function(id){if(!state.tables[id])state.tables[id]=defaultState().tables[id]});return true}catch(e){console.warn('Hematology local restore failed:',e);return false}}
   function collectVisibleState(){document.querySelectorAll('[data-action="edit-cell"]').forEach(function(el){var table=findTable(el.dataset.table);var row=table&&table.rows.find(function(item){return item.id===el.dataset.row});if(row)row.cells[el.dataset.col]=normalizeCellText(el.innerHTML)});document.querySelectorAll('[data-action="edit-col"]').forEach(function(el){var table=findTable(el.dataset.table);var col=table&&table.columns.find(function(item){return item.id===el.dataset.col});if(col)col.label=el.value})}
-  function saveDraft(){collectVisibleState();touchState();if(isAdmin)scheduleSave()}
+  function saveDraft(){collectVisibleState();touchState();saveLocal();if(isAdmin)scheduleSave()}
   function scheduleSave(){clearTimeout(saveTimer);saveTimer=setTimeout(function(){saveNow('auto')},4000)}
-	  async function saveNow(reason){if(!isAdmin){showToast('Unlock admin first',true);return false}clearTimeout(saveTimer);collectVisibleState();touchState();if(saveInFlight)await saveInFlight;saveInFlight=(safeDoc?safeDoc.saveNow({reason:reason||'auto'}):Promise.resolve(false)).finally(function(){saveInFlight=null});return saveInFlight}
+	  async function saveNow(reason){if(!isAdmin){showToast('Unlock admin first',true);return false}clearTimeout(saveTimer);collectVisibleState();touchState();var localSaved=saveLocal();if(saveInFlight)await saveInFlight;saveInFlight=(safeDoc?safeDoc.saveNow({reason:reason||'auto'}):Promise.resolve(false)).then(function(onlineSaved){lastOnlineSave=!!onlineSaved;if(!onlineSaved&&localSaved)showToast('Saved on this device. Online sync unavailable.',true);return !!(onlineSaved||localSaved)}).finally(function(){saveInFlight=null});return saveInFlight}
   async function flushSave(reason){clearTimeout(saveTimer);return saveNow(reason||'auto')}
-  function mergeState(remote){if(!remote||!remote.tables)return;state=remote;state.coagulationFlowchart=normalizeFlowchartData(state.coagulationFlowchart||defaultState().coagulationFlowchart);Object.keys(defaultState().tables).forEach(function(id){if(!state.tables[id])state.tables[id]=defaultState().tables[id]})}
+  function mergeState(remote){if(!remote||!remote.tables)return;state=remote;state.coagulationFlowchart=normalizeFlowchartData(state.coagulationFlowchart||defaultState().coagulationFlowchart);if(!Array.isArray(state.hemostasisSlides))state.hemostasisSlides=[];Object.keys(defaultState().tables).forEach(function(id){if(!state.tables[id])state.tables[id]=defaultState().tables[id]})}
   function findTable(id){return state.tables[id]}
   function renderTable(id){var table=findTable(id);var mount=document.getElementById('table-'+id);if(!table||!mount)return;var tools='<div class="table-tools"><button class="mini-btn" data-action="add-row" data-table="'+id+'">Add Row</button><button class="mini-btn" data-action="add-col" data-table="'+id+'">Add Column</button></div>';var thead='<thead><tr>'+table.columns.map(function(col){return'<th><span class="col-label">'+escapeHtml(col.label)+'</span><input class="col-input" value="'+escapeHtml(col.label)+'" data-table="'+id+'" data-col="'+col.id+'" data-action="edit-col"><button class="mini-btn danger admin-only" data-action="delete-col" data-table="'+id+'" data-col="'+col.id+'">Delete</button></th>'}).join('')+'<th class="admin-only">Rows</th></tr></thead>';var rows=table.rows.map(function(row){var cells=table.columns.map(function(col){var value=row.cells[col.id]||'';if(col.type==='image'){return'<td><div class="image-cell">'+(value?'<img class="image-preview" src="'+escapeHtml(value)+'" alt="'+escapeHtml(table.title)+' image" data-preview-image="'+escapeHtml(value)+'" data-preview-caption="'+escapeHtml(table.title)+'">':'<span class="empty-image">No image yet</span>')+'<input class="file-input" type="file" accept="image/*" data-action="image-upload" data-table="'+id+'" data-row="'+row.id+'" data-col="'+col.id+'"></div></td>'}return'<td><div class="cell-text" contenteditable="'+(isAdmin?'true':'false')+'" data-action="edit-cell" data-table="'+id+'" data-row="'+row.id+'" data-col="'+col.id+'">'+cellDisplayHtml(value)+'</div></td>'}).join('');return'<tr>'+cells+'<td class="admin-only"><button class="mini-btn danger" data-action="delete-row" data-table="'+id+'" data-row="'+row.id+'">Delete Row</button></td></tr>'}).join('');mount.innerHTML='<div class="panel"><h3>'+escapeHtml(table.title)+'</h3>'+tools+'<div class="table-wrap"><table>'+thead+'<tbody>'+rows+'</tbody></table></div></div>'}
   function renderExportOptions(){var box=document.getElementById('exportOptions');box.innerHTML=EXPORT_ITEMS.map(function(item){return'<label><input type="checkbox" class="export-check" value="'+item[0]+'" checked> '+item[1]+'</label>'}).join('')}
@@ -457,18 +469,18 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   function clearFlowSelection(){flowSelectedConnection=null;flowConnectFromId=null;document.body.classList.remove('flow-connecting');renderFlowchart()}
   function handleFlowAction(action,nodeId){if(action==='zoom-out')zoomFlowchart(-.1);else if(action==='zoom-in')zoomFlowchart(.1);else if(action==='fit')fitFlowchart();else if(action==='page-fit')pageFitFlowchart();else if(action==='export')exportFlowchart();else if(action==='undo')undoFlowchartChange();else if(action==='redo')redoFlowchartChange();else if(action==='reset')resetFlowchart();else if(action==='add-step')addFlowBranch(nodeId||flowSelectedNodeId,'step','Next');else if(action==='add-complex')addFlowBranch(nodeId||flowSelectedNodeId,'complex','Complex');else if(action==='add-pathway-split')addCoagPathwaySplit(nodeId||flowSelectedNodeId);else if(action==='add-question')addFlowBranch(nodeId||flowSelectedNodeId,'question','Next');else if(action==='toggle-note')toggleFlowNote(nodeId||flowSelectedNodeId);else if(action==='toggle-image')toggleFlowImage(nodeId||flowSelectedNodeId);else if(action==='remove-image')removeFlowImage(nodeId||flowSelectedNodeId);else if(action==='remove-note'){var data=getFlowchartData();var node=data.nodes[nodeId];if(node){pushFlowHistory();node.noteOpen=false;saveFlowchartData(data,true)}}else if(action==='begin-link')beginFlowLink();else if(action==='delete-node')deleteFlowNode(nodeId||flowSelectedNodeId);else if(action==='delete-link'||action==='delete-branch')deleteSelectedLink();else if(action==='clear-selection')clearFlowSelection()}
   function exportFlowchart(){renderFlowchart();setTimeout(function(){drawFlowLinkOverlays();var source=document.getElementById('flowchartPreview');if(!source)return;var clone=source.cloneNode(true);clone.removeAttribute('id');clone.style.transform='scale(1)';var styles=Array.from(document.querySelectorAll('style')).map(function(s){return s.textContent}).join('\n');var win=window.open('','_blank');if(!win){showToast('Allow pop-ups to export',true);return}var html='<!doctype html><html><head><title>Coagulation Cascade</title><style>'+styles+' body{background:#fff!important;margin:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}.flow-print-sheet{padding:.2in}.flow-export-page{border:0}.flow-tree{transition:none!important}.flow-add-handle,.flow-node-tools,.flow-note-remove,.flow-image-remove,.flow-image-placeholder,.flow-image-replace,.flow-image-card.empty{display:none!important}@page{size:letter landscape;margin:.25in}</style></head><body><div class="flow-print-sheet"><h1 class="flow-export-title">Coagulation Cascade</h1><div class="flow-export-page">'+clone.outerHTML+'</div></div><script>function fit(){var page=document.querySelector(".flow-export-page");var tree=document.querySelector(".flow-tree");if(!page||!tree)return;tree.style.transform="scale(1)";var rect=tree.getBoundingClientRect();var scale=Math.min(1.05,(page.clientWidth-18)/Math.max(1,rect.width),(page.clientHeight-18)/Math.max(1,rect.height));tree.style.transform="scale("+Math.max(.18,scale)+")";}window.addEventListener("load",function(){setTimeout(function(){fit();window.focus();window.print();},350)});<\/script></body></html>';win.document.open();win.document.write(html);win.document.close()},30)}
-  function renderAll(){Object.keys(state.tables).forEach(renderTable);renderExportOptions();renderFlowchart();document.body.classList.toggle('admin-mode',editMode);if(window.HemeStudio)window.HemeStudio.renderAll()}
+  function renderAll(){Object.keys(state.tables).forEach(renderTable);renderExportOptions();renderFlowchart();document.body.classList.toggle('admin-mode',editMode);if(window.HemeStudio)window.HemeStudio.renderAll();if(window.HemeHemostasisGallery)window.HemeHemostasisGallery.renderAll()}
   function setEditMode(on){if(on&&!isAdmin){toggleAdminLogin();return}if(!on)collectVisibleState();editMode=!!on;document.body.classList.toggle('admin-mode',editMode);renderAll()}
   function hasBlockedSave(){return !!(safeDoc&&safeDoc.isBlocked&&safeDoc.isBlocked())}
   function exitAdminLocally(message,isError){clearTimeout(saveTimer);collectVisibleState();isAdmin=false;if(syncPresence)syncPresence.setAdminMode(false);setEditMode(false);document.getElementById('adminBadge').classList.remove('visible');showToast(message||'Saved',!!isError)}
-  async function exitAdmin(){if(hasBlockedSave()){exitAdminLocally('Exited Admin. Conflict not overwritten; your edits stayed on this page.',true);return}var saved=await flushSave('admin_exit').catch(function(){return false});if(!saved){if(hasBlockedSave()){exitAdminLocally('Exited Admin. Conflict not overwritten; your edits stayed on this page.',true);return}showToast('Online save failed. Still in Admin.',true);return}exitAdminLocally('Saved')}
+  async function exitAdmin(){if(hasBlockedSave()){saveLocal();exitAdminLocally('Exited Admin. Conflict not overwritten; your edits stayed on this device.',true);return}var saved=await flushSave('admin_exit').catch(function(){return saveLocal()});if(!saved){exitAdminLocally('Exited Admin. Save could not be confirmed.',true);return}exitAdminLocally(lastOnlineSave?'Saved':'Saved on this device. Exited Admin.',!lastOnlineSave)}
   window.toggleAdminLogin=function(){if(isAdmin){exitAdmin();return}document.getElementById('adminModal').classList.add('visible');setTimeout(function(){document.getElementById('adminPwInput').focus()},80)}
   window.attemptLogin=async function(){var h=await hashString(document.getElementById('adminPwInput').value);if(h===PASS_HASH){isAdmin=true;if(syncPresence)syncPresence.setAdminMode(true);document.getElementById('adminBadge').classList.add('visible');closeAdminModal();setEditMode(true);showToast('Unlocked')}else{document.getElementById('adminErr').textContent='Incorrect password.';document.getElementById('adminPwInput').value=''}}
   window.closeAdminModal=function(){document.getElementById('adminModal').classList.remove('visible');document.getElementById('adminErr').textContent='';document.getElementById('adminPwInput').value=''}
   function openExportModal(){renderExportOptions();document.getElementById('exportModal').classList.add('visible')}
   function closeExportModal(){document.getElementById('exportModal').classList.remove('visible')}
   function selectAllExport(val){document.querySelectorAll('#exportModal .export-check').forEach(function(box){box.checked=val})}
-  document.addEventListener('click',function(e){var ui=e.target.closest('[data-ui-action]');if(ui){var a=ui.dataset.uiAction;if(a==='open-export')openExportModal();if(a==='close-export')closeExportModal();if(a==='export-select-all')selectAllExport(true);if(a==='export-clear-all')selectAllExport(false);if(a==='do-export')doExport();if(a==='admin-login')toggleAdminLogin();if(a==='exit-admin')exitAdmin();if(a==='admin-unlock')attemptLogin();if(a==='close-admin')closeAdminModal();return}var tab=e.target.closest('.nav-tab[data-section]');if(tab){document.querySelectorAll('.nav-tab[data-section]').forEach(function(t){t.classList.remove('active')});tab.classList.add('active');document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active')});var targetSection=document.getElementById('sec-'+tab.dataset.section);if(targetSection)targetSection.classList.add('active');if(tab.dataset.section==='coagulation'){renderFlowchart();setTimeout(scheduleFlowLinkDraw,80)}if(syncPresence)syncPresence.setSection(tab.dataset.section);return}var btn=e.target.closest('[data-action]');if(!btn)return;if(btn.dataset.action==='add-row'){var t=findTable(btn.dataset.table);if(t){var cells={};t.columns.forEach(function(c){cells[c.id]=''});t.rows.push({id:uid('row'),cells:cells});renderTable(btn.dataset.table);saveDraft()}return}if(btn.dataset.action==='add-col'){var t2=findTable(btn.dataset.table);if(t2){t2.columns.push({id:uid('col'),label:'New Column',type:'text'});t2.rows.forEach(function(r){r.cells[t2.columns[t2.columns.length-1].id]=''});renderTable(btn.dataset.table);saveDraft()}return}if(btn.dataset.action==='delete-row'){var t3=findTable(btn.dataset.table);if(t3){t3.rows=t3.rows.filter(function(r){return r.id!==btn.dataset.row});renderTable(btn.dataset.table);saveDraft()}return}if(btn.dataset.action==='delete-col'){var t4=findTable(btn.dataset.table);if(t4){t4.columns=t4.columns.filter(function(c){return c.id!==btn.dataset.col});t4.rows.forEach(function(r){delete r.cells[btn.dataset.col]});renderTable(btn.dataset.table);saveDraft()}return}})
+  document.addEventListener('click',function(e){var ui=e.target.closest('[data-ui-action]');if(ui){var a=ui.dataset.uiAction;if(a==='open-export')openExportModal();if(a==='close-export')closeExportModal();if(a==='export-select-all')selectAllExport(true);if(a==='export-clear-all')selectAllExport(false);if(a==='do-export')doExport();if(a==='admin-login')toggleAdminLogin();if(a==='exit-admin')exitAdmin();if(a==='admin-unlock')attemptLogin();if(a==='close-admin')closeAdminModal();return}var studyTab=e.target.closest('[data-study-tab]');if(studyTab){document.querySelectorAll('[data-study-tab]').forEach(function(button){button.classList.toggle('active',button===studyTab)});document.querySelectorAll('[data-study-panel]').forEach(function(panel){panel.hidden=panel.dataset.studyPanel!==studyTab.dataset.studyTab});return}var simTab=e.target.closest('[data-simulation-tab]');if(simTab){document.querySelectorAll('[data-simulation-tab]').forEach(function(button){button.classList.toggle('active',button===simTab)});document.querySelectorAll('[data-simulation-panel]').forEach(function(panel){panel.hidden=panel.dataset.simulationPanel!==simTab.dataset.simulationTab});return}var tab=e.target.closest('.nav-tab[data-section]');if(tab){document.querySelectorAll('.nav-tab[data-section]').forEach(function(t){t.classList.remove('active')});tab.classList.add('active');document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active')});var targetSection=document.getElementById('sec-'+tab.dataset.section);if(targetSection)targetSection.classList.add('active');if(tab.dataset.section==='hemostasis'){renderFlowchart();setTimeout(scheduleFlowLinkDraw,80)}if(syncPresence)syncPresence.setSection(tab.dataset.section);return}var btn=e.target.closest('[data-action]');if(!btn)return;if(btn.dataset.action==='add-row'){var t=findTable(btn.dataset.table);if(t){var cells={};t.columns.forEach(function(c){cells[c.id]=''});t.rows.push({id:uid('row'),cells:cells});renderTable(btn.dataset.table);saveDraft()}return}if(btn.dataset.action==='add-col'){var t2=findTable(btn.dataset.table);if(t2){t2.columns.push({id:uid('col'),label:'New Column',type:'text'});t2.rows.forEach(function(r){r.cells[t2.columns[t2.columns.length-1].id]=''});renderTable(btn.dataset.table);saveDraft()}return}if(btn.dataset.action==='delete-row'){var t3=findTable(btn.dataset.table);if(t3){t3.rows=t3.rows.filter(function(r){return r.id!==btn.dataset.row});renderTable(btn.dataset.table);saveDraft()}return}if(btn.dataset.action==='delete-col'){var t4=findTable(btn.dataset.table);if(t4){t4.columns=t4.columns.filter(function(c){return c.id!==btn.dataset.col});t4.rows.forEach(function(r){delete r.cells[btn.dataset.col]});renderTable(btn.dataset.table);saveDraft()}return}})
   document.addEventListener('click',function(e){var action=e.target.closest('[data-flow-action]');if(action){e.preventDefault();handleFlowAction(action.dataset.flowAction,action.dataset.nodeId);return}var linkTarget=e.target.closest('[data-flow-link-id]');if(linkTarget){selectFlowLink(linkTarget.dataset.flowLinkFrom,linkTarget.dataset.flowLinkId);return}var branchLabel=e.target.closest('[data-flow-branch-from]');if(branchLabel){selectFlowBranch(branchLabel.dataset.flowBranchFrom,branchLabel.dataset.flowBranchIndex);return}var nodeEl=e.target.closest('.flow-node[data-node-id]');if(nodeEl){if(flowConnectFromId&&flowConnectFromId!==nodeEl.dataset.nodeId){addFlowLink(flowConnectFromId,nodeEl.dataset.nodeId);flowConnectFromId=null;document.body.classList.remove('flow-connecting');return}selectFlowNode(nodeEl.dataset.nodeId);return}if(e.target.closest('#flowchartPreview')&&!e.target.closest('.flow-note-card')&&!e.target.closest('.flow-image-card')){flowSelectedConnection=null;flowConnectFromId=null;document.body.classList.remove('flow-connecting');renderFlowchart()}});
   document.addEventListener('pointerdown',function(e){var handle=e.target.closest('[data-flow-handle]');if(handle)startFlowHandleDrag(e,handle.dataset.flowHandle)});
   document.addEventListener('focusin',function(e){var el=e.target;if(el.dataset.flowText||el.dataset.flowNote){var id=el.dataset.flowText||el.dataset.flowNote;if(flowTextHistoryNode!==id){pushFlowHistory();flowTextHistoryNode=id}}});
@@ -508,7 +520,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
 	    bucket:'hematology-hub-media'
 	  };
 	  function normalizeRemoteState(remote){var old=state;state=defaultState();mergeState(remote);var out=state;state=old;return out}
-	  async function init(){safeDoc=createSafeSupabaseDoc({url:SUPABASE_URL,key:SUPABASE_KEY,table:TABLE_NAME,id:HEME_ROW_ID,defaultData:defaultState,normalize:normalizeRemoteState,getLocal:function(){return state},setLocal:function(data){state=data;renderAll()},toast:showToast,onConflict:function(info){console.warn('Hematology save conflict:',info.paths)}});try{await safeDoc.load();safeDoc.subscribe()}catch(e){console.warn('Hematology remote load failed:',e);renderAll()}if(window.createSafeSupabasePresence)syncPresence=createSafeSupabasePresence({url:SUPABASE_URL,key:SUPABASE_KEY,hubId:'hematology',hubName:'Hematology',getSection:function(){var active=document.querySelector('.section.active');return active?active.id.replace(/^sec-/,''):'hematology'},toast:showToast})}
+	  async function init(){safeDoc=createSafeSupabaseDoc({url:SUPABASE_URL,key:SUPABASE_KEY,table:TABLE_NAME,id:HEME_ROW_ID,defaultData:defaultState,normalize:normalizeRemoteState,getLocal:function(){return state},setLocal:function(data){state=data;renderAll()},toast:showToast,onConflict:function(info){console.warn('Hematology save conflict:',info.paths)}});try{await safeDoc.load();safeDoc.subscribe()}catch(e){console.warn('Hematology remote load failed:',e)}if(restoreLocalIfNewer())showToast('Restored newer edits saved on this device');renderAll();if(window.createSafeSupabasePresence)syncPresence=createSafeSupabasePresence({url:SUPABASE_URL,key:SUPABASE_KEY,hubId:'hematology',hubName:'Hematology / Hemostasis',getSection:function(){var active=document.querySelector('.section.active');return active?active.id.replace(/^sec-/,''):'hematology'},toast:showToast})}
   window.addEventListener('afterprint',function(){document.body.classList.remove('printing');document.getElementById('printArea').innerHTML=''});
   window.addEventListener('beforeunload',function(){collectVisibleState()});
   init();
@@ -517,28 +529,34 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
 <script>
 (function(){
   'use strict';
-  var KEY='hematology_coagulation_slides_v1',slides=[],index=0;
+  var KEY='hematology_coagulation_slides_v1',bridge=window.HemeHubBridge,slides=[],index=0;
   var gallery=document.getElementById('coagGallery');if(!gallery)return;
   function el(id){return document.getElementById(id)}
   function esc(v){return String(v||'').replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
-  function load(){try{slides=JSON.parse(localStorage.getItem(KEY)||'[]');if(!Array.isArray(slides))slides=[]}catch(e){slides=[]}render()}
-  function save(){try{localStorage.setItem(KEY,JSON.stringify(slides));return true}catch(e){alert('Browser image storage is full. Delete an older slideshow image and try again. New uploads are already compressed automatically.');return false}}
+  function safeName(name){return String(name||'image').toLowerCase().replace(/[^a-z0-9._-]+/g,'-').replace(/^-+|-+$/g,'').slice(-80)||'image'}
+  function setStatus(message,isError){var node=el('coagUploadStatus');if(node){node.textContent=message||'';node.style.color=isError?'#8b0a26':'#1a6f50'}if(bridge&&message)bridge.toast(message,!!isError)}
+  function normalizeGithubUrl(value){var url=String(value||'').trim();var match=url.match(/^https?:\/\/github\.com\/([^/]+)\/([^/]+)\/blob\/([^/]+)\/(.+?)(?:\?.*)?$/i);if(match)return'https://raw.githubusercontent.com/'+match[1]+'/'+match[2]+'/'+match[3]+'/'+match[4];return url}
+  function load(){var state=bridge&&bridge.getState?bridge.getState():null;if(state){if(!Array.isArray(state.hemostasisSlides))state.hemostasisSlides=[];slides=state.hemostasisSlides;if(!slides.length){try{var legacy=JSON.parse(localStorage.getItem(KEY)||'[]');if(Array.isArray(legacy)&&legacy.length){legacy.forEach(function(item){slides.push({id:item.id||Date.now()+Math.random(),title:item.title||'Hemostasis image',url:item.url||item.src||'',path:item.path||''})});bridge.saveDraft()}}catch(e){console.warn(e)}}}else slides=[];render()}
+  async function save(message){if(!bridge)return false;bridge.saveDraft();var saved=await bridge.saveNow('hemostasis_gallery');if(saved&&message)setStatus(message,false);return saved}
   function render(){
     if(index>=slides.length)index=Math.max(0,slides.length-1);
     el('coagCounter').textContent=slides.length?(index+1)+' / '+slides.length:'0 / 0';
     el('coagPrev').disabled=slides.length<2;el('coagNext').disabled=slides.length<2;el('coagDelete').disabled=!slides.length;
-    if(!slides.length){el('coagSlideTitle').textContent='Coagulation image slideshow';el('coagSlideStage').innerHTML='<div class="coag-slide-empty"><strong>Add your Canva cascade images</strong>Unlock Admin, then upload one or more exported Canva images. Each image is shown large and fitted to its own proportions.</div>';el('coagThumbs').innerHTML='';return}
-    var s=slides[index];el('coagSlideTitle').textContent=s.title||('Cascade image '+(index+1));el('coagSlideStage').innerHTML='<img src="'+esc(s.src)+'" alt="'+esc(s.title||'Coagulation cascade image')+'"><div class="coag-slide-caption"><span>'+esc(s.title||'Coagulation cascade')+'</span><span>'+(index+1)+' of '+slides.length+'</span></div>';
-    el('coagThumbs').innerHTML=slides.map(function(x,i){return'<button class="coag-thumb '+(i===index?'active':'')+'" data-coag-index="'+i+'" title="'+esc(x.title||('Image '+(i+1)))+'"><img src="'+esc(x.src)+'" alt=""></button>'}).join('')
+    if(!slides.length){el('coagSlideTitle').textContent='Hemostasis image slideshow';el('coagSlideStage').innerHTML='<div class="coag-slide-empty"><strong>Add your hemostasis images</strong>Unlock Admin to upload directly to Supabase Storage, or use the GitHub upload link and paste the file URL.</div>';el('coagThumbs').innerHTML='';return}
+    var s=slides[index],src=s.url||s.src||'';el('coagSlideTitle').textContent=s.title||('Hemostasis image '+(index+1));el('coagSlideStage').innerHTML='<img src="'+esc(src)+'" alt="'+esc(s.title||'Hemostasis image')+'"><div class="coag-slide-caption"><span>'+esc(s.title||'Hemostasis')+'</span><span>'+(index+1)+' of '+slides.length+'</span></div>';
+    el('coagThumbs').innerHTML=slides.map(function(x,i){return'<button class="coag-thumb '+(i===index?'active':'')+'" data-coag-index="'+i+'" title="'+esc(x.title||('Image '+(i+1)))+'"><img src="'+esc(x.url||x.src||'')+'" alt=""></button>'}).join('')
   }
-  function resize(file){return new Promise(function(resolve,reject){var reader=new FileReader();reader.onerror=reject;reader.onload=function(){var img=new Image();img.onerror=reject;img.onload=function(){var max=1400,scale=Math.min(1,max/Math.max(img.width,img.height)),canvas=document.createElement('canvas'),ctx;canvas.width=Math.max(1,Math.round(img.width*scale));canvas.height=Math.max(1,Math.round(img.height*scale));ctx=canvas.getContext('2d',{alpha:false});ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,0,0,canvas.width,canvas.height);var src=canvas.toDataURL('image/webp',.72);if(src.length>950000){var small=document.createElement('canvas'),shrink=Math.min(1,1000/Math.max(canvas.width,canvas.height)),smallCtx;small.width=Math.max(1,Math.round(canvas.width*shrink));small.height=Math.max(1,Math.round(canvas.height*shrink));smallCtx=small.getContext('2d',{alpha:false});smallCtx.fillStyle='#fff';smallCtx.fillRect(0,0,small.width,small.height);smallCtx.drawImage(canvas,0,0,small.width,small.height);src=small.toDataURL('image/webp',.65)}resolve(src)};img.src=reader.result};reader.readAsDataURL(file)})}
+  function resize(file){return new Promise(function(resolve,reject){if(!file||!/^image\//.test(file.type||'')){reject(new Error('Choose a PNG, JPG, or WebP image.'));return}var url=URL.createObjectURL(file),img=new Image();img.onerror=function(){URL.revokeObjectURL(url);reject(new Error('The image could not be read.'))};img.onload=function(){var max=1800,scale=Math.min(1,max/Math.max(img.width,img.height)),canvas=document.createElement('canvas'),ctx;canvas.width=Math.max(1,Math.round(img.width*scale));canvas.height=Math.max(1,Math.round(img.height*scale));ctx=canvas.getContext('2d',{alpha:false});ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,0,0,canvas.width,canvas.height);URL.revokeObjectURL(url);canvas.toBlob(function(blob){if(!blob){reject(new Error('Image compression failed.'));return}resolve(new File([blob],safeName(file.name.replace(/\.[^.]+$/,''))+'.webp',{type:'image/webp'}))},'image/webp',.78)};img.src=url})}
+  async function upload(file){if(!bridge)throw new Error('The page storage connection is unavailable.');var client=bridge.storageClient();if(!client)throw new Error('Supabase Storage is unavailable.');var optimized=await resize(file),path='hematology/hemostasis/'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'-'+safeName(optimized.name),result=await client.storage.from(bridge.bucket).upload(path,optimized,{cacheControl:'3600',upsert:false,contentType:optimized.type});if(result.error)throw result.error;var publicResult=client.storage.from(bridge.bucket).getPublicUrl(path),url=publicResult&&publicResult.data&&publicResult.data.publicUrl;if(!url)throw new Error('Supabase did not return an image URL.');return{url:url,path:path}}
+  async function removeStored(slide){if(!slide||!slide.path||!bridge)return;try{var client=bridge.storageClient();if(client)await client.storage.from(bridge.bucket).remove([slide.path])}catch(e){console.warn(e)}}
   el('coagPrev').onclick=function(){if(slides.length){index=(index-1+slides.length)%slides.length;render()}};
   el('coagNext').onclick=function(){if(slides.length){index=(index+1)%slides.length;render()}};
   el('coagFullscreen').onclick=function(){if(document.fullscreenElement)document.exitFullscreen();else gallery.requestFullscreen().catch(function(){})};
   el('coagThumbs').onclick=function(e){var b=e.target.closest('[data-coag-index]');if(b){index=Number(b.dataset.coagIndex);render()}};
-  el('coagDelete').onclick=function(){if(!slides.length)return;slides.splice(index,1);save();render()};
-  el('coagAddUrl').onclick=function(){var url=el('coagImageUrl').value.trim();if(!url)return;slides.push({id:Date.now(),title:el('coagImageTitle').value.trim()||'Coagulation cascade',src:url});index=slides.length-1;if(save()){el('coagImageUrl').value='';el('coagImageTitle').value='';render()}};
-  el('coagImageFiles').onchange=async function(){var files=Array.from(this.files||[]),base=el('coagImageTitle').value.trim();for(var i=0;i<files.length;i++){try{var src=await resize(files[i]);slides.push({id:Date.now()+i,title:base||(files[i].name.replace(/\.[^.]+$/,'')),src:src})}catch(e){console.warn(e)}}index=Math.max(0,slides.length-files.length);if(save()){this.value='';el('coagImageTitle').value='';render()}};
+  el('coagDelete').onclick=async function(){if(!slides.length)return;var removed=slides.splice(index,1)[0];await removeStored(removed);render();await save('Hemostasis image deleted')};
+  el('coagAddUrl').onclick=async function(){var url=normalizeGithubUrl(el('coagImageUrl').value);if(!url){setStatus('Paste an image or GitHub file URL first.',true);return}slides.push({id:Date.now(),title:el('coagImageTitle').value.trim()||'Hemostasis image',url:url,path:''});index=slides.length-1;el('coagImageUrl').value='';el('coagImageTitle').value='';render();await save('Hemostasis image saved')};
+  el('coagImageFiles').onchange=async function(){var files=Array.from(this.files||[]),base=el('coagImageTitle').value.trim(),added=0;setStatus('Compressing and uploading '+files.length+' image'+(files.length===1?'':'s')+'…',false);for(var i=0;i<files.length;i++){try{var stored=await upload(files[i]);slides.push({id:Date.now()+i,title:base||(files[i].name.replace(/\.[^.]+$/,'')),url:stored.url,path:stored.path});added++}catch(e){console.warn(e);setStatus('Direct upload failed. Use “Upload images to GitHub,” commit the file, then paste its GitHub URL here.',true);break}}if(added){index=slides.length-added;this.value='';el('coagImageTitle').value='';render();await save(added+' hemostasis image'+(added===1?'':'s')+' saved')}};
+  window.HemeHemostasisGallery={renderAll:load};
   load();
 })();
 </script>
@@ -560,9 +578,9 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   function state(){return bridge.getState()}
   function ensureState(){
     var s=state();
-    if(!s.homePage||typeof s.homePage!=='object')s.homePage={title:'Welcome to the Hematology Hub',subtitle:'Where we talk all hematology and coag!',sections:[]};
+    if(!s.homePage||typeof s.homePage!=='object')s.homePage={title:'Welcome to the Hematology Hub',subtitle:'Where we talk hematology and hemostasis.',sections:[]};
     if(!s.homePage.title)s.homePage.title='Welcome to the Hematology Hub';
-    if(!s.homePage.subtitle)s.homePage.subtitle='Where we talk all hematology and coag!';
+    if(!s.homePage.subtitle||s.homePage.subtitle==='Where we talk all hematology and coag!')s.homePage.subtitle='Where we talk hematology and hemostasis.';
     if(!Array.isArray(s.homePage.sections))s.homePage.sections=[];
     if(!s.morphologyImages||typeof s.morphologyImages!=='object')s.morphologyImages={};
     CELL_TYPES.forEach(function(type){if(!Array.isArray(s.morphologyImages[type]))s.morphologyImages[type]=[]});
