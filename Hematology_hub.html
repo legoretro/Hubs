@@ -123,6 +123,63 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
 /* Cell-image crop controls and complete scenario editor */
 .morph-library-thumbs{align-items:flex-start;flex-wrap:wrap;overflow:visible}.morph-image-editor{width:100%;margin-top:9px;padding-top:8px;border-top:1px solid #d8e0e2}.morph-image-row{display:grid;grid-template-columns:64px 1fr;gap:8px;align-items:start;margin-top:8px}.morph-library-thumb{width:64px;height:64px;flex:0 0 64px}.morph-library-thumb img,.morph-cell img{object-position:var(--focus-x,50%) var(--focus-y,50%);transform:scale(var(--image-zoom,1));transform-origin:var(--focus-x,50%) var(--focus-y,50%)}.morph-image-fields{display:grid;gap:5px}.morph-image-fields input[type=text]{width:100%;border:1px solid #bbc7ca;border-radius:5px;padding:5px;font:700 9px Arial,sans-serif}.morph-range-line{display:grid;grid-template-columns:36px 1fr;gap:5px;align-items:center;color:#5d7076;font:800 8px Arial,sans-serif}.morph-range-line input{width:100%;accent-color:var(--purple)}.scenario-admin-form label{display:grid;gap:4px;color:#53676e;font:800 9px Arial,sans-serif;text-transform:uppercase;letter-spacing:.5px}.scenario-identity-grid,.scenario-result-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.scenario-result-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.scenario-result-grid.compact{grid-template-columns:repeat(3,minmax(0,1fr))}.scenario-result-grid label{border:1px solid #d0dadd;border-radius:7px;background:#fff;padding:6px}.scenario-result-grid input{min-width:0}.scenario-field-title{margin-top:5px;color:#283f48;font:900 11px Arial,sans-serif}.scenario-form-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}.scenario-admin-form .scenario-cancel{background:#fff;color:#5a0e52;border:1px solid #bba3c8}.scenario-admin-item{padding:11px}.scenario-admin-item.active{border:2px solid #7b3fa0;background:#fbf2ff}.scenario-admin-item-actions{display:flex;gap:6px;margin-top:8px}.scenario-admin-item-actions button{position:static;width:auto;height:auto;border-radius:6px;padding:6px 9px;background:#7b3fa0;font:800 9px Arial,sans-serif}.scenario-admin-item-actions button.danger{background:#7d263b}.scenario-admin-item p{font-size:10px}.scenario-admin-badge{display:inline-flex;margin-top:5px;border-radius:999px;background:#7b3fa0;color:#fff;padding:3px 7px;font:800 8px Arial,sans-serif}.morph-admin-body{grid-template-columns:minmax(0,1.15fr) minmax(360px,.85fr)}
 @media(max-width:760px){.home-gallery{grid-template-columns:1fr}.home-image-editor{grid-template-columns:1fr 1fr}.home-image-editor label:first-child{grid-column:1/-1}.home-scroller .home-gallery-item{flex-basis:88vw}.scenario-result-grid,.scenario-result-grid.compact{grid-template-columns:repeat(2,minmax(0,1fr))}.lab-stage-nav button{font-size:12px}.lab-stage-nav button span{font-size:11px}.coag-thumbs{flex-wrap:nowrap;justify-content:flex-start;overflow:auto}}
+/* Balanced page-builder, study, and simulation proportions */
+body{overflow-x:hidden}
+.home-content-section,.home-gallery,.home-scroller-shell,.home-gallery-item,.home-image-tools,.home-image-editor,.home-image-editor label{min-width:0;max-width:100%}
+.home-image-tools{overflow:hidden}.home-image-editor input[type=range]{min-width:0;touch-action:none}
+.home-section-title{font-size:clamp(25px,3vw,34px)}.home-section-body{font-size:16px;line-height:1.6}
+.home-gallery{grid-template-columns:repeat(auto-fill,minmax(260px,460px));justify-content:start;gap:20px}
+.home-image-visual.frame-circle{width:min(100%,285px);border-width:9px;outline-width:3px}
+.home-image-title{font-size:15px}.home-media-frame .home-image-title{font-size:17px}.home-media-frame .home-image-visual{min-height:220px}
+.home-scroller{gap:18px}.home-scroller .home-gallery-item{flex-basis:min(400px,78vw)}
+#sec-hematology .section-hero{margin-bottom:16px}#sec-hematology .section-hero h2{font-size:clamp(40px,4.4vw,54px)}#sec-hematology .section-hero p{font-size:16px}
+#sec-hematology .mini-card h4{font-size:21px}#sec-hematology .mini-card li{font-size:16px;line-height:1.45}
+#sec-hematology table{font-size:15px;line-height:1.35}#sec-hematology th{font-size:11.5px;padding:10px}#sec-hematology td{padding:10px 11px}
+#sec-hematology .panel h3{font-size:27px}#sec-hematology .image-preview{max-width:180px;max-height:140px}
+@media(min-width:851px){
+  #sec-simulation{--sim-stage-h:clamp(390px,calc(100vh - 390px),520px)}
+  #sec-simulation .section-subtabs{margin-bottom:8px;padding:4px}
+  #sec-simulation .section-subtab{padding:7px 12px;font-size:12px}
+  #sec-simulation .simulation-heading{margin-bottom:8px;align-items:center}
+  #sec-simulation .simulation-heading h2{font-size:clamp(25px,2.6vw,32px)}
+  #sec-simulation .simulation-eyebrow{font-size:8px;margin-bottom:4px}
+  #sec-simulation .lab-case-line{padding:7px 14px;font-size:10px}
+  #sec-simulation .lab-stage-nav button{padding:7px 6px;font-size:12px}
+  #sec-simulation .lab-stage-nav button span{font-size:10px;margin-bottom:2px}
+  #sec-simulation .lab-carousel{height:var(--sim-stage-h)}
+  #sec-simulation .lab-carousel-track,#sec-simulation .lab-stage,#sec-simulation .lab-scene,#sec-simulation .morphology-scene{height:100%;min-height:0}
+  #sec-simulation .lab-scene{padding:18px 4%;gap:24px}
+  #sec-simulation .stage-copy h3,#sec-simulation .result-decision h3,#sec-simulation .morphology-header h3{font-size:clamp(24px,3vw,32px);margin-bottom:8px}
+  #sec-simulation .stage-copy p,#sec-simulation .result-decision p{font-size:12px;line-height:1.4}
+  #sec-simulation .stage-actions,#sec-simulation .decision-actions{margin-top:10px}
+  #sec-simulation .stage-actions button,#sec-simulation .decision-actions button,#sec-simulation .morphology-header button{padding:7px 10px;font-size:10px}
+  #sec-simulation .analyzer-tube-preview{margin-top:10px;padding:7px}
+  #sec-simulation .mini-edta-tube{height:78px}
+  #sec-simulation .analyzer-machine{width:min(560px,96%);height:320px}
+  #sec-simulation .machine-screen{top:42px;height:130px;padding:12px}
+  #sec-simulation .machine-screen strong{font-size:20px;margin:10px 0}
+  #sec-simulation .machine-door{top:42px;height:225px}
+  #sec-simulation .loader-slot{top:28px;height:126px}
+  #sec-simulation .loader-tube{height:100px;top:100px}
+  #sec-simulation .loader-tube.loaded{top:15px}
+  #sec-simulation .machine-panel{bottom:48px}#sec-simulation .machine-vents{bottom:20px}
+  #sec-simulation .cbc-grid{min-height:0;height:245px;padding:7px}#sec-simulation .cbc-result{padding:7px}#sec-simulation .cbc-result strong{font-size:16px}
+  #sec-simulation .slide-machine{width:min(560px,96%);height:315px}
+  #sec-simulation .slide-screen{top:38px;height:95px;padding:10px}#sec-simulation .slide-screen strong{margin-top:12px;font-size:15px}
+  #sec-simulation .slide-window-real{top:38px;height:185px}#sec-simulation .glass-slide{top:78px}#sec-simulation .slide-tray{bottom:22px}
+  #sec-simulation .morphology-scene{padding:12px 3%;overflow:hidden}
+  #sec-simulation .morphology-header{margin-bottom:6px;align-items:center}#sec-simulation .morphology-header p{display:none}
+  #sec-simulation .cellavision-tabs{margin-bottom:6px;padding:4px}#sec-simulation .cellavision-tab{padding:6px 11px;font-size:10px}
+  #sec-simulation .cellavision-workspace{grid-template-columns:300px minmax(0,1fr);gap:10px;height:275px}
+  #sec-simulation .cellavision-classifier{max-height:275px;padding:8px}
+  #sec-simulation .classification-bins{grid-template-columns:repeat(2,minmax(0,1fr));gap:3px}
+  #sec-simulation .classification-bin{min-height:34px;padding:4px}#sec-simulation .classification-bin-head{padding:3px 4px;font-size:8.5px}
+  #sec-simulation .classification-actions{margin-top:5px;gap:4px}#sec-simulation .classification-actions button{padding:6px 4px;font-size:8px}
+  #sec-simulation .classification-feedback{margin-top:4px;padding:4px 6px;font-size:8px}
+  #sec-simulation .morph-monitor{min-height:0;height:275px;padding:8px;border-width:8px}
+  #sec-simulation .cellavision-toolbar{margin-bottom:5px}#sec-simulation .morph-grid{min-height:0;height:225px}
+  #sec-simulation .lab-carousel-controls{padding:7px 12px}#sec-simulation .lab-carousel-controls button{padding:6px 10px;min-width:80px}
+}
 </style>
 </head>
 <body>
@@ -675,7 +732,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     return'<figure class="home-media-frame">'+content+tools+'</figure>'
   }
   function galleryHtml(section,scroller){
-    var images=section.images||[],items=images.map(function(image,index){return'<figure class="home-gallery-item" draggable="'+(canEdit()?'true':'false')+'" data-home-drag="'+esc(section.id)+'" data-image-index="'+index+'">'+imageVisual(image,section.title)+imageTools(section.id,image,index,true)+'</figure>'}).join('');
+    var images=section.images||[],items=images.map(function(image,index){return'<figure class="home-gallery-item" data-image-index="'+index+'">'+imageVisual(image,section.title)+imageTools(section.id,image,index,true)+'</figure>'}).join('');
     if(!items)items='<div class="home-image-placeholder"></div>';
     var content=scroller?'<div class="home-scroller-shell"><div class="home-scroller" id="homeScroller-'+esc(section.id)+'">'+items+'</div><div class="home-scroll-controls"><button type="button" class="home-scroll-button" data-home-scroll="left" data-home-id="'+esc(section.id)+'" aria-label="Previous images">&#8592;</button><button type="button" class="home-scroll-button" data-home-scroll="right" data-home-id="'+esc(section.id)+'" aria-label="Next images">&#8594;</button></div></div>':'<div class="home-gallery">'+items+'</div>';
     return content+(canEdit()?'<label class="home-builder-btn home-add-images">Add images<input type="file" accept="image/*" multiple data-home-multiple="'+esc(section.id)+'"></label>':'')
