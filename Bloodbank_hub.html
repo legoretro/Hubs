@@ -558,6 +558,15 @@ textarea{resize:none;overflow:hidden}
 .phase-step.done{background:var(--good);color:#fff}
 
 @media(max-width:480px){.sys-card{padding:14px}.section{padding:14px 10px 48px}.ws-table td.ws-label{width:130px;font-size:10px}}
+
+.bb-welcome{max-width:1050px;margin:12px auto 24px;padding:38px;border-radius:24px;background:var(--blush);border:1px solid var(--rose)}
+.bb-welcome h1{font-size:clamp(28px,4vw,48px);line-height:1.15;margin:12px 0;color:var(--wine,#5a0e20)}
+.bb-home-grid{max-width:1050px;margin:auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.bb-home-card{text-align:left;border:1px solid var(--rose);border-top:4px solid var(--crimson);background:var(--cream,#fffaf7);border-radius:16px;padding:24px;cursor:pointer;color:inherit;font:inherit}
+.bb-home-card strong{display:block;font-size:21px;margin-bottom:10px}.bb-home-card span{font-size:15px;line-height:1.5}.bb-home-card:hover{box-shadow:var(--shadow-sm);transform:translateY(-2px)}
+.bb-flash{max-width:800px;margin:auto;padding:22px;border:1px solid var(--rose);border-radius:18px;background:var(--cream,#fffaf7)}
+.bb-flash-meta{display:flex;justify-content:space-between;gap:16px;font-size:14px}.bb-flash-mascot{width:78px;height:78px;margin:14px auto}.bb-flash-mascot svg{width:100%;height:100%}.bb-flash-body{min-height:190px;text-align:center;display:flex;flex-direction:column;justify-content:center;padding:18px}.bb-flash-text{font-size:clamp(19px,2.4vw,27px);line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}.bb-flash-controls{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:16px}
+@media(max-width:650px){.bb-home-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.bb-welcome{padding:20px}.bb-home-card{padding:16px}.bb-home-card strong{font-size:17px}.bb-home-card span{font-size:13px}.bb-flash{padding:12px}.bb-flash-body{padding:8px;min-height:150px}.bb-flash-controls .btn{padding:10px 12px}.flash-modal{padding:14px!important}}
 </style>
 </head>
 <body>
@@ -705,7 +714,7 @@ textarea{resize:none;overflow:hidden}
     <div class="flash-top">
       <div>
         <div class="flash-title">Flashcard Lab</div>
-        <div class="flash-sub">Flip the card, mark it with the top X or check, and use Previous / Next or Flashcard # to move around.</div>
+        <div class="flash-sub">One card at a time, shuffled each time you start. Reveal the answer when you are ready.</div>
       </div>
       <button class="btn btn-ghost" onclick="closeFlashcardPractice()">Close</button>
     </div>
@@ -722,7 +731,8 @@ textarea{resize:none;overflow:hidden}
     <div class="site-title">Bloody Brilliant <em>Blood Bank Hub</em></div>
   <a class="mls-home-link" href="index.html">Back to Hub Home</a>
     <nav class="nav-tabs">
-      <button class="nav-tab active" onclick="showSection('encyclopedia',this)">🩸 Encyclopedia</button>
+      <button class="nav-tab active" onclick="showSection('home',this)">🏠 Welcome</button>
+      <button class="nav-tab" onclick="showSection('encyclopedia',this)">🩸 Encyclopedia</button>
       <button class="nav-tab" onclick="showSection('rbc-diagram',this)">🔬 RBC Antigens</button>
       <button class="nav-tab" onclick="showSection('chromosomes',this)">🧬 Chromosome Map</button>
       <button class="nav-tab" onclick="showSection('crossmatch',this)">🧪 Simulation Lab</button>
@@ -734,8 +744,21 @@ textarea{resize:none;overflow:hidden}
     <button class="admin-lock-btn admin-exit-btn" onclick="logoutAdmin()" id="adminExitBtn">Exit Admin</button>
   </header>
 
+<section id="sec-home" class="section active">
+<div class="bb-welcome"><p class="sec-label">Blood Bank • Immunohematology</p><h1>Welcome to the Blood Bank Hub</h1><p>Explore blood groups, study the RBC membrane, and practice at your own pace.</p></div>
+<div class="bb-home-grid">
+<button class="bb-home-card" onclick="showSection('encyclopedia')"><strong>🩸 Encyclopedia</strong><span>Explore the blood group systems.</span></button>
+<button class="bb-home-card" onclick="showSection('rbc-diagram')"><strong>🔬 RBC Antigens</strong><span>Explore and arrange the antigen map.</span></button>
+<button class="bb-home-card" onclick="showSection('chromosomes')"><strong>🧬 Chromosome Map</strong><span>Connect blood groups with their genes.</span></button>
+<button class="bb-home-card" onclick="openFlashcardPractice()"><strong>🩸 Flashcards</strong><span>Practice a freshly shuffled encyclopedia deck.</span></button>
+<button class="bb-home-card" onclick="showSection('crossmatch');startABOsim()"><strong>🧪 Simulation Lab</strong><span>ABO typing, crossmatch, antigram, and automation.</span></button>
+<button class="bb-home-card" onclick="startCalcSim()"><strong>🧮 Calculations</strong><span>Practice with antigen frequencies and compatible units.</span></button>
+<button class="bb-home-card" onclick="showSection('flowchart')"><strong>🧭 Flowchart</strong><span>Follow the blood bank workflow.</span></button>
+<button class="bb-home-card" onclick="showSection('resources')"><strong>📖 Resources</strong><span>Open your study resources.</span></button>
+</div></section>
+<section id="sec-calculations" class="section"><button class="btn btn-ghost" onclick="showSection('home')">← Welcome</button><div class="section-hero"><h2>🧮 Calculations</h2></div><div id="calcContent"></div></section>
   <!-- ===== ENCYCLOPEDIA ===== -->
-  <div id="sec-encyclopedia" class="section active">
+  <div id="sec-encyclopedia" class="section">
     <div class="section-hero">
       <h2><span class="hero-emoji">🩸</span> Blood Group System Encyclopedia</h2>
     </div>
@@ -812,12 +835,12 @@ textarea{resize:none;overflow:hidden}
       <div class="sim-mode-strip">
         <button id="aboSimBtn" class="btn btn-primary" onclick="startABOsim()" style="font-size:15px;padding:12px 28px">🅰️ ABO Typing</button>
         <button id="xmSimBtn" class="btn btn-ghost" onclick="startXMsim()" style="font-size:15px;padding:12px 28px;border-width:2px">🩸 Crossmatch</button>
-        <button id="calcSimBtn" class="btn btn-ghost" onclick="startCalcSim()" style="font-size:15px;padding:12px 28px;border-width:2px">🧮 Calculations</button>
         <button id="antigramSimBtn" class="btn btn-ghost" onclick="startAntigramSim()" style="font-size:15px;padding:12px 28px;border-width:2px">📋 Antigram</button>
+        <button id="automationSimBtn" class="btn btn-ghost" onclick="startAutomationSim()">⚙️ Automation</button>
       </div>
       <div id="aboContent" style="display:block"></div>
       <div id="xmContent" style="display:none"></div>
-      <div id="calcContent" style="display:none"></div>
+      <div id="automationContent" style="display:none"><div class="sys-card"><h3>Automation</h3><p>In progress. Automation material will be added here.</p></div></div>
       <div id="antigramContent" style="display:none"></div>
     </div>
   </div>
@@ -1031,6 +1054,61 @@ window.addEventListener('load', () => {
 // ============================================================
 // SUPABASE HELPERS
 // ============================================================
+
+// Use the active hub database; keep the retired connection only for read-only recovery.
+const BB_CLOUD_URL='https://rbdvjwipedbxfbedjgoa.supabase.co';
+const BB_CLOUD_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJiZHZqd2lwZWRieGZiZWRqZ29hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjY5MzAsImV4cCI6MjA5MTYwMjkzMH0.cVUMRdER6h799WBspLVaCABbxkQ2Wi4GOOc5s5EghJQ';
+function createBloodBankDoc(options) {
+  var rowId=options.id==='bb_notes'?'5b242de8-b2d5-4f38-a528-f69bdd08da11':'5b242de8-b2d5-4f38-a528-f69bdd08da12';
+  var cacheKey='blood-bank-document-'+options.id, base={}, loaded=false, pending=false;
+  function copy(x){return JSON.parse(JSON.stringify(x));}
+  function same(a,b){return JSON.stringify(a)===JSON.stringify(b);}
+  function merge(old,remote,local,path){
+    if(same(old,local))return remote;
+    if(same(old,remote)||same(local,remote))return local;
+    if([old,remote,local].every(function(v){return v&&typeof v==='object'&&!Array.isArray(v);})){
+      var out={};new Set(Object.keys(old).concat(Object.keys(remote),Object.keys(local))).forEach(function(k){var value=merge(old[k],remote[k],local[k],path+'.'+k);if(value!==undefined)out[k]=value;});return out;
+    }
+    throw Error('Another device changed '+path+'. Your device backup is kept; reload before saving.');
+  }
+  async function request(path,init){
+    var controller=new AbortController(),timeout=setTimeout(function(){controller.abort();},12000);
+    try {var response=await fetch(BB_CLOUD_URL+'/rest/v1/mlsboc_cases'+path,Object.assign({},init,{signal:controller.signal,headers:Object.assign({'apikey':BB_CLOUD_KEY,'Authorization':'Bearer '+BB_CLOUD_KEY,'Content-Type':'application/json'},init&&init.headers)}));if(!response.ok)throw Error('Cloud request failed ('+response.status+')');return await response.json();}finally{clearTimeout(timeout);}
+  }
+  function stash(){try{localStorage.setItem(cacheKey,JSON.stringify({base:base,data:options.getLocal()}));}catch(e){showToast('Device backup unavailable. Keep this page open until saved.',true);}}
+  async function read(){var rows=await request('?id=eq.'+rowId+'&select=id,case_data,group_label');return rows[0]||null;}
+  function parse(row){if(!row)return options.defaultData();return JSON.parse(row.case_data||'{}');}
+  return {
+    load:async function(){
+      var cached=null;try{cached=JSON.parse(localStorage.getItem(cacheKey)||'null');}catch(e){}
+      try{var row=await read(),remote=row?parse(row):(cached?cached.base:options.defaultData());base=copy(remote);loaded=true;
+        var data=cached?merge(cached.base,remote,cached.data,options.id):remote;
+        options.setLocal(options.normalize(data));
+      }catch(e){if(cached){base=cached.base;options.setLocal(options.normalize(cached.data));showToast('Recovered your device backup. '+e.message,true);}else throw e;}
+    },
+    saveNow:async function(){
+      stash();
+      if(pending)return false;
+      pending=true;
+      try{
+        var snapshot=copy(options.getLocal()),row=await read(),remote=row?parse(row):copy(base);
+        if(!loaded && !same(remote,options.defaultData()))throw Error('Reload to merge the cloud copy before saving.');
+        var merged=merge(base,remote,snapshot,options.id),revision='bb-'+Date.now()+'-'+Math.random().toString(36).slice(2);
+        var payload={id:rowId,subject:'hub_state',title:options.id,scenario:'Blood Bank Hub',case_data:JSON.stringify(merged),group_label:revision,is_draft:false};
+        var path=row?'?id=eq.'+rowId+'&group_label='+ (row.group_label===null?'is.null':'eq.'+encodeURIComponent(row.group_label)):'';
+        var saved=await request(path,{method:row?'PATCH':'POST',headers:{Prefer:'return=representation'},body:JSON.stringify(payload)});
+        if(!saved.length)throw Error('The cloud copy changed during saving. Retry to merge your edits.');
+        base=copy(merged);loaded=true;
+        // Preserve changes made while the request was in flight.
+        if(same(snapshot,options.getLocal()))options.setLocal(options.normalize(merged));
+        stash();showToast('Saved to Supabase');return true;
+      }catch(e){showToast(e.message+' Your device backup is kept.',true);return false;}finally{pending=false;}
+    },
+    subscribe:function(){},
+    stash:stash
+  };
+}
+
 async function supabaseError(response) {
   let details = '';
   try {
@@ -1046,7 +1124,8 @@ function hydrateNotesData(data) {
   notesData = data || {};
   migrateGeneralSharedPatterns();
   applyBloodGroupWorksheetDefaults();
-  rbcLayout = notesData.__rbcLayoutVersion === 2 ? (notesData.__rbcLayout || {}) : {};
+  recoverRbcDraft();
+  rbcLayout = notesData.__rbcLayout && typeof notesData.__rbcLayout === 'object' ? notesData.__rbcLayout : {};
   rbcCustomItems = Array.isArray(notesData.__rbcCustomItems) ? notesData.__rbcCustomItems : [];
   rbcMapCopies = Array.isArray(notesData.__rbcMapCopies) ? notesData.__rbcMapCopies : [];
   rbcHiddenItems = Array.isArray(notesData.__rbcHiddenItems) ? notesData.__rbcHiddenItems : [];
@@ -1165,7 +1244,7 @@ function readXmLocalCache() {
 
 async function initApp() {
   var cachedXmBeforeLoad = readXmLocalCache();
-  notesDoc = createSafeSupabaseDoc({
+  notesDoc = createBloodBankDoc({
     url: SUPABASE_URL,
     key: SUPABASE_KEY,
     table: TABLE_NAME,
@@ -1177,7 +1256,7 @@ async function initApp() {
     toast: showToast,
     onConflict: info => console.warn('Blood Bank notes save conflict:', info.paths)
   });
-  xmDoc = createSafeSupabaseDoc({
+  xmDoc = createBloodBankDoc({
     url: SUPABASE_URL,
     key: SUPABASE_KEY,
     table: TABLE_NAME,
@@ -1217,7 +1296,7 @@ async function initApp() {
       showToast('Cloud offline. New edits will still save on this device.', true);
     }
   }
-  if (window.createSafeSupabasePresence) syncPresence = createSafeSupabasePresence({
+  if (false && window.createSafeSupabasePresence) syncPresence = createSafeSupabasePresence({
     url: SUPABASE_URL,
     key: SUPABASE_KEY,
     hubId: 'bloodbank',
@@ -1237,9 +1316,30 @@ async function initApp() {
   initXmatch();
 }
 
+const RBC_DRAFT_KEY='blood-bank-rbc-draft-v2';
+const RBC_DRAFT_FIELDS=['__rbcLayout','__rbcLayoutVersion','__rbcCustomItems','__rbcMapCopies','__rbcHiddenItems','__rbcQuickPiecePrefs','__rbcFullLayout'];
+function cacheRbcDraft() {
+  try {
+    var fields={};
+    RBC_DRAFT_FIELDS.forEach(function(key){if(notesData[key]!==undefined)fields[key]=notesData[key];});
+    localStorage.setItem(RBC_DRAFT_KEY,JSON.stringify({at:Date.now(),fields:fields}));
+  } catch(e) { showToast('Device backup could not be saved. Keep this page open until cloud save completes.',true); }
+}
+function recoverRbcDraft() {
+  try {
+    var draft=JSON.parse(localStorage.getItem(RBC_DRAFT_KEY)||'null');
+    if(draft && draft.fields && draft.at>Number(notesData.__updatedAt||0)) {
+      RBC_DRAFT_FIELDS.forEach(function(key){if(draft.fields[key]!==undefined)notesData[key]=draft.fields[key];});
+    }
+  } catch(e) { console.warn('Could not recover antigen layout',e); }
+}
+window.addEventListener('pagehide',function(){if(saveTimer){cacheRbcDraft();saveNotesNow('page-exit');}});
+window.addEventListener('online',function(){if(isAdmin && localStorage.getItem(RBC_DRAFT_KEY))saveNotesNow('reconnect');});
 function scheduleSave() {
   clearTimeout(saveTimer);
-  saveTimer = setTimeout(() => saveNotesNow('auto'), 4000);
+  cacheRbcDraft();
+  if(notesDoc && notesDoc.stash)notesDoc.stash();
+  saveTimer = setTimeout(() => saveNotesNow('auto'), 500);
 }
 
 async function saveNotesNow(reason = 'auto') {
@@ -1247,7 +1347,10 @@ async function saveNotesNow(reason = 'auto') {
   if (notesSaveInFlight) await notesSaveInFlight;
   notesData.__updatedAt = Date.now();
   notesSaveInFlight = (notesDoc ? notesDoc.saveNow({ reason }) : Promise.resolve(false)).finally(() => { notesSaveInFlight = null; });
-  return await notesSaveInFlight;
+  var draftBefore=localStorage.getItem(RBC_DRAFT_KEY);
+  var saved=await notesSaveInFlight;
+  if(saved && localStorage.getItem(RBC_DRAFT_KEY)===draftBefore)localStorage.removeItem(RBC_DRAFT_KEY);
+  return saved;
 }
 
 function scheduleXmSave() {
@@ -1388,6 +1491,7 @@ function showSection(name, el) {
   if (name === 'rbc-diagram') { setTimeout(renderRbcDiagram, 50); }
   if (name === 'flowchart') { setTimeout(renderFlowchart, 50); }
   document.getElementById('sec-' + name).classList.add('active');
+  if (!el) el = Array.from(document.querySelectorAll('.nav-tab')).find(function(btn){ return (btn.getAttribute('onclick') || '').includes("'"+name+"'"); });
   if (el) el.classList.add('active');
   if (syncPresence) syncPresence.setSection(name === 'encyclopedia' ? `encyclopedia / ${currentSystemKey}` : name);
 }
@@ -4880,10 +4984,18 @@ function getRbcItems(systemKey) {
 function getFullRbcMapItems() {
   var base = RBC_ITEMS.slice().filter(function(i){ return rbcHiddenItems.indexOf(i.id) === -1; });
   var copies = rbcMapCopies.filter(function(i){ return rbcHiddenItems.indexOf(i.id) === -1; });
-  return base.concat(copies);
+  return base.concat(copies).map(function(item){ return Object.assign({},item,{_fullMap:true}); });
 }
 
 function rbcPos(item) {
+  if(item._fullMap) {
+    var saved=(notesData.__rbcFullLayout||{})[item.id] || rbcLayout[item.id];
+    if(saved) return saved;
+    if(item.mapCopy)return {x:item.x,y:item.y,r:item.r||0};
+    var index=RBC_ITEMS.findIndex(function(entry){return entry.id===item.id;});
+    var angle=-Math.PI/2+index*2*Math.PI/RBC_ITEMS.length;
+    return {x:690+535*Math.cos(angle),y:390+325*Math.sin(angle),r:angle*180/Math.PI+90};
+  }
   return rbcLayout[item.id] || { x:item.x, y:item.y, r:item.r || 0 };
 }
 
@@ -5320,6 +5432,7 @@ function initRbcDrag(root) {
   var active = null;
   var scope = svg.getAttribute('data-rbc-scope') || 'full';
   var allItems = scope === 'full' ? getFullRbcMapItems() : getRbcItems(scope);
+  var dragLayout = scope === 'full' ? (notesData.__rbcFullLayout || (notesData.__rbcFullLayout={})) : rbcLayout;
   function pt(evt) {
     var p = svg.createSVGPoint();
     p.x = evt.clientX; p.y = evt.clientY;
@@ -5401,8 +5514,8 @@ function initRbcDrag(root) {
     if (active.mode === 'rotate') {
       var nextRotation = active.sr + angleFromCenter(p, {x:active.sx, y:active.sy}) - active.startAngle;
       nextRotation = Math.round(nextRotation * 10) / 10;
-      rbcLayout[active.id] = { x:active.sx, y:active.sy, r:nextRotation };
-      if (active.el) active.el.setAttribute('transform', rbcShapeTransform(rbcLayout[active.id], active.item));
+      dragLayout[active.id] = { x:active.sx, y:active.sy, r:nextRotation };
+      if (active.el) active.el.setAttribute('transform', rbcShapeTransform(dragLayout[active.id], active.item));
       active.moved = true;
       return;
     }
@@ -5410,11 +5523,11 @@ function initRbcDrag(root) {
     var dy = p.y - active.y0;
     if (Math.abs(dx) + Math.abs(dy) > 3) active.moved = true;
     if (active.rotate || evt.shiftKey) {
-      rbcLayout[active.id] = { x:active.sx, y:active.sy, r:active.sr + dx };
+      dragLayout[active.id] = { x:active.sx, y:active.sy, r:active.sr + dx };
     } else {
-      rbcLayout[active.id] = { x:active.sx + dx, y:active.sy + dy, r:active.sr };
+      dragLayout[active.id] = { x:active.sx + dx, y:active.sy + dy, r:active.sr };
     }
-    var np = rbcLayout[active.id];
+    var np = dragLayout[active.id];
     active.el.setAttribute('transform', rbcShapeTransform(np, active.item));
   });
   svg.addEventListener('pointerup', function() {
@@ -5433,6 +5546,7 @@ function initRbcDrag(root) {
     notesData.__rbcCustomItems = rbcCustomItems;
     notesData.__rbcMapCopies = rbcMapCopies;
     notesData.__rbcHiddenItems = rbcHiddenItems;
+    if(finished.item && finished.item.mapCopy){var original=rbcMapCopies.find(function(item){return item.id===finished.id;});if(original)original.scale=finished.item.scale;}
     scheduleSave();
     active = null;
     if (shouldRenderFullMap) setTimeout(renderRbcDiagram, 80);
@@ -6416,14 +6530,6 @@ function applyFlashSession(saved) {
 }
 
 function openFlashcardPractice(cards, forceNew) {
-  if (!cards && !forceNew) {
-    var saved = loadFlashSession();
-    if (saved) {
-      document.getElementById('flashcardModal').classList.add('visible');
-      renderFlashResume(saved);
-      return;
-    }
-  }
   var deck = cards && cards.length ? cards : buildFlashcardDeck();
   if (!deck.length) { showToast('Add Study Reference or Frequency to Memorize content first', true); return; }
   flashQueue = shuffleFlashcards(deck);
@@ -6533,21 +6639,10 @@ function toggleFlashReveal() {
 }
 
 function renderFlashcardPractice() {
-  var root = document.getElementById('flashcardPracticeRoot');
+  var root=document.getElementById('flashcardPracticeRoot'), card=currentFlashcard();
   if (!root) return;
-  var rightCount = Object.keys(flashResults).filter(function(id){ return flashResults[id] === 'done'; }).length;
-  var wrongCount = Object.keys(flashResults).filter(function(id){ return flashResults[id] === 'wrong'; }).length;
-  var card = currentFlashcard();
-  if (!card) {
-    root.innerHTML = '<div class="flash-shell"><div class="flash-card flash-finished"><div><h3>Round complete.</h3><p>' + rightCount + ' right, ' + wrongCount + ' to review.</p><div class="flash-actions">' + (flashWrongCards.length ? '<button class="flash-action flash-reveal" onclick="studyMissedFlashcards()">Study missed cards</button><button class="flash-action flash-skip" onclick="exportMissedFlashcardsPdf()">Export missed as PDF</button>' : '<button class="flash-action flash-right" onclick="openFlashcardPractice()">Start a fresh shuffle</button>') + '</div></div></div><aside class="flash-side"><div class="flash-rbc-wrap"><div class="flash-rbc right">' + flashRbcSvg('right') + '</div></div><div class="flash-score"><div><strong>' + rightCount + '</strong><span>Right</span></div><div><strong>' + wrongCount + '</strong><span>Missed</span></div></div></aside></div>';
-    return;
-  }
-  var cardMoodClass = flashMood === 'right' ? ' swipe-right' : (flashMood === 'wrong' ? ' swipe-left' : '');
-  var flipClass = flashRevealed ? ' is-flipped' : '';
-  var topStatus = 'Card ' + (flashIndex + 1) + ' of ' + flashQueue.length + (flashRevealed ? ' / Answer' : ' / Question');
-  var questionFit = flashFitClass(card.question, 'question');
-  var answerFit = flashFitClass(card.answer, 'answer');
-  root.innerHTML = '<div class="flash-shell"><main id="flashCardSwipe" class="flash-card' + cardMoodClass + flipClass + '"><div class="flash-markbar"><button type="button" class="flash-icon-action flash-wrong" aria-label="Mark missed" title="Mark missed" onclick="markFlashcard(&quot;wrong&quot;)">&#10005;</button><div class="flash-top-status">' + exportText(topStatus) + '</div><button type="button" class="flash-icon-action flash-right" aria-label="Mark correct" title="Mark correct" onclick="markFlashcard(&quot;done&quot;)">&#10003;</button></div><div class="flash-flip-shell" onclick="toggleFlashReveal()"><div class="flash-card-inner"><section class="flash-face flash-face-front"><div><div class="flash-tag" style="border:1px solid ' + card.color + ';color:' + card.color + '">' + exportText(card.system) + ' / ' + exportText(card.category) + '</div><div class="flash-question' + questionFit + '">' + exportText(card.question) + '</div></div><div class="flash-flip-note">Tap to flip for the answer.</div></section><section class="flash-face flash-face-back"><div><div class="flash-tag" style="border:1px solid ' + card.color + ';color:' + card.color + '">Answer</div><div class="flash-answer' + answerFit + '">' + exportText(card.answer) + '</div></div><div class="flash-flip-note">Tap to flip back to the question.</div></section></div></div><div class="flash-nav-row"><button type="button" class="flash-nav-btn flash-nav-prev" onclick="event.stopPropagation();goToRelativeFlashcard(-1)"' + (flashIndex <= 0 ? ' disabled' : '') + '>Previous</button><button type="button" class="flash-flip-btn" onclick="event.stopPropagation();toggleFlashReveal()">' + (flashRevealed ? 'Show question' : 'Reveal answer') + '</button><button type="button" class="flash-nav-btn flash-nav-next" onclick="event.stopPropagation();goToRelativeFlashcard(1)"' + (flashIndex >= flashQueue.length - 1 ? ' disabled' : '') + '>Next</button></div></main><aside class="flash-side"><div class="flash-rbc-wrap"><div class="flash-rbc ' + flashMood + '">' + flashRbcSvg(flashMood) + '</div></div><div class="flash-score"><div><strong>' + (flashIndex + 1) + '</strong><span>Current</span></div><div><strong>' + flashQueue.length + '</strong><span>Total</span></div><div><strong>' + rightCount + '</strong><span>Right</span></div><div><strong>' + wrongCount + '</strong><span>Missed</span></div></div>' + renderFlashSelect() + '</aside></div>';
+  if (!card) { root.innerHTML='<div class="bb-flash"><h3>Round complete</h3><button class="btn btn-primary" onclick="restartFlashcards()">Start a fresh shuffle</button></div>'; return; }
+  root.innerHTML='<div class="bb-flash"><div class="bb-flash-meta"><span>'+exportText(card.system)+' · '+exportText(card.category)+'</span><span>'+(flashIndex+1)+' / '+flashQueue.length+'</span></div><div class="bb-flash-mascot">'+flashRbcSvg(flashMood)+'</div><div class="bb-flash-body"><div class="sec-label">'+(flashRevealed?'Answer':'Question')+'</div><div class="bb-flash-text">'+exportText(flashRevealed?card.answer:card.question)+'</div></div><div class="bb-flash-controls"><button class="btn btn-ghost" onclick="goToRelativeFlashcard(-1)" '+(flashIndex===0?'disabled':'')+'>← Previous</button><button class="btn btn-primary" onclick="toggleFlashReveal()">'+(flashRevealed?'Show question':'Flip to answer')+'</button><button class="btn btn-ghost" onclick="goToRelativeFlashcard(1)" '+(flashIndex===flashQueue.length-1?'disabled':'')+'>Next →</button></div><div class="bb-flash-controls"><button class="btn btn-ghost" onclick="restartFlashcards()">Shuffle</button>'+(flashRevealed?'<button class="btn btn-ghost" onclick="markFlashcard(\'wrong\')">Review again</button><button class="btn btn-ghost" onclick="markFlashcard(\'done\')">Got it ✓</button>':'')+'</div></div>';
 }
 
 function beginFlashSwipe(e) {
@@ -7195,16 +7290,21 @@ function getCalcScenarios() {
 }
 
 function startCalcSim() {
-  setSimulationShellWidth('860px');
-  document.getElementById('aboContent').style.display = 'none';
-  document.getElementById('xmContent').style.display  = 'none';
+  showSection('calculations');
   document.getElementById('calcContent').style.display = 'block';
-  document.getElementById('antigramContent').style.display = 'none';
-  document.getElementById('aboSimBtn').className = 'btn btn-ghost';
-  document.getElementById('xmSimBtn').className  = 'btn btn-ghost';
-  document.getElementById('calcSimBtn').className = 'btn btn-primary';
-  document.getElementById('antigramSimBtn').className = 'btn btn-ghost';
   renderCalcSim();
+}
+function startAutomationSim() {
+  ['abo','xm','antigram'].forEach(function(key) {
+    document.getElementById(key+'Content').style.display='none';
+    document.getElementById(key+'SimBtn').className='btn btn-ghost';
+  });
+  document.getElementById('automationContent').style.display='block';
+  document.getElementById('automationSimBtn').className='btn btn-primary';
+}
+function hideAutomationSim() {
+  document.getElementById('automationContent').style.display='none';
+  document.getElementById('automationSimBtn').className='btn btn-ghost';
 }
 
 function cleanCalcAg(value) {
@@ -7401,6 +7501,7 @@ function setSimulationShellWidth(width) {
 }
 
 function startABOsim() {
+  hideAutomationSim();
   setSimulationShellWidth('860px');
   document.getElementById('aboContent').style.display = 'block';
   document.getElementById('xmContent').style.display  = 'none';
@@ -7408,11 +7509,11 @@ function startABOsim() {
   document.getElementById('antigramContent').style.display = 'none';
   document.getElementById('aboSimBtn').className = 'btn btn-primary';
   document.getElementById('xmSimBtn').className  = 'btn btn-ghost';
-  document.getElementById('calcSimBtn').className = 'btn btn-ghost';
   document.getElementById('antigramSimBtn').className = 'btn btn-ghost';
   renderABOsim();
 }
 function startXMsim() {
+  hideAutomationSim();
   setSimulationShellWidth('860px');
   document.getElementById('aboContent').style.display = 'none';
   document.getElementById('xmContent').style.display  = 'block';
@@ -7420,13 +7521,13 @@ function startXMsim() {
   document.getElementById('antigramContent').style.display = 'none';
   document.getElementById('xmSimBtn').className  = 'btn btn-primary';
   document.getElementById('aboSimBtn').className = 'btn btn-ghost';
-  document.getElementById('calcSimBtn').className = 'btn btn-ghost';
   document.getElementById('antigramSimBtn').className = 'btn btn-ghost';
   if (!xmCurrent) nextXm();
   else renderXm();
 }
 
 function startAntigramSim() {
+  hideAutomationSim();
   setSimulationShellWidth('1180px');
   document.getElementById('aboContent').style.display = 'none';
   document.getElementById('xmContent').style.display  = 'none';
@@ -7434,7 +7535,6 @@ function startAntigramSim() {
   document.getElementById('antigramContent').style.display = 'block';
   document.getElementById('aboSimBtn').className = 'btn btn-ghost';
   document.getElementById('xmSimBtn').className  = 'btn btn-ghost';
-  document.getElementById('calcSimBtn').className = 'btn btn-ghost';
   document.getElementById('antigramSimBtn').className = 'btn btn-primary';
   renderAntigramSim();
 }
