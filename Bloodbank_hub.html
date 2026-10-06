@@ -567,6 +567,15 @@ textarea{resize:none;overflow:hidden}
 .bb-flash{max-width:800px;margin:auto;padding:22px;border:1px solid var(--rose);border-radius:18px;background:var(--cream,#fffaf7)}
 .bb-flash-meta{display:flex;justify-content:space-between;gap:16px;font-size:14px}.bb-flash-mascot{width:78px;height:78px;margin:14px auto}.bb-flash-mascot svg{width:100%;height:100%}.bb-flash-body{min-height:190px;text-align:center;display:flex;flex-direction:column;justify-content:center;padding:18px}.bb-flash-text{font-size:clamp(19px,2.4vw,27px);line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}.bb-flash-controls{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:16px}
 @media(max-width:650px){.bb-home-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.bb-welcome{padding:20px}.bb-home-card{padding:16px}.bb-home-card strong{font-size:17px}.bb-home-card span{font-size:13px}.bb-flash{padding:12px}.bb-flash-body{padding:8px;min-height:150px}.bb-flash-controls .btn{padding:10px 12px}.flash-modal{padding:14px!important}}
+
+/* Wide masthead with a single left-side section menu. */
+.site-header{flex-wrap:nowrap;min-height:90px}.site-title{font-size:clamp(22px,2.5vw,36px);min-width:0;line-height:1.2}.site-title em{display:inline}.site-header .admin-lock-btn,.site-header .admin-badge{flex-shrink:0}
+.bb-left-nav{position:fixed;left:18px;top:115px;width:210px;display:flex;flex-direction:column;gap:9px;padding:16px;background:var(--wine);border-radius:18px;z-index:90;max-height:calc(100dvh - 135px);overflow-y:auto}.bb-left-nav .nav-tab{text-align:left;width:100%;white-space:normal;padding:12px 14px}
+#app>.section{margin-left:248px;margin-right:auto;max-width:1400px;width:calc(100% - 248px)}
+.bb-welcome{max-width:none;padding:28px;margin:0 0 20px}.bb-welcome h1{font-size:clamp(26px,3vw,42px)}
+.bb-unit-calculator{max-width:1000px;margin:0 auto}.bb-unit-calculator h2{color:var(--wine);font-size:28px;margin:8px 0 12px}.bb-unit-calculator p{line-height:1.5}.bb-calc-inputs,.bb-antibody-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:18px 0}.bb-unit-calculator label{display:flex;flex-direction:column;gap:8px;font-size:15px;font-weight:700}.bb-unit-calculator input{width:100%;min-width:0;padding:12px;border:1px solid var(--rose);border-radius:9px;font:inherit;color:var(--dark);background:#fff}.bb-antibody-row{padding:14px;background:var(--blush);border-radius:12px}.bb-calc-help{font-size:13px;color:var(--warm-grey);margin:16px 0}.bb-unit-result{padding:20px;border:1px solid var(--rose);border-radius:12px;background:var(--blush);line-height:1.6}.bb-unit-result strong{display:block;font-size:40px;color:var(--wine)}
+@media(max-width:760px){.site-header{padding:12px;gap:8px;flex-wrap:wrap;position:relative}.site-title{font-size:22px;flex:1}.site-header .site-logo{font-size:25px}.site-header .mls-home-link{order:5;width:100%;font-size:12px}.bb-left-nav{position:relative;top:auto;left:auto;width:auto;margin:10px;flex-direction:row;flex-wrap:nowrap;overflow-x:auto;padding:8px;max-height:none;border-radius:12px}.bb-left-nav .nav-tab{width:auto;flex-shrink:0;padding:10px;font-size:12px}#app>.section{width:100%;margin:0;padding:12px 10px 40px}.bb-welcome{padding:18px}.bb-unit-calculator h2{font-size:23px}.bb-calc-inputs,.bb-antibody-row{gap:10px}.bb-unit-calculator label{font-size:13px}.bb-unit-calculator input{font-size:16px;padding:10px}.bb-antibody-row{padding:10px}}
+@media print{.bb-left-nav{display:none!important}#app>.section{width:100%;margin:0}}
 </style>
 </head>
 <body>
@@ -730,7 +739,12 @@ textarea{resize:none;overflow:hidden}
     <div class="site-logo">🩸</div>
     <div class="site-title">Bloody Brilliant <em>Blood Bank Hub</em></div>
   <a class="mls-home-link" href="index.html">Back to Hub Home</a>
-    <nav class="nav-tabs">
+
+    <span class="admin-badge" id="adminBadge">Admin</span>
+    <button class="admin-lock-btn" onclick="toggleAdminLogin()" id="adminBtn">Admin</button>
+    <button class="admin-lock-btn admin-exit-btn" onclick="logoutAdmin()" id="adminExitBtn">Exit Admin</button>
+  </header>
+    <nav class="nav-tabs bb-left-nav" aria-label="Blood Bank sections">
       <button class="nav-tab active" onclick="showSection('home',this)">🏠 Welcome</button>
       <button class="nav-tab" onclick="showSection('encyclopedia',this)">🩸 Encyclopedia</button>
       <button class="nav-tab" onclick="showSection('rbc-diagram',this)">🔬 RBC Antigens</button>
@@ -739,24 +753,10 @@ textarea{resize:none;overflow:hidden}
       <button class="nav-tab" onclick="showSection('flowchart',this)">🧭 Flowchart</button>
       <button class="nav-tab" onclick="showSection('resources',this)">📖 Resources</button>
     </nav>
-    <span class="admin-badge" id="adminBadge">Admin</span>
-    <button class="admin-lock-btn" onclick="toggleAdminLogin()" id="adminBtn">Admin</button>
-    <button class="admin-lock-btn admin-exit-btn" onclick="logoutAdmin()" id="adminExitBtn">Exit Admin</button>
-  </header>
 
 <section id="sec-home" class="section active">
 <div class="bb-welcome"><p class="sec-label">Blood Bank • Immunohematology</p><h1>Welcome to the Blood Bank Hub</h1><p>Explore blood groups, study the RBC membrane, and practice at your own pace.</p></div>
-<div class="bb-home-grid">
-<button class="bb-home-card" onclick="showSection('encyclopedia')"><strong>🩸 Encyclopedia</strong><span>Explore the blood group systems.</span></button>
-<button class="bb-home-card" onclick="showSection('rbc-diagram')"><strong>🔬 RBC Antigens</strong><span>Explore and arrange the antigen map.</span></button>
-<button class="bb-home-card" onclick="showSection('chromosomes')"><strong>🧬 Chromosome Map</strong><span>Connect blood groups with their genes.</span></button>
-<button class="bb-home-card" onclick="openFlashcardPractice()"><strong>🩸 Flashcards</strong><span>Practice a freshly shuffled encyclopedia deck.</span></button>
-<button class="bb-home-card" onclick="showSection('crossmatch');startABOsim()"><strong>🧪 Simulation Lab</strong><span>ABO typing, crossmatch, antigram, and automation.</span></button>
-<button class="bb-home-card" onclick="startCalcSim()"><strong>🧮 Calculations</strong><span>Practice with antigen frequencies and compatible units.</span></button>
-<button class="bb-home-card" onclick="showSection('flowchart')"><strong>🧭 Flowchart</strong><span>Follow the blood bank workflow.</span></button>
-<button class="bb-home-card" onclick="showSection('resources')"><strong>📖 Resources</strong><span>Open your study resources.</span></button>
-</div></section>
-<section id="sec-calculations" class="section"><button class="btn btn-ghost" onclick="showSection('home')">← Welcome</button><div class="section-hero"><h2>🧮 Calculations</h2></div><div id="calcContent"></div></section>
+<div id="calcContent"></div></section>
   <!-- ===== ENCYCLOPEDIA ===== -->
   <div id="sec-encyclopedia" class="section">
     <div class="section-hero">
@@ -1048,6 +1048,7 @@ window.addEventListener('load', () => {
       setTimeout(() => intro.style.display = 'none', 500);
     }, 1100);
   }, 1800);
+  renderCalcSim();
   initApp();
 });
 
@@ -7290,7 +7291,7 @@ function getCalcScenarios() {
 }
 
 function startCalcSim() {
-  showSection('calculations');
+  showSection('home');
   document.getElementById('calcContent').style.display = 'block';
   renderCalcSim();
 }
@@ -7445,49 +7446,36 @@ function buildCalcAdminPanel(scenarios) {
   '</div>';
 }
 
+var unitCalculator={count:1,units:'',antibodies:Array.from({length:5},function(){return {name:'',negative:''};})};
+function setUnitAntibodyCount(value){
+  unitCalculator.count=Math.max(1,Math.min(5,Math.floor(Number(value)||1)));
+  renderCalcSim();
+}
 function renderCalcSim() {
-  var area = document.getElementById('calcContent');
-  if (!area) return;
-  var scenarios = getCalcScenarios();
-  if (calcScenarioIndex >= scenarios.length) calcScenarioIndex = 0;
-  var sc = scenarios[calcScenarioIndex] || scenarios[0];
-  var math = calcScenarioMath(sc);
-  var caseBtns = scenarios.map(function(item, i) {
-    return '<button class="calc-case-btn ' + (i === calcScenarioIndex ? 'active' : '') + '" onclick="setCalcScenario(' + i + ')">' +
-      '<div>' + item.name + '</div><small>' + escText(item.patient) + ' - ' + escText(item.antibodies.join(', ')) + '</small></button>';
-  }).join('');
-  var setup = '';
-  if (calcReveal >= 1) {
-    setup = '<div class="calc-equation"><div class="calc-frac"><span>' + sc.units + ' unit' + (sc.units === 1 ? '' : 's') + ' required</span><span>' + math.factors.map(function(f){ return f.decimal.toFixed(2); }).join(' x ') + '</span></div></div>' +
-      '<div class="calc-step-list">' + math.factors.map(function(f) {
-        return '<div class="calc-step"><strong>' + escText(f.label) + ':</strong> ' + escText(f.detail) + '.</div>';
-      }).join('') + '</div>';
+  var area=document.getElementById('calcContent');if(!area)return;
+  area.innerHTML='<div class="bb-unit-calculator sys-card"><div class="sec-label">Blood Bank Math</div><h2>Compatible Unit Calculator</h2><p>Enter your antibody frequencies and the number of units needed to estimate how many donor units to screen.</p><div class="bb-calc-inputs"><label>Number of antibodies (1–5)<input id="unitAntibodyCount" type="number" min="1" max="5" step="1" value="'+unitCalculator.count+'" onchange="setUnitAntibodyCount(this.value)"></label><label>Units needed<input id="unitsNeeded" type="number" min="1" step="1" inputmode="numeric" placeholder="Enter units" value="'+escAttr(unitCalculator.units)+'" oninput="unitCalculator.units=this.value;updateUnitEstimate()"></label></div><div class="bb-antibody-rows">'+unitCalculator.antibodies.slice(0,unitCalculator.count).map(function(item,i){return '<div class="bb-antibody-row"><label>Antibody '+(i+1)+'<input type="text" placeholder="e.g. anti-K" value="'+escAttr(item.name)+'" oninput="unitCalculator.antibodies['+i+'].name=this.value;updateUnitEstimate()"></label><label>Antigen-negative donors (%)<input type="number" min="0" max="100" step="any" inputmode="decimal" placeholder="Enter percentage" value="'+escAttr(item.negative)+'" oninput="unitCalculator.antibodies['+i+'].negative=this.value;updateUnitEstimate()"></label></div>';}).join('')+'</div><p class="bb-calc-help">Use the antigen-negative percentage for each antibody. If your reference lists antigen-positive frequency, subtract it from 100%.</p><div id="unitEstimate" class="bb-unit-result" aria-live="polite"></div><p class="bb-calc-help">Study estimate: assumes independent antigen frequencies and an already ABO/Rh-compatible donor pool. The rounded estimate is not a guarantee of finding enough units.</p></div>';
+  updateUnitEstimate();
+}
+function calculateUnitEstimate(units,rows){
+  var n=Number(units);
+  if(!String(units).trim()||!Number.isSafeInteger(n)||n<1)return {error:'Enter a positive whole number of units.'};
+  if(!rows.length||rows.length>5)return {error:'Use between one and five antibodies.'};
+  var product=1,factors=[];
+  for(var i=0;i<rows.length;i++){
+    var value=rows[i].negative,pct=Number(value);
+    if(!String(value).trim()||!Number.isFinite(pct)||pct<0||pct>100)return {error:'Enter a percentage from 0 to 100 for antibody '+(i+1)+'.'};
+    factors.push(pct/100);product*=pct/100;
   }
-  var answer = calcReveal >= 2
-    ? '<div class="calc-answer">' + sc.units + ' / ' + math.denom.toFixed(3) + ' = ' + math.raw.toFixed(1) + '. Pull ' + math.pull + ' unit' + (math.pull === 1 ? '' : 's') + ' to screen.</div>'
-    : '';
-  area.innerHTML = '<div class="calc-panel">' +
-    '<div class="calc-case-strip">' + caseBtns + '</div>' +
-    '<div class="sys-card" style="padding:16px;border-top:3px solid var(--crimson)">' +
-      '<div class="sec-label">Units to Screen Practice</div>' +
-      '<h3 style="color:var(--wine);font-size:28px;line-height:1.1;margin-bottom:12px">' + escText(sc.name) + ': ' + escText(sc.patient) + ' patient</h3>' +
-      '<p style="font-size:18px;line-height:1.4;color:var(--warm-grey);margin-bottom:12px">Antibody screen: <strong>' + escText(sc.antibodies.join(', ')) + '</strong>. Needs <strong>' + sc.units + '</strong> ABO/D-compatible RBC unit' + (sc.units === 1 ? '' : 's') + '. Donor population column: <strong>' + escText(CALC_POP_LABELS[sc.pop]) + '</strong> (' + escText(CALC_POP_FULL[sc.pop]) + ').</p>' +
-      '<div class="phase-instr" style="margin-bottom:10px"><strong>Given:</strong> ABO and D are already handled by the blood bank pull. Do not include ABO or D in the denominator.</div>' +
-      '<div class="phase-instr" style="margin-bottom:10px"><strong>Freq vs compatibility:</strong> Frequency is how many donors are antigen-positive. Compatibility is the antigen-negative chance you can actually use. Turn the frequency percent into a decimal, then subtract from 1.</div>' +
-      '<div class="phase-instr" style="font-size:17px;line-height:1.45;margin-bottom:10px">' + escText(sc.note) + '</div>' +
-      '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px 0">' +
-        '<button class="btn btn-ghost" onclick="revealCalc(1)">Show setup</button>' +
-        '<button class="btn btn-primary" onclick="revealCalc(2)">Show answer</button>' +
-        '<button class="btn btn-ghost" onclick="revealCalc(0)">Hide answer</button>' +
-      '</div>' +
-      setup + answer +
-    '</div>' +
-    '<div class="sys-card calc-ref-card">' +
-      '<div class="sec-label calc-ref-title">Reference Frequencies: C / B / A / I / H Only</div>' +
-      '<div class="calc-ref-scroll"><table class="calc-ref-table"><thead><tr><th>System</th><th>Antigen</th><th>C</th><th>B</th><th>A</th><th>I</th><th>H</th></tr></thead><tbody>' + buildCalcReferenceRows() + '</tbody></table></div>' +
-    '</div>' +
-    buildCalcAdminPanel(scenarios) +
-  '</div>';
+  if(product===0)return {error:'A 0% antigen-negative frequency means no suitable units are expected in this donor pool.'};
+  var raw=n/product;
+  if(!Number.isFinite(raw)||raw>Number.MAX_SAFE_INTEGER)return {error:'This estimate is too large to calculate reliably. Check the entered frequencies.'};
+  return {units:n,factors:factors,probability:product,screen:Math.ceil(Number(raw.toPrecision(14)))};
+}
+function updateUnitEstimate(){
+  var el=document.getElementById('unitEstimate');if(!el)return;
+  var result=calculateUnitEstimate(unitCalculator.units,unitCalculator.antibodies.slice(0,unitCalculator.count));
+  if(result.error){el.textContent=result.error;return;}
+  el.innerHTML='<span>Estimated donor units to screen</span><strong>'+result.screen.toLocaleString()+'</strong><div>'+result.units+' ÷ ('+result.factors.map(function(n){return String(n);}).join(' × ')+'), rounded up</div><div>Combined antigen-negative frequency: '+Number((result.probability*100).toPrecision(6))+'%</div>';
 }
 
 function initXmatch() {
@@ -7505,7 +7493,6 @@ function startABOsim() {
   setSimulationShellWidth('860px');
   document.getElementById('aboContent').style.display = 'block';
   document.getElementById('xmContent').style.display  = 'none';
-  document.getElementById('calcContent').style.display = 'none';
   document.getElementById('antigramContent').style.display = 'none';
   document.getElementById('aboSimBtn').className = 'btn btn-primary';
   document.getElementById('xmSimBtn').className  = 'btn btn-ghost';
@@ -7517,7 +7504,6 @@ function startXMsim() {
   setSimulationShellWidth('860px');
   document.getElementById('aboContent').style.display = 'none';
   document.getElementById('xmContent').style.display  = 'block';
-  document.getElementById('calcContent').style.display = 'none';
   document.getElementById('antigramContent').style.display = 'none';
   document.getElementById('xmSimBtn').className  = 'btn btn-primary';
   document.getElementById('aboSimBtn').className = 'btn btn-ghost';
@@ -7531,7 +7517,6 @@ function startAntigramSim() {
   setSimulationShellWidth('1180px');
   document.getElementById('aboContent').style.display = 'none';
   document.getElementById('xmContent').style.display  = 'none';
-  document.getElementById('calcContent').style.display = 'none';
   document.getElementById('antigramContent').style.display = 'block';
   document.getElementById('aboSimBtn').className = 'btn btn-ghost';
   document.getElementById('xmSimBtn').className  = 'btn btn-ghost';
