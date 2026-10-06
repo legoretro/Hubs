@@ -576,6 +576,17 @@ textarea{resize:none;overflow:hidden}
 .bb-unit-calculator{max-width:1000px;margin:0 auto}.bb-unit-calculator h2{color:var(--wine);font-size:28px;margin:8px 0 12px}.bb-unit-calculator p{line-height:1.5}.bb-calc-inputs,.bb-antibody-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:18px 0}.bb-unit-calculator label{display:flex;flex-direction:column;gap:8px;font-size:15px;font-weight:700}.bb-unit-calculator input{width:100%;min-width:0;padding:12px;border:1px solid var(--rose);border-radius:9px;font:inherit;color:var(--dark);background:#fff}.bb-antibody-row{padding:14px;background:var(--blush);border-radius:12px}.bb-calc-help{font-size:13px;color:var(--warm-grey);margin:16px 0}.bb-unit-result{padding:20px;border:1px solid var(--rose);border-radius:12px;background:var(--blush);line-height:1.6}.bb-unit-result strong{display:block;font-size:40px;color:var(--wine)}
 @media(max-width:760px){.site-header{padding:12px;gap:8px;flex-wrap:wrap;position:relative}.site-title{font-size:22px;flex:1}.site-header .site-logo{font-size:25px}.site-header .mls-home-link{order:5;width:100%;font-size:12px}.bb-left-nav{position:relative;top:auto;left:auto;width:auto;margin:10px;flex-direction:row;flex-wrap:nowrap;overflow-x:auto;padding:8px;max-height:none;border-radius:12px}.bb-left-nav .nav-tab{width:auto;flex-shrink:0;padding:10px;font-size:12px}#app>.section{width:100%;margin:0;padding:12px 10px 40px}.bb-welcome{padding:18px}.bb-unit-calculator h2{font-size:23px}.bb-calc-inputs,.bb-antibody-row{gap:10px}.bb-unit-calculator label{font-size:13px}.bb-unit-calculator input{font-size:16px;padding:10px}.bb-antibody-row{padding:10px}}
 @media print{.bb-left-nav{display:none!important}#app>.section{width:100%;margin:0}}
+
+/* One document scroll, compact and proportionate study layout. */
+html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.45}.site-header{position:relative;min-height:72px;padding:12px 20px}.site-title{font-size:clamp(20px,2.2vw,30px)}
+#app{display:grid;grid-template-columns:220px minmax(0,1fr);column-gap:20px;align-items:start}.site-header{grid-column:1/-1}.bb-left-nav{position:static;grid-column:1;grid-row:2;width:auto;max-height:none;overflow:visible;margin:20px 0 20px 16px;padding:12px;gap:7px}.bb-left-nav .nav-tab{font-size:14px;padding:11px 10px;border-radius:9px}
+#app>.section{grid-column:2;grid-row:2;width:auto;min-width:0;margin:0;max-width:none;padding:20px 24px 40px 0}.section-hero{padding:0;margin:0 0 16px}.section-hero h2{font-size:27px!important}.section-hero .hero-emoji{font-size:27px}.sys-card{padding:16px;border-radius:12px;margin-bottom:16px}.bb-welcome{padding:20px}.bb-welcome h1{font-size:28px}.bb-welcome p{font-size:14px}.enc-layout{grid-template-columns:165px minmax(0,1fr);gap:16px}.system-menu{position:static;max-height:none;overflow:visible}.sys-btn{font-size:13px}.sys-content-area{min-width:0}.sys-header h2{font-size:26px!important}
+.bb-unit-calculator{max-width:900px}.bb-unit-calculator h2{font-size:23px}.bb-calc-inputs{grid-template-columns:1fr 1fr 1.2fr;gap:12px;margin:14px 0}.bb-unit-calculator label{font-size:13px;gap:5px}.bb-unit-calculator input,.bb-unit-calculator select{font:inherit;padding:8px;border:1px solid var(--rose);border-radius:7px;min-width:0;width:100%;background:#fff;color:var(--dark)}.bb-antibody-rows{display:grid;grid-template-columns:1fr 1fr;gap:8px}.bb-antibody-row{grid-template-columns:1fr 1fr;align-items:center;margin:0;padding:10px;gap:10px}.bb-auto-frequency{font-size:12px}.bb-unit-result{padding:12px;margin:14px 0;font-size:14px}.bb-unit-result strong{font-size:30px}.bb-frequency-box{margin-top:16px;font-size:12px}.bb-frequency-box summary{font-weight:700;cursor:pointer;margin-bottom:10px}.bb-frequency-box table{width:100%;border-collapse:collapse}.bb-frequency-box th,.bb-frequency-box td{padding:5px 8px;text-align:center;border-bottom:1px solid var(--rose)}.bb-frequency-box thead{background:var(--blush)}
+.bb-math-note{border:1px solid var(--rose);border-radius:12px;padding:20px;max-width:360px;width:calc(100% - 32px);background:#fffcf1;color:#25344a;font-family:'Segoe Print','Bradley Hand','Comic Sans MS',cursive;font-size:17px;line-height:1.5}.bb-math-note::backdrop{background:#0006}.bb-math-note h3{font-size:21px}.bb-math-note p{margin:12px 0}.bb-math-note .btn{float:right;font-family:Arial,sans-serif;font-size:12px}
+.mem-wrap{min-height:0;max-width:440px;margin:0 auto;padding:8px;background:transparent;border:0}.bb-static-antigens{display:block;width:100%;height:auto;max-width:700px;margin:auto}.membrane-card-live{max-width:500px}.rbc-map-scroll,.rbc-map-stage,.rbc-full-map-shell{width:100%!important;height:auto!important;overflow:visible!important}.calc-ref-scroll,.system-menu,.sys-content-area{max-height:none!important;overflow:visible!important}.sim-mode-strip{gap:8px;margin-bottom:16px}.sim-mode-strip .btn{font-size:14px!important;padding:9px 16px!important}.general-table-wrap{overflow-x:auto}.flash-launch{display:none}
+@media(max-width:760px){#app{display:block}.bb-left-nav{margin:10px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));overflow:visible}.bb-left-nav .nav-tab{width:100%;font-size:13px}#app>.section{padding:12px}.enc-layout{display:block}.system-menu{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}.system-menu h3{width:100%;margin:5px 0}.bb-antibody-rows{grid-template-columns:1fr}.bb-calc-inputs{grid-template-columns:1fr 1fr}.bb-calc-inputs label:last-child{grid-column:1/-1}.bb-unit-calculator input,.bb-unit-calculator select{font-size:16px}.bb-welcome h1{font-size:24px}.section-hero h2{font-size:24px!important}.membrane-card-live{max-width:none}}
+
+.flow-canvas{height:auto;min-height:0;max-height:none;overflow-x:auto;overflow-y:visible}.antigram-panel-wrap{overflow-x:auto;overflow-y:visible;max-height:none}.calc-ref-title{position:static}.bb-system-diagram{width:100%;max-width:320px}.bb-antigen-key{text-align:center;font-size:14px;font-weight:600;margin:8px 0}.membrane-card-live{max-width:380px}
 </style>
 </head>
 <body>
@@ -766,7 +777,6 @@ textarea{resize:none;overflow:hidden}
       <div class="sec-label" style="margin-bottom:10px">Encyclopedia PDF</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button class="btn btn-primary btn-sm" onclick="openEncyclopediaExportModal()">Export Encyclopedia</button>
-        <button class="flash-launch" onclick="openFlashcardPractice()">Ready to practice flashcards? Click here.</button>
       </div>
     </div>
     <div class="enc-layout">
@@ -4047,7 +4057,7 @@ function renderSystem(key) {
     <!-- MEMBRANE CARD -->
     <div class="sys-card membrane-card-live" style="border-top:3px solid ${sys.color}">
       <div class="sec-label" style="margin-bottom:10px">RBC Membrane Location</div>
-      ${renderRbcMaker(skey, sys.color)}
+
       <div class="mem-wrap">${buildSystemRbcSVG(skey, sys.color)}</div>
 
     </div>
@@ -4403,7 +4413,6 @@ function renderLesser(area) {
         '1. All antigens are HIGH or LOW incidence only<br>' +
         '2. Antibodies do NOT cause clinically significant HDN or HTR<br>' +
         '3. Antigens are not immunogenic</span></div>' +
-      (isAdmin ? '' : '<div style="font-size:12px;color:var(--warm-grey);margin-bottom:10px;font-style:italic">Log in as Admin to edit this table.</div>') +
       '<div style="overflow-x:auto"><table class="lesser-table">' +
         '<thead>' + head + '</thead>' +
         '<tbody>' + rows + '</tbody>' +
@@ -4462,12 +4471,11 @@ function renderRbcMapViewControls() {
 function renderRbcDiagram() {
   const container = document.getElementById('rbcDiagramContainer');
   rbcMapZoom = clampRbcMapZoom(rbcMapZoom || readSavedRbcMapZoom());
-  container.innerHTML = renderRbcMapAdminActions() + buildFullRbcSVG();
-  initRbcDrag(container);
+  container.innerHTML = buildFullRbcSVG();
 }
 
 function buildFullRbcSVG(options) {
-  return buildDraggableRbcSVG(options);
+  return buildStaticAntigens(RBC_ITEMS, 'RBC membrane overview');
 }
 
 const RBC_ITEMS = [
@@ -5412,20 +5420,23 @@ function rbcSystemFrame(items, minWidth) {
   return { x:x, width:width, labelX:x + 18 };
 }
 
-function buildSystemRbcSVG(systemKey, color, options) {
-  options = options || {};
-  var items = getRbcItems(systemKey);
-  var frame = rbcSystemFrame(items, options.minWidth || (options.exportMode ? 360 : 430));
-  var vbY = options.exportMode ? 38 : 26;
-  var vbH = options.exportMode ? 282 : 334;
-  var svgStyle = options.exportMode ? 'width:100%;max-width:100%;font-family:Georgia,serif;touch-action:none' : 'width:100%;height:295px;max-height:295px;font-family:Georgia,serif;touch-action:none';
-  return '<div style="overflow:hidden;width:100%"><svg id="rbcMembraneSvg" data-rbc-scope="' + escText(systemKey) + '" viewBox="' + frame.x + ' ' + vbY + ' ' + frame.width + ' ' + vbH + '" xmlns="http://www.w3.org/2000/svg" style="' + svgStyle + '">' +
-    rbcCurvedMembraneLayer(color, frame.labelX) +
-    items.map(rbcShape).join('') +
-    '</svg></div>';
+function buildStaticAntigens(items,title) {
+  var cols=Math.ceil(Math.sqrt(items.length)),rows=Math.ceil(items.length/cols),tile=150;
+  var width=cols*tile,height=rows*tile;
+  return '<svg class="bb-static-antigens" viewBox="0 0 '+width+' '+height+'" role="img" aria-label="'+escAttr(title)+'" xmlns="http://www.w3.org/2000/svg"><title>'+escText(title)+'</title>'+items.map(function(item,i){
+    var x=(i%cols)*tile,y=Math.floor(i/cols)*tile;
+    var shape=Object.assign({},item,{label:'',labelPos:'none',scale:.65,mapCopy:false});
+    return '<g transform="translate('+x+' '+y+')"><rect x="4" y="4" width="142" height="142" rx="10" fill="#fffaf7" stroke="#efd0d8"/><text x="75" y="24" text-anchor="middle" font-size="12" font-family="Arial,sans-serif" font-weight="700" fill="'+item.color+'">'+escText(item.label)+'</text><rect x="14" y="85" width="122" height="17" rx="4" fill="#f3d7df"/>'+rbcShape(shape,{locked:true,position:{x:75,y:49,r:0}})+'</g>';
+  }).join('')+'</svg>';
+}
+function buildSystemRbcSVG(systemKey,color,options) {
+  var items=RBC_ITEMS.filter(function(item){return item.system===systemKey;});
+  var antigens=RBC_PRESET_ANTIGENS.filter(function(item){return item.system===systemKey;}).map(function(item){return item.label;});
+  return '<div class="bb-system-diagram">'+buildStaticAntigens(items,(SYSTEMS[systemKey]||{}).name||'Antigen diagram')+(antigens.length?'<p class="bb-antigen-key">'+antigens.map(escText).join(' · ')+'</p>':'')+'</div>';
 }
 
 function initRbcDrag(root) {
+  return; // Educational diagrams are static in all modes.
   var host = root || document.querySelector('.section.active') || document;
   var svg = host.querySelector ? host.querySelector('#rbcMembraneSvg') : null;
   if (!svg) svg = document.getElementById('rbcMembraneSvg');
@@ -6531,6 +6542,8 @@ function applyFlashSession(saved) {
 }
 
 function openFlashcardPractice(cards, forceNew) {
+  return; // Flashcards retired from this hub.
+
   var deck = cards && cards.length ? cards : buildFlashcardDeck();
   if (!deck.length) { showToast('Add Study Reference or Frequency to Memorize content first', true); return; }
   flashQueue = shuffleFlashcards(deck);
@@ -7309,7 +7322,7 @@ function hideAutomationSim() {
 }
 
 function cleanCalcAg(value) {
-  return String(value || '').replace(/^anti[-\s]*/i,'').replace(/[^A-Za-z0-9]/g,'').toLowerCase();
+  return String(value || '').replace(/^anti[-\s]*/i,'').replace(/[^A-Za-z0-9]/g,'');
 }
 
 function parsePct(value) {
@@ -7446,16 +7459,32 @@ function buildCalcAdminPanel(scenarios) {
   '</div>';
 }
 
-var unitCalculator={count:1,units:'',antibodies:Array.from({length:5},function(){return {name:'',negative:''};})};
-function setUnitAntibodyCount(value){
-  unitCalculator.count=Math.max(1,Math.min(5,Math.floor(Number(value)||1)));
-  renderCalcSim();
+var unitCalculator={count:1,units:'',population:'c',antibodies:Array.from({length:5},function(){return {name:''};})};
+function calculatorFrequencies(){
+  var result={};
+  Object.keys(CALC_FREQ_FALLBACK).forEach(function(ag){result[ag]=Object.assign({},CALC_FREQ_FALLBACK[ag]);});
+  ['abo','rh','kell','duffy','kidd','mns','p1pk','lewis','lutheran'].forEach(function(key){
+    getFreqRows(SYSTEMS[key].notes_key).forEach(function(row){
+      var ag=cleanCalcAg(row.ag);if(!ag||ag==='D'||/^(A|B|O|AB)$/.test(ag))return;
+      ['c','b','a','i','h'].forEach(function(pop){var value=String(row[pop]===undefined?'':row[pop]).trim();
+        if(/^\d+(\.\d+)?%?$/.test(value)){var pct=Number(value.replace('%',''));if(pct<=100){if(!result[ag])result[ag]={};result[ag][pop]=pct;}}
+      });
+    });
+  });return result;
 }
-function renderCalcSim() {
+function setUnitAntibodyCount(value){unitCalculator.count=Math.max(1,Math.min(5,Math.floor(Number(value)||1)));renderCalcSim();}
+function renderCalcSim(){
   var area=document.getElementById('calcContent');if(!area)return;
-  area.innerHTML='<div class="bb-unit-calculator sys-card"><div class="sec-label">Blood Bank Math</div><h2>Compatible Unit Calculator</h2><p>Enter your antibody frequencies and the number of units needed to estimate how many donor units to screen.</p><div class="bb-calc-inputs"><label>Number of antibodies (1–5)<input id="unitAntibodyCount" type="number" min="1" max="5" step="1" value="'+unitCalculator.count+'" onchange="setUnitAntibodyCount(this.value)"></label><label>Units needed<input id="unitsNeeded" type="number" min="1" step="1" inputmode="numeric" placeholder="Enter units" value="'+escAttr(unitCalculator.units)+'" oninput="unitCalculator.units=this.value;updateUnitEstimate()"></label></div><div class="bb-antibody-rows">'+unitCalculator.antibodies.slice(0,unitCalculator.count).map(function(item,i){return '<div class="bb-antibody-row"><label>Antibody '+(i+1)+'<input type="text" placeholder="e.g. anti-K" value="'+escAttr(item.name)+'" oninput="unitCalculator.antibodies['+i+'].name=this.value;updateUnitEstimate()"></label><label>Antigen-negative donors (%)<input type="number" min="0" max="100" step="any" inputmode="decimal" placeholder="Enter percentage" value="'+escAttr(item.negative)+'" oninput="unitCalculator.antibodies['+i+'].negative=this.value;updateUnitEstimate()"></label></div>';}).join('')+'</div><p class="bb-calc-help">Use the antigen-negative percentage for each antibody. If your reference lists antigen-positive frequency, subtract it from 100%.</p><div id="unitEstimate" class="bb-unit-result" aria-live="polite"></div><p class="bb-calc-help">Study estimate: assumes independent antigen frequencies and an already ABO/Rh-compatible donor pool. The rounded estimate is not a guarantee of finding enough units.</p></div>';
+  var frequencies=calculatorFrequencies(),keys=Object.keys(frequencies),pop=unitCalculator.population;
+  area.innerHTML='<div class="bb-unit-calculator sys-card"><h2>Compatible Unit Calculator</h2><p>Select antibodies. Frequencies come from the reference table below.</p><div class="bb-calc-inputs"><label>Antibodies (1–5)<input type="number" min="1" max="5" value="'+unitCalculator.count+'" onchange="setUnitAntibodyCount(this.value)"></label><label>Units needed<input id="unitsNeeded" type="number" min="1" step="1" value="'+escAttr(unitCalculator.units)+'" oninput="unitCalculator.units=this.value;updateUnitEstimate()"></label><label>Population<select onchange="unitCalculator.population=this.value;renderCalcSim()">'+Object.keys(CALC_POP_FULL).map(function(p){return '<option value="'+p+'" '+(p===pop?'selected':'')+'>'+escText(CALC_POP_FULL[p])+'</option>';}).join('')+'</select></label></div><div class="bb-antibody-rows">'+unitCalculator.antibodies.slice(0,unitCalculator.count).map(function(item,i){var freq=frequencies[item.name]&&frequencies[item.name][pop];return '<div class="bb-antibody-row"><label>Antibody '+(i+1)+'<select onchange="unitCalculator.antibodies['+i+'].name=this.value;renderCalcSim()"><option value="">Choose antibody</option>'+keys.map(function(ag){return '<option '+(item.name===ag?'selected ':'')+'value="'+escAttr(ag)+'">anti-'+escText(ag)+'</option>';}).join('')+'</select></label><div class="bb-auto-frequency">Frequency: <strong>'+(freq===undefined?'—':freq+'%')+'</strong><br>Antigen-negative donors: <strong>'+(freq===undefined?'—':Number((100-freq).toFixed(6))+'%')+'</strong></div></div>';}).join('')+'</div><div id="unitEstimate" class="bb-unit-result" aria-live="polite"></div><button class="btn btn-ghost" onclick="document.getElementById(\'bbMathExplanation\').showModal()">Explain with two antibodies</button><details class="bb-frequency-box" open><summary>Antigen frequency reference (%)</summary><table><thead><tr><th>Antigen</th>'+Object.keys(CALC_POP_FULL).map(function(p){return '<th title="'+escAttr(CALC_POP_FULL[p])+'">'+p.toUpperCase()+'</th>';}).join('')+'</tr></thead><tbody>'+keys.map(function(ag){return '<tr><th>'+escText(ag)+'</th>'+Object.keys(CALC_POP_FULL).map(function(p){return '<td>'+(frequencies[ag][p]===undefined?'—':frequencies[ag][p])+'</td>';}).join('')+'</tr>';}).join('')+'</tbody></table></details><p class="bb-calc-help">Study estimate; assumes independent frequencies and an ABO/Rh-compatible donor pool.</p></div><dialog id="bbMathExplanation" class="bb-math-note"><button class="btn btn-ghost" onclick="this.closest(\'dialog\').close()">Close</button><h3>Two antibodies · 2 units</h3>'+mathExample(frequencies,pop)+'</dialog>';
   updateUnitEstimate();
 }
+function mathExample(freq,pop){
+  var k=freq.K&&freq.K[pop],e=freq.E&&freq.E[pop];if(k===undefined||e===undefined)return '<p>K and E frequencies are unavailable for this population.</p>';
+  var kn=(100-k)/100,en=(100-e)/100,total=kn*en;
+  return '<p>anti-K: 100 − '+k+' = '+Number((100-k).toFixed(6))+'% negative</p><p>anti-E: 100 − '+e+' = '+Number((100-e).toFixed(6))+'% negative</p><p>'+Number(kn.toFixed(6))+' × '+Number(en.toFixed(6))+' = '+Number(total.toFixed(6))+'</p><p>2 ÷ '+Number(total.toFixed(6))+' = '+(total?(2/total).toFixed(2):'not possible')+'</p><strong>'+(total?'Round up → '+Math.ceil(2/total)+' donor units to screen':'No suitable units expected')+'</strong>';
+}
+
 function calculateUnitEstimate(units,rows){
   var n=Number(units);
   if(!String(units).trim()||!Number.isSafeInteger(n)||n<1)return {error:'Enter a positive whole number of units.'};
@@ -7473,7 +7502,10 @@ function calculateUnitEstimate(units,rows){
 }
 function updateUnitEstimate(){
   var el=document.getElementById('unitEstimate');if(!el)return;
-  var result=calculateUnitEstimate(unitCalculator.units,unitCalculator.antibodies.slice(0,unitCalculator.count));
+  var freq=calculatorFrequencies(),selected=unitCalculator.antibodies.slice(0,unitCalculator.count),names=selected.map(function(x){return x.name;});
+  if(names.some(function(n){return !n;})){el.textContent='Select each antibody and enter the units needed.';return;}
+  if(new Set(names).size!==names.length){el.textContent='Choose each antibody only once.';return;}
+  var result=calculateUnitEstimate(unitCalculator.units,selected.map(function(item){var value=freq[item.name]&&freq[item.name][unitCalculator.population];return {negative:value===undefined?'':String(100-value)};}));
   if(result.error){el.textContent=result.error;return;}
   el.innerHTML='<span>Estimated donor units to screen</span><strong>'+result.screen.toLocaleString()+'</strong><div>'+result.units+' ÷ ('+result.factors.map(function(n){return String(n);}).join(' × ')+'), rounded up</div><div>Combined antigen-negative frequency: '+Number((result.probability*100).toPrecision(6))+'%</div>';
 }
