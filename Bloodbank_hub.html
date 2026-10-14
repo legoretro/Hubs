@@ -587,6 +587,16 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 @media(max-width:760px){#app{display:block}.bb-left-nav{margin:10px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));overflow:visible}.bb-left-nav .nav-tab{width:100%;font-size:13px}#app>.section{padding:12px}.enc-layout{display:block}.system-menu{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}.system-menu h3{width:100%;margin:5px 0}.bb-antibody-rows{grid-template-columns:1fr}.bb-calc-inputs{grid-template-columns:1fr 1fr}.bb-calc-inputs label:last-child{grid-column:1/-1}.bb-unit-calculator input,.bb-unit-calculator select{font-size:16px}.bb-welcome h1{font-size:24px}.section-hero h2{font-size:24px!important}.membrane-card-live{max-width:none}}
 
 .flow-canvas{height:auto;min-height:0;max-height:none;overflow-x:auto;overflow-y:visible}.antigram-panel-wrap{overflow-x:auto;overflow-y:visible;max-height:none}.calc-ref-title{position:static}.bb-system-diagram{width:100%;max-width:320px}.bb-antigen-key{text-align:center;font-size:14px;font-weight:600;margin:8px 0}.membrane-card-live{max-width:380px}
+
+/* BB Hub recovery and diagram workspace */
+.flow-options summary{cursor:pointer;font-weight:700;font-size:12px;padding:8px 0}.flow-options:not([open]) .flow-selection-panel{display:none!important}
+.bb-system-overview{display:grid;grid-template-columns:minmax(220px,380px) minmax(220px,1fr);gap:16px;align-items:stretch}.bb-system-overview .sys-card{max-width:none}.bb-history .timeline{margin-top:14px}.bb-structure-wrap{position:relative;cursor:help;outline-offset:4px}.bb-structure-tooltip{display:none;position:absolute;z-index:10;left:0;right:0;bottom:30px;padding:13px;background:#5a0e20;color:#fff;border-radius:9px;font-size:13px;line-height:1.5;box-shadow:0 4px 20px #0003}.bb-structure-wrap:hover .bb-structure-tooltip,.bb-structure-wrap:focus .bb-structure-tooltip,.bb-structure-wrap.show-structure .bb-structure-tooltip{display:block}.bb-structure-hint{display:block;text-align:center;font-size:11px;color:var(--warm-grey)}
+.bb-calc-inputs{grid-template-columns:1fr 1fr}.bb-math-steps{padding-left:22px}.bb-math-steps li{margin:10px 0}.bb-math-steps b{font-size:inherit}.flow-shell,.flow-builder-card{min-width:0;max-width:100%}.flow-editor-tray{position:relative;top:auto;margin:0 0 12px;box-shadow:none}.flow-diagrams{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}.flow-diagrams select,.flow-diagrams input{max-width:210px;padding:8px;border:1px solid var(--rose);border-radius:8px;font:inherit;background:#fff;color:var(--wine)}.flow-diagrams label{font-weight:700}.flow-canvas{height:65dvh;min-height:330px;max-height:800px;overflow:auto;overscroll-behavior:contain;touch-action:pan-x pan-y;scroll-padding:20px;padding:18px;position:relative}.flow-tree{padding:35px 45px 60px}.flow-link-path{stroke-dasharray:none;stroke-width:2.4;opacity:1}.flow-branch:before,.flow-branch:after{display:none}.flow-branches{gap:34px;margin-top:65px}.flow-edge-row{margin-top:-30px;margin-bottom:16px}.flow-route-label{font:700 11px Arial;fill:#5a0e20;stroke:#fff;stroke-width:5;paint-order:stroke;stroke-linejoin:round}
+@media(max-width:1000px){.bb-system-overview{grid-template-columns:1fr}.bb-system-overview .membrane-card-live{max-width:none}}
+@media(max-width:820px){.flow-branches{grid-auto-flow:column;grid-auto-columns:minmax(210px,max-content);grid-template-columns:none;min-width:max-content}.flow-tree{min-width:max-content;justify-content:center}.flow-node-wrap{min-width:190px;width:auto}.flow-node-row{width:auto;flex-direction:row;align-items:flex-start}.flow-node{max-width:270px;min-width:185px;width:auto}.flow-note-card{width:152px;max-width:152px}.flow-canvas{height:60dvh;min-height:300px}.flow-diagrams{font-size:12px}.flow-diagrams input{width:150px}.bb-calc-inputs label:last-child{grid-column:auto}}
+
+/* Process rectangles and decision diamonds, matching the supplied DAT reference. */
+.flow-tree{display:block;position:relative;padding:0;min-width:0}.flow-tree>.flow-node-wrap{position:absolute;min-width:0;width:auto}.flow-node-row{align-items:center}.flow-node{width:240px;min-width:240px;max-width:240px;min-height:62px;border-radius:7px;padding:12px 15px;font:600 15px/1.3 Arial,sans-serif;box-shadow:0 2px 5px #5a0e2010}.flow-node-kind{display:none}.flow-node-text{position:relative;z-index:1;padding:0;min-height:0}.flow-node.question{width:240px;min-height:112px;display:flex;align-items:center;justify-content:center;background:transparent!important;border:0;padding:26px 42px;border-radius:0}.flow-diamond{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}.flow-diamond polygon{fill:var(--node-fill,#ffd7df);stroke:var(--node-border,#c0173d);stroke-width:2}.flow-node.start,.flow-node.terminal{border-radius:8px}.flow-node.question .flow-node-text{width:100%}.flow-note-card{flex-shrink:0}.flow-node.question .flow-node-tools{right:22px;top:13px}.site-logo:empty,.hero-emoji:empty,.sys-icon:empty{display:none}.flow-legend{font-size:11px;color:var(--warm-grey);margin:8px 0}
 </style>
 </head>
 <body>
@@ -595,11 +605,11 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 <div id="intro" class="blood-intro">
   <div class="lab-window-bg"><span class="lab-scope"></span><span class="lab-rack"></span><span class="lab-flask"></span></div>
   <div class="door-frame">
-    <div class="door left" id="doorLeft"><div style="font-size:clamp(50px,10vw,120px);opacity:.1">🩸</div><div class="door-handle"></div></div>
-    <div class="door right" id="doorRight"><div style="font-size:clamp(50px,10vw,120px);opacity:.1">🩸</div><div class="door-handle"></div></div>
+    <div class="door left" id="doorLeft"><div style="font-size:clamp(50px,10vw,120px);opacity:.1"></div><div class="door-handle"></div></div>
+    <div class="door right" id="doorRight"><div style="font-size:clamp(50px,10vw,120px);opacity:.1"></div><div class="door-handle"></div></div>
   </div>
   <div class="intro-center">
-    <div class="intro-bags">🩸😊🩸</div>
+    <div class="intro-bags"></div>
     <div class="intro-title">Bloody Brilliant</div>
     <div class="intro-sub">Blood Bank Hub</div>
   </div>
@@ -608,7 +618,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 <!-- ADMIN LOGIN MODAL -->
 <div class="modal-overlay" id="adminModal">
   <div class="modal-box">
-    <div style="font-size:32px;margin-bottom:8px">🔐</div>
+    <div style="font-size:32px;margin-bottom:8px"></div>
     <h3>Admin Mode</h3>
     <p>Enter the password to unlock editing</p>
     <input class="modal-input" type="password" id="adminPwInput" placeholder="password" autocomplete="off" maxlength="30"/>
@@ -623,8 +633,8 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 <!-- ENCYCLOPEDIA EXPORT MODAL -->
 <div class="modal-overlay" id="encyExportModal">
   <div class="modal-box ency-export-box">
-    <div style="font-size:28px;text-align:center;margin-bottom:8px">📚</div>
-    <h3>Export Encyclopedia Pages</h3>
+    <div style="font-size:28px;text-align:center;margin-bottom:8px"></div>
+    <h3>Export Blood Groups Pages</h3>
     <p style="text-align:center">Choose one page or print a whole bundle at once.</p>
     <div class="ency-export-actions">
       <button class="ency-export-mini" onclick="setEncyclopediaExportSelection('current')">Current</button>
@@ -646,7 +656,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 <!-- GEL MODAL -->
 <div class="modal-overlay" id="gelModal">
   <div class="modal-box" style="max-width:560px">
-    <div style="font-size:26px;margin-bottom:6px">🧫</div>
+    <div style="font-size:26px;margin-bottom:6px"></div>
     <h3 style="margin-bottom:4px">Gel Card (Column Agglutination)</h3>
     <p style="font-size:12px;color:var(--warm-grey);margin-bottom:14px">Same patient, same antibodies -- gel format. Strong reactions stay high, weaker agglutinates travel lower, and negative cells pellet at the bottom.</p>
     <div id="gelCardContent" style="overflow-x:auto;margin-bottom:14px"></div>
@@ -660,7 +670,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 <!-- RBC BUILDER MODAL -->
 <div class="modal-overlay" id="rbcBuilderModal">
   <div class="modal-box" style="max-width:560px;max-height:90vh;overflow-y:auto">
-    <div style="font-size:28px;margin-bottom:8px">🔬</div>
+    <div style="font-size:28px;margin-bottom:8px"></div>
     <h3>RBC Antigen Builder</h3>
     <p>Create your own membrane pieces. Add small parts on top of other parts, then drag each piece into the exact place. Hold Shift while dragging to rotate.</p>
     <div class="tool-grid">
@@ -747,7 +757,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 <!-- MAIN APP -->
 <div id="app">
   <header class="site-header">
-    <div class="site-logo">🩸</div>
+    <div class="site-logo"></div>
     <div class="site-title">Bloody Brilliant <em>Blood Bank Hub</em></div>
   <a class="mls-home-link" href="index.html">Back to Hub Home</a>
 
@@ -756,27 +766,27 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
     <button class="admin-lock-btn admin-exit-btn" onclick="logoutAdmin()" id="adminExitBtn">Exit Admin</button>
   </header>
     <nav class="nav-tabs bb-left-nav" aria-label="Blood Bank sections">
-      <button class="nav-tab active" onclick="showSection('home',this)">🏠 Welcome</button>
-      <button class="nav-tab" onclick="showSection('encyclopedia',this)">🩸 Encyclopedia</button>
-      <button class="nav-tab" onclick="showSection('rbc-diagram',this)">🔬 RBC Antigens</button>
-      <button class="nav-tab" onclick="showSection('chromosomes',this)">🧬 Chromosome Map</button>
-      <button class="nav-tab" onclick="showSection('crossmatch',this)">🧪 Simulation Lab</button>
-      <button class="nav-tab" onclick="showSection('flowchart',this)">🧭 Flowchart</button>
-      <button class="nav-tab" onclick="showSection('resources',this)">📖 Resources</button>
+      <button class="nav-tab active" onclick="showSection('home',this)">BB Homepage</button>
+      <button class="nav-tab" onclick="showSection('encyclopedia',this)"> Blood Groups</button>
+      <button class="nav-tab" onclick="showSection('rbc-diagram',this)"> RBC Antigens</button>
+      <button class="nav-tab" onclick="showSection('chromosomes',this)"> Chromosome Map</button>
+      <button class="nav-tab" onclick="showSection('crossmatch',this)"> Simulation Lab</button>
+      <button class="nav-tab" onclick="showSection('flowchart',this)"> Flowchart</button>
+      <button class="nav-tab" onclick="showSection('resources',this)"> Resources</button>
     </nav>
 
 <section id="sec-home" class="section active">
-<div class="bb-welcome"><p class="sec-label">Blood Bank • Immunohematology</p><h1>Welcome to the Blood Bank Hub</h1><p>Explore blood groups, study the RBC membrane, and practice at your own pace.</p></div>
+<div class="bb-welcome"><p class="sec-label">Blood Bank • Immunohematology</p><h1>BB Homepage</h1><p>Explore blood groups, study the RBC membrane, and practice at your own pace.</p></div>
 <div id="calcContent"></div></section>
   <!-- ===== ENCYCLOPEDIA ===== -->
   <div id="sec-encyclopedia" class="section">
     <div class="section-hero">
-      <h2><span class="hero-emoji">🩸</span> Blood Group System Encyclopedia</h2>
+      <h2><span class="hero-emoji"></span> Blood Groups</h2>
     </div>
     <div class="sys-card" style="border-top:3px solid var(--crimson);margin-bottom:16px">
-      <div class="sec-label" style="margin-bottom:10px">Encyclopedia PDF</div>
+      <div class="sec-label" style="margin-bottom:10px">Blood Groups PDF</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-primary btn-sm" onclick="openEncyclopediaExportModal()">Export Encyclopedia</button>
+        <button class="btn btn-primary btn-sm" onclick="openEncyclopediaExportModal()">Export Blood Groups</button>
       </div>
     </div>
     <div class="enc-layout">
@@ -804,7 +814,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
   <!-- ===== CHROMOSOME MAP ===== -->
   <div id="sec-chromosomes" class="section">
     <div class="section-hero">
-      <h2><span class="hero-emoji">🧬</span> Blood Group Chromosome Map</h2>
+      <h2><span class="hero-emoji"></span> Blood Group Chromosome Map</h2>
     </div>
     <div class="sys-card sys-card-accent">
       <div class="sec-label" style="margin-bottom:12px">Usual suspect blood group chromosomes only.</div>
@@ -817,7 +827,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
   <!-- ===== RBC ANTIGEN DIAGRAM ===== -->
   <div id="sec-rbc-diagram" class="section">
     <div class="section-hero">
-      <h2><span class="hero-emoji">🔬</span> RBC Antigen Map</h2>
+      <h2><span class="hero-emoji"></span> RBC Antigen Map</h2>
     </div>
     <div class="sys-card sys-card-accent" id="rbcDiagramCard">
       <div class="sec-label" style="margin-bottom:12px">All major blood group antigens shown in their correct membrane location</div>
@@ -827,11 +837,11 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
     <div class="sys-card" style="margin-top:14px;display:none">
       <div class="sec-label">Membrane Location Key</div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-top:8px">
-        <div class="callout blue"><span class="ci">📘</span><span><strong>Carbohydrate</strong><br>ABO, H, P1PK, Lewis</span></div>
-        <div class="callout red"><span class="ci">📕</span><span><strong>Single-pass type I (N-out)</strong><br>MNS, LW, Lutheran, Gerbich</span></div>
-        <div class="callout yellow"><span class="ci">📙</span><span><strong>Single-pass type II (N-in)</strong><br>Kell</span></div>
-        <div class="callout green"><span class="ci">📗</span><span><strong>Multi-pass protein</strong><br>Rh, RHAG, Duffy, Kidd, Diego</span></div>
-        <div style="padding:10px 14px;border-radius:var(--r-sm);background:#f5f0ff;border-left:4px solid #7b3fa0;font-size:13px;color:#3a1060"><span style="font-size:15px">💜</span> <strong>GPI-linked</strong><br>Dombrock, Cartwright, Cromer, JMH</div>
+        <div class="callout blue"><span class="ci"></span><span><strong>Carbohydrate</strong><br>ABO, H, P1PK, Lewis</span></div>
+        <div class="callout red"><span class="ci"></span><span><strong>Single-pass type I (N-out)</strong><br>MNS, LW, Lutheran, Gerbich</span></div>
+        <div class="callout yellow"><span class="ci"></span><span><strong>Single-pass type II (N-in)</strong><br>Kell</span></div>
+        <div class="callout green"><span class="ci"></span><span><strong>Multi-pass protein</strong><br>Rh, RHAG, Duffy, Kidd, Diego</span></div>
+        <div style="padding:10px 14px;border-radius:var(--r-sm);background:#f5f0ff;border-left:4px solid #7b3fa0;font-size:13px;color:#3a1060"><span style="font-size:15px"></span> <strong>GPI-linked</strong><br>Dombrock, Cartwright, Cromer, JMH</div>
       </div>
     </div>
   </div>
@@ -839,14 +849,14 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
   <!-- ===== CROSSMATCH LAB ===== -->
   <div id="sec-crossmatch" class="section">
     <div class="section-hero">
-      <h2><span class="hero-emoji">🧪</span> Simulation Lab</h2>
+      <h2><span class="hero-emoji"></span> Simulation Lab</h2>
     </div>
     <div id="simulationShell" style="max-width:860px;margin:0 auto">
       <div class="sim-mode-strip">
-        <button id="aboSimBtn" class="btn btn-primary" onclick="startABOsim()" style="font-size:15px;padding:12px 28px">🅰️ ABO Typing</button>
-        <button id="xmSimBtn" class="btn btn-ghost" onclick="startXMsim()" style="font-size:15px;padding:12px 28px;border-width:2px">🩸 Crossmatch</button>
-        <button id="antigramSimBtn" class="btn btn-ghost" onclick="startAntigramSim()" style="font-size:15px;padding:12px 28px;border-width:2px">📋 Antigram</button>
-        <button id="automationSimBtn" class="btn btn-ghost" onclick="startAutomationSim()">⚙️ Automation</button>
+        <button id="aboSimBtn" class="btn btn-primary" onclick="startABOsim()" style="font-size:15px;padding:12px 28px"> ABO Typing</button>
+        <button id="xmSimBtn" class="btn btn-ghost" onclick="startXMsim()" style="font-size:15px;padding:12px 28px;border-width:2px"> Crossmatch</button>
+        <button id="antigramSimBtn" class="btn btn-ghost" onclick="startAntigramSim()" style="font-size:15px;padding:12px 28px;border-width:2px"> Antigram</button>
+        <button id="automationSimBtn" class="btn btn-ghost" onclick="startAutomationSim()"> Automation</button>
       </div>
       <div id="aboContent" style="display:block"></div>
       <div id="xmContent" style="display:none"></div>
@@ -858,11 +868,12 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
   <!-- ===== FLOWCHART ===== -->
   <div id="sec-flowchart" class="section">
     <div class="section-hero">
-      <h2><span class="hero-emoji">🧭</span> Blood Bank Flowchart</h2>
+      <h2><span class="hero-emoji"></span> Blood Bank Flowchart</h2>
     </div>
     <div class="flow-shell">
       <div class="sys-card flow-builder-card">
         <div class="flow-editor-tray">
+          <div class="flow-diagrams"><label>Diagram <select id="flowDiagramSelect" onchange="selectFlowDiagram(this.value)"></select></label><span id="flowDiagramCount"></span><button id="flowAddDiagram" class="flow-tool-btn flow-admin-action" onclick="addFlowDiagram()">+ New diagram</button><input id="flowDiagramName" class="flow-admin-action" aria-label="Diagram name" maxlength="80" oninput="renameFlowDiagram(this.value)"><button class="flow-tool-btn flow-admin-action" onclick="deleteFlowDiagram()">Delete diagram</button><button class="flow-tool-btn" onclick="exportAllFlowcharts()">Export all</button></div>
           <div class="flow-preview-head">
             <div>
               <div class="sec-label" style="margin-bottom:3px">Visual flowchart</div>
@@ -876,13 +887,13 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
               <button class="flow-tool-btn" onclick="fitFlowchartForLandscape()">Page Fit</button>
               <button class="flow-tool-btn flow-admin-action" id="flowUndoBtn" onclick="undoFlowchartChange()">Undo</button>
               <button class="flow-tool-btn flow-admin-action" id="flowRedoBtn" onclick="redoFlowchartChange()">Redo</button>
-              <button class="flow-tool-btn primary" onclick="exportFlowchart()">Export</button>
-              <button class="flow-tool-btn flow-admin-action" onclick="resetFlowchartExample()">Reset</button>
+              <button class="flow-tool-btn primary" onclick="exportFlowchart()">Export diagram</button>
+              <button class="flow-tool-btn flow-admin-action" onclick="saveFlowchartNow()">Save diagram</button><button class="flow-tool-btn flow-admin-action" onclick="resetFlowchartExample()">Reset</button>
             </div>
           </div>
-          <div class="flow-selection-panel flow-admin-action" id="flowSelectionPanel"></div>
+          <details class="flow-options flow-admin-action"><summary>Edit selected box or connection</summary><div class="flow-selection-panel" id="flowSelectionPanel"></div></details>
         </div>
-        <div id="flowchartViewport" class="flow-canvas">
+        <div class="flow-legend">Rectangle: action · Diamond: decision · Arrow: next step</div><div id="flowchartViewport" class="flow-canvas">
           <div id="flowchartPreview" onclick="handleFlowPreviewClick(event)"></div>
         </div>
       </div>
@@ -892,7 +903,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
   <!-- ===== RESOURCES ===== -->
   <div id="sec-resources" class="section">
     <div class="section-hero">
-      <h2><span class="hero-emoji">📖</span> Resources and Attribution</h2>
+      <h2><span class="hero-emoji"></span> Resources and Attribution</h2>
     </div>
     <div style="max-width:840px;margin:0 auto">
       <div class="sys-card" style="margin-bottom:14px;border-left:4px solid var(--warn)">
@@ -937,6 +948,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="shared/pdf-export.js?v=20260605-export-fit"></script>
 <script src="safe-supabase-sync.js"></script>
+<script src="shared/bloodbank-flow.js?v=20261014"></script>
 <script>
 // ============================================================
 // CONFIG - SUPABASE + PASSWORD
@@ -990,7 +1002,7 @@ let flowLinkClickTargets = [];
 let flowConnectFromId = null;
 let flowDragJustEnded = false;
 let flowPrintZoom = .58;
-const FLOW_EXPORT_MIN_ZOOM = .16;
+const FLOW_EXPORT_MIN_ZOOM = .04;
 let flowUndoStack = [];
 let flowRedoStack = [];
 let flowIsRestoringHistory = false;
@@ -1044,27 +1056,34 @@ const FLOWCHART_DEFAULT_DATA = {
   }
 };
 
+const DAT_EXAMPLE_DATA={rootId:'dat_order',font:'arial',nodes:{
+  dat_order:{id:'dat_order',type:'terminal',text:'Lab order received / sample received',fillColor:'#ffd7df',borderColor:'#e6a8b8',branches:[{id:'dat_b1',label:'Next',to:'dat_review'}]},
+  dat_review:{id:'dat_review',type:'step',text:'Review sample type and patient age',branches:[{id:'dat_b2',label:'Next',to:'dat_cord'}]},
+  dat_cord:{id:'dat_cord',type:'question',text:'Cord blood sample?',branches:[{id:'dat_b3',label:'No',to:'dat_age'},{id:'dat_b4',label:'Yes',to:'dat_forward'}]},
+  dat_age:{id:'dat_age',type:'question',text:'Age ≤ 4 months?',branches:[{id:'dat_b5',label:'No',to:'dat_tube'},{id:'dat_b6',label:'Yes',to:'dat_gel'}]},
+  dat_forward:{id:'dat_forward',type:'step',text:'Perform Forward Type',branches:[{id:'dat_b7',label:'Next',to:'dat_perform'}]},
+  dat_tube:{id:'dat_tube',type:'step',text:'Age > 4 months / adult\nPerform DAT by Tube',branches:[{id:'dat_b8',label:'Next',to:'dat_positive'}]},
+  dat_gel:{id:'dat_gel',type:'step',text:'Perform DAT by Gel',branches:[{id:'dat_b9',label:'Next',to:'dat_positive'}]},
+  dat_perform:{id:'dat_perform',type:'step',text:'Perform DAT',branches:[{id:'dat_b10',label:'Next',to:'dat_cord_note'}]},
+  dat_cord_note:{id:'dat_cord_note',type:'step',text:'Cord blood: always perform DAT + Forward Type',branches:[{id:'dat_b11',label:'Next',to:'dat_positive'}]},
+  dat_positive:{id:'dat_positive',type:'question',text:'DAT positive?',branches:[{id:'dat_b12',label:'No',to:'dat_no_coating'},{id:'dat_b13',label:'Yes',to:'dat_coating'}]},
+  dat_no_coating:{id:'dat_no_coating',type:'step',text:'No IgG or C3 detected on RBCs',branches:[{id:'dat_b14',label:'Next',to:'dat_negative'}]},
+  dat_negative:{id:'dat_negative',type:'terminal',text:'Negative DAT',fillColor:'#dcf8df',borderColor:'#9dd7a7',branches:[]},
+  dat_coating:{id:'dat_coating',type:'step',text:'Positive DAT = RBCs coated in vivo with IgG and/or complement (C3)',fillColor:'#ffe3c2',borderColor:'#e4b174',branches:[{id:'dat_b15',label:'Next',to:'dat_workup'}]},
+  dat_workup:{id:'dat_workup',type:'step',text:'Blood bank continues serologic workup',branches:[{id:'dat_b16',label:'Next',to:'dat_consider'}]},
+  dat_consider:{id:'dat_consider',type:'step',text:'Consider monospecific DAT, elution, and correlation with history',branches:[{id:'dat_b17',label:'Next',to:'dat_report'}]},
+  dat_report:{id:'dat_report',type:'terminal',text:'Report and interpret results',fillColor:'#dcf8df',borderColor:'#9dd7a7',branches:[]}
+}};
+Object.values(DAT_EXAMPLE_DATA.nodes).forEach(function(n){if(!n.fillColor)n.fillColor='#ffd7df';if(!n.borderColor)n.borderColor='#e6a8b8';});
+
 // ============================================================
 // INTRO ANIMATION
 // ============================================================
 window.addEventListener('load', () => {
-  setTimeout(() => {
-    document.getElementById('doorLeft').classList.add('open');
-    document.getElementById('doorRight').classList.add('open');
-    setTimeout(() => {
-      const intro = document.getElementById('intro');
-      intro.style.opacity = '0'; intro.style.transition = 'opacity .5s';
-      document.getElementById('app').classList.add('visible');
-      setTimeout(() => intro.style.display = 'none', 500);
-    }, 1100);
-  }, 1800);
-  renderCalcSim();
+  document.getElementById('intro').style.display='none';
+  document.getElementById('app').classList.add('visible');
   initApp();
 });
-
-// ============================================================
-// SUPABASE HELPERS
-// ============================================================
 
 // Use the active hub database; keep the retired connection only for read-only recovery.
 const BB_CLOUD_URL='https://rbdvjwipedbxfbedjgoa.supabase.co';
@@ -1075,6 +1094,7 @@ function createBloodBankDoc(options) {
   function copy(x){return JSON.parse(JSON.stringify(x));}
   function same(a,b){return JSON.stringify(a)===JSON.stringify(b);}
   function merge(old,remote,local,path){
+    if(/\.(?:__updatedAt|updatedAt)$/.test(path))return Math.max(Number(remote)||0,Number(local)||0);
     if(same(old,local))return remote;
     if(same(old,remote)||same(local,remote))return local;
     if([old,remote,local].every(function(v){return v&&typeof v==='object'&&!Array.isArray(v);})){
@@ -1084,7 +1104,7 @@ function createBloodBankDoc(options) {
   }
   async function request(path,init){
     var controller=new AbortController(),timeout=setTimeout(function(){controller.abort();},12000);
-    try {var response=await fetch(BB_CLOUD_URL+'/rest/v1/mlsboc_cases'+path,Object.assign({},init,{signal:controller.signal,headers:Object.assign({'apikey':BB_CLOUD_KEY,'Authorization':'Bearer '+BB_CLOUD_KEY,'Content-Type':'application/json'},init&&init.headers)}));if(!response.ok)throw Error('Cloud request failed ('+response.status+')');return await response.json();}finally{clearTimeout(timeout);}
+    try {var response=await fetch(BB_CLOUD_URL+'/rest/v1/mlsboc_cases'+path,Object.assign({},init,{signal:controller.signal,headers:Object.assign({'apikey':BB_CLOUD_KEY,'Authorization':'Bearer '+BB_CLOUD_KEY,'Content-Type':'application/json'},init&&init.headers)}));if(!response.ok){var detail=await response.text();try{detail=JSON.parse(detail).message||detail;}catch(e){}throw Error('Cloud request failed ('+response.status+'): '+detail);}return await response.json();}finally{clearTimeout(timeout);}
   }
   function stash(){try{localStorage.setItem(cacheKey,JSON.stringify({base:base,data:options.getLocal()}));}catch(e){showToast('Device backup unavailable. Keep this page open until saved.',true);}}
   async function read(){var rows=await request('?id=eq.'+rowId+'&select=id,case_data,group_label');return rows[0]||null;}
@@ -1092,10 +1112,10 @@ function createBloodBankDoc(options) {
   return {
     load:async function(){
       var cached=null;try{cached=JSON.parse(localStorage.getItem(cacheKey)||'null');}catch(e){}
-      try{var row=await read(),remote=row?parse(row):(cached?cached.base:options.defaultData());base=copy(remote);loaded=true;
-        var data=cached?merge(cached.base,remote,cached.data,options.id):remote;
+      try{var row=await read(),remote=row?parse(row):(cached?cached.base:options.defaultData());var data=cached?merge(cached.base,remote,cached.data,options.id):remote;
+        base=copy(remote);loaded=true;
         options.setLocal(options.normalize(data));
-      }catch(e){if(cached){base=cached.base;options.setLocal(options.normalize(cached.data));showToast('Recovered your device backup. '+e.message,true);}else throw e;}
+      }catch(e){if(cached){base=copy(cached.base);loaded=true;options.setLocal(options.normalize(cached.data));showToast('Recovered your device backup. '+e.message,true);}else throw e;}
     },
     saveNow:async function(){
       stash();
@@ -1105,13 +1125,14 @@ function createBloodBankDoc(options) {
         var snapshot=copy(options.getLocal()),row=await read(),remote=row?parse(row):copy(base);
         if(!loaded && !same(remote,options.defaultData()))throw Error('Reload to merge the cloud copy before saving.');
         var merged=merge(base,remote,snapshot,options.id),revision='bb-'+Date.now()+'-'+Math.random().toString(36).slice(2);
-        var payload={id:rowId,subject:'hub_state',title:options.id,scenario:'Blood Bank Hub',case_data:JSON.stringify(merged),group_label:revision,is_draft:false};
+        var payload={id:rowId,subject:'hub_state',title:options.id,scenario:'Blood Bank Hub',answer:'',case_data:JSON.stringify(merged),group_label:revision,is_draft:false};
         var path=row?'?id=eq.'+rowId+'&group_label='+ (row.group_label===null?'is.null':'eq.'+encodeURIComponent(row.group_label)):'';
         var saved=await request(path,{method:row?'PATCH':'POST',headers:{Prefer:'return=representation'},body:JSON.stringify(payload)});
         if(!saved.length)throw Error('The cloud copy changed during saving. Retry to merge your edits.');
+        // Merge cloud additions into edits made while this request was in flight.
+        var latest=copy(options.getLocal()),nextLocal=merge(snapshot,merged,latest,options.id);
         base=copy(merged);loaded=true;
-        // Preserve changes made while the request was in flight.
-        if(same(snapshot,options.getLocal()))options.setLocal(options.normalize(merged));
+        if(!same(nextLocal,latest))options.setLocal(options.normalize(nextLocal));
         stash();showToast('Saved to Supabase');return true;
       }catch(e){showToast(e.message+' Your device backup is kept.',true);return false;}finally{pending=false;}
     },
@@ -1291,8 +1312,8 @@ async function initApp() {
     await xmDoc.load();
     if (cachedXmBeforeLoad && Number(cachedXmBeforeLoad.data.updatedAt) > xmUpdatedAt) {
       applyRemoteXm(cachedXmBeforeLoad.data);
-      var replayedLocal = await xmDoc.saveNow({ reason: 'recover-newer-device-copy' });
-      showToast(replayedLocal ? 'Recovered newer cases from this device and synced them.' : 'Recovered newer cases saved on this device.', !replayedLocal);
+      xmDoc.stash();
+      showToast('Recovered newer cases saved on this device. Unlock admin to sync.');
     }
     writeXmLocalCache('cloud-load');
     xmDoc.subscribe();
@@ -1512,8 +1533,8 @@ function showSection(name, el) {
 // ============================================================
 const SYSTEMS = {
 abo: {
-  name:'ABO System', isbt:'ISBT 001 - Chromosome 9q34', icon:'🅰️', color:'#c0173d',
-  pun:'"Type A personality? We take that very literally." 😄',
+  name:'ABO System', isbt:'ISBT 001 - Chromosome 9q34', icon:'', color:'#c0173d',
+  pun:'"Type A personality? We take that very literally." ',
   history:[
     {year:'1900', text:'Karl Landsteiner discovers A, B, and O groups. Nobel Prize 1930.'},
     {year:'1902', text:'Decastello and Sturli describe the AB blood group.'},
@@ -1535,8 +1556,8 @@ abo: {
   mns_split:false
 },
 rh: {
-  name:'Rh System', isbt:'ISBT 004 - Chromosome 1p36.11', icon:'🔴', color:'#7b3fa0',
-  pun:'"D is for Drama and for the most immunogenic antigen in transfusion practice." 💜',
+  name:'Rh System', isbt:'ISBT 004 - Chromosome 1p36.11', icon:'', color:'#7b3fa0',
+  pun:'"D is for Drama and for the most immunogenic antigen in transfusion practice." ',
   history:[
     {year:'1939', text:'Levine and Stetson report the first anti-D in a postpartum woman.'},
     {year:'1940', text:'Landsteiner and Wiener describe the "Rh factor" (actually anti-LW, but the name stuck).'},
@@ -1557,8 +1578,8 @@ rh: {
   mns_split:false
 },
 kell: {
-  name:'Kell System', isbt:'ISBT 006 - Chromosome 7q34', icon:'🔵', color:'#1a5c8c',
-  pun:'"Named after Mrs. Kelleher, whose baby had HDN. We never forgot her." 💙',
+  name:'Kell System', isbt:'ISBT 006 - Chromosome 7q34', icon:'', color:'#1a5c8c',
+  pun:'"Named after Mrs. Kelleher, whose baby had HDN. We never forgot her." ',
   history:[
     {year:'1946', text:'Anti-K discovered, named after Mrs. Kelleher whose infant had severe HDN.'},
     {year:'1949', text:'k (Cellano) described as the high-prevalence antithetical partner to K.'},
@@ -1579,8 +1600,8 @@ kell: {
   mns_split:false
 },
 duffy: {
-  name:'Duffy System', isbt:'ISBT 008 - Chromosome 1q23.2', icon:'🟢', color:'#1a7a5e',
-  pun:'"The blood group that stands between you and malaria. Literally." 🦟',
+  name:'Duffy System', isbt:'ISBT 008 - Chromosome 1q23.2', icon:'', color:'#1a7a5e',
+  pun:'"The blood group that stands between you and malaria. Literally." ',
   history:[
     {year:'1950', text:'Anti-Fya discovered in serum of Mr. Duffy, a hemophiliac.'},
     {year:'1951', text:'Fyb described, establishing the main Fya/Fyb antithetical pair.'},
@@ -1600,8 +1621,8 @@ duffy: {
   mns_split:false
 },
 kidd: {
-  name:'Kidd System', isbt:'ISBT 009 - Chromosome 18q12.3', icon:'🟡', color:'#c47a00',
-  pun:'"Masters of disguise -- evasive in panels, dangerous when missed." 🕵️',
+  name:'Kidd System', isbt:'ISBT 009 - Chromosome 18q12.3', icon:'', color:'#c47a00',
+  pun:'"Masters of disguise -- evasive in panels, dangerous when missed." ',
   history:[
     {year:'1951', text:'Anti-Jka described in serum of Mrs. Kidd; named after her son John Kidd who had HDN.'},
     {year:'1953', text:'Jkb described, completing the main Jka/Jkb antithetical pair.'},
@@ -1620,8 +1641,8 @@ kidd: {
   mns_split:false
 },
 mns: {
-  name:'MNS System', isbt:'ISBT 002 - Chromosome 4q31.21', icon:'🧫', color:'#7a3d00',
-  pun:'"GPA, GPB, and all the sialic acid your RBC can carry." 🍬',
+  name:'MNS System', isbt:'ISBT 002 - Chromosome 4q31.21', icon:'', color:'#7a3d00',
+  pun:'"GPA, GPB, and all the sialic acid your RBC can carry." ',
   history:[
     {year:'1927', text:'Landsteiner and Levine discover M and N antigens.'},
     {year:'1947', text:'Walsh and Montgomery describe S antigen, genetically linked to MN.'},
@@ -1643,8 +1664,8 @@ mns: {
   fields_ss:['antigen_names_ss','null_phenotype_ss','antithetical_pairs_ss','related_substance_ss','cord_cells_ss','destroyed_ss','enhanced_ss','dosage_ss','ig_class_ss','temp_ss','naturally_occurring_ss','complement_ss','hdn_ss','htr_ss','immunogenic_ss']
 },
 p1pk: {
-  name:'P1PK / Globoside System', isbt:'ISBT P1PK 003, Globoside 028 - Chr 22 / Chr 3', icon:'⚫', color:'#555',
-  pun:'"P had an identity crisis and split into two. We understand, P." 😅',
+  name:'P1PK / Globoside System', isbt:'ISBT P1PK 003, Globoside 028 - Chr 22 / Chr 3', icon:'', color:'#555',
+  pun:'"P had an identity crisis and split into two. We understand, P." ',
   history:[
     {year:'1927', text:'Landsteiner and Levine discover P blood group.'},
     {year:'1994', text:'P system split: P1PK (ISBT 003) and Globoside (ISBT 028) become separate systems.'},
@@ -1663,8 +1684,8 @@ p1pk: {
   mns_split:false
 },
 lewis: {
-  name:'Lewis System', isbt:'ISBT 007 - Chromosome 19p13.3', icon:'🌊', color:'#d4860a',
-  pun:'"Lewis antigens -- plasma hitchhikers on the RBC surface." 🚗',
+  name:'Lewis System', isbt:'ISBT 007 - Chromosome 19p13.3', icon:'', color:'#d4860a',
+  pun:'"Lewis antigens -- plasma hitchhikers on the RBC surface." ',
   history:[
     {year:'1946', text:'Mourant discovers anti-Lea in a patient named Lewis.'},
     {year:'1948', text:'Anti-Leb described; initially seemed antithetical to Lea (it is not).'},
@@ -1684,8 +1705,8 @@ lewis: {
   mns_split:false
 },
 lutheran: {
-  name:'Lutheran System', isbt:'ISBT 005 - Chromosome 19q13.32', icon:'🟣', color:'#5a2070',
-  pun:'"19 antigens, linked to the secretor gene, and always the quiet one in the room." 🎵',
+  name:'Lutheran System', isbt:'ISBT 005 - Chromosome 19q13.32', icon:'', color:'#5a2070',
+  pun:'"19 antigens, linked to the secretor gene, and always the quiet one in the room." ',
   history:[
     {year:'1945', text:'Callender et al. discover anti-Lua; named after the antibody maker (Lutheran).'},
     {year:'1956', text:'Lub described as the high-prevalence antithetical partner to Lua.'},
@@ -2070,7 +2091,7 @@ function flowchartDataFromText(text) {
   return normalizeFlowchartData(data);
 }
 
-function getFlowchartData() {
+function getLegacyFlowchartData() {
   if (notesData && Object.prototype.hasOwnProperty.call(notesData, FLOWCHART_DATA_KEY)) {
     const saved = normalizeFlowchartData(notesData[FLOWCHART_DATA_KEY]);
     return isOldStarterFlowchart(saved) ? cloneFlowchartData(FLOWCHART_DEFAULT_DATA) : saved;
@@ -2079,6 +2100,70 @@ function getFlowchartData() {
     return flowchartDataFromText(notesData[FLOWCHART_LEGACY_TEXT_KEY]);
   }
   return cloneFlowchartData(FLOWCHART_DEFAULT_DATA);
+}
+
+let activeFlowDiagramId='main';
+function getFlowDiagrams(){
+  var saved=notesData.__flowcharts;
+  var diagrams=saved && typeof saved==='object' && !Array.isArray(saved) && Object.keys(saved).length?saved:{main:{name:'Diagram 1',data:getLegacyFlowchartData()}};
+  if(!notesData.__datExampleAdded && !diagrams.dat_example && Object.keys(diagrams).length<10){
+    var ids=Object.keys(diagrams),next={};next[ids[0]]=diagrams[ids[0]];
+    next.dat_example={name:'DAT — example workflow',data:cloneFlowchartData(DAT_EXAMPLE_DATA)};
+    ids.slice(1).forEach(function(id){next[id]=diagrams[id];});return next;
+  }
+  return diagrams;
+}
+
+function currentFlowDiagram(){
+  var diagrams=getFlowDiagrams();
+  if(!diagrams[activeFlowDiagramId])activeFlowDiagramId=Object.keys(diagrams)[0];
+  return diagrams[activeFlowDiagramId];
+}
+function getFlowchartData(){return normalizeFlowchartData(currentFlowDiagram().data);}
+function storeFlowchartData(data){
+  var diagrams=getFlowDiagrams();currentFlowDiagram();
+  notesData.__datExampleAdded=true;
+  notesData.__flowcharts=Object.assign({},diagrams,{[activeFlowDiagramId]:{name:diagrams[activeFlowDiagramId].name,data:normalizeFlowchartData(data)}});
+}
+function selectFlowDiagram(id){
+  if(!getFlowDiagrams()[id])return;
+  activeFlowDiagramId=id;flowUndoStack=[];flowRedoStack=[];flowSelectedNodeId=null;flowSelectedLink=null;flowConnectFromId=null;
+  renderFlowchart();fitFlowchart();
+}
+function addFlowDiagram(){
+  if(!isAdmin)return;
+  var diagrams=getFlowDiagrams(),count=Object.keys(diagrams).length;
+  if(count>=10){showToast('You can keep up to 10 diagrams.',true);return;}
+  var id=flowId('diagram'),root=flowId('start');
+  notesData.__datExampleAdded=true;
+  notesData.__flowcharts=Object.assign({},diagrams,{[id]:{name:'Diagram '+(count+1),data:{rootId:root,nodes:{[root]:{id:root,type:'step',text:'Start',branches:[]}}}}});
+  scheduleSave();selectFlowDiagram(id);
+}
+function renameFlowDiagram(value){
+  if(!isAdmin)return;
+  var name=String(value||'').trim().slice(0,80);if(!name)return;
+  storeFlowchartData(getFlowchartData());notesData.__flowcharts[activeFlowDiagramId].name=name;scheduleSave();renderFlowDiagramTabs();
+}
+function deleteFlowDiagram(){
+  if(!isAdmin)return;
+  var diagrams=getFlowDiagrams();if(Object.keys(diagrams).length===1){showToast('Keep at least one diagram.',true);return;}
+  if(!confirm('Delete "'+currentFlowDiagram().name+'"?'))return;
+  notesData.__datExampleAdded=true;
+  notesData.__flowcharts=Object.assign({},diagrams);delete notesData.__flowcharts[activeFlowDiagramId];
+  scheduleSave();selectFlowDiagram(Object.keys(notesData.__flowcharts)[0]);
+}
+function renderFlowDiagramTabs(){
+  var select=document.getElementById('flowDiagramSelect');if(!select)return;
+  var diagrams=getFlowDiagrams();currentFlowDiagram();
+  select.innerHTML=Object.keys(diagrams).map(function(id){return '<option value="'+escAttr(id)+'" '+(id===activeFlowDiagramId?'selected':'')+'>'+escText(diagrams[id].name)+'</option>';}).join('');
+  document.getElementById('flowDiagramName').value=currentFlowDiagram().name;
+  document.getElementById('flowAddDiagram').disabled=Object.keys(diagrams).length>=10;
+  document.getElementById('flowDiagramCount').textContent=Object.keys(diagrams).length+' / 10';
+}
+function exportAllFlowcharts(){
+  var diagrams=getFlowDiagrams();
+  var pages=Object.keys(diagrams).map(function(id){return buildFlowchartExportPage(diagrams[id].data,diagrams[id].name);}).join('');
+  printExportHtml(pages,'Blood Bank Diagrams','landscape',{directPrint:true,defaultScale:1,minScale:1,maxScale:1,allowOrientationToggle:false});
 }
 
 function flowchartHistorySnapshot(data) {
@@ -2113,7 +2198,7 @@ function restoreFlowchartHistory(snapshot) {
     data = cloneFlowchartData(FLOWCHART_DEFAULT_DATA);
   }
   flowIsRestoringHistory = true;
-  notesData[FLOWCHART_DATA_KEY] = data;
+  storeFlowchartData(data);
   scheduleSave();
   if (!flowSelectedNodeId || !data.nodes[flowSelectedNodeId]) flowSelectedNodeId = data.rootId;
   renderFlowchart();
@@ -2145,7 +2230,7 @@ function saveFlowchartData(data, rerender, options) {
   const clean = normalizeFlowchartData(data);
   options = options || {};
   if (!options.skipHistory) rememberFlowchartHistory(clean);
-  notesData[FLOWCHART_DATA_KEY] = clean;
+  storeFlowchartData(clean);
   scheduleSave();
   if (rerender) renderFlowchart();
   else updateFlowMeta(clean);
@@ -2154,9 +2239,9 @@ function saveFlowchartData(data, rerender, options) {
 
 async function saveFlowchartNow() {
   if (!isAdmin) { showToast('Unlock admin first', true); return; }
-  notesData[FLOWCHART_DATA_KEY] = normalizeFlowchartData(getFlowchartData());
+  storeFlowchartData(getFlowchartData());
   const ok = await saveNotesNow('flowchart_manual');
-  showToast(ok ? 'Flowchart saved' : 'Flowchart save failed', !ok);
+  showToast(ok ? 'Flowchart saved online' : 'Online save failed. Your device backup is kept.', !ok);
 }
 
 function resetFlowchartExample() {
@@ -2166,6 +2251,7 @@ function resetFlowchartExample() {
 }
 
 function renderFlowchart() {
+  renderFlowDiagramTabs();
   renderFlowchartPreview(getFlowchartData());
 }
 
@@ -2181,6 +2267,11 @@ function updateFlowMeta(data) {
   meta.textContent = ids.length + ' boxes / ' + questions + ' questions' + (notes ? ' / ' + notes + ' notes' : '');
 }
 
+function renderFlowGraph(data){
+  var flat={rootId:data.rootId,font:data.font,nodes:{}};
+  Object.keys(data.nodes).forEach(function(id){flat.nodes[id]=Object.assign({},data.nodes[id],{branches:[]});});
+  return Object.keys(flat.nodes).map(function(id){return renderFlowNode(flat,id,[],{primaryParent:{}},null);}).join('');
+}
 function renderFlowchartPreview(data) {
   const preview = document.getElementById('flowchartPreview');
   if (!preview) return;
@@ -2190,7 +2281,8 @@ function renderFlowchartPreview(data) {
   else if (!flowSelectedNodeId || !data.nodes[flowSelectedNodeId]) flowSelectedNodeId = data.rootId;
   applyFlowFont(data);
   const layout = buildFlowLayoutInfo(data);
-  preview.innerHTML = '<svg id="flowLinkLayer" class="flow-link-layer" aria-hidden="true"></svg><div class="flow-tree" id="flowStage">' + renderFlowNode(data, data.rootId, [], layout, null) + '</div>';
+  preview.innerHTML = '<svg id="flowLinkLayer" class="flow-link-layer" aria-hidden="true"></svg><div class="flow-tree" id="flowStage">' + renderFlowGraph(data) + '</div>'+flowConnectionMarkers(data);
+  layoutBloodBankFlow(preview);
   applyFlowZoom();
   updateFlowMeta(data);
   renderFlowSelectionPanel(data);
@@ -2204,17 +2296,13 @@ function applyFlowFont(data) {
 }
 
 function buildFlowLayoutInfo(data) {
-  const primaryParent = {};
-  const primaryLabel = {};
-  Object.keys(data.nodes).forEach(function(parentId) {
-    (data.nodes[parentId].branches || []).forEach(function(branch) {
-      const label = String(branch.label || 'Next').trim().toLowerCase();
-      if (!primaryParent[branch.to] || (primaryLabel[branch.to] === 'next' && label !== 'next')) {
-        primaryParent[branch.to] = parentId;
-        primaryLabel[branch.to] = label;
-      }
+  var primaryParent={},seen={};seen[data.rootId]=true;
+  var queue=[data.rootId];
+  for(var i=0;i<queue.length;i++){
+    var id=queue[i];(data.nodes[id].branches||[]).forEach(function(b){
+      if(!data.nodes[b.to]||seen[b.to])return;seen[b.to]=true;primaryParent[b.to]=id;queue.push(b.to);
     });
-  });
+  }
   return {primaryParent:primaryParent};
 }
 
@@ -2246,47 +2334,27 @@ function collectFlowLinkBranches(data) {
   return links;
 }
 
+function flowConnectionMarkers(data){
+  var cross=collectFlowLinkBranches(data);
+  return Object.keys(data.nodes).map(function(id){return data.nodes[id].branches.map(function(b){
+    var isCross=cross.some(function(c){return c.from===id&&c.branchId===b.id;});
+    var selected=flowSelectedLink&&flowSelectedLink.from===id&&flowSelectedLink.branchId===b.id;
+    return '<span hidden class="flow-link-marker" data-flow-link-from="'+escAttr(id)+'" data-flow-link-to="'+escAttr(b.to)+'" data-branch-id="'+escAttr(b.id)+'" data-cross="'+isCross+'" data-label="'+escAttr(b.label)+'" data-selected="'+Boolean(selected)+'"></span>';
+  }).join('');}).join('');
+}
+let flowLinkDrawTimer=null;
 function scheduleFlowLinkDraw(data) {
-  setTimeout(function(){ drawFlowLinkLines(data || getFlowchartData()); }, 80);
+  clearTimeout(flowLinkDrawTimer);
+  flowLinkDrawTimer=setTimeout(function(){drawFlowLinkLines(getFlowchartData());},80);
 }
-
 function drawFlowLinkLines(data) {
-  const layer = document.getElementById('flowLinkLayer');
-  const preview = document.getElementById('flowchartPreview');
-  if (!layer || !preview) return;
-  const links = collectFlowLinkBranches(data || getFlowchartData());
-  flowLinkClickTargets = [];
-  const previewRect = preview.getBoundingClientRect();
-  const width = Math.max(preview.scrollWidth, previewRect.width, 1);
-  const height = Math.max(preview.scrollHeight, previewRect.height, 1);
-  layer.setAttribute('width', width);
-  layer.setAttribute('height', height);
-  layer.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
-  layer.style.width = width + 'px';
-  layer.style.height = height + 'px';
-  const visiblePaths = [];
-  links.forEach(function(link) {
-    const fromEl = document.querySelector('[data-flow-node-id="' + link.from + '"]');
-    const toEl = document.querySelector('[data-flow-node-id="' + link.to + '"]');
-    if (!fromEl || !toEl) return;
-    const a = fromEl.getBoundingClientRect();
-    const b = toEl.getBoundingClientRect();
-    const x1 = a.left + a.width / 2 - previewRect.left;
-    const y1 = a.bottom - previewRect.top;
-    const x2 = b.left + b.width / 2 - previewRect.left;
-    const y2 = b.top - previewRect.top;
-    const midY = y1 + (y2 - y1) / 2;
-    const path = 'M ' + x1.toFixed(1) + ' ' + y1.toFixed(1) + ' C ' + x1.toFixed(1) + ' ' + midY.toFixed(1) + ', ' + x2.toFixed(1) + ' ' + midY.toFixed(1) + ', ' + x2.toFixed(1) + ' ' + y2.toFixed(1);
-    const selected = flowSelectedLink && flowSelectedLink.from === link.from && flowSelectedLink.branchId === link.branchId;
-    visiblePaths.push('<path class="flow-link-path' + (selected ? ' selected' : '') + '" d="' + path + '"/>');
-    flowLinkClickTargets.push({
-      from:link.from,
-      branchId:link.branchId || '',
-      points:sampleFlowConnectorPoints(x1, y1, x1, midY, x2, midY, x2, y2)
-    });
-  });
-  layer.innerHTML = visiblePaths.join('');
+  var preview=document.getElementById('flowchartPreview');if(!preview||!preview.getBoundingClientRect().width)return;
+  preview.querySelectorAll('.flow-link-marker').forEach(function(el){el.remove();});
+  preview.insertAdjacentHTML('beforeend',flowConnectionMarkers(data||getFlowchartData()));
+  layoutBloodBankFlow(preview);
+  flowLinkClickTargets=routeBloodBankFlow(preview);
 }
+window.addEventListener('resize',function(){scheduleFlowLinkDraw();});
 
 function sampleFlowConnectorPoints(x1, y1, cx1, cy1, cx2, cy2, x2, y2) {
   const points = [];
@@ -2357,7 +2425,7 @@ function applyFlowZoom() {
 }
 
 function setFlowchartZoom(value) {
-  flowZoom = Math.max(.18, Math.min(1.4, Number(value) || .64));
+  flowZoom = Math.max(.04, Math.min(1.4, Number(value) || .64));
   applyFlowZoom();
 }
 
@@ -2372,7 +2440,7 @@ function fitFlowchart() {
   flowZoom = 1;
   applyFlowZoom();
   const ratio = (viewport.clientWidth - 36) / Math.max(stage.scrollWidth, 1);
-  setFlowchartZoom(Math.max(.18, Math.min(1, ratio)));
+  setFlowchartZoom(Math.max(.04, Math.min(1, ratio)));
   viewport.scrollLeft = 0;
   viewport.scrollTop = 0;
 }
@@ -2386,7 +2454,7 @@ function fitFlowchartForLandscape() {
   const pageWidth = 10.55 * 96;
   const pageHeight = 7.15 * 96;
   const ratio = Math.min(pageWidth / Math.max(stage.scrollWidth, 1), pageHeight / Math.max(stage.scrollHeight, 1), 1);
-  setFlowchartZoom(Math.max(.18, Math.min(1, ratio)));
+  setFlowchartZoom(Math.max(.04, Math.min(1, ratio)));
   flowPrintZoom = flowZoom;
   const card = document.querySelector('#sec-flowchart .flow-builder-card');
   if (card) card.style.setProperty('--flow-print-zoom', String(flowPrintZoom));
@@ -2823,10 +2891,10 @@ function renderFlowNode(data, id, path, layout, parentId) {
   const cls = 'flow-node ' + type + (id === data.rootId ? ' start' : '') + (id === flowSelectedNodeId ? ' selected' : '');
   const kind = type === 'question' ? 'Question' : (type === 'terminal' ? 'Oval' : (type === 'plain' ? 'Plain' : 'Step'));
   const editable = isAdmin ? 'contenteditable="true" spellcheck="true"' : '';
-  const nodeStyle = 'style="background:' + normalizeFlowFillColor(node.fillColor) + ';border-color:' + normalizeFlowBorderColor(node.borderColor) + '"';
+  const nodeStyle = 'style="--node-fill:' + normalizeFlowFillColor(node.fillColor) + ';--node-border:' + normalizeFlowBorderColor(node.borderColor) + ';background:' + normalizeFlowFillColor(node.fillColor) + ';border-color:' + normalizeFlowBorderColor(node.borderColor) + '"';
   const dropAttrs = isAdmin ? ' ondragover="allowFlowConnectDrop(event,\'' + id + '\')" ondragleave="clearFlowConnectTarget(event)" ondrop="dropFlowConnect(event,\'' + id + '\')"' : '';
   let html = '<div class="flow-node-wrap"><div class="flow-node-row"><div class="' + cls + '" data-flow-node-id="' + escAttr(id) + '" ' + nodeStyle + dropAttrs + (isAdmin ? ' onclick="selectFlowNode(\'' + id + '\')"' : '') + '>' +
-    '<div class="flow-node-kind">' + escText(kind) + '</div>' +
+    (type==='question'?'<svg class="flow-diamond" viewBox="0 0 240 112" preserveAspectRatio="none" aria-hidden="true"><polygon points="120,2 238,56 120,110 2,56"/></svg>':'')+'<div class="flow-node-kind">' + escText(kind) + '</div>' +
     '<div class="flow-node-text flow-editable" data-placeholder="' + (type === 'question' ? 'Type a question' : 'Type a step') + '" ' + editable +
     (isAdmin ? ' oninput="updateFlowNodeText(\'' + id + '\',this.textContent)"' : '') + '>' + escText(node.text || '') + '</div>';
   if (isAdmin) {
@@ -3993,7 +4061,7 @@ function renderGeneral(area) {
       <div class="general-actions">
         ${isAdmin ? '<button class="add-row-btn" onclick="addGeneralComparisonRow()">+ Add comparison row</button>' : ''}
         ${isAdmin ? '<button class="add-row-btn" onclick="addGeneralComparisonColumn()">+ Add comparison column</button>' : ''}
-        ${isAdmin ? '<button class="add-row-btn" onclick="syncGeneralComparisonFromEncyclopedia()">Sync from encyclopedia</button>' : ''}
+        ${isAdmin ? '<button class="add-row-btn" onclick="syncGeneralComparisonFromEncyclopedia()">Sync from Blood Groups</button>' : ''}
         <div class="general-export-group">
           <div class="general-export-group-label">With answers</div>
           <button class="add-row-btn" onclick="exportGeneralComparisonPage('main')">Export General Comparison</button>
@@ -4054,6 +4122,7 @@ function renderSystem(key) {
       </div>
     </div>
 
+    <div class="bb-system-overview">
     <!-- MEMBRANE CARD -->
     <div class="sys-card membrane-card-live" style="border-top:3px solid ${sys.color}">
       <div class="sec-label" style="margin-bottom:10px">RBC Membrane Location</div>
@@ -4062,6 +4131,8 @@ function renderSystem(key) {
 
     </div>
 
+    <div class="sys-card history-card bb-history" style="border-top:3px solid ${sys.color}"><div class="sec-label">History</div><div class="timeline">${histHTML}</div></div>
+    </div>
     <!-- ANTIGEN FREQUENCIES -->
     <div class="sys-card freq-card" style="border-top:3px solid ${sys.color}">
       <div class="sec-label" style="margin-bottom:8px">Antigen Frequencies (% Occurrence)</div>
@@ -4091,11 +4162,7 @@ function renderSystem(key) {
       ${labNotesHTML}
     </div>
 
-    <!-- HISTORY CARD -->
-    <div class="sys-card history-card" style="border-top:3px solid ${sys.color}">
-      <div class="sec-label">History</div>
-	      <div class="timeline">${histHTML}</div>
-	    </div>`;
+    `;
   autoGrowTextAreas(area);
   setTimeout(function(){ initRbcDrag(area); }, 0);
 }
@@ -4404,11 +4471,11 @@ function renderLesser(area) {
 
   area.innerHTML =
     '<div class="sys-card" style="border-top:3px solid #888">' +
-      '<div class="sys-header"><div class="sys-icon">🔍</div><div>' +
+      '<div class="sys-header"><div class="sys-icon"></div><div>' +
         '<div class="sys-name" style="color:#666">Lesser-Known Blood Group Systems</div>' +
         '<div class="sys-isbt">Editable rows and columns. Add only what you need for your review table.</div>' +
       '</div></div>' +
-      '<div class="callout blue" style="margin-bottom:14px"><span class="ci">📌</span>' +
+      '<div class="callout blue" style="margin-bottom:14px"><span class="ci"></span>' +
         '<span><strong>3 Reasons a system is not on the antigram:</strong><br>' +
         '1. All antigens are HIGH or LOW incidence only<br>' +
         '2. Antibodies do NOT cause clinically significant HDN or HTR<br>' +
@@ -5432,7 +5499,8 @@ function buildStaticAntigens(items,title) {
 function buildSystemRbcSVG(systemKey,color,options) {
   var items=RBC_ITEMS.filter(function(item){return item.system===systemKey;});
   var antigens=RBC_PRESET_ANTIGENS.filter(function(item){return item.system===systemKey;}).map(function(item){return item.label;});
-  return '<div class="bb-system-diagram">'+buildStaticAntigens(items,(SYSTEMS[systemKey]||{}).name||'Antigen diagram')+(antigens.length?'<p class="bb-antigen-key">'+antigens.map(escText).join(' · ')+'</p>':'')+'</div>';
+  var structure=systemKey==='rh'?'Intrinsic membrane proteins (RhD/RhCE, not glycosylated), associated with RhAG glycoprotein.':getNote((SYSTEMS[systemKey]||{}).notes_key||systemKey,'antigen_structure');
+  return '<div class="bb-structure-wrap" tabindex="0" onclick="this.classList.toggle(\'show-structure\')" aria-label="'+escAttr('Antigen Structure: '+structure)+'"><div class="bb-system-diagram">'+buildStaticAntigens(items,(SYSTEMS[systemKey]||{}).name||'Antigen diagram')+(antigens.length?'<p class="bb-antigen-key">'+antigens.map(escText).join(' · ')+'</p>':'')+'</div><div class="bb-structure-tooltip" role="tooltip"><b>Antigen Structure</b><br>'+escText(structure||'Add antigen structure in the study reference.')+'</div><span class="bb-structure-hint">Hover or tap for antigen structure</span></div>';
 }
 
 function initRbcDrag(root) {
@@ -6623,7 +6691,7 @@ function renderFlashSelect() {
   var options = flashQueue.map(function(card, i) {
     var state = flashResults[card.id] || '';
     var optionClass = state === 'done' ? ' class="flash-option-done"' : (state === 'wrong' ? ' class="flash-option-wrong"' : '');
-    var mark = state === 'done' ? '✅ ' : (state === 'wrong' ? '❌ ' : '');
+    var mark = state === 'done' ? ' ' : (state === 'wrong' ? ' ' : '');
     return '<option value="' + i + '"' + optionClass + (i === flashIndex ? ' selected' : '') + '>' + mark + 'Flashcard ' + (i + 1) + '</option>';
   }).join('');
   return '<label class="flash-card-picker"><span>Flashcard #</span><select class="' + selectClass + '" onchange="goToFlashcard(this.value)">' + options + '</select></label>';
@@ -6656,7 +6724,7 @@ function renderFlashcardPractice() {
   var root=document.getElementById('flashcardPracticeRoot'), card=currentFlashcard();
   if (!root) return;
   if (!card) { root.innerHTML='<div class="bb-flash"><h3>Round complete</h3><button class="btn btn-primary" onclick="restartFlashcards()">Start a fresh shuffle</button></div>'; return; }
-  root.innerHTML='<div class="bb-flash"><div class="bb-flash-meta"><span>'+exportText(card.system)+' · '+exportText(card.category)+'</span><span>'+(flashIndex+1)+' / '+flashQueue.length+'</span></div><div class="bb-flash-mascot">'+flashRbcSvg(flashMood)+'</div><div class="bb-flash-body"><div class="sec-label">'+(flashRevealed?'Answer':'Question')+'</div><div class="bb-flash-text">'+exportText(flashRevealed?card.answer:card.question)+'</div></div><div class="bb-flash-controls"><button class="btn btn-ghost" onclick="goToRelativeFlashcard(-1)" '+(flashIndex===0?'disabled':'')+'>← Previous</button><button class="btn btn-primary" onclick="toggleFlashReveal()">'+(flashRevealed?'Show question':'Flip to answer')+'</button><button class="btn btn-ghost" onclick="goToRelativeFlashcard(1)" '+(flashIndex===flashQueue.length-1?'disabled':'')+'>Next →</button></div><div class="bb-flash-controls"><button class="btn btn-ghost" onclick="restartFlashcards()">Shuffle</button>'+(flashRevealed?'<button class="btn btn-ghost" onclick="markFlashcard(\'wrong\')">Review again</button><button class="btn btn-ghost" onclick="markFlashcard(\'done\')">Got it ✓</button>':'')+'</div></div>';
+  root.innerHTML='<div class="bb-flash"><div class="bb-flash-meta"><span>'+exportText(card.system)+' · '+exportText(card.category)+'</span><span>'+(flashIndex+1)+' / '+flashQueue.length+'</span></div><div class="bb-flash-mascot">'+flashRbcSvg(flashMood)+'</div><div class="bb-flash-body"><div class="sec-label">'+(flashRevealed?'Answer':'Question')+'</div><div class="bb-flash-text">'+exportText(flashRevealed?card.answer:card.question)+'</div></div><div class="bb-flash-controls"><button class="btn btn-ghost" onclick="goToRelativeFlashcard(-1)" '+(flashIndex===0?'disabled':'')+'>← Previous</button><button class="btn btn-primary" onclick="toggleFlashReveal()">'+(flashRevealed?'Show question':'Flip to answer')+'</button><button class="btn btn-ghost" onclick="goToRelativeFlashcard(1)" '+(flashIndex===flashQueue.length-1?'disabled':'')+'>Next →</button></div><div class="bb-flash-controls"><button class="btn btn-ghost" onclick="restartFlashcards()">Shuffle</button>'+(flashRevealed?'<button class="btn btn-ghost" onclick="markFlashcard(\'wrong\')">Review again</button><button class="btn btn-ghost" onclick="markFlashcard(\'done\')">Got it </button>':'')+'</div></div>';
 }
 
 function beginFlashSwipe(e) {
@@ -6768,20 +6836,18 @@ function buildStudyExportPage() {
   return '<section class="page compact-export"><h1>Blood Group Study References</h1><div class="compact-grid">' + cards + '</div></section>';
 }
 
-function buildFlowchartExportPage() {
-  var data = normalizeFlowchartData(getFlowchartData());
+function buildFlowchartExportPage(input, name) {
+  var data = normalizeFlowchartData(input || getFlowchartData());
+  name = name || currentFlowDiagram().name;
   var oldAdmin = isAdmin;
   var oldSelected = flowSelectedNodeId;
   isAdmin = false;
   flowSelectedNodeId = null;
-  var links = collectFlowLinkBranches(data);
-  var markers = links.map(function(link) {
-    return '<span class="flow-link-marker" data-flow-link-from="' + escAttr(link.from) + '" data-flow-link-to="' + escAttr(link.to) + '"></span>';
-  }).join('');
-  var tree = '<svg class="flow-link-layer" aria-hidden="true"></svg><div class="flow-tree">' + renderFlowNode(data, data.rootId, [], buildFlowLayoutInfo(data), null) + '</div>' + markers;
+  var markers = flowConnectionMarkers(data);
+  var tree = '<svg class="flow-link-layer" aria-hidden="true"></svg><div class="flow-tree">' + renderFlowGraph(data) + '</div>' + markers;
   isAdmin = oldAdmin;
   flowSelectedNodeId = oldSelected;
-  return '<section class="page flow-export-page" style="--flow-export-zoom:' + flowPrintZoom + ';--flow-font-family:' + escAttr(flowFontStack(data.font)) + '"><div class="flow-export-wrap">' + tree + '</div></section>';
+  return '<section class="page flow-export-page" style="--flow-export-zoom:' + flowPrintZoom + ';--flow-font-family:' + escAttr(flowFontStack(data.font)) + '"><h2 class="flow-export-title">'+escText(name)+'</h2><div class="flow-export-wrap">' + tree + '</div></section>';
 }
 
 function buildExportHtml(content, title, orientation, scale) {
@@ -6810,8 +6876,9 @@ function buildExportHtml(content, title, orientation, scale) {
   var flowExportScript = content.indexOf('flow-export-page') >= 0 ? '<scr' + 'ipt>' +
     '(function(){' +
     'function nodeById(wrap,id){var nodes=wrap.querySelectorAll("[data-flow-node-id]");for(var i=0;i<nodes.length;i++){if(nodes[i].getAttribute("data-flow-node-id")===id)return nodes[i];}return null;}' +
-    'function fit(wrap){var page=wrap.closest(".flow-export-page");var tree=wrap.querySelector(".flow-tree");if(!page||!tree)return;if(page)page.style.setProperty("--flow-export-zoom","1");var rect=wrap.getBoundingClientRect();var treeRect=tree.getBoundingClientRect();var aw=Math.max(wrap.clientWidth,rect.width,1);var ah=Math.max(wrap.clientHeight,rect.height,1);var cw=Math.max(tree.scrollWidth,tree.offsetWidth,treeRect.width,1);var ch=Math.max(tree.scrollHeight,tree.offsetHeight,treeRect.height,1);var scale=Math.min(1,(aw-8)/cw,(ah-8)/ch);if(!isFinite(scale)||scale<=0)scale=.58;scale=Math.max(.16,Math.min(1,scale*.98));page.style.setProperty("--flow-export-zoom",String(scale));}' +
-    'function drawOne(wrap){if(!wrap)return;fit(wrap);var layer=wrap.querySelector(".flow-link-layer");if(!layer)return;var markers=[].slice.call(wrap.querySelectorAll(".flow-link-marker"));var rect=wrap.getBoundingClientRect();var w=Math.max(wrap.scrollWidth,rect.width,1);var h=Math.max(wrap.scrollHeight,rect.height,1);layer.setAttribute("width",w);layer.setAttribute("height",h);layer.setAttribute("viewBox","0 0 "+w+" "+h);layer.style.width=w+"px";layer.style.height=h+"px";layer.innerHTML=markers.map(function(m){var from=nodeById(wrap,m.getAttribute("data-flow-link-from"));var to=nodeById(wrap,m.getAttribute("data-flow-link-to"));if(!from||!to)return "";var a=from.getBoundingClientRect();var b=to.getBoundingClientRect();var x1=a.left+a.width/2-rect.left;var y1=a.bottom-rect.top;var x2=b.left+b.width/2-rect.left;var y2=b.top-rect.top;var mid=y1+(y2-y1)/2;var d="M "+x1.toFixed(1)+" "+y1.toFixed(1)+" C "+x1.toFixed(1)+" "+mid.toFixed(1)+", "+x2.toFixed(1)+" "+mid.toFixed(1)+", "+x2.toFixed(1)+" "+y2.toFixed(1);return "<path class=\\"flow-link-path\\" d=\\""+d+"\\"/>";}).join("");}' +
+    'function fit(wrap){var page=wrap.closest(".flow-export-page");var tree=wrap.querySelector(".flow-tree");if(!page||!tree)return;if(page)page.style.setProperty("--flow-export-zoom","1");var rect=wrap.getBoundingClientRect();var treeRect=tree.getBoundingClientRect();var aw=Math.max(wrap.clientWidth,rect.width,1);var ah=Math.max(wrap.clientHeight,rect.height,1);var cw=Math.max(tree.scrollWidth,tree.offsetWidth,treeRect.width,1);var ch=Math.max(tree.scrollHeight,tree.offsetHeight,treeRect.height,1);var scale=Math.min(1,(aw-8)/cw,(ah-8)/ch);if(!isFinite(scale)||scale<=0)scale=.58;scale=Math.max(.04,Math.min(1,scale*.98));page.style.setProperty("--flow-export-zoom",String(scale));}' +
+    layoutBloodBankFlow.toString() + routeBloodBankFlow.toString() +
+    'function drawOne(wrap){if(!wrap)return;layoutBloodBankFlow(wrap);fit(wrap);routeBloodBankFlow(wrap);}' +
     'function draw(){[].slice.call(document.querySelectorAll(".flow-export-wrap")).forEach(drawOne);}' +
     'if(document.readyState==="complete")setTimeout(draw,80);else window.addEventListener("load",function(){setTimeout(draw,80);});' +
     '})();' +
@@ -6833,6 +6900,9 @@ function buildExportHtml(content, title, orientation, scale) {
     '.map-page{max-width:' + pageMax + ';height:' + mapPageHeight + ';overflow:hidden}.map-page h1{font-size:16px;padding:0;margin:0 0 .06in}.map-print{height:' + mapPrintHeight + ';overflow:hidden;display:flex;align-items:center;justify-content:center}.map-print>div{width:100%!important;height:100%!important;overflow:hidden!important}.map-print svg{width:100%!important;max-width:100%!important;min-width:0!important;height:100%!important;max-height:' + mapSvgMaxHeight + '!important}.map-rbc .map-print svg text{font-size:10px!important}.map-chrom .map-print{align-items:flex-start}svg{max-width:100%;height:auto}' +
     '.flow-export-page{max-width:' + flowExportWidth + ';height:' + flowExportHeight + ';overflow:hidden;padding:0}.flow-export-wrap{position:relative;height:' + flowExportHeight + ';overflow:hidden;display:flex;align-items:flex-start;justify-content:center}.flow-export-wrap .flow-link-layer{position:absolute;left:0;top:0;z-index:0;pointer-events:none;overflow:visible}.flow-export-wrap .flow-link-path{fill:none;stroke:#c0173d;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:7 5}.flow-export-wrap .flow-link-marker{display:none}.flow-export-wrap .flow-tree{position:relative;z-index:1;display:flex;justify-content:center;min-width:max-content;padding:0;zoom:var(--flow-export-zoom,.58);font-family:var(--flow-font-family,Georgia,serif)}.flow-export-wrap .flow-node-wrap{display:flex;flex-direction:column;align-items:center;min-width:132px}.flow-export-wrap .flow-node-row{display:flex;align-items:flex-start;justify-content:center;gap:5px}.flow-export-wrap .flow-node{position:relative;max-width:166px;min-width:126px;background:#fff;border:2px solid #9a8d92;border-radius:10px;padding:7px 8px;text-align:center;color:#1e0d10;font-family:var(--flow-font-family,Georgia,serif);font-size:16px;line-height:1.12;font-weight:800;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word;box-shadow:0 3px 8px rgba(140,10,38,.08)}.flow-export-wrap .flow-node.question{border-radius:6px}.flow-export-wrap .flow-node.terminal,.flow-export-wrap .flow-node.start{border-radius:999px;color:#5a0e20}.flow-export-wrap .flow-node.plain{border-radius:3px}.flow-export-wrap .flow-node.repeat{border-style:dashed;color:#7a6468}.flow-export-wrap .flow-node-kind{font-size:7px;text-transform:uppercase;letter-spacing:.8px;color:#7a6468;font-weight:900;margin-bottom:2px}.flow-export-wrap .flow-node.question .flow-node-kind{color:#9b5b00}.flow-export-wrap .flow-node-text{min-height:18px;padding:1px 2px;max-width:100%;overflow-wrap:anywhere;word-break:break-word}.flow-export-wrap .flow-note-card{width:88px;min-height:50px;border:1px solid rgba(90,14,32,.16);border-radius:6px;background:#fff4a8;color:#4a3038;padding:6px 6px;font-family:var(--flow-font-family,Georgia,serif);font-size:9.5px;line-height:1.12;text-align:left;box-shadow:0 3px 8px rgba(90,14,32,.1);transform:rotate(-1.4deg)}.flow-export-wrap .flow-note-card:before{content:"";display:block;width:28px;height:6px;margin:-9px auto 3px;border-radius:999px;background:rgba(255,255,255,.72);box-shadow:0 1px 2px rgba(90,14,32,.1)}.flow-export-wrap .flow-branches{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(136px,max-content);gap:8px;margin-top:22px;align-items:start}.flow-export-wrap .flow-branch{position:relative;display:flex;flex-direction:column;align-items:center}.flow-export-wrap .flow-branch:before{content:"";position:absolute;top:-20px;left:50%;width:2px;height:16px;background:#f7c5d0}.flow-export-wrap .flow-branch:after{content:"";position:absolute;top:-20px;left:0;right:0;height:2px;background:#f7c5d0}.flow-export-wrap .flow-branch:first-child:after{left:50%}.flow-export-wrap .flow-branch:last-child:after{right:50%}.flow-export-wrap .flow-branch:only-child:after{display:none}.flow-export-wrap .flow-edge-row{display:flex;align-items:center;justify-content:center;gap:4px;position:relative;z-index:1;margin-top:-10px;margin-bottom:5px}.flow-export-wrap .flow-edge-label{position:relative;z-index:1;margin:0;border:1px solid #f7c5d0;border-radius:999px;background:#fff;color:#5a0e20;padding:2px 7px;font-family:var(--flow-font-family,Georgia,serif);font-size:10px;font-weight:900;letter-spacing:.35px;text-transform:uppercase;box-shadow:0 2px 6px rgba(140,10,38,.08)}.flow-export-wrap .flow-edge-label.yes{background:#d4f5e8;color:#1a8c5c;border-color:#1a8c5c}.flow-export-wrap .flow-edge-label.no{background:#fce8ed;color:#c0173d;border-color:#c0173d}.flow-export-wrap .flow-node-tools,.flow-export-wrap .flow-selection-panel,.flow-export-wrap button{display:none!important}' +
     '.flow-export-page{width:' + flowExportWidth + ';max-width:' + flowExportWidth + ';height:' + flowExportHeight + ';max-height:' + flowExportHeight + ';overflow:hidden}.flow-export-wrap{height:' + flowExportHeight + ';max-height:' + flowExportHeight + ';width:100%;overflow:hidden}.flow-export-wrap .flow-tree{transform-origin:top center}.flow-export-wrap .flow-node,.flow-export-wrap .flow-note-card,.flow-export-wrap .flow-edge-label{box-shadow:none!important;text-shadow:none!important;filter:none!important}.flow-export-wrap .flow-node.selected,.flow-export-wrap .flow-node.connect-target{box-shadow:none!important;filter:none!important}.flow-export-wrap .flow-link-path{stroke-width:3;stroke-dasharray:8 5}.flow-export-wrap .flow-branch:before{width:3px}.flow-export-wrap .flow-branch:after{height:3px}.flow-export-wrap .flow-edge-label.positive{background:#d4f5e8;color:#1a8c5c;border-color:#1a8c5c}.flow-export-wrap .flow-note-card{position:relative;width:128px;min-height:58px;border:2px solid rgba(90,14,32,.18);border-left:5px solid #d4860a;border-radius:8px;background:#fff4a8;color:#4a3038;padding:6px 7px;font-size:16px;line-height:1.12;text-align:left;transform:none}.flow-export-wrap .flow-note-card:before{content:"NOTE";display:inline-block;width:auto;height:auto;margin:0 0 4px;border-radius:999px;background:rgba(255,255,255,.72);color:#7a6468;padding:2px 6px;font-size:7px;line-height:1;font-weight:900;letter-spacing:.7px;box-shadow:none}.flow-export-wrap .flow-note-card:after{content:"";position:absolute;left:-19px;top:22px;width:19px;border-top:3px dotted #1a5c8c}' +
+'.flow-export-wrap .flow-branch:before,.flow-export-wrap .flow-branch:after{display:none}.flow-export-wrap .flow-link-path{stroke-dasharray:none;stroke-width:1.5}.flow-export-wrap .flow-branches{margin-top:48px;gap:20px}.flow-export-wrap .flow-tree{padding:18px 24px 24px}.flow-export-title{font:700 16px Arial;margin:0 0 8px;color:#5a0e20}.flow-export-wrap{height:calc('+flowExportHeight+' - 30px);max-height:calc('+flowExportHeight+' - 30px)}.flow-route-label{font:700 9px Arial;fill:#5a0e20;stroke:white;stroke-width:3;paint-order:stroke}' +
+        ' /* Process rectangles and decision diamonds, matching the supplied DAT reference. */ .flow-tree{display:block;position:relative;padding:0;min-width:0}.flow-tree>.flow-node-wrap{position:absolute;min-width:0;width:auto}.flow-node-row{align-items:center}.flow-node{width:240px;min-width:240px;max-width:240px;min-height:62px;border-radius:7px;padding:12px 15px;font:600 15px/1.3 Arial,sans-serif;box-shadow:0 2px 5px #5a0e2010}.flow-node-kind{display:none}.flow-node-text{position:relative;z-index:1;padding:0;min-height:0}.flow-node.question{width:240px;min-height:112px;display:flex;align-items:center;justify-content:center;background:transparent!important;border:0;padding:26px 42px;border-radius:0}.flow-diamond{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}.flow-diamond polygon{fill:var(--node-fill,#ffd7df);stroke:var(--node-border,#c0173d);stroke-width:2}.flow-node.start,.flow-node.terminal{border-radius:8px}.flow-node.question .flow-node-text{width:100%}.flow-note-card{flex-shrink:0}.flow-node.question .flow-node-tools{right:22px;top:13px}.site-logo:empty,.hero-emoji:empty,.sys-icon:empty{display:none}.flow-legend{font-size:11px;color:var(--warm-grey);margin:8px 0} ' +
+    '/* Process rectangles and decision diamonds, matching the supplied DAT reference. */ :is(#flowchartPreview,.flow-export-wrap) .flow-tree{display:block;position:relative;padding:0;min-width:0}:is(#flowchartPreview,.flow-export-wrap) .flow-tree>.flow-node-wrap{position:absolute;min-width:0;width:auto}.flow-node-row{align-items:center}:is(#flowchartPreview,.flow-export-wrap) .flow-node{width:240px;min-width:240px;max-width:240px;min-height:62px;border-radius:7px;padding:12px 15px;font:600 15px/1.3 Arial,sans-serif;box-shadow:0 2px 5px #5a0e2010}.flow-node-kind{display:none}.flow-node-text{position:relative;z-index:1;padding:0;min-height:0}:is(#flowchartPreview,.flow-export-wrap) .flow-node.question{width:240px;min-height:112px;display:flex;align-items:center;justify-content:center;background:transparent!important;border:0;padding:26px 42px;border-radius:0}.flow-diamond{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}.flow-diamond polygon{fill:var(--node-fill,#ffd7df);stroke:var(--node-border,#c0173d);stroke-width:2}:is(#flowchartPreview,.flow-export-wrap) .flow-node.start,:is(#flowchartPreview,.flow-export-wrap) .flow-node.terminal{border-radius:8px}:is(#flowchartPreview,.flow-export-wrap) .flow-node.question .flow-node-text{width:100%}.flow-note-card{flex-shrink:0}:is(#flowchartPreview,.flow-export-wrap) .flow-node.question .flow-node-tools{right:22px;top:13px}.site-logo:empty,.hero-emoji:empty,.sys-icon:empty{display:none}.flow-legend{font-size:11px;color:var(--warm-grey);margin:8px 0} ' +
     portraitTweaks +
     lesserExportTweaks +
     '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.bb-export-scale-wrap{zoom:var(--bb-export-scale,1);transform:none;width:auto;min-height:0}}</style></head><body style="--bb-export-scale:' + printScale + '"><div class="bb-export-scale-wrap">' + content + '</div>' + flowExportScript + '</body></html>';
@@ -7475,14 +7545,17 @@ function calculatorFrequencies(){
 function setUnitAntibodyCount(value){unitCalculator.count=Math.max(1,Math.min(5,Math.floor(Number(value)||1)));renderCalcSim();}
 function renderCalcSim(){
   var area=document.getElementById('calcContent');if(!area)return;
-  var frequencies=calculatorFrequencies(),keys=Object.keys(frequencies),pop=unitCalculator.population;
-  area.innerHTML='<div class="bb-unit-calculator sys-card"><h2>Compatible Unit Calculator</h2><p>Select antibodies. Frequencies come from the reference table below.</p><div class="bb-calc-inputs"><label>Antibodies (1–5)<input type="number" min="1" max="5" value="'+unitCalculator.count+'" onchange="setUnitAntibodyCount(this.value)"></label><label>Units needed<input id="unitsNeeded" type="number" min="1" step="1" value="'+escAttr(unitCalculator.units)+'" oninput="unitCalculator.units=this.value;updateUnitEstimate()"></label><label>Population<select onchange="unitCalculator.population=this.value;renderCalcSim()">'+Object.keys(CALC_POP_FULL).map(function(p){return '<option value="'+p+'" '+(p===pop?'selected':'')+'>'+escText(CALC_POP_FULL[p])+'</option>';}).join('')+'</select></label></div><div class="bb-antibody-rows">'+unitCalculator.antibodies.slice(0,unitCalculator.count).map(function(item,i){var freq=frequencies[item.name]&&frequencies[item.name][pop];return '<div class="bb-antibody-row"><label>Antibody '+(i+1)+'<select onchange="unitCalculator.antibodies['+i+'].name=this.value;renderCalcSim()"><option value="">Choose antibody</option>'+keys.map(function(ag){return '<option '+(item.name===ag?'selected ':'')+'value="'+escAttr(ag)+'">anti-'+escText(ag)+'</option>';}).join('')+'</select></label><div class="bb-auto-frequency">Frequency: <strong>'+(freq===undefined?'—':freq+'%')+'</strong><br>Antigen-negative donors: <strong>'+(freq===undefined?'—':Number((100-freq).toFixed(6))+'%')+'</strong></div></div>';}).join('')+'</div><div id="unitEstimate" class="bb-unit-result" aria-live="polite"></div><button class="btn btn-ghost" onclick="document.getElementById(\'bbMathExplanation\').showModal()">Explain with two antibodies</button><details class="bb-frequency-box" open><summary>Antigen frequency reference (%)</summary><table><thead><tr><th>Antigen</th>'+Object.keys(CALC_POP_FULL).map(function(p){return '<th title="'+escAttr(CALC_POP_FULL[p])+'">'+p.toUpperCase()+'</th>';}).join('')+'</tr></thead><tbody>'+keys.map(function(ag){return '<tr><th>'+escText(ag)+'</th>'+Object.keys(CALC_POP_FULL).map(function(p){return '<td>'+(frequencies[ag][p]===undefined?'—':frequencies[ag][p])+'</td>';}).join('')+'</tr>';}).join('')+'</tbody></table></details><p class="bb-calc-help">Study estimate; assumes independent frequencies and an ABO/Rh-compatible donor pool.</p></div><dialog id="bbMathExplanation" class="bb-math-note"><button class="btn btn-ghost" onclick="this.closest(\'dialog\').close()">Close</button><h3>Two antibodies · 2 units</h3>'+mathExample(frequencies,pop)+'</dialog>';
+  var frequencies=calculatorFrequencies(),keys=Object.keys(frequencies),pop='c';
+  unitCalculator.population='c';
+  area.innerHTML=`<div class="bb-unit-calculator sys-card"><h2>Compatible Unit Calculator</h2><p>Select antibodies. Frequencies come from column C in the reference table.</p>
+    <div class="bb-calc-inputs"><label>Antibodies (1–5)<input type="number" min="1" max="5" value="${unitCalculator.count}" onchange="setUnitAntibodyCount(this.value)"></label><label>Units needed<input id="unitsNeeded" type="number" min="1" step="1" value="${escAttr(unitCalculator.units)}" oninput="unitCalculator.units=this.value;updateUnitEstimate()"></label></div>
+    <div class="bb-antibody-rows">${unitCalculator.antibodies.slice(0,unitCalculator.count).map(function(item,i){
+      var freq=frequencies[item.name]&&frequencies[item.name][pop];
+      return `<div class="bb-antibody-row"><label>Antibody ${i+1}<select onchange="unitCalculator.antibodies[${i}].name=this.value;renderCalcSim()"><option value="">Choose antibody</option>${keys.map(function(ag){return `<option ${item.name===ag?'selected ':''}value="${escAttr(ag)}">anti-${escText(ag)}</option>`;}).join('')}</select></label><div class="bb-auto-frequency">Antigen frequency: <b>${freq===undefined?'—':freq+'%'}</b><br>Compatible: <b>${freq===undefined?'—':Number((100-freq).toFixed(6))+'%'}</b></div></div>`;
+    }).join('')}</div><div id="unitEstimate" class="bb-unit-result" aria-live="polite"></div>
+    <details class="bb-frequency-box"><summary>Antigen frequency reference (%)</summary><table><thead><tr><th>Antigen</th>${Object.keys(CALC_POP_FULL).map(function(p){return `<th title="${escAttr(CALC_POP_FULL[p])}">${p.toUpperCase()}</th>`;}).join('')}</tr></thead><tbody>${keys.map(function(ag){return `<tr><th>${escText(ag)}</th>${Object.keys(CALC_POP_FULL).map(function(p){return '<td>'+(frequencies[ag][p]===undefined?'—':frequencies[ag][p])+'</td>';}).join('')}</tr>`;}).join('')}</tbody></table></details>
+    <p class="bb-calc-help">*Assume donor pool is from Caucasian population.</p></div>`;
   updateUnitEstimate();
-}
-function mathExample(freq,pop){
-  var k=freq.K&&freq.K[pop],e=freq.E&&freq.E[pop];if(k===undefined||e===undefined)return '<p>K and E frequencies are unavailable for this population.</p>';
-  var kn=(100-k)/100,en=(100-e)/100,total=kn*en;
-  return '<p>anti-K: 100 − '+k+' = '+Number((100-k).toFixed(6))+'% negative</p><p>anti-E: 100 − '+e+' = '+Number((100-e).toFixed(6))+'% negative</p><p>'+Number(kn.toFixed(6))+' × '+Number(en.toFixed(6))+' = '+Number(total.toFixed(6))+'</p><p>2 ÷ '+Number(total.toFixed(6))+' = '+(total?(2/total).toFixed(2):'not possible')+'</p><strong>'+(total?'Round up → '+Math.ceil(2/total)+' donor units to screen':'No suitable units expected')+'</strong>';
 }
 
 function calculateUnitEstimate(units,rows){
@@ -7507,7 +7580,16 @@ function updateUnitEstimate(){
   if(new Set(names).size!==names.length){el.textContent='Choose each antibody only once.';return;}
   var result=calculateUnitEstimate(unitCalculator.units,selected.map(function(item){var value=freq[item.name]&&freq[item.name][unitCalculator.population];return {negative:value===undefined?'':String(100-value)};}));
   if(result.error){el.textContent=result.error;return;}
-  el.innerHTML='<span>Estimated donor units to screen</span><strong>'+result.screen.toLocaleString()+'</strong><div>'+result.units+' ÷ ('+result.factors.map(function(n){return String(n);}).join(' × ')+'), rounded up</div><div>Combined antigen-negative frequency: '+Number((result.probability*100).toPrecision(6))+'%</div>';
+  var fmt=function(n){return Number(n.toPrecision(10)).toLocaleString('en-US',{maximumFractionDigits:10});};
+  var steps=selected.map(function(item,i){
+    var positive=freq[item.name].c,negative=100-positive;
+    return '<li><b>anti-'+escText(item.name)+'</b>: '+fmt(positive)+'% is the antigen frequency from reference column C. Compatible = 100% − '+fmt(positive)+'% = '+fmt(negative)+'%. Convert to a decimal: '+fmt(negative)+' ÷ 100 = '+fmt(result.factors[i])+'.</li>';
+  }).join('');
+  el.innerHTML='<span>Estimated donor units to screen</span><strong>'+result.screen.toLocaleString()+'</strong><ol class="bb-math-steps">'+steps+
+    '<li>Multiply the compatible fractions: '+result.factors.map(fmt).join(' × ')+' = '+fmt(result.probability)+' ('+fmt(result.probability*100)+'% combined compatible).</li>'+
+    '<li>Divide your requested '+result.units+' unit'+(result.units===1?'':'s')+' by the combined fraction: '+result.units+' ÷ '+fmt(result.probability)+' = '+fmt(result.units/result.probability)+'.</li>'+
+    '<li>Round up to a whole donor unit: '+result.screen.toLocaleString()+' units to screen.</li></ol>';
+
 }
 
 function initXmatch() {
@@ -8262,7 +8344,7 @@ function buildRead37Step() {
     '</div>' +
     '<div style="display:flex;gap:16px;align-items:flex-end;justify-content:center;padding:8px 0 6px;flex-wrap:wrap">' +
     '<div style="display:flex;flex-direction:column;align-items:center;gap:4px">' +
-    '<div style="font-size:28px">🚿</div>' +
+    '<div style="font-size:28px"></div>' +
     '<div style="font-size:11px;color:#0a4a2a;text-align:center">Fill with<br>saline</div>' +
     '</div>' +
     '<div style="font-size:18px;color:#1a8c5c">x3-4</div>' +
@@ -8332,7 +8414,7 @@ function buildWashStep2() {
       ? '<strong style="color:var(--crimson)">AHG positive on ' + xmTubeLabels()[0] + ' -- ' + (xmMode === 'screen' ? 'SCREEN POSITIVE.' : 'INCOMPATIBLE. Do not issue this unit.') + '</strong>'
       : '<strong style="color:var(--good)">AHG negative. CC 2+ validates. ' + (xmMode === 'screen' ? 'SCREEN NEGATIVE.' : 'COMPATIBLE -- assign unit to patient.') + '</strong>') +
     '</div>' +
-    '<div style="text-align:center;margin-top:10px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">' +'<button class="btn btn-primary" onclick="finishXm2()">Record Final Result</button>' +'<button class="btn btn-ghost btn-sm" onclick="showGelCard()" style="border-color:#7b3fa0;color:#5a2070">🧫 How does this look in Gel?</button>' +'</div>' +
+    '<div style="text-align:center;margin-top:10px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">' +'<button class="btn btn-primary" onclick="finishXm2()">Record Final Result</button>' +'<button class="btn btn-ghost btn-sm" onclick="showGelCard()" style="border-color:#7b3fa0;color:#5a2070"> How does this look in Gel?</button>' +'</div>' +
     '</div>';
 }
 
@@ -8872,7 +8954,7 @@ function chromGeneLabel(name) {
 function showChromDetail(n) {
   var data = CHROM_DETAIL[n];
   if (!data) return;
-  var html = '<div style="font-size:22px;margin-bottom:4px">🧬</div>';
+  var html = '<div style="font-size:22px;margin-bottom:4px"></div>';
   html += '<h3 style="color:var(--wine);margin-bottom:8px">' + data.title + '</h3>';
   data.systems.forEach(function(sys) {
     html += '<div style="background:var(--blush);border-left:4px solid ' + sys.color + ';border-radius:var(--r-sm);padding:14px;margin-bottom:14px">';
