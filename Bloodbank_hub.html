@@ -622,8 +622,8 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 #sec-flowchart .flow-tool-btn{padding:5px 9px}
 #sec-flowchart .flow-options[open]{max-height:120px;overflow:auto;margin:2px 0}
 #sec-flowchart .flow-selection-panel{padding:5px;gap:5px}
-#flowchartViewport{height:78dvh;min-height:420px;max-height:none;width:100%}
-@media(max-width:760px){#flowchartViewport{height:70dvh;min-height:330px}#sec-flowchart .flow-selection-panel{max-height:115px;overflow:auto}}
+#flowchartViewport{height:88dvh;min-height:520px;max-height:none;width:100%}
+@media(max-width:760px){#flowchartViewport{height:80dvh;min-height:420px}#sec-flowchart .flow-selection-panel{max-height:115px;overflow:auto}}
 </style></head>
 <body>
 
@@ -1110,6 +1110,42 @@ const DAT_EXAMPLE_DATA={rootId:'dat_order',font:'arial',nodes:{
   dat_report:{id:'dat_report',type:'terminal',text:'Report and interpret results',fillColor:'#dcf8df',borderColor:'#9dd7a7',branches:[]}
 }};
 Object.values(DAT_EXAMPLE_DATA.nodes).forEach(function(n){if(!n.fillColor)n.fillColor='#ffd7df';if(!n.borderColor)n.borderColor='#e6a8b8';});
+
+function makeStarterFlow(rootId,rows){
+  var nodes={};rows.forEach(function(row){var id=row[0],type=row[1],branches=row[3]||[],style=row[4]||{};nodes[id]={id:id,type:type,text:row[2],fillColor:style.fillColor||(type==='terminal'?'#dcf8df':'#ffd7df'),borderColor:style.borderColor||(type==='terminal'?'#9dd7a7':'#e6a8b8'),branches:branches.map(function(b,i){return {id:id+'_b'+(i+1),label:b[0],to:b[1]};})};});
+  return {rootId:rootId,font:'arial',nodes:nodes};
+}
+const FLOWCHART_STARTER_DIAGRAMS={
+  crossmatch:{name:'Crossmatch',data:makeStarterFlow('xm_order',[
+    ['xm_order','terminal','Order / Sample',[['Next','xm_verify']]],['xm_verify','step','Verify ID',[['Next','xm_history']]],['xm_history','step','Review History', [['Next','xm_recipient'],['Next','xm_urgent'],['Next','xm_donor']]],
+    ['xm_recipient','step','Recipient', [['Next','xm_abo']]],['xm_abo','step','ABO/Rh', [['Next','xm_screen']]],['xm_screen','step','Screen', [['Next','xm_sigab']]],['xm_sigab','question','Significant antibody?', [['No','xm_isxm'],['Yes','xm_idab']]],['xm_isxm','step','IS / Electronic XM',[['Next','xm_select_unit']]],['xm_select_unit','terminal','Select Unit',[]],['xm_idab','step','Antibody ID',[['Next','xm_agneg']]],['xm_agneg','step','Select antigen-negative unit',[['Next','xm_ahgxm']]],['xm_ahgxm','step','AHG crossmatch',[['Next','xm_crossmatch']]],
+    ['xm_urgent','question','Blood needed now?', [['Yes','xm_emergency'],['No','xm_crossmatch']]],['xm_emergency','step','Emergency issue',[['Next','xm_finish_testing']]],['xm_finish_testing','step','Finish testing',[['Next','xm_crossmatch']]],
+    ['xm_donor','step','Donor',[['Next','xm_donor_type']]],['xm_donor_type','step','Donor type',[['Next','xm_idtests']]],['xm_idtests','step','Perform ID tests',[['Next','xm_agtype']]],['xm_agtype','step','Antigen type',[['Next','xm_units_ready']]],['xm_units_ready','step','Units ready',[['Next','xm_crossmatch']]],
+    ['xm_crossmatch','step','Crossmatch',[['Next','xm_compatible']]],['xm_compatible','question','Compatible?', [['Yes','xm_issue'],['No','xm_investigate']]],['xm_issue','terminal','Issue Blood',[]],['xm_investigate','step','Investigate',[['Next','xm_new_unit']]],['xm_new_unit','step','Select new unit',[['Next','xm_crossmatch']]]
+  ])},
+  abo_discrepancy:{name:'ABO Discrepancy',data:makeStarterFlow('abo_mismatch',[
+    ['abo_mismatch','terminal','Forward / Reverse Mismatch',[['Next','abo_clerical']]],['abo_clerical','step','Clerical Check',[['Next','abo_specimen']]],['abo_specimen','step','Specimen Check',[['Next','abo_repeat']]],['abo_repeat','step','Repeat ABO',[['Next','abo_agree']]],['abo_agree','question','Results agree?', [['Yes','abo_report'],['No','abo_new_sample']]],['abo_report','terminal','Report / Issue',[]],['abo_new_sample','step','Collect new sample',[['Next','abo_classify']]],['abo_classify','step','Classify discrepancy',[['Next','abo_missing_rev'],['Next','abo_missing_fwd'],['Next','abo_rouleaux'],['Next','abo_other']]],
+    ['abo_missing_rev','step','Missing reverse antibody',[['Next','abo_history']]],['abo_history','step','Review history',[['Next','abo_incubate']]],['abo_incubate','step','Incubate',[['Next','abo_a1b']]],['abo_a1b','step','Test A1 / B cells',[['Next','abo_strong']]],['abo_strong','question','Strong antibody?', [['Yes','abo_assign1'],['No','abo_weak']]],['abo_assign1','terminal','Assign / Issue',[['Next','abo_urgent']]],['abo_weak','step','Investigate weak antibody',[['Next','abo_compat1']]],['abo_compat1','terminal','ABO-compatible',[['Next','abo_urgent']]],
+    ['abo_missing_fwd','step','Missing forward antigen',[['Next','abo_reagents']]],['abo_reagents','step','Use extra reagents',[['Next','abo_anti']]],['abo_anti','step','Anti-A1 / Anti-H',[['Next','abo_alt']]],['abo_alt','step','Alternate reagent',[['Next','abo_fwd_history']]],['abo_fwd_history','step','Review history',[['Next','abo_consistent']]],['abo_consistent','question','Results consistent?', [['Yes','abo_assign2'],['No','abo_subgroup']]],['abo_assign2','terminal','Assign / Issue',[['Next','abo_urgent']]],['abo_subgroup','step','Subgroup / acquired B / Bombay',[['Next','abo_compat2']]],['abo_compat2','terminal','ABO-compatible',[['Next','abo_urgent']]],
+    ['abo_rouleaux','step','Rouleaux / Protein',[['Next','abo_check_rouleaux']]],['abo_check_rouleaux','step','Check rouleaux',[['Next','abo_replace']]],['abo_replace','step','Saline replace / wash',[['Next','abo_repeat2']]],['abo_repeat2','step','Repeat ABO',[['Next','abo_resolved']]],['abo_resolved','question','Resolved?', [['Yes','abo_assign3'],['No','abo_protein']]],['abo_assign3','terminal','Assign / Issue',[['Next','abo_urgent']]],['abo_protein','step','Investigate protein cause',[['Next','abo_compat3']]],['abo_compat3','terminal','ABO-compatible',[['Next','abo_urgent']]],
+    ['abo_other','step','Other discrepancy',[['Next','abo_dat_temp']]],['abo_dat_temp','step','DAT / Temperature Workup',[['Next','abo_prewarm']]],['abo_prewarm','step','Prewarm if cold',[['Next','abo_workup']]],['abo_workup','step','Antibody workup',[['Next','abo_a1h']]],['abo_a1h','step','A1 / H cells if needed',[['Next','abo_resolved2']]],['abo_resolved2','question','Resolved?', [['Yes','abo_assign4'],['No','abo_investigate']]],['abo_assign4','terminal','Assign / Issue',[['Next','abo_urgent']]],['abo_investigate','terminal','Investigate / Refer to lab',[]],
+    ['abo_urgent','question','Urgent transfusion?', [['No','abo_ref_lab'],['Yes','abo_emergency_blood']]],['abo_ref_lab','terminal','Investigate / Reference Lab',[]],['abo_emergency_blood','terminal','Group O RBCs + AB plasma',[]]
+  ])},
+  hdn:{name:'HDN',data:makeStarterFlow('hdn_prenatal',[
+    ['hdn_prenatal','terminal','Prenatal Mother',[['Next','hdn_prenatal_type']]],['hdn_prenatal_type','step','ABO/Rh + Screen',[['Next','hdn_screenpos']]],['hdn_screenpos','question','Screen positive?', [['No','hdn_no_ab'],['Yes','hdn_id_ab']]],['hdn_no_ab','step','No antibody detected',[['Next','hdn_rhneg']]],['hdn_rhneg','question','Rh negative?', [['No','hdn_routine'],['Yes','hdn_rhig']]],['hdn_routine','terminal','Routine follow-up',[]],['hdn_rhig','terminal','Give RhIG',[['Next','hdn_final']]],['hdn_id_ab','step','Identify antibody',[['Next','hdn_titer']]],['hdn_titer','step','Titer',[['Next','hdn_fetus_ag']]],['hdn_fetus_ag','step','Father / Fetus Antigen',[['Next','hdn_final']]],
+    ['hdn_postpartum','terminal','Postpartum Mother',[['Next','hdn_review']]],['hdn_review','step','Review Type / Screen',[['Next','hdn_mom_baby']]],['hdn_mom_baby','question','Mother Rh negative and baby Rh positive?', [['No','hdn_no_rhig'],['Yes','hdn_rosette']]],['hdn_no_rhig','terminal','No RhIG needed',[['Next','hdn_final']]],['hdn_rosette','step','Perform Rosette',[['Next','hdn_rosette_pos']]],['hdn_rosette_pos','question','Rosette positive?', [['No','hdn_one_dose'],['Yes','hdn_fmh']]],['hdn_one_dose','terminal','One RhIG dose',[['Next','hdn_final']]],['hdn_fmh','step','Quantify FMH / determine dose',[['Next','hdn_final']]],
+    ['hdn_baby','terminal','Baby After Birth',[['Next','hdn_cord']]],['hdn_cord','step','Cord / Neonatal sample',[['Next','hdn_baby_type']]],['hdn_baby_type','step','ABO/Rh',[['Next','hdn_dat']]],['hdn_dat','step','DAT',[['Next','hdn_datpos']]],['hdn_datpos','question','DAT positive?', [['No','hdn_datneg'],['Yes','hdn_datpositive']]],['hdn_datneg','step','DAT negative',[['Next','hdn_infant_ag']]],['hdn_infant_ag','step','Check infant antigen if needed',[['Next','hdn_final']]],['hdn_datpositive','step','DAT positive',[['Next','hdn_eluate']]],['hdn_eluate','step','Eluate / Antigen',[['Next','hdn_correlate']]],['hdn_correlate','step','Correlate laboratory results',[['Next','hdn_final']]],
+    ['hdn_final','question','Evidence supports HDN?', [['No','hdn_unlikely'],['Possible','hdn_monitor'],['Yes','hdn_supported']]],['hdn_unlikely','terminal','Unlikely',[]],['hdn_monitor','terminal','Monitor',[]],['hdn_supported','terminal','Supported',[]]
+  ])},
+  rhogam:{name:'RhIG / Rhogam',data:makeStarterFlow('rhig_order',[
+    ['rhig_order','terminal','Order',[['Next','rhig_review']]],['rhig_review','step','Review Maternal Rh Type',[['Next','rhig_rhneg']]],['rhig_rhneg','question','Mother Rh negative?', [['No','rhig_none1'],['Yes','rhig_antid']]],['rhig_none1','terminal','No RhIG',[]],['rhig_antid','question','Anti-D detected?', [['Yes','rhig_sensitized'],['No','rhig_timing']]],['rhig_sensitized','terminal','Sensitized: RhIG not indicated',[]],['rhig_timing','question','Prenatal or postpartum?', [['Prenatal','rhig_28wk'],['Postpartum','rhig_test_baby']]],['rhig_28wk','step','28 weeks / sensitizing event',[['Next','rhig_give']]],['rhig_give','terminal','Give RhIG',[]],['rhig_test_baby','step','Test Baby D Type',[['Next','rhig_baby_d']]],['rhig_baby_d','question','Baby D positive, weak D, or unknown?', [['No','rhig_none2'],['Yes','rhig_rosette']]],['rhig_none2','terminal','No RhIG',[]],['rhig_rosette','step','Perform Rosette',[['Next','rhig_rosette_pos']]],['rhig_rosette_pos','question','Rosette positive?', [['No','rhig_one_vial'],['Yes','rhig_pharmacy']]],['rhig_one_vial','step','300 µg (1 vial)',[['Next','rhig_issue']]],['rhig_issue','terminal','Issue 1 vial',[]],['rhig_pharmacy','step','Send to Pharmacy',[['Next','rhig_dose']]],['rhig_dose','terminal','Pharmacy determines dose',[]]
+  ])},
+  autoantibody:{name:'Autoantibody',data:makeStarterFlow('auto_sample',[
+    ['auto_sample','terminal','Sample',[['Next','auto_testing']]],['auto_testing','step','ABO/Rh + Screen + Autocontrol',[['Next','auto_pattern']]],['auto_pattern','step','Review reaction pattern',[['Next','auto_present']]],['auto_present','question','Autocontrol positive?', [['No','auto_allo'],['Yes','auto_warmcold']]],['auto_allo','step','Alloantibody workup',[['Next','auto_none']]],['auto_none','terminal','No autoantibody identified',[]],['auto_warmcold','question','Warm or Cold pattern?', [['Warm','auto_warm'] ,['Cold','auto_cold']]],
+    ['auto_warm','step','Warm: 37°C / AHG; Autocontrol+; DAT IgG ± C3',[['Next','auto_dat_warm']]],['auto_dat_warm','step','DAT',[['Next','auto_adsorb']]],['auto_adsorb','step','Adsorption',[['Next','auto_rule_warm']]],['auto_rule_warm','step','Rule out alloantibodies',[['Next','auto_pheno_warm']]],['auto_pheno_warm','step','Phenotype / Genotype',[['Next','auto_transfuse_warm']]],['auto_transfuse_warm','step','Transfuse antigen-negative if alloantibody; least incompatible if needed',[['Next','auto_report_warm']]],['auto_report_warm','terminal','Report warm autoantibody',[['Next','auto_end']]],
+    ['auto_cold','step','Cold: IS / RT; Autocontrol+; DAT C3',[['Next','auto_dat_cold']]],['auto_dat_cold','step','DAT',[['Next','auto_prewarm']]],['auto_prewarm','step','Prewarm',[['Next','auto_titer']]],['auto_titer','step','Titer / Thermal Amplitude',[['Next','auto_rule_cold']]],['auto_rule_cold','step','Rule out alloantibodies',[['Next','auto_pheno_cold']]],['auto_pheno_cold','step','Phenotype / Genotype',[['Next','auto_transfuse_cold']]],['auto_transfuse_cold','step','Transfuse with prewarm, AHG at 37°C, warmer as indicated',[['Next','auto_report_cold']]],['auto_report_cold','terminal','Report cold autoantibody',[]],['auto_end','terminal','Complete workup',[]]
+  ])}
+};
 
 // ============================================================
 // INTRO ANIMATION
@@ -2145,13 +2181,14 @@ function getLegacyFlowchartData() {
 let activeFlowDiagramId='main';
 function getFlowDiagrams(){
   var saved=notesData.__flowcharts;
-  var diagrams=saved && typeof saved==='object' && !Array.isArray(saved) && Object.keys(saved).length?saved:{main:{name:'Diagram 1',data:getLegacyFlowchartData()}};
-  if(!notesData.__datExampleAdded && !diagrams.dat_example && Object.keys(diagrams).length<10){
-    var ids=Object.keys(diagrams),next={};next[ids[0]]=diagrams[ids[0]];
-    next.dat_example={name:'DAT — example workflow',data:cloneFlowchartData(DAT_EXAMPLE_DATA)};
-    ids.slice(1).forEach(function(id){next[id]=diagrams[id];});return next;
-  }
-  return diagrams;
+  var diagrams=saved && typeof saved==='object' && !Array.isArray(saved) && Object.keys(saved).length?saved:{main:{name:'Blood Bank Workflow',data:getLegacyFlowchartData()}};
+  var next=Object.assign({},diagrams),changed=false;
+  if(!notesData.__datExampleAdded && !next.dat_example && Object.keys(next).length<10){next.dat_example={name:'DAT',data:cloneFlowchartData(DAT_EXAMPLE_DATA)};changed=true;}
+  if(next.main&&next.main.name==='Diagram 1'){next.main=Object.assign({},next.main,{name:'Blood Bank Workflow'});changed=true;}
+  if(next.dat_example&&next.dat_example.name==='DAT — example workflow'){next.dat_example=Object.assign({},next.dat_example,{name:'DAT'});changed=true;}
+  Object.keys(FLOWCHART_STARTER_DIAGRAMS).forEach(function(id){if(!next[id]&&Object.keys(next).length<10){next[id]=FLOWCHART_STARTER_DIAGRAMS[id];changed=true;}});
+  if(changed&&isAdmin){notesData.__datExampleAdded=true;notesData.__flowcharts=next;scheduleSave();}
+  return next;
 }
 
 function currentFlowDiagram(){
@@ -2525,7 +2562,7 @@ function fitFlowchart() {
   flowZoom = 1;
   applyFlowZoom();
   const ratio = (viewport.clientWidth - 36) / Math.max(parseFloat(stage.style.width) || stage.scrollWidth, 1);
-  setFlowchartZoom(Math.max(.04, Math.min(1, ratio)));
+  setFlowchartZoom(Math.max(.62, Math.min(1, ratio)));
   viewport.scrollLeft = 0;
   viewport.scrollTop = 0;
 }
