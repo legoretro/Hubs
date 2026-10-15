@@ -609,6 +609,31 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 .ag-fit-panels{display:grid;gap:16px;width:100%;min-width:0}.personal-antigram-table{table-layout:fixed;width:100%;font-size:clamp(10px,1vw,13px);background:#fffaf7}.personal-antigram-table th{padding:8px 0;overflow-wrap:anywhere}.personal-antigram-table td{padding:0;height:33px}.personal-antigram-table select{appearance:none;min-width:0;width:100%;padding:7px 0;text-align:center;font:inherit;font-weight:600;cursor:pointer}.personal-antigram-table td:first-child,.personal-antigram-table th:first-child{position:static}.ag-mark-cell{position:relative}.ag-cell-slash{pointer-events:none;position:absolute;inset:0;display:grid;place-items:center;font:bold 28px/1 Arial;transform:rotate(8deg)}.ag-black{color:#111}.ag-red{color:#c0173d}.ag-ledger{display:flex;justify-content:center;gap:2px;min-height:22px;font:bold 22px/1 Arial;background:#fff8f5;border-radius:3px;margin:5px 1px 0}.personal-antigram-table td.ag-unresolved{background:#fff1b8}.ag-unresolved .ag-ledger{background:#fff1b8}.personal-antigram-table .ag-ruled{box-shadow:inset 2px 0 #c0173d,inset -2px 0 #c0173d}.ag-ruled .ag-ledger{outline:2px solid #c0173d}.personal-antigram-table tr:last-child .ag-ruled{border-bottom:2px solid #c0173d}.ag-practice-button{border:2px solid #c0173d!important}.ag-practice-banner{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#fce3ea;border-left:4px solid #c0173d;border-radius:8px;padding:14px;margin-bottom:16px}.ag-practice-banner strong,.ag-practice-banner span{display:block}.ag-practice-banner span{font-size:14px;margin-top:4px}.ag-practice-actions{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}.ag-answer-hint{font:700 13px Arial;color:#9b1c3e}.personal-antigram-table td.ag-required-entry{background:#fff1b8!important;box-shadow:inset 0 0 0 2px #c0173d!important}.ag-rules{position:relative;margin-left:auto}.ag-rules summary{list-style:none;cursor:pointer;border:1px solid #c0173d;border-radius:50%;width:30px;height:30px;text-align:center;font:bold 18px/28px Arial;color:#7a1530}.ag-rules>div{position:absolute;right:0;top:38px;width:min(390px,80vw);padding:18px;background:#fffaf7;box-shadow:0 4px 24px #5a0e2033;border:1px solid #efc3d0;border-radius:12px;z-index:30;font-size:14px;line-height:1.5}.ag-rules p{margin-top:10px}.ag-selected-heading{margin:20px 0 10px}.ag-selected-heading small{font:13px Arial;color:#c0173d;margin-left:10px}.ag-intro{padding:16px!important}.ag-intro .personal-antigram-toolbar:last-child{margin-bottom:0}@media(max-width:760px){.personal-antigram-table{font-size:13px}.ag-fit-panels{gap:22px}.ag-rules>div{right:-4px}.ag-selected-heading small{display:block;margin:4px 0}}
 </style>
 <style>
+#personalAntigram .personal-antigram-table th.ag-ahg-col{background:#f4c5d2!important;color:#5a0e20!important;border-left:2px solid #c0173d!important}
+#personalAntigram .personal-antigram-table td.ag-ahg-col{background:#fde8ee!important;color:#5a0e20;font-weight:800;border-left:2px solid #efb8c8!important}
+#personalAntigram .personal-antigram-table .screen-row td.ag-ahg-col{background:#f9d2de!important}
+#personalAntigram .personal-antigram-table input.ag-reaction-input{appearance:none;display:block;box-sizing:border-box;min-width:0;width:100%;height:32px;padding:4px 0;border:0;border-radius:0;background:transparent;color:inherit;text-align:center;font:inherit;font-weight:700;line-height:1;outline-offset:-2px}
+#personalAntigram .personal-antigram-table input.ag-reaction-input.is-filled:not(:focus){background:#fff9e6}
+#personalAntigram .personal-antigram-table input.ag-reaction-input:focus{background:#fff4bd;box-shadow:inset 0 0 0 2px #ffcf00;outline:0}
+#personalAntigram .personal-antigram-table td.ag-ahg-col input.ag-reaction-input{color:#5a0e20!important;font-weight:800;min-height:32px}
+.ag-own-tools,.ag-own-checks{margin:16px 0;padding:16px;border:1px solid #efc3d0;border-radius:12px;background:#fffaf7}
+.ag-own-tools>div:first-child strong,.ag-own-checks>div strong{display:block;color:#5a0e20;font-size:16px}
+.ag-own-tools p{margin:6px 0 12px;color:#755c64;font-size:13px;line-height:1.5;max-width:850px}
+.ag-upload-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ag-upload-controls input[type=file]{max-width:min(420px,100%);font:13px Arial;color:#5a0e20}
+.ag-no-identifiers,.ag-own-checks label{display:inline-flex;align-items:center;gap:8px;color:#32141e;font-size:14px;font-weight:700}
+.ag-no-identifiers input,.ag-own-checks input{width:17px;height:17px;accent-color:#c0173d}
+.ag-upload-status{min-height:20px;margin-top:10px;color:#755c64;font-size:13px}
+.ag-upload-status.is-error{color:#a0193a;font-weight:700}
+.ag-import-preview{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;padding:10px 12px;border:1px solid #efc3d0;border-radius:8px;background:#fce8ee;color:#5a0e20;font-size:13px}
+.ag-autosave-note{display:block;margin-top:8px;color:#8c5964;font-size:12px}
+.ag-own-checks{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.ag-own-checks>div{margin-right:8px}
+.ag-own-checks>div span{display:block;margin-top:5px;color:#755c64;font-size:12px;font-weight:400}
+.ag-own-checks label{font-weight:600}
+@media(max-width:760px){.ag-import-preview{align-items:flex-start;flex-direction:column}.ag-own-checks{align-items:flex-start;flex-direction:column;gap:10px}}
+</style>
+<style>
 #flowExportDetails input:disabled{background:#e8e5e6;color:#777;cursor:not-allowed;opacity:1}
 #flowchartPreview .flow-node.selected{outline:6px solid #ffcf00;outline-offset:4px;box-shadow:none}
 #flowchartPreview .flow-node.question.selected{outline:none;filter:drop-shadow(0 0 4px #ffcf00)}
@@ -9391,6 +9416,6 @@ function checkABOAnswer(answer) {
   document.getElementById('aboContent').querySelector('.sys-card:last-child').appendChild(nb);
 }
 </script>
-<script src="shared/bloodbank-antigram.js?v=20261015p"></script>
+<script src="shared/bloodbank-antigram.js?v=20261015q"></script>
 </body>
 </html>
