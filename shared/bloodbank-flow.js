@@ -12,16 +12,21 @@ function layoutBloodBankFlow(container){
   var queue=ids.filter(function(id){return !remaining[id];});
   for(var q=0;q<queue.length;q++){var id=queue[q];ids.forEach(function(to){if(incoming[to].indexOf(id)<0)return;rank[to]=Math.max(rank[to],rank[id]+1);remaining[to]--;if(!remaining[to])queue.push(to);});}
   var rows=[];ids.forEach(function(id){(rows[rank[id]]||(rows[rank[id]]=[])).push(id);});
-  var center={},sizes={},width=0;
+  var center={},sizes={},span={},width=0;
   ids.forEach(function(id){var el=elements[id];el.style.left='0';el.style.top='0';var r=el.getBoundingClientRect();sizes[id]={width:Math.max(r.width,240),height:Math.max(r.height,62)};});
-  rows.forEach(function(row){width=Math.max(width,row.reduce(function(n,id){return n+sizes[id].width+55;},0)-55);});width+=100;
+  var pitch=Math.max.apply(null,ids.map(function(id){return sizes[id].width;}))+65;
+  // Reserve full branch widths until a real join; singleton rows keep their lane.
+  function branchSpan(id){if(span[id])return span[id];span[id]=1;var children=out[id].filter(function(to){return rank[to]>rank[id]&&incoming[to].length===1;});return span[id]=Math.max(1,children.reduce(function(sum,to){return sum+branchSpan(to);},0));}
+  ids.forEach(branchSpan);
+  rows.forEach(function(row){row.forEach(function(id){
+    if(center[id]===undefined){var parents=incoming[id];center[id]=parents.length?parents.reduce(function(sum,p){return sum+center[p];},0)/parents.length:0;}
+    var children=out[id].filter(function(to){return rank[to]>rank[id]&&incoming[to].length===1;});
+    var total=children.reduce(function(sum,to){return sum+span[to];},0),left=center[id]-total*pitch/2;
+    children.forEach(function(to){center[to]=left+span[to]*pitch/2;left+=span[to]*pitch;});
+  });});
+  var minX=Math.min.apply(null,ids.map(function(id){return center[id]-sizes[id].width/2;}));
   var y=35;
-  rows.forEach(function(row){
-    // Keep sibling Yes/No paths ordered by their preceding row, with joins centered.
-    row.sort(function(a,b){function bary(id){var p=incoming[id];return p.length?p.reduce(function(n,k){return n+(center[k]||width/2);},0)/p.length:width/2;}return bary(a)-bary(b);});
-    var rowWidth=row.reduce(function(n,id){return n+sizes[id].width+55;},0)-55,x=(width-rowWidth)/2,h=0;
-    row.forEach(function(id){var el=elements[id];el.style.left=x+'px';el.style.top=y+'px';center[id]=x+sizes[id].width/2;x+=sizes[id].width+55;h=Math.max(h,sizes[id].height);});y+=h+72;
-  });
+  rows.forEach(function(row){var h=0;row.forEach(function(id){var el=elements[id],x=center[id]-sizes[id].width/2-minX+50;el.style.left=x+'px';el.style.top=y+'px';width=Math.max(width,x+sizes[id].width+50);h=Math.max(h,sizes[id].height);});y+=h+85;});
   stage.style.width=width+'px';stage.style.height=(y-35)+'px';stage.style.zoom=oldZoom;
 }
 
@@ -36,7 +41,8 @@ function routeBloodBankFlow(container) {
   container.querySelectorAll('[data-flow-node-id]').forEach(function(el){nodes[el.dataset.flowNodeId]=rect(el);nodes[el.dataset.flowNodeId].decision=el.classList.contains('question');});
   var obstacles=Array.from(container.querySelectorAll('.flow-node,.flow-note-card')).map(function(el){var r=rect(el);return {left:r.left-gap/2,right:r.right+gap/2,top:r.top-gap/2,bottom:r.bottom+gap/2};});
   function clear(a,b){return !obstacles.some(function(r){return a.x===b.x ? a.x>r.left&&a.x<r.right&&Math.max(a.y,b.y)>r.top&&Math.min(a.y,b.y)<r.bottom : a.y>r.top&&a.y<r.bottom&&Math.max(a.x,b.x)>r.left&&Math.min(a.x,b.x)<r.right;});}
-  function route(start,end){
+  function route(start,end,join){
+    var bus={x:start.x,y:end.y};if(join&&end.y>start.y&&clear(start,bus)&&clear(bus,end))return [start,bus,end];
     var middle=(start.y+end.y)/2,p1={x:start.x,y:middle},p2={x:end.x,y:middle};
     if(end.y>start.y&&clear(start,p1)&&clear(p1,p2)&&clear(p2,end))return [start,p1,p2,end];
     if(clear(start,{x:start.x,y:end.y})&&clear({x:start.x,y:end.y},end))return [start,{x:start.x,y:end.y},end];
@@ -69,7 +75,9 @@ function routeBloodBankFlow(container) {
     var from=m.dataset.flowLinkFrom,to=m.dataset.flowLinkTo,a=nodes[from],b=nodes[to];if(!a||!b)return;
     var source={x:(a.left+a.right)/2,y:a.bottom},start={x:(a.left+a.right)/2,y:a.bottom+gap},end={x:(b.left+b.right)/2,y:b.top-gap};
     if(a.decision&&Math.abs(end.x-start.x)>a.right-a.left){var direction=end.x<start.x?-1:1;source={x:direction<0?a.left:a.right,y:(a.top+a.bottom)/2};start={x:source.x+direction*gap,y:source.y};}
-    var points=route(start,end);if(!points)return;
+    var join=Array.from(container.querySelectorAll('.flow-link-marker')).filter(function(link){return link.dataset.flowLinkTo===to;}).length>1;
+    if(join){var parents=Array.from(container.querySelectorAll('.flow-link-marker')).filter(function(link){return link.dataset.flowLinkTo===to;}).map(function(link){return nodes[link.dataset.flowLinkFrom];}).filter(Boolean);var lowest=Math.max.apply(null,parents.map(function(p){return p.bottom;}));if(lowest<b.top-gap*2)end.y=(lowest+b.top)/2;}
+    var points=route(start,end,join);if(!points)return;
     points.unshift(source);points.push({x:end.x,y:b.top});
     // Remove collinear points while preserving turns for hit testing.
     points=points.filter(function(p,i,all){if(i===0||i===all.length-1)return true;var a=all[i-1],b=all[i+1];return !((a.x===p.x&&p.x===b.x)||(a.y===p.y&&p.y===b.y));});

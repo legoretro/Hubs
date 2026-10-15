@@ -229,7 +229,7 @@ textarea{resize:none;overflow:hidden}
 
 /* MEMBRANE DIAGRAM */
 .mem-wrap{background:var(--blush);border:1px solid var(--rose);border-radius:var(--r-sm);padding:4px;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:8px;min-height:285px}
-.mem-wrap svg{width:100%;height:295px;max-height:295px}
+.mem-wrap svg{width:100%;height:auto;max-height:none}
 @media(max-width:700px){.mem-wrap svg{height:210px;max-height:210px}}
 @media print{.rbc-rotate-handle{display:none!important}}
 
@@ -597,6 +597,11 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 
 /* Process rectangles and decision diamonds, matching the supplied DAT reference. */
 .flow-tree{display:block;position:relative;padding:0;min-width:0}.flow-tree>.flow-node-wrap{position:absolute;min-width:0;width:auto}.flow-node-row{align-items:center}.flow-node{width:240px;min-width:240px;max-width:240px;min-height:62px;border-radius:7px;padding:12px 15px;font:600 15px/1.3 Arial,sans-serif;box-shadow:0 2px 5px #5a0e2010}.flow-node-kind{display:none}.flow-node-text{position:relative;z-index:1;padding:0;min-height:0}.flow-node.question{width:240px;min-height:112px;display:flex;align-items:center;justify-content:center;background:transparent!important;border:0;padding:26px 42px;border-radius:0}.flow-diamond{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}.flow-diamond polygon{fill:var(--node-fill,#ffd7df);stroke:var(--node-border,#c0173d);stroke-width:2}.flow-node.start,.flow-node.terminal{border-radius:8px}.flow-node.question .flow-node-text{width:100%}.flow-note-card{flex-shrink:0}.flow-node.question .flow-node-tools{right:22px;top:13px}.site-logo:empty,.hero-emoji:empty,.sys-icon:empty{display:none}.flow-legend{font-size:11px;color:var(--warm-grey);margin:8px 0}
+
+/* Cohesive reference cards and a portrait diagram workspace. */
+.bb-system-overview{grid-template-columns:minmax(180px,240px) minmax(0,1fr);gap:20px;align-items:start}.bb-system-overview .sys-card{padding:20px}.bb-system-diagram{max-width:200px;margin:12px auto}.bb-history .timeline{font-size:16px;line-height:1.65}.bb-history .tl-text,.bb-history .tl-item{font-size:16px;line-height:1.6}.bb-history .tl-year{font-size:14px}.bb-history .tl-item{margin-bottom:10px}.bb-static-antigens{display:block;width:100%;height:auto;overflow:visible}.bb-structure-hint{font-size:13px}.bb-antigen-key{font-size:16px}#rbcDiagramContainer{overflow:auto;padding:14px}#rbcDiagramContainer>.bb-static-antigens{min-width:720px;max-width:1150px;margin:auto}
+#sec-flowchart .flow-shell{max-width:1000px;margin:auto}#flowchartViewport{width:100%;height:1000px;height:min(1150px,140dvh);min-height:650px;max-height:none;box-sizing:border-box;overflow:auto;overflow-anchor:none}#flowchartPreview{width:max-content;min-width:100%;position:relative}#flowStage{margin:0 auto}#sec-flowchart .flow-editor-tray{position:sticky;top:0;z-index:20;background:var(--cream,#fff8f5)}.flow-options[open]{max-height:230px;overflow:auto}.flow-selected-title{max-width:240px}.flow-control{font-size:13px}.flow-select{font-size:14px}#personalAntigram{max-width:1500px;margin:auto}.personal-antigram-toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}.personal-antigram-table{width:100%;border-collapse:collapse;font-size:14px}.personal-antigram-table th{background:#5a0e20;color:white;padding:9px 6px}.personal-antigram-table td{text-align:center;padding:4px;border:1px solid #efd0d8}.personal-antigram-table select{min-width:44px;padding:7px 2px;border:0;background:transparent;font:inherit;color:inherit}.personal-antigram-table th:first-child{position:sticky;left:0;z-index:2}.personal-antigram-table td:first-child{position:sticky;left:0;background:#fff8f5;font-weight:bold}.personal-antigram-table .ruled{background:#f5e4e9;color:#8c5964}.personal-antigram-table .auto-row{background:#fce8ed}.antigram-personal-note{font-size:14px;line-height:1.6}.antigram-result{padding:16px;background:#fff8f5;border:1px solid #efced7;border-radius:12px;margin-top:16px}.antigram-result h3{margin-bottom:8px}
+@media(max-width:760px){.bb-system-overview{grid-template-columns:1fr}.bb-system-diagram{max-width:175px}.bb-history .timeline,.bb-history .tl-text,.bb-history .tl-item{font-size:16px;line-height:1.6}.bb-history .tl-year{font-size:14px}#flowchartViewport{min-height:600px;height:110dvh}.flow-editor-tray{padding:8px}.flow-options[open]{max-height:180px}}
 </style>
 </head>
 <body>
@@ -771,6 +776,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
       <button class="nav-tab" onclick="showSection('rbc-diagram',this)"> RBC Antigens</button>
       <button class="nav-tab" onclick="showSection('chromosomes',this)"> Chromosome Map</button>
       <button class="nav-tab" onclick="showSection('crossmatch',this)"> Simulation Lab</button>
+      <button class="nav-tab" onclick="showSection('antigram',this)">Antigram</button>
       <button class="nav-tab" onclick="showSection('flowchart',this)"> Flowchart</button>
       <button class="nav-tab" onclick="showSection('resources',this)"> Resources</button>
     </nav>
@@ -853,9 +859,9 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
     </div>
     <div id="simulationShell" style="max-width:860px;margin:0 auto">
       <div class="sim-mode-strip">
-        <button id="aboSimBtn" class="btn btn-primary" onclick="startABOsim()" style="font-size:15px;padding:12px 28px"> ABO Typing</button>
-        <button id="xmSimBtn" class="btn btn-ghost" onclick="startXMsim()" style="font-size:15px;padding:12px 28px;border-width:2px"> Crossmatch</button>
-        <button id="antigramSimBtn" class="btn btn-ghost" onclick="startAntigramSim()" style="font-size:15px;padding:12px 28px;border-width:2px"> Antigram</button>
+        <button id="aboSimBtn" class="btn btn-primary" onclick="startABOsim()" style="font-size:15px;padding:12px 28px">ABO/Rh</button>
+        <button id="xmSimBtn" class="btn btn-ghost" onclick="startXMsim()" style="font-size:15px;padding:12px 28px;border-width:2px">Screen</button>
+        <button hidden id="antigramSimBtn" style="display:none" class="btn btn-ghost" onclick="startAntigramSim()" style="font-size:15px;padding:12px 28px;border-width:2px"> Antigram</button>
         <button id="automationSimBtn" class="btn btn-ghost" onclick="startAutomationSim()"> Automation</button>
       </div>
       <div id="aboContent" style="display:block"></div>
@@ -865,6 +871,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
     </div>
   </div>
 
+  <div id="sec-antigram" class="section"><div class="section-hero"><h2>Antigram</h2></div><div id="personalAntigram"></div></div>
   <!-- ===== FLOWCHART ===== -->
   <div id="sec-flowchart" class="section">
     <div class="section-hero">
@@ -883,7 +890,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
               <button class="flow-tool-btn" onclick="zoomFlowchart(-0.1)">−</button>
               <span class="flow-zoom-pill" id="flowZoomLabel">100%</span>
               <button class="flow-tool-btn" onclick="zoomFlowchart(0.1)">+</button>
-              <button class="flow-tool-btn" onclick="fitFlowchart()">Fit</button>
+              <button class="flow-tool-btn" onclick="fitFlowchart()">Closer View</button>
               <button class="flow-tool-btn" onclick="fitFlowchartForLandscape()">Page Fit</button>
               <button class="flow-tool-btn flow-admin-action" id="flowUndoBtn" onclick="undoFlowchartChange()">Undo</button>
               <button class="flow-tool-btn flow-admin-action" id="flowRedoBtn" onclick="redoFlowchartChange()">Redo</button>
@@ -948,7 +955,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="shared/pdf-export.js?v=20260605-export-fit"></script>
 <script src="safe-supabase-sync.js"></script>
-<script src="shared/bloodbank-flow.js?v=20261014"></script>
+<script src="shared/bloodbank-flow.js?v=20261015"></script>
 <script>
 // ============================================================
 // CONFIG - SUPABASE + PASSWORD
@@ -1521,6 +1528,7 @@ function showSection(name, el) {
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   if (name === 'chromosomes') { setTimeout(renderChromMap, 50); }
   if (name === 'rbc-diagram') { setTimeout(renderRbcDiagram, 50); }
+  if (name === 'antigram') { renderPersonalAntigram(); }
   if (name === 'flowchart') { setTimeout(renderFlowchart, 50); }
   document.getElementById('sec-' + name).classList.add('active');
   if (!el) el = Array.from(document.querySelectorAll('.nav-tab')).find(function(btn){ return (btn.getAttribute('onclick') || '').includes("'"+name+"'"); });
@@ -1893,7 +1901,7 @@ function makeField(sysKey, field, rows) {
   if (!isAdmin) {
     return '<div class="edit-field read-field">' + (val ? exportText(val) : '<span class="muted-text">blank</span>') + '</div>';
   }
-  return `<textarea class="edit-field" rows="${r}" ${isAdmin?'':'disabled'} 
+  return `<textarea class="edit-field" rows="${r}" ${isAdmin?'':'disabled'}
     oninput="autoGrowTextArea(this);setNote('${sysKey}','${field}',this.value)"
     placeholder="${isAdmin ? 'Click to add...' : ''}">${escText(val)}</textarea>`;
 }
@@ -2251,8 +2259,13 @@ function resetFlowchartExample() {
 }
 
 function renderFlowchart() {
+  const view=document.getElementById('flowchartViewport');
+  const pos={x:window.scrollX,y:window.scrollY,left:view.scrollLeft,top:view.scrollTop};
   renderFlowDiagramTabs();
   renderFlowchartPreview(getFlowchartData());
+  view.scrollLeft=pos.left;view.scrollTop=pos.top;
+  window.scrollTo(pos.x,pos.y);
+  requestAnimationFrame(function(){view.scrollLeft=pos.left;view.scrollTop=pos.top;window.scrollTo(pos.x,pos.y);});
 }
 
 function updateFlowMeta(data) {
@@ -2451,8 +2464,8 @@ function fitFlowchartForLandscape() {
   if (!viewport || !stage) return;
   flowZoom = 1;
   applyFlowZoom();
-  const pageWidth = 10.55 * 96;
-  const pageHeight = 7.15 * 96;
+  const pageWidth = viewport.clientWidth - 36;
+  const pageHeight = viewport.clientHeight - 36;
   const ratio = Math.min(pageWidth / Math.max(stage.scrollWidth, 1), pageHeight / Math.max(stage.scrollHeight, 1), 1);
   setFlowchartZoom(Math.max(.04, Math.min(1, ratio)));
   flowPrintZoom = flowZoom;
@@ -2523,7 +2536,7 @@ function renderFlowSelectionPanel(data) {
   if (selectedConnection) {
     panel.innerHTML =
       '<div class="flow-selected-title">Current selected<strong>Line: ' + escText(selectedConnection.parent.text || 'Box') + ' -> ' + escText(selectedConnection.target.text || 'Box') + '</strong></div>' +
-      '<label class="flow-control">Label<span class="flow-zoom-pill">' + escText(selectedConnection.branch.label || 'Next') + '</span></label>' +
+      '<label class="flow-control">Arrow label<select class="flow-select" onchange="setSelectedArrowLabel(this.value)">' + flowOptionHtml(['Next','Yes','No','Negative','Positive'],['No label','Yes','No','Negative','Positive'],selectedConnection.branch.label || 'Next') + '</select></label>' +
       '<div class="flow-action-group">' +
         '<button class="flow-tool-btn" onclick="deleteSelectedFlowConnectionLine()">Delete line</button>' +
         '<button class="flow-tool-btn" onclick="clearFlowConnectionSelection()">Cancel</button>' +
@@ -2554,6 +2567,7 @@ function renderFlowSelectionPanel(data) {
     '</div>';
 }
 
+function setSelectedArrowLabel(value){var c=getFlowSelectedConnection(getFlowchartData());if(c){updateFlowBranchLabel(c.parent.id,c.branch.id,value);drawFlowLinkLines(getFlowchartData());}}
 function selectFlowNode(id) {
   if (!isAdmin) return;
   const data = getFlowchartData();
@@ -2563,6 +2577,7 @@ function selectFlowNode(id) {
   document.querySelectorAll('#flowchartPreview .flow-node').forEach(function(el){ el.classList.remove('selected'); });
   const active = document.querySelector('[data-flow-node-id="' + id + '"]');
   if (active) active.classList.add('selected');
+  document.querySelector('.flow-options').open=true;
   renderFlowSelectionPanel(data);
   drawFlowLinkLines(data);
 }
@@ -2803,6 +2818,7 @@ function selectFlowConnectionLine(parentId, branchId) {
   if (!parent || !parent.branches.some(function(branch){ return branch.id === branchId; })) return;
   flowSelectedLink = {from:parentId, branchId:branchId};
   flowSelectedNodeId = null;
+  document.querySelector('.flow-options').open=true;
   renderFlowSelectionPanel(data);
   drawFlowLinkLines(data);
 }
@@ -3006,7 +3022,7 @@ function flowLabelClass(label) {
 function makeFreqRow(sysKey, idx) {
   const freqs = getFreqRows(sysKey);
   const row = freqs[idx] || {ag:'',c:'',b:'',a:'',i:'',h:'',memo:'',pop:'',hiLo:''};
-  const fi = (f, ph, cls) => `<input class="freq-field ${cls||''}" value="${row[f]||''}" placeholder="${ph}" ${isAdmin?'':'disabled'} 
+  const fi = (f, ph, cls) => `<input class="freq-field ${cls||''}" value="${row[f]||''}" placeholder="${ph}" ${isAdmin?'':'disabled'}
     oninput="updateFreqRow('${sysKey}',${idx},'${f}',this.value)"/>`;
   return `<tr id="freq-row-${sysKey}-${idx}">
     <td>${fi('ag','Antigen')}</td>
@@ -4063,11 +4079,11 @@ function renderGeneral(area) {
         ${isAdmin ? '<button class="add-row-btn" onclick="addGeneralComparisonColumn()">+ Add comparison column</button>' : ''}
         ${isAdmin ? '<button class="add-row-btn" onclick="syncGeneralComparisonFromEncyclopedia()">Sync from Blood Groups</button>' : ''}
         <div class="general-export-group">
-          <div class="general-export-group-label">With answers</div>
+
           <button class="add-row-btn" onclick="exportGeneralComparisonPage('main')">Export General Comparison</button>
           <button class="add-row-btn" onclick="exportGeneralComparisonPage('shared')">Export Shared Patterns</button>
           <button class="add-row-btn" onclick="exportGeneralComparisonPage('both')">Export Both Tables</button>
-          <div class="general-export-group-label">Blank practice</div>
+
           <button class="add-row-btn" onclick="exportGeneralComparisonBlankPage('main')">Blank General Comparison</button>
           <button class="add-row-btn" onclick="exportGeneralComparisonBlankPage('shared')">Blank Shared Patterns</button>
           <button class="add-row-btn" onclick="exportGeneralComparisonBlankPage('both')">Blank Both Tables</button>
@@ -5488,12 +5504,12 @@ function rbcSystemFrame(items, minWidth) {
 }
 
 function buildStaticAntigens(items,title) {
-  var cols=Math.ceil(Math.sqrt(items.length)),rows=Math.ceil(items.length/cols),tile=150;
+  var rows=items.length>4?Math.min(4,Math.ceil(items.length/5)):1,cols=Math.ceil(items.length/rows),tile=150;
   var width=cols*tile,height=rows*tile;
-  return '<svg class="bb-static-antigens" viewBox="0 0 '+width+' '+height+'" role="img" aria-label="'+escAttr(title)+'" xmlns="http://www.w3.org/2000/svg"><title>'+escText(title)+'</title>'+items.map(function(item,i){
-    var x=(i%cols)*tile,y=Math.floor(i/cols)*tile;
-    var shape=Object.assign({},item,{label:'',labelPos:'none',scale:.65,mapCopy:false});
-    return '<g transform="translate('+x+' '+y+')"><rect x="4" y="4" width="142" height="142" rx="10" fill="#fffaf7" stroke="#efd0d8"/><text x="75" y="24" text-anchor="middle" font-size="12" font-family="Arial,sans-serif" font-weight="700" fill="'+item.color+'">'+escText(item.label)+'</text><rect x="14" y="85" width="122" height="17" rx="4" fill="#f3d7df"/>'+rbcShape(shape,{locked:true,position:{x:75,y:49,r:0}})+'</g>';
+  return '<svg class="bb-static-antigens" viewBox="0 0 '+width+' '+height+'" role="img" aria-label="'+escAttr(title)+'" xmlns="http://www.w3.org/2000/svg">'+items.map(function(item,i){
+    var row=Math.floor(i/cols),count=Math.min(cols,items.length-row*cols);var x=(i%cols)*tile+(cols-count)*tile/2,y=row*tile;
+    var shape=Object.assign({},item,{label:'',labelPos:'none',scale:.52,mapCopy:false});
+    return '<g transform="translate('+x+' '+y+')"><rect x="4" y="4" width="142" height="142" rx="10" fill="#fffaf7" stroke="#efd0d8"/><text x="75" y="24" text-anchor="middle" font-size="12" font-family="Arial,sans-serif" font-weight="700" fill="'+item.color+'">'+escText(item.label)+'</text><rect x="14" y="85" width="122" height="17" rx="4" fill="#f3d7df"/>'+rbcShape(shape,{locked:true,position:{x:75,y:61,r:0}})+'</g>';
   }).join('')+'</svg>';
 }
 function buildSystemRbcSVG(systemKey,color,options) {
@@ -9257,5 +9273,6 @@ function checkABOAnswer(answer) {
   document.getElementById('aboContent').querySelector('.sys-card:last-child').appendChild(nb);
 }
 </script>
+<script src="shared/bloodbank-antigram.js?v=20261015"></script>
 </body>
 </html>
