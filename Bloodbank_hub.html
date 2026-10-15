@@ -612,6 +612,17 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 #flowchartPreview .flow-node.question.selected{outline:none;filter:drop-shadow(0 0 4px #ffcf00)}
 #flowchartPreview .flow-node.question.selected .flow-diamond polygon{stroke:#ffcf00;stroke-width:6;vector-effect:non-scaling-stroke}
 #flowchartPreview .flow-link-path.selected{stroke:#c0173d!important}
+#sec-flowchart .flow-shell{max-width:none;width:100%;margin:0}
+#sec-flowchart .flow-builder-card{padding:8px;margin:0}
+#sec-flowchart .flow-editor-tray{padding:5px;margin:0 0 6px;position:relative;top:auto}
+#sec-flowchart .flow-preview-head{margin-bottom:4px;gap:5px}
+#sec-flowchart .flow-diagrams{margin-bottom:4px;gap:5px}
+#sec-flowchart .flow-toolbar{gap:4px}
+#sec-flowchart .flow-tool-btn{padding:5px 9px}
+#sec-flowchart .flow-options[open]{max-height:120px;overflow:auto;margin:2px 0}
+#sec-flowchart .flow-selection-panel{padding:5px;gap:5px}
+#flowchartViewport{height:78dvh;min-height:420px;max-height:none;width:100%}
+@media(max-width:760px){#flowchartViewport{height:70dvh;min-height:330px}#sec-flowchart .flow-selection-panel{max-height:115px;overflow:auto}}
 </style></head>
 <body>
 
@@ -2190,17 +2201,25 @@ function flowDiagramKey(data){
     }).join('')+'<span>'+group[1]+'</span></div>';
   }).join('')+'</aside>';
 }
+function getFlowExportCreator(){
+  if(!isAdmin)return window.location.origin+'/Hubs/Bloodbank_hub.html';
+  try{return localStorage.getItem('bb-admin-flow-export-credit')||'';}catch(e){return '';}
+}
 function openFlowExportDetails(all){
+  if(isAdmin&&notesData.__flowExportCreator){
+    try{if(!localStorage.getItem('bb-admin-flow-export-credit'))localStorage.setItem('bb-admin-flow-export-credit',notesData.__flowExportCreator);}catch(e){}
+    delete notesData.__flowExportCreator;scheduleSave();
+  }
   var existing=document.getElementById('flowExportDetails');if(existing)existing.remove();
   var diagrams=getFlowDiagrams(),ids=all?Object.keys(diagrams):[activeFlowDiagramId];
   var modal=document.createElement('div');modal.id='flowExportDetails';modal.className='modal-overlay';modal.style.display='flex';
-  modal.innerHTML='<form class="modal-box" onsubmit="completeFlowExport(event)" style="max-height:85vh;overflow:auto"><h3>Export diagram'+(all?'s':'')+'</h3><p>Credit is set by the admin and included on every export.</p>'+ids.map(function(id){return '<label style="display:block;text-align:left;margin:12px 0">Name<input class="modal-input" data-export-diagram="'+escAttr(id)+'" required maxlength="120" '+(isAdmin?'':'disabled')+' value="'+escAttr(diagrams[id].name)+'"></label>';}).join('')+'<label style="display:block;text-align:left;margin:12px 0">Created by<input class="modal-input" id="flowExportCreator" maxlength="100" placeholder="Set by admin" autocomplete="off" value="'+escAttr(notesData.__flowExportCreator||'')+'" '+(isAdmin?'required':'disabled')+'></label><p>Date: '+escText(new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'}))+'</p><div style="display:flex;gap:10px;justify-content:flex-end"><button type="button" class="btn btn-ghost" onclick="document.getElementById(\'flowExportDetails\').remove()">Cancel</button><button type="submit" class="btn btn-primary">Export</button></div></form>';
+  modal.innerHTML='<form class="modal-box" onsubmit="completeFlowExport(event)" style="max-height:85vh;overflow:auto"><h3>Export diagram'+(all?'s':'')+'</h3><p>Credit is set by the admin and included on every export.</p>'+ids.map(function(id){return '<label style="display:block;text-align:left;margin:12px 0">Name<input class="modal-input" data-export-diagram="'+escAttr(id)+'" required maxlength="120" '+(isAdmin?'':'disabled')+' value="'+escAttr(diagrams[id].name)+'"></label>';}).join('')+'<label style="display:block;text-align:left;margin:12px 0">Created by<input class="modal-input" id="flowExportCreator" maxlength="100" placeholder="Set by admin" autocomplete="off" value="'+escAttr(getFlowExportCreator())+'" '+(isAdmin?'required':'disabled')+'></label><p>Date: '+escText(new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'}))+'</p><div style="display:flex;gap:10px;justify-content:flex-end"><button type="button" class="btn btn-ghost" onclick="document.getElementById(\'flowExportDetails\').remove()">Cancel</button><button type="submit" class="btn btn-primary">Export</button></div></form>';
   document.body.appendChild(modal);modal.querySelector('input').focus({preventScroll:true});
 }
 function completeFlowExport(event){
   event.preventDefault();var modal=document.getElementById('flowExportDetails'),diagrams=getFlowDiagrams();
-  var creator=isAdmin?modal.querySelector('#flowExportCreator').value.trim():String(notesData.__flowExportCreator||'');if(isAdmin&&!creator)return;
-  if(isAdmin){notesData.__flowExportCreator=creator;scheduleSave();}
+  var creator=isAdmin?modal.querySelector('#flowExportCreator').value.trim():getFlowExportCreator();if(isAdmin&&!creator)return;
+  if(isAdmin){try{localStorage.setItem('bb-admin-flow-export-credit',creator);}catch(e){showToast('Could not save creator name on this device.',true);return;}}
   var date=new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'});
   var fields=Array.from(modal.querySelectorAll('[data-export-diagram]'));if(fields.some(function(f){return !f.value.trim();}))return;
   prepareReadableFlowchartExport();
