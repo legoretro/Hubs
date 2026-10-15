@@ -560,6 +560,7 @@ textarea{resize:none;overflow:hidden}
 @media(max-width:480px){.sys-card{padding:14px}.section{padding:14px 10px 48px}.ws-table td.ws-label{width:130px;font-size:10px}}
 
 .bb-welcome{max-width:1050px;margin:12px auto 24px;padding:38px;border-radius:24px;background:var(--blush);border:1px solid var(--rose)}
+.bb-home-carousel{min-height:190px;margin:0 auto 20px;max-width:1180px;border-radius:18px;background:transparent}
 .bb-welcome h1{font-size:clamp(28px,4vw,48px);line-height:1.15;margin:12px 0;color:var(--wine,#5a0e20)}
 .bb-home-grid{max-width:1050px;margin:auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 .bb-home-card{text-align:left;border:1px solid var(--rose);border-top:4px solid var(--crimson);background:var(--cream,#fffaf7);border-radius:16px;padding:24px;cursor:pointer;color:inherit;font:inherit}
@@ -791,7 +792,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
     <button class="admin-lock-btn admin-exit-btn" onclick="logoutAdmin()" id="adminExitBtn">Exit Admin</button>
   </header>
     <nav class="nav-tabs bb-left-nav" aria-label="Blood Bank sections">
-      <button class="nav-tab active" onclick="showSection('home',this)">BB Homepage</button>
+      <button class="nav-tab active" onclick="showSection('home',this)">Homepage</button>
       <button class="nav-tab" onclick="showSection('encyclopedia',this)"> Blood Groups</button>
       <button class="nav-tab" onclick="showSection('rbc-diagram',this)"> RBC Antigens</button>
       <button class="nav-tab" onclick="showSection('chromosomes',this)"> Chromosome Map</button>
@@ -802,7 +803,8 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
     </nav>
 
 <section id="sec-home" class="section active">
-<div class="bb-welcome"><p class="sec-label">Blood Bank • Immunohematology</p><h1>BB Homepage</h1><p>Explore blood groups, study the RBC membrane, and practice at your own pace.</p></div>
+<div class="bb-welcome"><h1>Welcome to Blood Bank!</h1><p>Check out the calculator below!</p></div>
+<div class="bb-home-carousel" aria-label="Carousel images"></div>
 <div id="calcContent"></div></section>
   <!-- ===== ENCYCLOPEDIA ===== -->
   <div id="sec-encyclopedia" class="section">
@@ -877,17 +879,23 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
     <div class="section-hero">
       <h2><span class="hero-emoji"></span> Simulation Lab</h2>
     </div>
-    <div id="simulationShell" style="max-width:860px;margin:0 auto">
+    <div id="simulationShell" style="max-width:1180px;margin:0 auto">
       <div class="sim-mode-strip">
-        <button id="aboSimBtn" class="btn btn-primary" onclick="startABOsim()" style="font-size:15px;padding:12px 28px">ABO/Rh</button>
-        <button id="xmSimBtn" class="btn btn-ghost" onclick="startXMsim()" style="font-size:15px;padding:12px 28px;border-width:2px">Screen</button>
-        <button hidden id="antigramSimBtn" style="display:none" class="btn btn-ghost" onclick="startAntigramSim()" style="font-size:15px;padding:12px 28px;border-width:2px"> Antigram</button>
-        <button id="automationSimBtn" class="btn btn-ghost" onclick="startAutomationSim()"> Automation</button>
+        <button id="aboSimBtn" class="btn btn-primary" onclick="startABOsim()">ABO/Rh</button>
+        <button id="xmSimBtn" class="btn btn-ghost" onclick="startXMsim()">Screen</button>
+        <button id="crossmatchSimBtn" class="btn btn-ghost" onclick="startCrossmatchSim()">Crossmatch</button>
+        <button id="phenotypingSimBtn" class="btn btn-ghost" onclick="showSimulationPlaceholder('phenotyping')">Antigen Phenotyping</button>
+        <button id="datSimBtn" class="btn btn-ghost" onclick="showSimulationPlaceholder('dat')">DAT</button>
+        <button id="fetalScreenSimBtn" class="btn btn-ghost" onclick="showSimulationPlaceholder('fetal-screen')">Fetal Screen</button>
+        <button id="automationSimBtn" class="btn btn-ghost" onclick="startAutomationSim()">Automation</button>
       </div>
       <div id="aboContent" style="display:block"></div>
       <div id="xmContent" style="display:none"></div>
       <div id="automationContent" style="display:none"><div class="sys-card"><h3>Automation</h3><p>In progress. Automation material will be added here.</p></div></div>
       <div id="antigramContent" style="display:none"></div>
+      <div id="phenotypingContent" style="display:none"><div class="sys-card"><h3>Antigen Phenotyping</h3><p>Phenotyping practice will be added here.</p></div></div>
+      <div id="datContent" style="display:none"><div class="sys-card"><h3>DAT</h3><p>DAT practice will be added here.</p></div></div>
+      <div id="fetalScreenContent" style="display:none"><div class="sys-card"><h3>Fetal Screen</h3><p>Fetal Screen practice will be added here.</p></div></div>
     </div>
   </div>
 
@@ -1486,6 +1494,8 @@ async function attemptLogin() {
     // Re-render current system to enable fields
     const active = document.querySelector('.sys-btn.active');
     if (active) active.click();
+    if (document.getElementById('sec-antigram').classList.contains('active')) renderPersonalAntigram();
+    if (document.getElementById('sec-crossmatch').classList.contains('active') && document.getElementById('xmContent').style.display !== 'none') renderXm();
     if (document.getElementById('sec-rbc-diagram').classList.contains('active')) renderRbcDiagram();
     if (document.getElementById('sec-flowchart').classList.contains('active')) renderFlowchart();
   } else {
@@ -1513,6 +1523,8 @@ function logoutAdminLocally(message, isError) {
   document.getElementById('adminBadge').classList.remove('visible');
   if (document.getElementById('sec-rbc-diagram').classList.contains('active')) renderRbcDiagram();
   if (document.getElementById('sec-flowchart').classList.contains('active')) renderFlowchart();
+  if (document.getElementById('sec-antigram').classList.contains('active')) renderPersonalAntigram();
+  if (document.getElementById('sec-crossmatch').classList.contains('active') && document.getElementById('xmContent').style.display !== 'none') renderXm();
   showToast(message || 'Admin locked', !!isError);
 }
 
@@ -7371,7 +7383,6 @@ function defaultXmCases() {
         {type:'AB-', detail:'K-', compat:false, reason:'ABO incompatible. AB carries B antigen. Patient anti-B reacts at IS.'},
         {type:'A-', detail:'K- E-', compat:true, reason:'ABO compatible. Rh-negative is acceptable for Rh-positive patient. Compatible.'},
       ],
-      teach:'Group A patients can receive A or O RBCs. B and AB carry B antigen -- incompatible due to patient anti-B.'
     },
     {
       patient_type:'O-', patient_desc:'Group O, Rh negative', patient_abs:['anti-A','anti-B'],
@@ -7464,16 +7475,21 @@ function startCalcSim() {
   renderCalcSim();
 }
 function startAutomationSim() {
-  ['abo','xm','antigram'].forEach(function(key) {
-    document.getElementById(key+'Content').style.display='none';
-    document.getElementById(key+'SimBtn').className='btn btn-ghost';
-  });
-  document.getElementById('automationContent').style.display='block';
-  document.getElementById('automationSimBtn').className='btn btn-primary';
+  showSimulationPlaceholder('automation');
 }
 function hideAutomationSim() {
   document.getElementById('automationContent').style.display='none';
   document.getElementById('automationSimBtn').className='btn btn-ghost';
+}
+function showSimulationPlaceholder(kind) {
+  var contentIds=['aboContent','xmContent','antigramContent','automationContent','phenotypingContent','datContent','fetalScreenContent'];
+  var buttonIds=['aboSimBtn','xmSimBtn','crossmatchSimBtn','automationSimBtn','phenotypingSimBtn','datSimBtn','fetalScreenSimBtn'];
+  contentIds.forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+  buttonIds.forEach(function(id){var el=document.getElementById(id);if(el)el.className='btn btn-ghost';});
+  var content=document.getElementById(kind==='fetal-screen'?'fetalScreenContent':kind+'Content');
+  var button=document.getElementById(kind==='fetal-screen'?'fetalScreenSimBtn':kind+'SimBtn');
+  if(content)content.style.display='block';if(button)button.className='btn btn-primary';
+  setSimulationShellWidth('1180px');
 }
 
 function cleanCalcAg(value) {
@@ -7688,38 +7704,26 @@ function setSimulationShellWidth(width) {
 }
 
 function startABOsim() {
-  hideAutomationSim();
+  showSimulationPlaceholder('abo');
   setSimulationShellWidth('860px');
-  document.getElementById('aboContent').style.display = 'block';
-  document.getElementById('xmContent').style.display  = 'none';
-  document.getElementById('antigramContent').style.display = 'none';
-  document.getElementById('aboSimBtn').className = 'btn btn-primary';
-  document.getElementById('xmSimBtn').className  = 'btn btn-ghost';
-  document.getElementById('antigramSimBtn').className = 'btn btn-ghost';
   renderABOsim();
 }
 function startXMsim() {
-  hideAutomationSim();
-  setSimulationShellWidth('860px');
-  document.getElementById('aboContent').style.display = 'none';
-  document.getElementById('xmContent').style.display  = 'block';
-  document.getElementById('antigramContent').style.display = 'none';
-  document.getElementById('xmSimBtn').className  = 'btn btn-primary';
-  document.getElementById('aboSimBtn').className = 'btn btn-ghost';
-  document.getElementById('antigramSimBtn').className = 'btn btn-ghost';
+  showSimulationPlaceholder('xm');
+  setSimulationShellWidth('1180px');
   if (!xmCurrent) nextXm();
-  else renderXm();
+  startXmScreenCells();
+}
+function startCrossmatchSim() {
+  showSimulationPlaceholder('crossmatch');
+  setSimulationShellWidth('1180px');
+  if (!xmCurrent) nextXm();
+  startXmDonorMode();
 }
 
 function startAntigramSim() {
-  hideAutomationSim();
+  showSimulationPlaceholder('antigram');
   setSimulationShellWidth('1180px');
-  document.getElementById('aboContent').style.display = 'none';
-  document.getElementById('xmContent').style.display  = 'none';
-  document.getElementById('antigramContent').style.display = 'block';
-  document.getElementById('aboSimBtn').className = 'btn btn-ghost';
-  document.getElementById('xmSimBtn').className  = 'btn btn-ghost';
-  document.getElementById('antigramSimBtn').className = 'btn btn-primary';
   renderAntigramSim();
 }
 
@@ -8251,7 +8255,7 @@ function renderXm() {
     var good = xmSelectedDonor && xmSelectedDonor.compat;
     resultArea = '<div class="xm-feedback ' + (good?'good':'bad') + '">' +
       '<strong>' + (xmMode === 'screen' ? (good?'Screen negative.':'Screen positive.') : (good?'Compatible.':'Incompatible.')) + '</strong> ' + (xmSelectedDonor?xmSelectedDonor.reason:'') +
-      '<br><em style="font-size:12px;opacity:.8">' + (c.teach||'') + '</em></div>';
+      (c.teach?'<br><em style="font-size:12px;opacity:.8">' + c.teach + '</em>':'') + '</div>';
   }
 
   area.innerHTML = stats +

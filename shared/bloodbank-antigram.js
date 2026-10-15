@@ -44,7 +44,7 @@ function personalAntigramAnalyze(rows){
  var left=ANTIGRAM_ANTIGENS.filter(function(a){return !ruled.includes(a);});
  return {evidence:evidence,ruled:ruled,left:left,candidates:left.filter(function(a){return personalAntigramPairs[a]&&!personalAntigramExceptions.includes(a);}),exceptions:left.filter(function(a){return personalAntigramExceptions.includes(a);}),review:left.filter(function(a){return !personalAntigramPairs[a]&&!personalAntigramExceptions.includes(a);})};
 }
-function setPersonalAntigramMode(mode){if(mode==='practice'&&!isAdmin)return;personalAntigramMode=mode;personalAntigramReveal=false;personalAntigramShowAnswers=false;renderPersonalAntigram();}
+function setPersonalAntigramMode(mode){personalAntigramMode=mode==='own'?'own':'practice';personalAntigramReveal=false;personalAntigramShowAnswers=false;renderPersonalAntigram();}
 function persistPersonalAntigram(){if(personalAntigramMode==='practice'){if(!isAdmin)return;notesData.__antigramPractice=personalAntigramPractice;scheduleSave();return;}try{localStorage.setItem('bb-antigram-personal-v1',JSON.stringify(personalAntigramRows));}catch(e){showToast('Device storage unavailable. Keep this page open.',true);}}
 function personalAntigramChange(row,kind,key,value){if(personalAntigramMode==='practice'&&!isAdmin)return;personalAntigramCurrent()[row][kind][key]=value;persistPersonalAntigram();updatePersonalAntigramResults();}
 function addPersonalSelectedCell(){if(personalAntigramMode==='practice'&&!isAdmin)return;var rows=personalAntigramCurrent();rows.push(personalAntigramBlank('Selected '+(rows.length-11)));persistPersonalAntigram();renderPersonalAntigram();}
