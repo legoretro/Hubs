@@ -66,7 +66,7 @@ function routeBloodBankFlow(container) {
     }
     return null;
   }
-  var stage=container.querySelector('#flowStage'),bounds=stage.getBoundingClientRect();
+  var stage=container.querySelector('.flow-tree'),bounds=stage.getBoundingClientRect();
   var width=Math.max(container.clientWidth,bounds.right-origin.left,1),height=Math.max(container.clientHeight,bounds.bottom-origin.top,1);
   layer.setAttribute('viewBox','0 0 '+width+' '+height);layer.setAttribute('width',width);layer.setAttribute('height',height);layer.style.width=width+'px';layer.style.height=height+'px';
   // Use a separate marker per canvas so multi-page exports remain self-contained.
@@ -83,6 +83,7 @@ function routeBloodBankFlow(container) {
     // Remove collinear points while preserving turns for hit testing.
     points=points.filter(function(p,i,all){if(i===0||i===all.length-1)return true;var a=all[i-1],b=all[i+1];return !((a.x===p.x&&p.x===b.x)||(a.y===p.y&&p.y===b.y));});
     var d=points.map(function(p,i){return (i?'L ':'M ')+p.x.toFixed(2)+' '+p.y.toFixed(2);}).join(' ');
+    if(m.dataset.selected==='true')html+='<path d="'+d+'" fill="none" stroke="#ffcf00" stroke-width="'+Math.max(8,2.4*zoom+7)+'" stroke-linecap="round" stroke-linejoin="round"/>';
     html+='<path class="flow-link-path'+(m.dataset.selected==='true'?' selected':'')+'" style="stroke-width:'+Math.max(.6,2.4*zoom)+'" d="'+d+'" marker-end="url(#'+marker+')"/>';
     targets.push({from:from,branchId:m.dataset.branchId,points:points});
     if(m.dataset.label && m.dataset.label.toLowerCase()!=='next'){

@@ -606,7 +606,13 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 /* Antigram fits the available page; smaller screens use labeled column groups. */
 .ag-fit-panels{display:grid;gap:16px;width:100%;min-width:0}.personal-antigram-table{table-layout:fixed;width:100%;font-size:clamp(10px,1vw,13px);background:#fffaf7}.personal-antigram-table th{padding:8px 0;overflow-wrap:anywhere}.personal-antigram-table td{padding:0;height:33px}.personal-antigram-table select{appearance:none;min-width:0;width:100%;padding:7px 0;text-align:center;font:inherit;font-weight:600;cursor:pointer}.personal-antigram-table td:first-child,.personal-antigram-table th:first-child{position:static}.ag-mark-cell{position:relative}.ag-cell-slash{pointer-events:none;position:absolute;inset:0;display:grid;place-items:center;font:bold 28px/1 Arial;transform:rotate(8deg)}.ag-black{color:#111}.ag-red{color:#c0173d}.ag-ledger{display:flex;justify-content:center;gap:2px;min-height:22px;font:bold 22px/1 Arial;background:#fff8f5;border-radius:3px;margin:5px 1px 0}.personal-antigram-table td.ag-unresolved{background:#fff1b8}.ag-unresolved .ag-ledger{background:#fff1b8}.personal-antigram-table .ag-ruled{box-shadow:inset 2px 0 #c0173d,inset -2px 0 #c0173d}.ag-ruled .ag-ledger{outline:2px solid #c0173d}.personal-antigram-table tr:last-child .ag-ruled{border-bottom:2px solid #c0173d}.ag-practice-button{border:2px solid #c0173d!important}.ag-practice-banner{background:#fce3ea;border-left:4px solid #c0173d;border-radius:8px;padding:14px;margin-bottom:16px}.ag-practice-banner strong,.ag-practice-banner span{display:block}.ag-practice-banner span{font-size:14px;margin-top:4px}.ag-rules{position:relative;margin-left:auto}.ag-rules summary{list-style:none;cursor:pointer;border:1px solid #c0173d;border-radius:50%;width:30px;height:30px;text-align:center;font:bold 18px/28px Arial;color:#7a1530}.ag-rules>div{position:absolute;right:0;top:38px;width:min(390px,80vw);padding:18px;background:#fffaf7;box-shadow:0 4px 24px #5a0e2033;border:1px solid #efc3d0;border-radius:12px;z-index:30;font-size:14px;line-height:1.5}.ag-rules p{margin-top:10px}.ag-selected-heading{margin:20px 0 10px}.ag-selected-heading small{font:13px Arial;color:#c0173d;margin-left:10px}.ag-intro{padding:16px!important}.ag-intro .personal-antigram-toolbar:last-child{margin-bottom:0}@media(max-width:760px){.personal-antigram-table{font-size:13px}.ag-fit-panels{gap:22px}.ag-rules>div{right:-4px}.ag-selected-heading small{display:block;margin:4px 0}}
 </style>
-</head>
+<style>
+#flowExportDetails input:disabled{background:#e8e5e6;color:#777;cursor:not-allowed;opacity:1}
+#flowchartPreview .flow-node.selected{outline:6px solid #ffcf00;outline-offset:4px;box-shadow:none}
+#flowchartPreview .flow-node.question.selected{outline:none;filter:drop-shadow(0 0 4px #ffcf00)}
+#flowchartPreview .flow-node.question.selected .flow-diamond polygon{stroke:#ffcf00;stroke-width:6;vector-effect:non-scaling-stroke}
+#flowchartPreview .flow-link-path.selected{stroke:#c0173d!important}
+</style></head>
 <body>
 
 <!-- INTRO -->
@@ -903,7 +909,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
           </div>
           <details class="flow-options flow-admin-action"><summary>Edit selected box or connection</summary><div class="flow-selection-panel" id="flowSelectionPanel"></div></details>
         </div>
-        <div class="flow-legend">Rectangle: action · Diamond: decision · Arrow: next step</div><div id="flowchartViewport" class="flow-canvas">
+        <div id="flowDiagramKey" class="flow-legend"></div><div id="flowchartViewport" class="flow-canvas">
           <div id="flowchartPreview" onclick="handleFlowPreviewClick(event)"></div>
         </div>
       </div>
@@ -2172,20 +2178,33 @@ function renderFlowDiagramTabs(){
   document.getElementById('flowDiagramCount').textContent=Object.keys(diagrams).length+' / 10';
 }
 function exportAllFlowcharts(){openFlowExportDetails(true);}
+function flowDiagramKey(data){
+  var nodes=Object.values(data.nodes||{});
+  var groups=[['step','Process / Action'],['question','Decision'],['terminal','Result / End']];
+  return '<aside style="display:inline-block;border:1px solid #c8aeb6;border-radius:7px;padding:10px 14px;background:#fff8f5;color:#32141e;font:13px Arial;margin:6px 0 12px"><strong style="display:block;margin-bottom:7px">Diagram Key</strong>'+groups.map(function(group){
+    var matches=nodes.filter(function(n){return (n.type||'step')===group[0]||(group[0]==='step'&&n.type==='plain');});
+    if(!matches.length)return '';
+    var seen={};return '<div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:5px 0">'+matches.filter(function(n){var k=n.fillColor+'|'+n.borderColor;if(seen[k])return false;seen[k]=true;return true;}).map(function(n){
+      var shape=group[0]==='question'?'<polygon points="2,15 24,2 46,15 24,28"/>':'<rect x="2" y="3" width="44" height="24" rx="'+(group[0]==='terminal'?10:4)+'"/>';
+      return '<svg width="48" height="30" viewBox="0 0 48 30" style="flex-shrink:0;fill:'+normalizeFlowFillColor(n.fillColor)+';stroke:'+normalizeFlowBorderColor(n.borderColor)+';stroke-width:1.5">'+shape+'</svg>';
+    }).join('')+'<span>'+group[1]+'</span></div>';
+  }).join('')+'</aside>';
+}
 function openFlowExportDetails(all){
   var existing=document.getElementById('flowExportDetails');if(existing)existing.remove();
   var diagrams=getFlowDiagrams(),ids=all?Object.keys(diagrams):[activeFlowDiagramId];
   var modal=document.createElement('div');modal.id='flowExportDetails';modal.className='modal-overlay';modal.style.display='flex';
-  modal.innerHTML='<form class="modal-box" onsubmit="completeFlowExport(event)" style="max-height:85vh;overflow:auto"><h3>Export diagram'+(all?'s':'')+'</h3><p>These details appear only on your export.</p>'+ids.map(function(id){return '<label style="display:block;text-align:left;margin:12px 0">Name<input class="modal-input" data-export-diagram="'+escAttr(id)+'" required maxlength="120" value="'+escAttr(diagrams[id].name)+'"></label>';}).join('')+'<label style="display:block;text-align:left;margin:12px 0">Created by<input class="modal-input" id="flowExportCreator" maxlength="100" placeholder="Your name" autocomplete="off" required></label><p>Date: '+escText(new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'}))+'</p><div style="display:flex;gap:10px;justify-content:flex-end"><button type="button" class="btn btn-ghost" onclick="document.getElementById(\'flowExportDetails\').remove()">Cancel</button><button type="submit" class="btn btn-primary">Export</button></div></form>';
+  modal.innerHTML='<form class="modal-box" onsubmit="completeFlowExport(event)" style="max-height:85vh;overflow:auto"><h3>Export diagram'+(all?'s':'')+'</h3><p>Credit is set by the admin and included on every export.</p>'+ids.map(function(id){return '<label style="display:block;text-align:left;margin:12px 0">Name<input class="modal-input" data-export-diagram="'+escAttr(id)+'" required maxlength="120" '+(isAdmin?'':'disabled')+' value="'+escAttr(diagrams[id].name)+'"></label>';}).join('')+'<label style="display:block;text-align:left;margin:12px 0">Created by<input class="modal-input" id="flowExportCreator" maxlength="100" placeholder="Set by admin" autocomplete="off" value="'+escAttr(notesData.__flowExportCreator||'')+'" '+(isAdmin?'required':'disabled')+'></label><p>Date: '+escText(new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'}))+'</p><div style="display:flex;gap:10px;justify-content:flex-end"><button type="button" class="btn btn-ghost" onclick="document.getElementById(\'flowExportDetails\').remove()">Cancel</button><button type="submit" class="btn btn-primary">Export</button></div></form>';
   document.body.appendChild(modal);modal.querySelector('input').focus({preventScroll:true});
 }
 function completeFlowExport(event){
   event.preventDefault();var modal=document.getElementById('flowExportDetails'),diagrams=getFlowDiagrams();
-  var creator=modal.querySelector('#flowExportCreator').value.trim();if(!creator)return;
+  var creator=isAdmin?modal.querySelector('#flowExportCreator').value.trim():String(notesData.__flowExportCreator||'');if(isAdmin&&!creator)return;
+  if(isAdmin){notesData.__flowExportCreator=creator;scheduleSave();}
   var date=new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'});
   var fields=Array.from(modal.querySelectorAll('[data-export-diagram]'));if(fields.some(function(f){return !f.value.trim();}))return;
   prepareReadableFlowchartExport();
-  var pages=fields.map(function(f){return buildFlowchartExportPage(diagrams[f.dataset.exportDiagram].data,f.value.trim(),{creator:creator,date:date});}).join('');
+  var pages=fields.map(function(f){return buildFlowchartExportPage(diagrams[f.dataset.exportDiagram].data,isAdmin?f.value.trim():diagrams[f.dataset.exportDiagram].name,{creator:creator,date:date});}).join('');
   var title=fields.length===1?fields[0].value.trim():'Diagrams';modal.remove();
   printExportHtml(pages,title,'portrait',{directPrint:true,defaultScale:1,minScale:1,maxScale:1,step:1,allowOrientationToggle:false});
 }
@@ -2302,6 +2321,7 @@ function renderFlowGraph(data){
   return Object.keys(flat.nodes).map(function(id){return renderFlowNode(flat,id,[],{primaryParent:{}},null);}).join('');
 }
 function renderFlowchartPreview(data) {
+  document.getElementById('flowDiagramKey').innerHTML=flowDiagramKey(normalizeFlowchartData(data));
   const preview = document.getElementById('flowchartPreview');
   if (!preview) return;
   data = normalizeFlowchartData(data);
@@ -6886,13 +6906,14 @@ function buildFlowchartExportPage(input, name, metadata) {
   name = name || currentFlowDiagram().name;
   var oldAdmin = isAdmin;
   var oldSelected = flowSelectedNodeId;
+  var oldLink = flowSelectedLink; flowSelectedLink=null;
   isAdmin = false;
   flowSelectedNodeId = null;
   var markers = flowConnectionMarkers(data);
   var tree = '<svg class="flow-link-layer" aria-hidden="true"></svg><div class="flow-tree">' + renderFlowGraph(data) + '</div>' + markers;
   isAdmin = oldAdmin;
-  flowSelectedNodeId = oldSelected;
-  return '<section class="page flow-export-page" style="--flow-export-zoom:' + flowPrintZoom + ';--flow-font-family:' + escAttr(flowFontStack(data.font)) + '"><header><h2 class="flow-export-title">'+escText(name)+'</h2><p class="flow-export-meta">'+(metadata.creator?'Created by '+escText(metadata.creator)+' · ':'')+escText(metadata.date||new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'}))+'</p></header><div class="flow-export-wrap">' + tree + '</div></section>';
+  flowSelectedNodeId = oldSelected; flowSelectedLink=oldLink;
+  return '<section class="page flow-export-page" style="--flow-export-zoom:' + flowPrintZoom + ';--flow-font-family:' + escAttr(flowFontStack(data.font)) + '"><header><h2 class="flow-export-title">'+escText(name)+'</h2><p class="flow-export-meta">'+(metadata.creator?'Created by '+escText(metadata.creator)+' · ':'')+escText(metadata.date||new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'}))+'</p>'+flowDiagramKey(data)+'</header><div class="flow-export-wrap">' + tree + '</div></section>';
 }
 
 function buildExportHtml(content, title, orientation, scale) {
