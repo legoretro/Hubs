@@ -591,7 +591,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 /* BB Hub recovery and diagram workspace */
 .flow-options summary{cursor:pointer;font-weight:700;font-size:12px;padding:8px 0}.flow-options:not([open]) .flow-selection-panel{display:none!important}
 .bb-system-overview{display:grid;grid-template-columns:minmax(220px,380px) minmax(220px,1fr);gap:16px;align-items:stretch}.bb-system-overview .sys-card{max-width:none}.bb-history .timeline{margin-top:14px}.bb-structure-wrap{position:relative;cursor:help;outline-offset:4px}.bb-structure-tooltip{display:none;position:absolute;z-index:10;left:0;right:0;bottom:30px;padding:13px;background:#5a0e20;color:#fff;border-radius:9px;font-size:13px;line-height:1.5;box-shadow:0 4px 20px #0003}.bb-structure-wrap:hover .bb-structure-tooltip,.bb-structure-wrap:focus .bb-structure-tooltip,.bb-structure-wrap.show-structure .bb-structure-tooltip{display:block}.bb-structure-hint{display:block;text-align:center;font-size:11px;color:var(--warm-grey)}
-.bb-calc-inputs{grid-template-columns:1fr 1fr}.bb-math-steps{padding-left:22px}.bb-math-steps li{margin:10px 0}.bb-math-steps b{font-size:inherit}.flow-shell,.flow-builder-card{min-width:0;max-width:100%}.flow-editor-tray{position:relative;top:auto;margin:0 0 12px;box-shadow:none}.flow-diagrams{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}.flow-diagrams select,.flow-diagrams input{max-width:210px;padding:8px;border:1px solid var(--rose);border-radius:8px;font:inherit;background:#fff;color:var(--wine)}.flow-diagrams label{font-weight:700}.flow-canvas{height:65dvh;min-height:330px;max-height:800px;overflow:auto;overscroll-behavior:contain;touch-action:pan-x pan-y;scroll-padding:20px;padding:18px;position:relative}.flow-tree{padding:35px 45px 60px}.flow-link-path{stroke-dasharray:none;stroke-width:2.4;opacity:1}.flow-branch:before,.flow-branch:after{display:none}.flow-branches{gap:34px;margin-top:65px}.flow-edge-row{margin-top:-30px;margin-bottom:16px}.flow-route-label{font:700 11px Arial;fill:#5a0e20;stroke:#fff;stroke-width:5;paint-order:stroke;stroke-linejoin:round}
+.bb-calc-inputs{grid-template-columns:1fr 1fr}.bb-math-steps{padding-left:22px}.bb-math-steps li{margin:10px 0}.bb-math-steps b{font-size:inherit}.flow-shell,.flow-builder-card{min-width:0;max-width:100%}.flow-editor-tray{position:relative;top:auto;margin:0 0 12px;box-shadow:none}.flow-diagrams{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}.flow-diagrams select,.flow-diagrams input{max-width:210px;padding:8px;border:1px solid var(--rose);border-radius:8px;font:inherit;background:#fff;color:var(--wine)}.flow-diagrams label{font-weight:700}.flow-canvas{height:65dvh;min-height:330px;max-height:800px;overflow:auto;overscroll-behavior:auto;touch-action:pan-x pan-y;scroll-padding:20px;padding:18px;position:relative}.flow-tree{padding:35px 45px 60px}.flow-link-path{stroke-dasharray:none;stroke-width:2.4;opacity:1}.flow-branch:before,.flow-branch:after{display:none}.flow-branches{gap:34px;margin-top:65px}.flow-edge-row{margin-top:-30px;margin-bottom:16px}.flow-route-label{font:700 11px Arial;fill:#5a0e20;stroke:#fff;stroke-width:5;paint-order:stroke;stroke-linejoin:round}
 @media(max-width:1000px){.bb-system-overview{grid-template-columns:1fr}.bb-system-overview .membrane-card-live{max-width:none}}
 @media(max-width:820px){.flow-branches{grid-auto-flow:column;grid-auto-columns:minmax(210px,max-content);grid-template-columns:none;min-width:max-content}.flow-tree{min-width:max-content;justify-content:center}.flow-node-wrap{min-width:190px;width:auto}.flow-node-row{width:auto;flex-direction:row;align-items:flex-start}.flow-node{max-width:270px;min-width:185px;width:auto}.flow-note-card{width:152px;max-width:152px}.flow-canvas{height:60dvh;min-height:300px}.flow-diagrams{font-size:12px}.flow-diagrams input{width:150px}.bb-calc-inputs label:last-child{grid-column:auto}}
 
@@ -600,11 +600,11 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 
 /* Cohesive reference cards and a portrait diagram workspace. */
 .bb-system-overview{grid-template-columns:minmax(180px,240px) minmax(0,1fr);gap:20px;align-items:start}.bb-system-overview .sys-card{padding:20px}.bb-system-diagram{max-width:200px;margin:12px auto}.bb-history .timeline{font-size:16px;line-height:1.65}.bb-history .tl-text,.bb-history .tl-item{font-size:16px;line-height:1.6}.bb-history .tl-year{font-size:14px}.bb-history .tl-item{margin-bottom:10px}.bb-static-antigens{display:block;width:100%;height:auto;overflow:visible}.bb-structure-hint{font-size:13px}.bb-antigen-key{font-size:16px}#rbcDiagramContainer{overflow:auto;padding:14px}#rbcDiagramContainer>.bb-static-antigens{min-width:720px;max-width:1150px;margin:auto}
-#sec-flowchart .flow-shell{max-width:1000px;margin:auto}#flowchartViewport{width:100%;height:1000px;height:min(1150px,140dvh);min-height:650px;max-height:none;box-sizing:border-box;overflow:auto;overflow-anchor:none}#flowchartPreview{width:max-content;min-width:100%;position:relative}#flowStage{margin:0 auto}#sec-flowchart .flow-editor-tray{position:sticky;top:0;z-index:20;background:var(--cream,#fff8f5)}.flow-options[open]{max-height:230px;overflow:auto}.flow-selected-title{max-width:240px}.flow-control{font-size:13px}.flow-select{font-size:14px}#personalAntigram{max-width:1500px;margin:auto}.personal-antigram-toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}.personal-antigram-table{width:100%;border-collapse:collapse;font-size:14px}.personal-antigram-table th{background:#5a0e20;color:white;padding:9px 6px}.personal-antigram-table td{text-align:center;padding:4px;border:1px solid #efd0d8}.personal-antigram-table select{min-width:44px;padding:7px 2px;border:0;background:transparent;font:inherit;color:inherit}.personal-antigram-table th:first-child{position:sticky;left:0;z-index:2}.personal-antigram-table td:first-child{position:sticky;left:0;background:#fff8f5;font-weight:bold}.personal-antigram-table .ruled{background:#f5e4e9;color:#8c5964}.personal-antigram-table .auto-row{background:#fce8ed}.antigram-personal-note{font-size:14px;line-height:1.6}.antigram-result{padding:16px;background:#fff8f5;border:1px solid #efced7;border-radius:12px;margin-top:16px}.antigram-result h3{margin-bottom:8px}
-@media(max-width:760px){.bb-system-overview{grid-template-columns:1fr}.bb-system-diagram{max-width:175px}.bb-history .timeline,.bb-history .tl-text,.bb-history .tl-item{font-size:16px;line-height:1.6}.bb-history .tl-year{font-size:14px}#flowchartViewport{min-height:600px;height:110dvh}.flow-editor-tray{padding:8px}.flow-options[open]{max-height:180px}}
+#sec-flowchart .flow-shell{max-width:1000px;margin:auto}#flowchartViewport{width:100%;height:65dvh;min-height:280px;max-height:800px;box-sizing:border-box;overflow:auto;overflow-anchor:none}#flowchartPreview{width:max-content;min-width:100%;position:relative}#flowStage{margin:0 auto}#sec-flowchart .flow-editor-tray{position:sticky;top:0;z-index:20;background:var(--cream,#fff8f5)}.flow-options[open]{max-height:230px;overflow:auto}.flow-selected-title{max-width:240px}.flow-control{font-size:13px}.flow-select{font-size:14px}#personalAntigram{max-width:1500px;margin:auto}.personal-antigram-toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}.personal-antigram-table{width:100%;border-collapse:collapse;font-size:14px}.personal-antigram-table th{background:#5a0e20;color:white;padding:9px 6px}.personal-antigram-table td{text-align:center;padding:4px;border:1px solid #efd0d8}.personal-antigram-table select{min-width:44px;padding:7px 2px;border:0;background:transparent;font:inherit;color:inherit}.personal-antigram-table th:first-child{position:sticky;left:0;z-index:2}.personal-antigram-table td:first-child{position:sticky;left:0;background:#fff8f5;font-weight:bold}.personal-antigram-table .ruled{background:#f5e4e9;color:#8c5964}.personal-antigram-table .auto-row{background:#fce8ed}.antigram-personal-note{font-size:14px;line-height:1.6}.antigram-result{padding:16px;background:#fff8f5;border:1px solid #efced7;border-radius:12px;margin-top:16px}.antigram-result h3{margin-bottom:8px}
+@media(max-width:760px){.bb-system-overview{grid-template-columns:1fr}.bb-system-diagram{max-width:175px}.bb-history .timeline,.bb-history .tl-text,.bb-history .tl-item{font-size:16px;line-height:1.6}.bb-history .tl-year{font-size:14px}#flowchartViewport{min-height:260px;height:60dvh}.flow-editor-tray{padding:8px}.flow-options[open]{max-height:180px}}
 
 /* Antigram fits the available page; smaller screens use labeled column groups. */
-.ag-fit-panels{display:grid;gap:16px;width:100%;min-width:0}.personal-antigram-table{table-layout:fixed;width:100%;font-size:clamp(10px,1vw,13px);background:#fffaf7}.personal-antigram-table th{padding:8px 0;overflow-wrap:anywhere}.personal-antigram-table td{padding:0;height:33px}.personal-antigram-table select{appearance:none;min-width:0;width:100%;padding:7px 0;text-align:center;font:inherit;font-weight:600;cursor:pointer}.personal-antigram-table td:first-child,.personal-antigram-table th:first-child{position:static}.ag-mark-cell{position:relative}.ag-cell-slash{pointer-events:none;position:absolute;inset:0;display:grid;place-items:center;font:bold 28px/1 Arial;transform:rotate(8deg)}.ag-black{color:#111}.ag-red{color:#c0173d}.ag-ledger{display:flex;justify-content:center;gap:2px;min-height:22px;font:bold 22px/1 Arial;background:#fff8f5;border-radius:3px;margin:5px 1px 0}.ag-excluded{text-decoration:line-through;text-decoration-thickness:2px}.ag-practice-button{border:2px solid #c0173d!important}.ag-practice-banner{background:#fce3ea;border-left:4px solid #c0173d;border-radius:8px;padding:14px;margin-bottom:16px}.ag-practice-banner strong,.ag-practice-banner span{display:block}.ag-practice-banner span{font-size:14px;margin-top:4px}.ag-rules{position:relative;margin-left:auto}.ag-rules summary{list-style:none;cursor:pointer;border:1px solid #c0173d;border-radius:50%;width:30px;height:30px;text-align:center;font:bold 18px/28px Arial;color:#7a1530}.ag-rules>div{position:absolute;right:0;top:38px;width:min(390px,80vw);padding:18px;background:#fffaf7;box-shadow:0 4px 24px #5a0e2033;border:1px solid #efc3d0;border-radius:12px;z-index:30;font-size:14px;line-height:1.5}.ag-rules p{margin-top:10px}.ag-selected-heading{margin:20px 0 10px}.ag-selected-heading small{font:13px Arial;color:#c0173d;margin-left:10px}.ag-intro{padding:16px!important}.ag-intro .personal-antigram-toolbar:last-child{margin-bottom:0}@media(max-width:760px){.personal-antigram-table{font-size:13px}.ag-fit-panels{gap:22px}.ag-rules>div{right:-4px}.ag-selected-heading small{display:block;margin:4px 0}}
+.ag-fit-panels{display:grid;gap:16px;width:100%;min-width:0}.personal-antigram-table{table-layout:fixed;width:100%;font-size:clamp(10px,1vw,13px);background:#fffaf7}.personal-antigram-table th{padding:8px 0;overflow-wrap:anywhere}.personal-antigram-table td{padding:0;height:33px}.personal-antigram-table select{appearance:none;min-width:0;width:100%;padding:7px 0;text-align:center;font:inherit;font-weight:600;cursor:pointer}.personal-antigram-table td:first-child,.personal-antigram-table th:first-child{position:static}.ag-mark-cell{position:relative}.ag-cell-slash{pointer-events:none;position:absolute;inset:0;display:grid;place-items:center;font:bold 28px/1 Arial;transform:rotate(8deg)}.ag-black{color:#111}.ag-red{color:#c0173d}.ag-ledger{display:flex;justify-content:center;gap:2px;min-height:22px;font:bold 22px/1 Arial;background:#fff8f5;border-radius:3px;margin:5px 1px 0}.personal-antigram-table td.ag-unresolved{background:#fff1b8}.ag-unresolved .ag-ledger{background:#fff1b8}.personal-antigram-table .ag-ruled{box-shadow:inset 2px 0 #c0173d,inset -2px 0 #c0173d}.ag-ruled .ag-ledger{outline:2px solid #c0173d}.personal-antigram-table tr:last-child .ag-ruled{border-bottom:2px solid #c0173d}.ag-practice-button{border:2px solid #c0173d!important}.ag-practice-banner{background:#fce3ea;border-left:4px solid #c0173d;border-radius:8px;padding:14px;margin-bottom:16px}.ag-practice-banner strong,.ag-practice-banner span{display:block}.ag-practice-banner span{font-size:14px;margin-top:4px}.ag-rules{position:relative;margin-left:auto}.ag-rules summary{list-style:none;cursor:pointer;border:1px solid #c0173d;border-radius:50%;width:30px;height:30px;text-align:center;font:bold 18px/28px Arial;color:#7a1530}.ag-rules>div{position:absolute;right:0;top:38px;width:min(390px,80vw);padding:18px;background:#fffaf7;box-shadow:0 4px 24px #5a0e2033;border:1px solid #efc3d0;border-radius:12px;z-index:30;font-size:14px;line-height:1.5}.ag-rules p{margin-top:10px}.ag-selected-heading{margin:20px 0 10px}.ag-selected-heading small{font:13px Arial;color:#c0173d;margin-left:10px}.ag-intro{padding:16px!important}.ag-intro .personal-antigram-toolbar:last-child{margin-bottom:0}@media(max-width:760px){.personal-antigram-table{font-size:13px}.ag-fit-panels{gap:22px}.ag-rules>div{right:-4px}.ag-selected-heading small{display:block;margin:4px 0}}
 </style>
 </head>
 <body>
@@ -2448,7 +2448,12 @@ function handleFlowPreviewClick(event) {
 
 function applyFlowZoom() {
   const stage = document.getElementById('flowStage');
-  if (stage) stage.style.zoom = String(flowZoom);
+  if (stage) {
+    stage.style.zoom = String(flowZoom);
+    const preview=document.getElementById('flowchartPreview');
+    preview.style.width=(parseFloat(stage.style.width)*flowZoom)+'px';
+    preview.style.height=(parseFloat(stage.style.height)*flowZoom)+'px';
+  }
   updateFlowMeta(getFlowchartData());
   scheduleFlowLinkDraw(getFlowchartData());
 }
@@ -2468,7 +2473,7 @@ function fitFlowchart() {
   if (!viewport || !stage) return;
   flowZoom = 1;
   applyFlowZoom();
-  const ratio = (viewport.clientWidth - 36) / Math.max(stage.scrollWidth, 1);
+  const ratio = (viewport.clientWidth - 36) / Math.max(parseFloat(stage.style.width) || stage.scrollWidth, 1);
   setFlowchartZoom(Math.max(.04, Math.min(1, ratio)));
   viewport.scrollLeft = 0;
   viewport.scrollTop = 0;
@@ -2482,7 +2487,7 @@ function fitFlowchartForLandscape() {
   applyFlowZoom();
   const pageWidth = viewport.clientWidth - 36;
   const pageHeight = viewport.clientHeight - 36;
-  const ratio = Math.min(pageWidth / Math.max(stage.scrollWidth, 1), pageHeight / Math.max(stage.scrollHeight, 1), 1);
+  const ratio = Math.min(pageWidth / Math.max(parseFloat(stage.style.width) || stage.scrollWidth, 1), pageHeight / Math.max(parseFloat(stage.style.height) || stage.scrollHeight, 1), 1);
   setFlowchartZoom(Math.max(.04, Math.min(1, ratio)));
   flowPrintZoom = flowZoom;
   const card = document.querySelector('#sec-flowchart .flow-builder-card');
@@ -2501,7 +2506,7 @@ function prepareReadableFlowchartExport() {
     stage.style.zoom = '1';
     const pageWidth = 10.55 * 96;
     const pageHeight = 7.15 * 96;
-    const ratio = Math.min(pageWidth / Math.max(stage.scrollWidth, 1), pageHeight / Math.max(stage.scrollHeight, 1), 1);
+    const ratio = Math.min(pageWidth / Math.max(parseFloat(stage.style.width) || stage.scrollWidth, 1), pageHeight / Math.max(parseFloat(stage.style.height) || stage.scrollHeight, 1), 1);
     stage.style.zoom = previousZoom;
     flowPrintZoom = Math.max(FLOW_EXPORT_MIN_ZOOM, Math.min(1, ratio * .98));
   }
@@ -2542,6 +2547,7 @@ function renderFlowSelectionPanel(data) {
       '<div class="flow-selected-title">Current selected<strong>Line: ' + escText(selectedConnection.parent.text || 'Box') + ' -> ' + escText(selectedConnection.target.text || 'Box') + '</strong></div>' +
       '<label class="flow-control">Arrow label<select class="flow-select" onchange="setSelectedArrowLabel(this.value)">' + flowOptionHtml(['Next','Yes','No','Negative','Positive'],['No label','Yes','No','Negative','Positive'],selectedConnection.branch.label || 'Next') + '</select></label>' +
       '<div class="flow-action-group">' +
+        '<button class="flow-tool-btn" onclick="insertFlowBox(\'arrow\')">Insert box here</button>' +
         '<button class="flow-tool-btn" onclick="deleteSelectedFlowConnectionLine()">Delete line</button>' +
         '<button class="flow-tool-btn" onclick="clearFlowConnectionSelection()">Cancel</button>' +
       '</div>';
@@ -2564,7 +2570,11 @@ function renderFlowSelectionPanel(data) {
     '<label class="flow-control">Branch<select class="flow-select" id="flowAddLabel">' + flowOptionHtml(addLabels, addLabels, 'Next') + '</select></label>' +
     '<label class="flow-control">New<select class="flow-select" id="flowAddShape">' + flowOptionHtml(shapeValues, shapeLabels, 'step') + '</select></label>' +
     '<div class="flow-action-group">' +
-      '<button class="flow-tool-btn primary" onclick="addFlowBranchToSelected()">+</button>' +
+      '<button class="flow-tool-btn primary" onclick="addFlowBranchToSelected()">Add branch</button>' +
+      '<button class="flow-tool-btn" onclick="insertFlowBox(\'before\')">Insert before</button>' +
+      '<button class="flow-tool-btn" onclick="insertFlowBox(\'after\')">Insert after</button>' +
+      '<label class="flow-control">Connect to<select class="flow-select" id="flowConnectTarget">' + Object.values(data.nodes).filter(function(n){return n.id!==node.id;}).map(function(n){return '<option value="'+escAttr(n.id)+'">'+escText(n.text||'Box')+'</option>';}).join('') + '</select></label>' +
+      '<button class="flow-tool-btn" onclick="connectFlowNodes(flowSelectedNodeId,document.getElementById(\'flowConnectTarget\').value)">Connect</button>' +
       '<button class="flow-tool-btn" onclick="addFlowNodeNoteToSelected()">Note</button>' +
       '<button class="flow-tool-btn" onclick="removeSelectedFlowNodeNote()">No note</button>' +
       (node.id === data.rootId ? '' : '<button class="flow-tool-btn" onclick="deleteSelectedFlowNode()">Delete</button>') +
@@ -2787,7 +2797,21 @@ function connectFlowNodes(parentId, targetId) {
   parent.branches.push({id:flowId('branch'), label:label || 'Next', to:targetId});
   flowSelectedNodeId = targetId;
   saveFlowchartData(data, true);
-  setTimeout(fitFlowchartForLandscape, 90);
+
+}
+
+function insertFlowBox(position) {
+  if (!isAdmin) return;
+  const data=getFlowchartData(),selected=getFlowSelectedNode(data),link=getFlowSelectedConnection(data);
+  if (position==='arrow' ? !link : !selected) return;
+  const id=flowId('node'),node={id:id,type:'step',text:'New step',branches:[]};
+  const edge=function(to){return {id:flowId('branch'),label:'Next',to:to};};
+  if(position==='arrow') {node.branches=[edge(link.branch.to)];link.branch.to=id;}
+  else if(position==='before') {
+    Object.values(data.nodes).forEach(function(n){n.branches.forEach(function(b){if(b.to===selected.id)b.to=id;});});
+    node.branches=[edge(selected.id)];if(data.rootId===selected.id)data.rootId=id;
+  } else {node.branches=selected.branches;selected.branches=[edge(id)];}
+  data.nodes[id]=node;flowSelectedLink=null;flowSelectedNodeId=id;saveFlowchartData(data,true);
 }
 
 function addFlowBranchToSelected() {

@@ -66,7 +66,8 @@ function routeBloodBankFlow(container) {
     }
     return null;
   }
-  var width=Math.max(container.scrollWidth,origin.width,1),height=Math.max(container.scrollHeight,origin.height,1);
+  var stage=container.querySelector('#flowStage'),bounds=stage.getBoundingClientRect();
+  var width=Math.max(container.clientWidth,bounds.right-origin.left,1),height=Math.max(container.clientHeight,bounds.bottom-origin.top,1);
   layer.setAttribute('viewBox','0 0 '+width+' '+height);layer.setAttribute('width',width);layer.setAttribute('height',height);layer.style.width=width+'px';layer.style.height=height+'px';
   // Use a separate marker per canvas so multi-page exports remain self-contained.
   var marker='flow-arrow-'+(container.dataset.routeId||(container.dataset.routeId=Math.random().toString(36).slice(2)));
