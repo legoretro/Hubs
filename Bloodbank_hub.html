@@ -625,7 +625,14 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 #sec-flowchart .flow-selection-panel{padding:5px;gap:5px}
 #flowchartViewport{height:88dvh;min-height:520px;max-height:none;width:100%}
 @media(max-width:760px){#flowchartViewport{height:80dvh;min-height:420px}#sec-flowchart .flow-selection-panel{max-height:115px;overflow:auto}}
-</style></head>
+</style><style>
+#personalAntigram .personal-antigram-table th.ag-ahg-col{background:#f4c5d2!important;color:#5a0e20!important;border-left:2px solid #c0173d!important}
+#personalAntigram .personal-antigram-table td.ag-ahg-col{background:#fde8ee!important;color:#5a0e20;font-weight:800;border-left:2px solid #efb8c8!important}
+#personalAntigram .personal-antigram-table .screen-row td.ag-ahg-col{background:#f9d2de!important}
+#personalAntigram .personal-antigram-table input.ag-reaction-input{appearance:none;display:block;box-sizing:border-box;min-width:0;width:100%;height:32px;padding:4px 0;border:0;border-radius:0;background:transparent;color:inherit;text-align:center;font:inherit;font-weight:700;line-height:1;outline-offset:-2px}
+#personalAntigram .personal-antigram-table input.ag-reaction-input:focus{background:#fff4bd;box-shadow:inset 0 0 0 2px #ffcf00;outline:0}
+</style>
+</head>
 <body>
 
 <!-- INTRO -->
@@ -8006,7 +8013,7 @@ function buildAntigramTable(panel, opts) {
   opts = opts || {};
   var analysis = analyzeAntigramCase(panel);
   var reveal = Number(opts.reveal || 1);
-  var head = '<tr><th>Cell</th>' + ANTIGRAM_ANTIGENS.map(function(ag){ return '<th>' + escText(ag) + '</th>'; }).join('') + '<th>IS</th><th>37</th><th>AHG</th></tr>';
+  var head = '<tr><th>Cell</th>' + ANTIGRAM_ANTIGENS.map(function(ag){ return '<th>' + escText(ag) + '</th>'; }).join('') + '<th>IS</th><th>37</th><th class="ag-ahg-col" style="background:#f4c5d2;color:#5a0e20;border-left:2px solid #c0173d">AHG</th></tr>';
   var body = panel.cells.map(function(cell, rowIndex) {
     var posRow = isPositiveReaction(cell.rxn);
     var cells = ANTIGRAM_ANTIGENS.map(function(ag) {
@@ -8025,7 +8032,7 @@ function buildAntigramTable(panel, opts) {
       cells +
       '<td class="rxn-cell">' + (opts.editable ? buildReactionSelect(rxn.is, rowIndex, 'is') : escText(rxn.is || '0')) + '</td>' +
       '<td class="rxn-cell">' + (opts.editable ? buildReactionSelect(rxn.t37, rowIndex, 't37') : escText(rxn.t37 || '0')) + '</td>' +
-      '<td class="rxn-cell">' + (opts.editable ? buildReactionSelect(rxn.ahg, rowIndex, 'ahg') : escText(rxn.ahg || '0')) + '</td></tr>';
+      '<td class="rxn-cell ag-ahg-col" style="background:#fde8ee;color:#5a0e20;font-weight:800;border-left:2px solid #efb8c8">' + (opts.editable ? buildReactionSelect(rxn.ahg, rowIndex, 'ahg') : escText(rxn.ahg || '0')) + '</td></tr>';
   }).join('');
   return '<div class="antigram-panel-wrap"><table class="antigram-table"><thead>' + head + '</thead><tbody>' + body + '</tbody></table></div>';
 }
@@ -9384,6 +9391,6 @@ function checkABOAnswer(answer) {
   document.getElementById('aboContent').querySelector('.sys-card:last-child').appendChild(nb);
 }
 </script>
-<script src="shared/bloodbank-antigram.js?v=20261015o"></script>
+<script src="shared/bloodbank-antigram.js?v=20261015p"></script>
 </body>
 </html>
