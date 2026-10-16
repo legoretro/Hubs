@@ -653,6 +653,8 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 #sec-flowchart .flow-selection-panel .flow-control{min-width:100px}
 #sec-flowchart .flow-selection-panel .flow-selected-title{max-width:200px}
 #flowchartViewport{height:88dvh;min-height:520px;max-height:none;width:100%}
+@media screen and (min-width:761px){#sec-flowchart.active{zoom:.7;max-width:none;width:calc(142.857vw - 354.286px)}}
+@media print{#sec-flowchart{zoom:1!important;width:auto!important;max-width:none!important}}
 @media(max-width:760px){#flowchartViewport{height:80dvh;min-height:420px}#sec-flowchart .flow-selection-panel{max-height:none;overflow:visible}#sec-flowchart .flow-selection-panel .flow-control{min-width:92px}}
 </style><style>
 #personalAntigram .personal-antigram-table th.ag-ahg-col{background:#f4c5d2!important;color:#5a0e20!important;border-left:2px solid #c0173d!important}
@@ -1020,7 +1022,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="shared/pdf-export.js?v=20260605-export-fit"></script>
 <script src="safe-supabase-sync.js"></script>
-<script src="shared/bloodbank-flow.js?v=20261016-join-arrows"></script>
+<script src="shared/bloodbank-flow.js?v=20261016-flow-page-zoom"></script>
 <script>
 // ============================================================
 // CONFIG - SUPABASE + PASSWORD

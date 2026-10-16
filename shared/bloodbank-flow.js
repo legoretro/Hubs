@@ -54,9 +54,11 @@ function routeBloodBankFlow(container) {
   var layer=container.querySelector('.flow-link-layer');
   if(!layer)return [];
   var origin=container.getBoundingClientRect(),nodes={},targets=[];
+  var pageScale=origin.width/Math.max(container.offsetWidth,1);
+  if(!isFinite(pageScale)||pageScale<=0)pageScale=1;
   var zoom=parseFloat(getComputedStyle(container.querySelector('.flow-tree')).zoom)||1;
   var gap=Math.max(3,10*zoom);
-  function rect(el){var r=el.getBoundingClientRect();return {left:r.left-origin.left,right:r.right-origin.left,top:r.top-origin.top,bottom:r.bottom-origin.top};}
+  function rect(el){var r=el.getBoundingClientRect();return {left:(r.left-origin.left)/pageScale,right:(r.right-origin.left)/pageScale,top:(r.top-origin.top)/pageScale,bottom:(r.bottom-origin.top)/pageScale};}
   container.querySelectorAll('[data-flow-node-id]').forEach(function(el){nodes[el.dataset.flowNodeId]=rect(el);nodes[el.dataset.flowNodeId].decision=el.classList.contains('question');});
   var obstacles=Array.from(container.querySelectorAll('.flow-node,.flow-note-card')).map(function(el){var r=rect(el);return {left:r.left-gap/2,right:r.right+gap/2,top:r.top-gap/2,bottom:r.bottom+gap/2};});
   function clear(a,b){return !obstacles.some(function(r){return a.x===b.x ? a.x>r.left&&a.x<r.right&&Math.max(a.y,b.y)>r.top&&Math.min(a.y,b.y)<r.bottom : a.y>r.top&&a.y<r.bottom&&Math.max(a.x,b.x)>r.left&&Math.min(a.x,b.x)<r.right;});}
@@ -86,7 +88,7 @@ function routeBloodBankFlow(container) {
     return null;
   }
   var stage=container.querySelector('.flow-tree'),bounds=stage.getBoundingClientRect();
-  var width=Math.max(container.clientWidth,bounds.right-origin.left,1),height=Math.max(container.clientHeight,bounds.bottom-origin.top,1);
+  var width=Math.max(container.clientWidth,(bounds.right-origin.left)/pageScale,1),height=Math.max(container.clientHeight,(bounds.bottom-origin.top)/pageScale,1);
   layer.setAttribute('viewBox','0 0 '+width+' '+height);layer.setAttribute('width',width);layer.setAttribute('height',height);layer.style.width=width+'px';layer.style.height=height+'px';
   // Use a separate marker per canvas so multi-page exports remain self-contained.
   var marker='flow-arrow-'+(container.dataset.routeId||(container.dataset.routeId=Math.random().toString(36).slice(2)));
