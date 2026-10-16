@@ -590,7 +590,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 .flow-canvas{height:auto;min-height:0;max-height:none;overflow-x:auto;overflow-y:visible}.antigram-panel-wrap{overflow-x:auto;overflow-y:visible;max-height:none}.calc-ref-title{position:static}.bb-system-diagram{width:100%;max-width:320px}.bb-antigen-key{text-align:center;font-size:14px;font-weight:600;margin:8px 0}.membrane-card-live{max-width:380px}
 
 /* BB Hub recovery and diagram workspace */
-.flow-options summary{cursor:pointer;font-weight:700;font-size:12px;padding:8px 0}.flow-options:not([open]) .flow-selection-panel{display:none!important}
+.flow-selection-editor{display:none;margin:4px 0 0}.admin-mode .flow-selection-editor{display:block}.flow-selection-heading{font-size:12px;font-weight:800;color:var(--warm-grey);margin:0 0 4px}.flow-selection-editor .flow-selection-panel{width:100%;box-sizing:border-box;max-height:none;overflow:visible}
 .bb-system-overview{display:grid;grid-template-columns:minmax(220px,380px) minmax(220px,1fr);gap:16px;align-items:stretch}.bb-system-overview .sys-card{max-width:none}.bb-history .timeline{margin-top:14px}.bb-structure-wrap{position:relative;cursor:help;outline-offset:4px}.bb-structure-tooltip{display:none;position:absolute;z-index:10;left:0;right:0;bottom:30px;padding:13px;background:#5a0e20;color:#fff;border-radius:9px;font-size:13px;line-height:1.5;box-shadow:0 4px 20px #0003}.bb-structure-wrap:hover .bb-structure-tooltip,.bb-structure-wrap:focus .bb-structure-tooltip,.bb-structure-wrap.show-structure .bb-structure-tooltip{display:block}.bb-structure-hint{display:block;text-align:center;font-size:11px;color:var(--warm-grey)}
 .bb-calc-inputs{grid-template-columns:1fr 1fr}.bb-math-steps{padding-left:22px}.bb-math-steps li{margin:10px 0}.bb-math-steps b{font-size:inherit}.flow-shell,.flow-builder-card{min-width:0;max-width:100%}.flow-editor-tray{position:relative;top:auto;margin:0 0 12px;box-shadow:none}.flow-diagrams{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}.flow-diagrams select,.flow-diagrams input{max-width:210px;padding:8px;border:1px solid var(--rose);border-radius:8px;font:inherit;background:#fff;color:var(--wine)}.flow-diagrams label{font-weight:700}.flow-canvas{height:65dvh;min-height:330px;max-height:800px;overflow:auto;overscroll-behavior:auto;touch-action:pan-x pan-y;scroll-padding:20px;padding:18px;position:relative}.flow-tree{padding:35px 45px 60px}.flow-link-path{stroke-dasharray:none;stroke-width:2.4;opacity:1}.flow-branch:before,.flow-branch:after{display:none}.flow-branches{gap:34px;margin-top:65px}.flow-edge-row{margin-top:-30px;margin-bottom:16px}.flow-route-label{font:700 11px Arial;fill:#5a0e20;stroke:#fff;stroke-width:5;paint-order:stroke;stroke-linejoin:round}
 @media(max-width:1000px){.bb-system-overview{grid-template-columns:1fr}.bb-system-overview .membrane-card-live{max-width:none}}
@@ -646,10 +646,14 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 #sec-flowchart .flow-diagrams{margin-bottom:4px;gap:5px}
 #sec-flowchart .flow-toolbar{gap:4px}
 #sec-flowchart .flow-tool-btn{padding:5px 9px}
-#sec-flowchart .flow-options[open]{max-height:120px;overflow:auto;margin:2px 0}
-#sec-flowchart .flow-selection-panel{padding:5px;gap:5px}
+#sec-flowchart .flow-selection-editor{margin:4px 0 0}
+#sec-flowchart .flow-selection-heading{margin:0 0 4px}
+#sec-flowchart .flow-selection-panel{display:none;align-items:end;gap:6px;flex-wrap:wrap;padding:6px;margin:0;max-height:none;overflow:visible;width:100%;box-sizing:border-box}
+.admin-mode #sec-flowchart .flow-selection-panel{display:flex}
+#sec-flowchart .flow-selection-panel .flow-control{min-width:100px}
+#sec-flowchart .flow-selection-panel .flow-selected-title{max-width:200px}
 #flowchartViewport{height:88dvh;min-height:520px;max-height:none;width:100%}
-@media(max-width:760px){#flowchartViewport{height:80dvh;min-height:420px}#sec-flowchart .flow-selection-panel{max-height:115px;overflow:auto}}
+@media(max-width:760px){#flowchartViewport{height:80dvh;min-height:420px}#sec-flowchart .flow-selection-panel{max-height:none;overflow:visible}#sec-flowchart .flow-selection-panel .flow-control{min-width:92px}}
 </style><style>
 #personalAntigram .personal-antigram-table th.ag-ahg-col{background:#f4c5d2!important;color:#5a0e20!important;border-left:2px solid #c0173d!important}
 #personalAntigram .personal-antigram-table td.ag-ahg-col{background:#fde8ee!important;color:#5a0e20;font-weight:800;border-left:2px solid #efb8c8!important}
@@ -941,7 +945,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
     <div class="flow-shell">
       <div class="sys-card flow-builder-card">
         <div class="flow-editor-tray">
-          <div class="flow-diagrams"><label>Diagram <select id="flowDiagramSelect" onchange="selectFlowDiagram(this.value)"></select></label><span id="flowDiagramCount"></span><button id="flowAddDiagram" class="flow-tool-btn flow-admin-action" onclick="addFlowDiagram()">+ New diagram</button><input id="flowDiagramName" class="flow-admin-action" aria-label="Diagram name" maxlength="80" oninput="renameFlowDiagram(this.value)"><button class="flow-tool-btn flow-admin-action" onclick="deleteFlowDiagram()">Delete diagram</button><button class="flow-tool-btn" onclick="exportAllFlowcharts()">Export all</button></div>
+          <div class="flow-diagrams"><label>Diagram <select id="flowDiagramSelect" onchange="selectFlowDiagram(this.value)"></select></label><span id="flowDiagramCount"></span><button id="flowAddDiagram" class="flow-tool-btn flow-admin-action" onclick="addFlowDiagram()">+ New diagram</button><input id="flowDiagramName" class="flow-admin-action" aria-label="Diagram name" placeholder="Chart name" maxlength="80" oninput="renameFlowDiagram(this.value)" onblur="renameFlowDiagram(this.value,true)"><button class="flow-tool-btn flow-admin-action" id="flowDuplicateDiagram" onclick="duplicateFlowDiagram()">Duplicate chart</button><button class="flow-tool-btn flow-admin-action" onclick="deleteFlowDiagram()">Delete diagram</button><button class="flow-tool-btn" onclick="exportAllFlowcharts()">Export all</button></div>
           <div class="flow-preview-head">
             <div>
               <div class="sec-label" style="margin-bottom:3px">Visual flowchart</div>
@@ -959,7 +963,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
               <button class="flow-tool-btn flow-admin-action" onclick="saveFlowchartNow()">Save diagram</button><button class="flow-tool-btn flow-admin-action" onclick="resetFlowchartExample()">Reset</button>
             </div>
           </div>
-          <details class="flow-options flow-admin-action"><summary>Edit selected box or connection</summary><div class="flow-selection-panel" id="flowSelectionPanel"></div></details>
+          <div class="flow-selection-editor flow-admin-action"><div class="flow-selection-heading">Edit selected</div><div class="flow-selection-panel" id="flowSelectionPanel"></div></div>
         </div>
         <div id="flowDiagramKey" class="flow-legend"></div><div id="flowchartViewport" class="flow-canvas">
           <div id="flowchartPreview" onclick="handleFlowPreviewClick(event)"></div>
@@ -2249,10 +2253,36 @@ function addFlowDiagram(){
   notesData.__flowcharts=Object.assign({},diagrams,{[id]:{name:'Diagram '+(count+1),data:{rootId:root,nodes:{[root]:{id:root,type:'step',text:'Start',branches:[]}}}}});
   scheduleSave();selectFlowDiagram(id);
 }
-function renameFlowDiagram(value){
+function duplicateFlowchartData(data){
+  var clean=normalizeFlowchartData(data),ids={};
+  Object.keys(clean.nodes).forEach(function(id){ids[id]=flowId('node');});
+  var nodes={};
+  Object.keys(clean.nodes).forEach(function(id){
+    var node=clean.nodes[id];
+    nodes[ids[id]]=Object.assign({},node,{id:ids[id],branches:(node.branches||[]).map(function(branch){return {id:flowId('branch'),label:branch.label,to:ids[branch.to]||branch.to};})});
+  });
+  return normalizeFlowchartData({rootId:ids[clean.rootId],font:clean.font,nodes:nodes});
+}
+function duplicateFlowDiagram(){
   if(!isAdmin)return;
-  var name=String(value||'').trim().slice(0,80);if(!name)return;
-  storeFlowchartData(getFlowchartData());notesData.__flowcharts[activeFlowDiagramId].name=name;scheduleSave();renderFlowDiagramTabs();
+  var diagrams=getFlowDiagrams(),count=Object.keys(diagrams).length;
+  if(count>=10){showToast('You can keep up to 10 diagrams.',true);return;}
+  var current=currentFlowDiagram(),base=String(current.name||'Diagram').trim()||'Diagram',n=2,name=base+' ('+n+')';
+  while(Object.keys(diagrams).some(function(id){return String(diagrams[id].name||'').toLowerCase()===name.toLowerCase();})){n++;name=base+' ('+n+')';}
+  var id=flowId('diagram');notesData.__datExampleAdded=true;
+  notesData.__flowcharts=Object.assign({},diagrams,{[id]:{name:name,data:duplicateFlowchartData(current.data)}});
+  scheduleSave();selectFlowDiagram(id);
+}
+function renameFlowDiagram(value,finalize){
+  if(!isAdmin)return;
+  var name=String(value==null?'':value).slice(0,80),cleanName=finalize?name.trim():name;
+  if(!cleanName.trim()){if(finalize)renderFlowDiagramTabs();return;}
+  var diagrams=getFlowDiagrams(),current=diagrams[activeFlowDiagramId];if(!current)return;
+  notesData.__flowcharts=Object.assign({},diagrams,{[activeFlowDiagramId]:{name:cleanName,data:current.data}});
+  scheduleSave();
+  var select=document.getElementById('flowDiagramSelect'),option=select&&Array.from(select.options).find(function(item){return item.value===activeFlowDiagramId;});
+  if(option)option.textContent=cleanName;
+  if(finalize){var input=document.getElementById('flowDiagramName');if(input)input.value=cleanName;}
 }
 function deleteFlowDiagram(){
   if(!isAdmin)return;
@@ -2268,6 +2298,7 @@ function renderFlowDiagramTabs(){
   select.innerHTML=Object.keys(diagrams).map(function(id){return '<option value="'+escAttr(id)+'" '+(id===activeFlowDiagramId?'selected':'')+'>'+escText(diagrams[id].name)+'</option>';}).join('');
   document.getElementById('flowDiagramName').value=currentFlowDiagram().name;
   document.getElementById('flowAddDiagram').disabled=Object.keys(diagrams).length>=10;
+  document.getElementById('flowDuplicateDiagram').disabled=Object.keys(diagrams).length>=10;
   document.getElementById('flowDiagramCount').textContent=Object.keys(diagrams).length+' / 10';
 }
 function exportAllFlowcharts(){openFlowExportDetails(true);}
@@ -2712,7 +2743,6 @@ function selectFlowNode(id) {
   document.querySelectorAll('#flowchartPreview .flow-node').forEach(function(el){ el.classList.remove('selected'); });
   const active = document.querySelector('[data-flow-node-id="' + id + '"]');
   if (active) active.classList.add('selected');
-  document.querySelector('.flow-options').open=true;
   renderFlowSelectionPanel(data);
   drawFlowLinkLines(data);
 }
@@ -2967,7 +2997,6 @@ function selectFlowConnectionLine(parentId, branchId) {
   if (!parent || !parent.branches.some(function(branch){ return branch.id === branchId; })) return;
   flowSelectedLink = {from:parentId, branchId:branchId};
   flowSelectedNodeId = null;
-  document.querySelector('.flow-options').open=true;
   renderFlowSelectionPanel(data);
   drawFlowLinkLines(data);
 }
