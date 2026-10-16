@@ -7034,6 +7034,7 @@ function buildFlowchartExportPage(input, name, metadata) {
   metadata=metadata||{};
   var data = normalizeFlowchartData(input || getFlowchartData());
   name = name || currentFlowDiagram().name;
+  var nonAdminExport = !isAdmin;
   var oldAdmin = isAdmin;
   var oldSelected = flowSelectedNodeId;
   var oldLink = flowSelectedLink; flowSelectedLink=null;
@@ -7043,7 +7044,7 @@ function buildFlowchartExportPage(input, name, metadata) {
   var tree = '<svg class="flow-link-layer" aria-hidden="true"></svg><div class="flow-tree">' + renderFlowGraph(data) + '</div>' + markers;
   isAdmin = oldAdmin;
   flowSelectedNodeId = oldSelected; flowSelectedLink=oldLink;
-  return '<section class="page flow-export-page" style="--flow-export-zoom:' + flowPrintZoom + ';--flow-font-family:' + escAttr(flowFontStack(data.font)) + '"><header><h2 class="flow-export-title">'+escText(name)+'</h2><p class="flow-export-meta">'+(metadata.creator?'Created by '+escText(metadata.creator)+' · ':'')+escText(metadata.date||new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'}))+'</p>'+flowDiagramKey(data)+'</header><div class="flow-export-wrap">' + tree + '</div></section>';
+  return '<section class="page flow-export-page'+(nonAdminExport?' nonadmin-flow-export-page':'')+'" style="--flow-export-zoom:' + flowPrintZoom + ';--flow-font-family:' + escAttr(flowFontStack(data.font)) + '"><header><h2 class="flow-export-title">'+escText(name)+'</h2><p class="flow-export-meta">'+(metadata.creator?'Created by '+escText(metadata.creator)+' · ':'')+escText(metadata.date||new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'}))+'</p>'+(nonAdminExport?'':flowDiagramKey(data))+'</header><div class="flow-export-wrap">' + tree + '</div>'+(nonAdminExport?'<footer class="flow-export-key">'+flowDiagramKey(data)+'</footer>':'')+'</section>';
 }
 
 function buildExportHtml(content, title, orientation, scale) {
@@ -7060,6 +7061,7 @@ function buildExportHtml(content, title, orientation, scale) {
   var shortExportHeight = isLandscape ? '7.12in' : '10.22in';
   var flowExportWidth = isLandscape ? '10.35in' : '7.35in';
   var flowExportHeight = isLandscape ? '7.24in' : '10.14in';
+  var nonAdminFlowExportTweaks = content.indexOf('nonadmin-flow-export-page') >= 0 ? '.nonadmin-flow-export-page{position:relative;padding-bottom:.52in!important}.nonadmin-flow-export-page .flow-export-title{font-size:18px!important;margin:0 0 2px!important;padding:0!important}.nonadmin-flow-export-page .flow-export-meta{font-size:11px!important;margin:0 0 3px!important}.nonadmin-flow-export-page .flow-export-wrap .flow-tree{padding:6px 10px 8px!important}.nonadmin-flow-export-page .flow-export-wrap .flow-branches{margin-top:30px!important;gap:12px!important}.nonadmin-flow-export-page .flow-export-wrap .flow-edge-row{margin-bottom:2px!important}.nonadmin-flow-export-page .flow-export-key{position:absolute;right:0;bottom:0;z-index:5;max-width:2.2in}.nonadmin-flow-export-page .flow-export-key aside{display:inline-block!important;margin:0!important;padding:4px 6px!important;border-radius:4px!important;background:#fff!important;font:7px Arial,sans-serif!important;color:#32141e!important}.nonadmin-flow-export-page .flow-export-key aside strong{font-size:8px!important;margin-bottom:2px!important}.nonadmin-flow-export-page .flow-export-key aside div{gap:4px!important;margin:1px 0!important}.nonadmin-flow-export-page .flow-export-key aside svg{width:24px!important;height:16px!important}.nonadmin-flow-export-page .flow-export-key aside span{font-size:7px!important}' : '';
   var portraitTweaks = isLandscape ? '' : '.onepage-grid .system-card:last-child{grid-column:1/-1}.compact-grid{grid-template-columns:1fr}.system-page .tl-item{font-size:8px}.study-table td{font-size:6.4px;padding:1.8px 3px}.freq-export td,.freq-export th{font-size:5.6px;padding:1.8px 2px}.freq-short-page{max-width:7.45in;height:10.25in}.freq-short-page h1{font-size:21px;text-align:center;margin-bottom:.12in}.freq-short-table th{font-size:10px;padding:5px 6px}.freq-short-table td{font-size:10.5px;line-height:1.08;padding:4px 6px}.freq-short-table th:nth-child(1){width:1.15in}.freq-short-table th:nth-child(2){width:2.45in}.freq-short-table th:nth-child(3){width:1.55in}.lesser-export-page h1{font-size:18px}.lesser-export-table col.lesser-system-col{width:.64in}.lesser-export-table th{font-size:7.4px;padding:3px 3px}.lesser-export-table td{font-size:7.4px;line-height:1.08;padding:3px 3px}.lesser-export-table .lesser-system-cell{font-size:7.6px;line-height:1.05}';
   var lesserExportTweaks =
     '.lesser-export-page h1{font-size:' + (isLandscape ? '22px' : '19px') + ';text-align:left;margin:0 0 .06in;padding:0;color:#5a0e20}' +
@@ -7100,12 +7102,51 @@ function buildExportHtml(content, title, orientation, scale) {
         ' /* Process rectangles and decision diamonds, matching the supplied DAT reference. */ .flow-tree{display:block;position:relative;padding:0;min-width:0}.flow-tree>.flow-node-wrap{position:absolute;min-width:0;width:auto}.flow-node-row{align-items:center}.flow-node{width:240px;min-width:240px;max-width:240px;min-height:62px;border-radius:7px;padding:12px 15px;font:600 15px/1.3 Arial,sans-serif;box-shadow:0 2px 5px #5a0e2010}.flow-node-kind{display:none}.flow-node-text{position:relative;z-index:1;padding:0;min-height:0}.flow-node.question{width:240px;min-height:112px;display:flex;align-items:center;justify-content:center;background:transparent!important;border:0;padding:26px 42px;border-radius:0}.flow-diamond{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}.flow-diamond polygon{fill:var(--node-fill,#ffd7df);stroke:var(--node-border,#c0173d);stroke-width:2}.flow-node.start,.flow-node.terminal{border-radius:8px}.flow-node.question .flow-node-text{width:100%}.flow-note-card{flex-shrink:0}.flow-node.question .flow-node-tools{right:22px;top:13px}.site-logo:empty,.hero-emoji:empty,.sys-icon:empty{display:none}.flow-legend{font-size:11px;color:var(--warm-grey);margin:8px 0} ' +
     '/* Process rectangles and decision diamonds, matching the supplied DAT reference. */ :is(#flowchartPreview,.flow-export-wrap) .flow-tree{display:block;position:relative;padding:0;min-width:0}:is(#flowchartPreview,.flow-export-wrap) .flow-tree>.flow-node-wrap{position:absolute;min-width:0;width:auto}.flow-node-row{align-items:center}:is(#flowchartPreview,.flow-export-wrap) .flow-node{width:240px;min-width:240px;max-width:240px;min-height:62px;border-radius:7px;padding:12px 15px;font:600 15px/1.3 Arial,sans-serif;box-shadow:0 2px 5px #5a0e2010}.flow-node-kind{display:none}.flow-node-text{position:relative;z-index:1;padding:0;min-height:0}:is(#flowchartPreview,.flow-export-wrap) .flow-node.question{width:240px;min-height:112px;display:flex;align-items:center;justify-content:center;background:transparent!important;border:0;padding:26px 42px;border-radius:0}.flow-diamond{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}.flow-diamond polygon{fill:var(--node-fill,#ffd7df);stroke:var(--node-border,#c0173d);stroke-width:2}:is(#flowchartPreview,.flow-export-wrap) .flow-node.start,:is(#flowchartPreview,.flow-export-wrap) .flow-node.terminal{border-radius:8px}:is(#flowchartPreview,.flow-export-wrap) .flow-node.question .flow-node-text{width:100%}.flow-note-card{flex-shrink:0}:is(#flowchartPreview,.flow-export-wrap) .flow-node.question .flow-node-tools{right:22px;top:13px}.site-logo:empty,.hero-emoji:empty,.sys-icon:empty{display:none}.flow-legend{font-size:11px;color:var(--warm-grey);margin:8px 0} ' +
     portraitTweaks +
-    lesserExportTweaks +
+    lesserExportTweaks + nonAdminFlowExportTweaks +
     '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.bb-export-scale-wrap{zoom:var(--bb-export-scale,1);transform:none;width:auto;min-height:0}}</style></head><body style="--bb-export-scale:' + printScale + '"><div class="bb-export-scale-wrap">' + content + '</div>' + flowExportScript + '</body></html>';
 }
 
 function printExportHtml(content, title, orientation, exportOptions) {
   exportOptions = exportOptions || {};
+  function downloadPrintReadyHtml(scale, chosenOrientation) {
+    var html = buildExportHtml(content, title, chosenOrientation || orientation, scale);
+    var blob = new Blob([html], {type:'text/html;charset=utf-8'});
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement('a');
+    var safeTitle = String(title || 'Blood Bank Export').replace(/[^a-z0-9_-]+/gi,'-').replace(/^-+|-+$/g,'') || 'Blood-Bank-Export';
+    link.href = url;
+    link.download = safeTitle + '.html';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(function(){URL.revokeObjectURL(url);},60000);
+    showToast('Print window was blocked. A print-ready HTML export was downloaded; open it and print or save as PDF.',true);
+  }
+  function openDirectPrint(scale, chosenOrientation) {
+    var printWindow = null;
+    try { printWindow = window.open('', '_blank'); } catch (error) {}
+    if (!printWindow) {
+      downloadPrintReadyHtml(scale, chosenOrientation);
+      return;
+    }
+    try {
+      printWindow.document.open();
+      printWindow.document.write(buildExportHtml(content, title, chosenOrientation || orientation, scale));
+      printWindow.document.close();
+      var printed = false;
+      var printWhenReady = function() {
+        if (printed || printWindow.closed) return;
+        printed = true;
+        try { printWindow.focus(); printWindow.print(); }
+        catch (error) { downloadPrintReadyHtml(scale, chosenOrientation); }
+      };
+      printWindow.addEventListener('load', function(){setTimeout(printWhenReady,150);}, {once:true});
+      setTimeout(printWhenReady,700);
+    } catch (error) {
+      try { printWindow.close(); } catch (closeError) {}
+      downloadPrintReadyHtml(scale, chosenOrientation);
+    }
+  }
   function writeExport(scale, chosenOrientation) {
   var frame = document.getElementById('bbPrintFrame');
   if (!frame) {
@@ -7130,7 +7171,7 @@ function printExportHtml(content, title, orientation, exportOptions) {
   doc.close();
   }
   if (exportOptions.directPrint) {
-    writeExport(Number(exportOptions.defaultScale || 1), orientation || 'portrait');
+    openDirectPrint(Number(exportOptions.defaultScale || 1), orientation || 'portrait');
     return;
   }
   if (window.HubPdfExport) {
