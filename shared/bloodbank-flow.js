@@ -10,7 +10,7 @@ function layoutBloodBankFlow(container,options){
   var oldZoom=stage.style.zoom;stage.style.zoom='1';
   var ids=[],elements={},out={},incoming={},rank={},gray={},done={};
   stage.querySelectorAll('[data-flow-node-id]').forEach(function(el){var id=el.dataset.flowNodeId;ids.push(id);elements[id]=el.closest('.flow-node-wrap');out[id]=[];incoming[id]=[];rank[id]=0;});
-  container.querySelectorAll('.flow-link-marker').forEach(function(m){var a=m.dataset.flowLinkFrom,b=m.dataset.flowLinkTo;if(out[a]&&out[b])out[a].push(b);});
+  container.querySelectorAll('.flow-link-marker').forEach(function(m){var a=m.dataset.flowLinkFrom,b=m.dataset.flowLinkTo;if(out[a]&&out[b]&&out[a].indexOf(b)<0)out[a].push(b);});
   // Back edges still draw, but must not increase rank forever.
   function visit(id){gray[id]=true;out[id].forEach(function(to){if(gray[to])return;incoming[to].push(id);if(!done[to])visit(to);});gray[id]=false;done[id]=true;}
   ids.forEach(function(id){if(!done[id])visit(id);});
@@ -90,9 +90,10 @@ function routeBloodBankFlow(container) {
   layer.setAttribute('viewBox','0 0 '+width+' '+height);layer.setAttribute('width',width);layer.setAttribute('height',height);layer.style.width=width+'px';layer.style.height=height+'px';
   // Use a separate marker per canvas so multi-page exports remain self-contained.
   var marker='flow-arrow-'+(container.dataset.routeId||(container.dataset.routeId=Math.random().toString(36).slice(2)));
-  var html='<defs><marker id="'+marker+'" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#c0173d"/></marker></defs>';
+  var openMarker=marker+'-open';
+  var html='<defs><marker id="'+marker+'" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#c0173d"/></marker><marker id="'+openMarker+'" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path d="M 1 1 L 9 5 L 1 9" fill="none" stroke="#c0173d" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>';
   var links=Array.from(container.querySelectorAll('.flow-link-marker')),incomingByTarget={};
-  links.forEach(function(m){var to=m.dataset.flowLinkTo;(incomingByTarget[to]||(incomingByTarget[to]=[])).push(m);});
+  links.forEach(function(m){var to=m.dataset.flowLinkTo,parents=incomingByTarget[to]||(incomingByTarget[to]=[]);if(!parents.some(function(parent){return parent.dataset.flowLinkFrom===m.dataset.flowLinkFrom;}))parents.push(m);});
   var mergeGroups={};
   links.forEach(function(m){
     var from=m.dataset.flowLinkFrom,to=m.dataset.flowLinkTo,a=nodes[from],b=nodes[to];if(!a||!b)return;
@@ -113,7 +114,7 @@ function routeBloodBankFlow(container) {
     points=points.filter(function(p,i,all){if(i===0||i===all.length-1)return true;var a=all[i-1],b=all[i+1];return !((a.x===p.x&&p.x===b.x)||(a.y===p.y&&p.y===b.y));});
     var d=points.map(function(p,i){return (i?'L ':'M ')+p.x.toFixed(2)+' '+p.y.toFixed(2);}).join(' ');
     if(m.dataset.selected==='true')html+='<path d="'+d+'" fill="none" stroke="#ffcf00" stroke-width="'+Math.max(8,2.4*zoom+7)+'" stroke-linecap="round" stroke-linejoin="round"/>';
-    html+='<path class="flow-link-path'+(m.dataset.selected==='true'?' selected':'')+'" style="stroke-width:'+Math.max(.6,2.4*zoom)+'" d="'+d+'"'+(join?'':' marker-end="url(#'+marker+')"')+'/>';
+    html+='<path class="flow-link-path'+(m.dataset.selected==='true'?' selected':'')+'" style="stroke-width:'+Math.max(.6,2.4*zoom)+'" d="'+d+'" marker-end="url(#'+(join?openMarker:marker)+')"/>';
     targets.push({from:from,branchId:m.dataset.branchId,points:points});
     if(m.dataset.label && m.dataset.label.toLowerCase()!=='next'){
       var best=0;for(var i=1;i<points.length;i++){if(Math.abs(points[i].x-points[i-1].x)>best){best=Math.abs(points[i].x-points[i-1].x);var labelX=(points[i].x+points[i-1].x)/2,labelY=points[i].y-5;}}

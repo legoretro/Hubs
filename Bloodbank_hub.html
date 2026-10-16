@@ -1020,7 +1020,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="shared/pdf-export.js?v=20260605-export-fit"></script>
 <script src="safe-supabase-sync.js"></script>
-<script src="shared/bloodbank-flow.js?v=20261016-layoutfix"></script>
+<script src="shared/bloodbank-flow.js?v=20261016-merge-arrows"></script>
 <script>
 // ============================================================
 // CONFIG - SUPABASE + PASSWORD
@@ -3039,6 +3039,7 @@ function deleteFlowNode(id) {
     return branch.to && data.nodes[branch.to] && branch.to !== id;
   });
   Object.keys(data.nodes).forEach(function(nodeId) {
+    if (nodeId === id) return;
     const parent = data.nodes[nodeId];
     const rebuilt = [];
     parent.branches.forEach(function(branch) {
@@ -3047,15 +3048,15 @@ function deleteFlowNode(id) {
         return;
       }
       outgoing.forEach(function(nextBranch) {
-        if (!rebuilt.some(function(existing){ return existing.to === nextBranch.to; })) {
-          rebuilt.push({id:flowId('branch'), label:outgoing.length === 1 ? (branch.label || nextBranch.label || 'Next') : (nextBranch.label || 'Next'), to:nextBranch.to});
+        const label = outgoing.length === 1 ? (branch.label || nextBranch.label || 'Next') : (nextBranch.label || 'Next');
+        if (!rebuilt.some(function(existing){ return existing.to === nextBranch.to && existing.label === label; })) {
+          rebuilt.push({id:flowId('branch'), label:label, to:nextBranch.to});
         }
       });
     });
     parent.branches = rebuilt;
   });
   delete data.nodes[id];
-  pruneUnreachableFlowNodes(data);
   flowSelectedNodeId = data.rootId;
   saveFlowchartData(data, true);
 }
@@ -9487,6 +9488,6 @@ function checkABOAnswer(answer) {
   document.getElementById('aboContent').querySelector('.sys-card:last-child').appendChild(nb);
 }
 </script>
-<script src="shared/bloodbank-antigram.js?v=20261015q"></script>
+<script src="shared/bloodbank-antigram.js?v=20261016-export-print"></script>
 </body>
 </html>
