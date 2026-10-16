@@ -117,7 +117,9 @@ function routeBloodBankFlow(container) {
     var d=points.map(function(p,i){return (i?'L ':'M ')+p.x.toFixed(2)+' '+p.y.toFixed(2);}).join(' ');
     if(m.dataset.selected==='true')html+='<path d="'+d+'" fill="none" stroke="#ffcf00" stroke-width="'+Math.max(8,2.4*zoom+7)+'" stroke-linecap="round" stroke-linejoin="round"/>';
     html+='<path class="flow-link-path'+(m.dataset.selected==='true'?' selected':'')+'" style="stroke-width:'+Math.max(.6,2.4*zoom)+'" d="'+d+'"'+(join?'':' marker-end="url(#'+marker+')"')+'/>';
-    targets.push({from:from,branchId:m.dataset.branchId,points:points});
+    var hitPoints=points.slice();
+    if(join){var centerX=(b.left+b.right)/2;hitPoints.push(Math.abs(start.x-centerX)<gap?{x:centerX,y:b.top}:{x:centerX+(start.x<centerX?-gap:gap),y:branchEnd.y});}
+    targets.push({from:from,branchId:m.dataset.branchId,points:hitPoints});
     if(m.dataset.label && m.dataset.label.toLowerCase()!=='next'){
       var best=0;for(var i=1;i<points.length;i++){if(Math.abs(points[i].x-points[i-1].x)>best){best=Math.abs(points[i].x-points[i-1].x);var labelX=(points[i].x+points[i-1].x)/2,labelY=points[i].y-5;}}
       if(!best && points.length>1){labelX=points[0].x+14*zoom;labelY=(points[0].y+points[1].y)/2;}

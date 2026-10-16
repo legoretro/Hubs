@@ -1022,7 +1022,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="shared/pdf-export.js?v=20260605-export-fit"></script>
 <script src="safe-supabase-sync.js"></script>
-<script src="shared/bloodbank-flow.js?v=20261016-flow-page-zoom"></script>
+<script src="shared/bloodbank-flow.js?v=20261016-arrow-hitbox"></script>
 <script>
 // ============================================================
 // CONFIG - SUPABASE + PASSWORD
@@ -2581,9 +2581,10 @@ function handleFlowPreviewClick(event) {
   const preview = document.getElementById('flowchartPreview');
   if (!preview) return;
   const rect = preview.getBoundingClientRect();
-  const point = {x:event.clientX - rect.left, y:event.clientY - rect.top};
+  const pageScale = rect.width / Math.max(preview.offsetWidth, 1) || 1;
+  const point = {x:(event.clientX - rect.left) / pageScale, y:(event.clientY - rect.top) / pageScale};
   let bestTarget = null;
-  let bestDistance = 18;
+  let bestDistance = 18 / pageScale;
   flowLinkClickTargets.forEach(function(target) {
     const distance = distanceToFlowConnector(point, target);
     if (distance < bestDistance) {
