@@ -1,5 +1,11 @@
 /* Lay out a directed graph in aligned rows, placing joins below every incoming branch. */
-function layoutBloodBankFlow(container){
+function layoutBloodBankFlow(container,options){
+  options=options||{};
+  var compact=options.compact===true;
+  var horizontalGap=compact?28:65;
+  var verticalGap=compact?32:85;
+  var topInset=compact?18:35;
+  var sideInset=compact?20:50;
   var stage=container.querySelector('.flow-tree');if(!stage)return;
   var oldZoom=stage.style.zoom;stage.style.zoom='1';
   var ids=[],elements={},out={},incoming={},rank={},gray={},done={};
@@ -14,20 +20,33 @@ function layoutBloodBankFlow(container){
   var rows=[];ids.forEach(function(id){(rows[rank[id]]||(rows[rank[id]]=[])).push(id);});
   var center={},sizes={},span={},width=0;
   ids.forEach(function(id){var el=elements[id];el.style.left='0';el.style.top='0';var r=el.getBoundingClientRect();sizes[id]={width:Math.max(r.width,240),height:Math.max(r.height,62)};});
-  var pitch=Math.max.apply(null,ids.map(function(id){return sizes[id].width;}))+65;
+  var pitch=Math.max.apply(null,ids.map(function(id){return sizes[id].width;}))+horizontalGap;
   // Reserve full branch widths until a real join; singleton rows keep their lane.
   function branchSpan(id){if(span[id])return span[id];span[id]=1;var children=out[id].filter(function(to){return rank[to]>rank[id]&&incoming[to].length===1;});return span[id]=Math.max(1,children.reduce(function(sum,to){return sum+branchSpan(to);},0));}
   ids.forEach(branchSpan);
-  rows.forEach(function(row){row.forEach(function(id){
-    if(center[id]===undefined){var parents=incoming[id];center[id]=parents.length?parents.reduce(function(sum,p){return sum+center[p];},0)/parents.length:0;}
-    var children=out[id].filter(function(to){return rank[to]>rank[id]&&incoming[to].length===1;});
-    var total=children.reduce(function(sum,to){return sum+span[to];},0),left=center[id]-total*pitch/2;
-    children.forEach(function(to){center[to]=left+span[to]*pitch/2;left+=span[to]*pitch;});
-  });});
+  rows.forEach(function(row){
+    row.forEach(function(id){
+      if(center[id]===undefined){var parents=incoming[id];center[id]=parents.length?parents.reduce(function(sum,p){return sum+center[p];},0)/parents.length:0;}
+    });
+    // Several independent roots, or branches that merge into one rank, can
+    // otherwise receive the same center and paint directly on top of each other.
+    row.sort(function(a,b){return center[a]-center[b];});
+    var rightEdge=-Infinity,rowGap=compact?18:24;
+    row.forEach(function(id){
+      var left=center[id]-sizes[id].width/2;
+      if(left<rightEdge+rowGap)center[id]+=rightEdge+rowGap-left;
+      rightEdge=center[id]+sizes[id].width/2;
+    });
+    row.forEach(function(id){
+      var children=out[id].filter(function(to){return rank[to]>rank[id]&&incoming[to].length===1;});
+      var total=children.reduce(function(sum,to){return sum+span[to];},0),left=center[id]-total*pitch/2;
+      children.forEach(function(to){center[to]=left+span[to]*pitch/2;left+=span[to]*pitch;});
+    });
+  });
   var minX=Math.min.apply(null,ids.map(function(id){return center[id]-sizes[id].width/2;}));
-  var y=35;
-  rows.forEach(function(row){var h=0;row.forEach(function(id){var el=elements[id],x=center[id]-sizes[id].width/2-minX+50;el.style.left=x+'px';el.style.top=y+'px';width=Math.max(width,x+sizes[id].width+50);h=Math.max(h,sizes[id].height);});y+=h+85;});
-  stage.style.width=width+'px';stage.style.height=(y-35)+'px';stage.style.zoom=oldZoom;
+  var y=topInset;
+  rows.forEach(function(row){var h=0;row.forEach(function(id){var el=elements[id],x=center[id]-sizes[id].width/2-minX+sideInset;el.style.left=x+'px';el.style.top=y+'px';width=Math.max(width,x+sizes[id].width+sideInset);h=Math.max(h,sizes[id].height);});y+=h+verticalGap;});
+  stage.style.width=width+'px';stage.style.height=(y-topInset)+'px';stage.style.zoom=oldZoom;
 }
 
 /* Orthogonal connectors shared by the editor and standalone PDF export. */

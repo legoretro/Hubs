@@ -1020,7 +1020,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="shared/pdf-export.js?v=20260605-export-fit"></script>
 <script src="safe-supabase-sync.js"></script>
-<script src="shared/bloodbank-flow.js?v=20261015-mergebus"></script>
+<script src="shared/bloodbank-flow.js?v=20261016-layoutfix"></script>
 <script>
 // ============================================================
 // CONFIG - SUPABASE + PASSWORD
@@ -2332,7 +2332,7 @@ function openFlowExportDetails(all){
 function completeFlowExport(event){
   event.preventDefault();var modal=document.getElementById('flowExportDetails'),diagrams=getFlowDiagrams();
   var creator=isAdmin?modal.querySelector('#flowExportCreator').value.trim():getFlowExportCreator();if(isAdmin&&!creator)return;
-  if(isAdmin){try{localStorage.setItem('bb-admin-flow-export-credit',creator);}catch(e){showToast('Could not save creator name on this device.',true);return;}}
+  if(isAdmin){try{localStorage.setItem('bb-admin-flow-export-credit',creator);}catch(e){/* Keep the typed credit for this export even when storage is blocked. */}}
   var date=new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'});
   var fields=Array.from(modal.querySelectorAll('[data-export-diagram]'));if(fields.some(function(f){return !f.value.trim();}))return;
   prepareReadableFlowchartExport();
@@ -2809,6 +2809,7 @@ function updateFlowNodeText(id, value) {
   if (!data.nodes[id]) return;
   data.nodes[id].text = String(value || '').trim();
   saveFlowchartData(data, false);
+  drawFlowLinkLines(data);
   if (id === flowSelectedNodeId) renderFlowSelectionPanel(data);
 }
 
@@ -7061,7 +7062,7 @@ function buildExportHtml(content, title, orientation, scale) {
   var shortExportHeight = isLandscape ? '7.12in' : '10.22in';
   var flowExportWidth = isLandscape ? '10.35in' : '7.35in';
   var flowExportHeight = isLandscape ? '7.24in' : '10.14in';
-  var nonAdminFlowExportTweaks = content.indexOf('nonadmin-flow-export-page') >= 0 ? '.nonadmin-flow-export-page{position:relative;padding-bottom:.52in!important}.nonadmin-flow-export-page .flow-export-title{font-size:18px!important;margin:0 0 2px!important;padding:0!important}.nonadmin-flow-export-page .flow-export-meta{font-size:11px!important;margin:0 0 3px!important}.nonadmin-flow-export-page .flow-export-wrap .flow-tree{padding:6px 10px 8px!important}.nonadmin-flow-export-page .flow-export-wrap .flow-branches{margin-top:30px!important;gap:12px!important}.nonadmin-flow-export-page .flow-export-wrap .flow-edge-row{margin-bottom:2px!important}.nonadmin-flow-export-page .flow-export-key{position:absolute;right:0;bottom:0;z-index:5;max-width:2.2in}.nonadmin-flow-export-page .flow-export-key aside{display:inline-block!important;margin:0!important;padding:4px 6px!important;border-radius:4px!important;background:#fff!important;font:7px Arial,sans-serif!important;color:#32141e!important}.nonadmin-flow-export-page .flow-export-key aside strong{font-size:8px!important;margin-bottom:2px!important}.nonadmin-flow-export-page .flow-export-key aside div{gap:4px!important;margin:1px 0!important}.nonadmin-flow-export-page .flow-export-key aside svg{width:24px!important;height:16px!important}.nonadmin-flow-export-page .flow-export-key aside span{font-size:7px!important}' : '';
+  var nonAdminFlowExportTweaks = content.indexOf('nonadmin-flow-export-page') >= 0 ? '.nonadmin-flow-export-page{position:relative;width:7.7in!important;max-width:7.7in!important;height:10.3in!important;max-height:10.3in!important;padding-bottom:.52in!important}.nonadmin-flow-export-page .flow-export-title{font-size:18px!important;margin:0 0 2px!important;padding:0!important}.nonadmin-flow-export-page .flow-export-meta{font-size:11px!important;margin:0 0 3px!important}.nonadmin-flow-export-page .flow-export-wrap .flow-tree{padding:2px!important}.nonadmin-flow-export-page .flow-export-wrap .flow-node{font-size:17px!important;line-height:1.2!important}.nonadmin-flow-export-page .flow-export-wrap .flow-branches{margin-top:22px!important;gap:10px!important}.nonadmin-flow-export-page .flow-export-wrap .flow-edge-row{margin-bottom:1px!important}.nonadmin-flow-export-page .flow-export-key{position:absolute;right:0;bottom:0;z-index:5;max-width:2.2in}.nonadmin-flow-export-page .flow-export-key aside{display:inline-block!important;margin:0!important;padding:4px 6px!important;border-radius:4px!important;background:#fff!important;font:7px Arial,sans-serif!important;color:#32141e!important}.nonadmin-flow-export-page .flow-export-key aside strong{font-size:8px!important;margin-bottom:2px!important}.nonadmin-flow-export-page .flow-export-key aside div{gap:4px!important;margin:1px 0!important}.nonadmin-flow-export-page .flow-export-key aside svg{width:24px!important;height:16px!important}.nonadmin-flow-export-page .flow-export-key aside span{font-size:7px!important}' : '';
   var portraitTweaks = isLandscape ? '' : '.onepage-grid .system-card:last-child{grid-column:1/-1}.compact-grid{grid-template-columns:1fr}.system-page .tl-item{font-size:8px}.study-table td{font-size:6.4px;padding:1.8px 3px}.freq-export td,.freq-export th{font-size:5.6px;padding:1.8px 2px}.freq-short-page{max-width:7.45in;height:10.25in}.freq-short-page h1{font-size:21px;text-align:center;margin-bottom:.12in}.freq-short-table th{font-size:10px;padding:5px 6px}.freq-short-table td{font-size:10.5px;line-height:1.08;padding:4px 6px}.freq-short-table th:nth-child(1){width:1.15in}.freq-short-table th:nth-child(2){width:2.45in}.freq-short-table th:nth-child(3){width:1.55in}.lesser-export-page h1{font-size:18px}.lesser-export-table col.lesser-system-col{width:.64in}.lesser-export-table th{font-size:7.4px;padding:3px 3px}.lesser-export-table td{font-size:7.4px;line-height:1.08;padding:3px 3px}.lesser-export-table .lesser-system-cell{font-size:7.6px;line-height:1.05}';
   var lesserExportTweaks =
     '.lesser-export-page h1{font-size:' + (isLandscape ? '22px' : '19px') + ';text-align:left;margin:0 0 .06in;padding:0;color:#5a0e20}' +
@@ -7074,9 +7075,9 @@ function buildExportHtml(content, title, orientation, scale) {
   var flowExportScript = content.indexOf('flow-export-page') >= 0 ? '<scr' + 'ipt>' +
     '(function(){' +
     'function nodeById(wrap,id){var nodes=wrap.querySelectorAll("[data-flow-node-id]");for(var i=0;i<nodes.length;i++){if(nodes[i].getAttribute("data-flow-node-id")===id)return nodes[i];}return null;}' +
-    'function fit(wrap){var page=wrap.closest(".flow-export-page");var tree=wrap.querySelector(".flow-tree");if(!page||!tree)return;if(page)page.style.setProperty("--flow-export-zoom","1");var rect=wrap.getBoundingClientRect();var treeRect=tree.getBoundingClientRect();var aw=Math.max(wrap.clientWidth,rect.width,1);var ah=Math.max(wrap.clientHeight,rect.height,1);var cw=Math.max(tree.scrollWidth,tree.offsetWidth,treeRect.width,1);var ch=Math.max(tree.scrollHeight,tree.offsetHeight,treeRect.height,1);var scale=Math.min(1,(aw-8)/cw,(ah-8)/ch);if(!isFinite(scale)||scale<=0)scale=.58;scale=Math.max(.04,Math.min(1,scale*.98));page.style.setProperty("--flow-export-zoom",String(scale));}' +
+    'function fit(wrap){var page=wrap.closest(".flow-export-page");var tree=wrap.querySelector(".flow-tree");if(!page||!tree)return;var maxScale=page.classList.contains("nonadmin-flow-export-page")?1.4:1;page.style.setProperty("--flow-export-zoom","1");var rect=wrap.getBoundingClientRect();var treeRect=tree.getBoundingClientRect();var aw=Math.max(wrap.clientWidth,rect.width,1);var ah=Math.max(wrap.clientHeight,rect.height,1);var cw=Math.max(tree.scrollWidth,tree.offsetWidth,treeRect.width,1);var ch=Math.max(tree.scrollHeight,tree.offsetHeight,treeRect.height,1);var scale=Math.min(maxScale,(aw-8)/cw,(ah-8)/ch);if(!isFinite(scale)||scale<=0)scale=.58;scale=Math.max(.04,Math.min(maxScale,scale*.98));page.style.setProperty("--flow-export-zoom",String(scale));}' +
     layoutBloodBankFlow.toString() + routeBloodBankFlow.toString() +
-    'function drawOne(wrap){if(!wrap)return;layoutBloodBankFlow(wrap);fit(wrap);routeBloodBankFlow(wrap);}' +
+    'function drawOne(wrap){if(!wrap)return;var page=wrap.closest(".flow-export-page");layoutBloodBankFlow(wrap,{compact:Boolean(page&&page.classList.contains("nonadmin-flow-export-page"))});fit(wrap);routeBloodBankFlow(wrap);}' +
     'function draw(){[].slice.call(document.querySelectorAll(".flow-export-wrap")).forEach(drawOne);}' +
     'if(document.readyState==="complete")setTimeout(draw,80);else window.addEventListener("load",function(){setTimeout(draw,80);});' +
     '})();' +
