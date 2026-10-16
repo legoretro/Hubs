@@ -2,8 +2,8 @@
 function layoutBloodBankFlow(container,options){
   options=options||{};
   var compact=options.compact===true;
-  var horizontalGap=compact?28:65;
-  var verticalGap=compact?32:85;
+  var horizontalGap=compact?44:65;
+  var verticalGap=compact?62:85;
   var topInset=compact?18:35;
   var sideInset=compact?20:50;
   var stage=container.querySelector('.flow-tree');if(!stage)return;
@@ -114,7 +114,7 @@ function routeBloodBankFlow(container) {
     points=points.filter(function(p,i,all){if(i===0||i===all.length-1)return true;var a=all[i-1],b=all[i+1];return !((a.x===p.x&&p.x===b.x)||(a.y===p.y&&p.y===b.y));});
     var d=points.map(function(p,i){return (i?'L ':'M ')+p.x.toFixed(2)+' '+p.y.toFixed(2);}).join(' ');
     if(m.dataset.selected==='true')html+='<path d="'+d+'" fill="none" stroke="#ffcf00" stroke-width="'+Math.max(8,2.4*zoom+7)+'" stroke-linecap="round" stroke-linejoin="round"/>';
-    html+='<path class="flow-link-path'+(m.dataset.selected==='true'?' selected':'')+'" style="stroke-width:'+Math.max(.6,2.4*zoom)+'" d="'+d+'" marker-end="url(#'+(join?openMarker:marker)+')"/>';
+    html+='<path class="flow-link-path'+(m.dataset.selected==='true'?' selected':'')+'" style="stroke-width:'+Math.max(.6,2.4*zoom)+'" d="'+d+'"'+(join?'':' marker-end="url(#'+marker+')"')+'/>';
     targets.push({from:from,branchId:m.dataset.branchId,points:points});
     if(m.dataset.label && m.dataset.label.toLowerCase()!=='next'){
       var best=0;for(var i=1;i<points.length;i++){if(Math.abs(points[i].x-points[i-1].x)>best){best=Math.abs(points[i].x-points[i-1].x);var labelX=(points[i].x+points[i-1].x)/2,labelY=points[i].y-5;}}
@@ -124,10 +124,15 @@ function routeBloodBankFlow(container) {
   });
   // Draw one visible bus and one centered arrow for each multi-source destination.
   Object.keys(mergeGroups).forEach(function(to){
-    var group=mergeGroups[to],xs=group.xs.concat([(group.target.left+group.target.right)/2]),left=Math.min.apply(null,xs),right=Math.max.apply(null,xs),targetX=(group.target.left+group.target.right)/2;
-    var d='M '+left.toFixed(2)+' '+group.y.toFixed(2)+' L '+right.toFixed(2)+' '+group.y.toFixed(2)+' M '+targetX.toFixed(2)+' '+group.y.toFixed(2)+' L '+targetX.toFixed(2)+' '+group.target.top.toFixed(2);
-    if(group.selected)html+='<path d="M '+targetX.toFixed(2)+' '+group.y.toFixed(2)+' L '+targetX.toFixed(2)+' '+group.target.top.toFixed(2)+'" fill="none" stroke="#ffcf00" stroke-width="'+Math.max(8,2.4*zoom+7)+'" stroke-linecap="round"/>';
-    html+='<path class="flow-link-path'+(group.selected?' selected':'')+'" style="stroke-width:'+Math.max(.6,2.4*zoom)+'" d="'+d+'" marker-end="url(#'+marker+')"/>';
+    var group=mergeGroups[to],targetX=(group.target.left+group.target.right)/2,uniqueXs=Array.from(new Set(group.xs));
+    uniqueXs.forEach(function(x){
+      if(Math.abs(x-targetX)<gap)return;
+      var arrowEnd=targetX+(x<targetX?-gap:gap),d='M '+x.toFixed(2)+' '+group.y.toFixed(2)+' L '+arrowEnd.toFixed(2)+' '+group.y.toFixed(2);
+      html+='<path class="flow-link-path'+(group.selected?' selected':'')+'" style="stroke-width:'+Math.max(.6,2.4*zoom)+'" d="'+d+'" marker-end="url(#'+openMarker+')"/>';
+    });
+    var stem='M '+targetX.toFixed(2)+' '+group.y.toFixed(2)+' L '+targetX.toFixed(2)+' '+group.target.top.toFixed(2);
+    if(group.selected)html+='<path d="'+stem+'" fill="none" stroke="#ffcf00" stroke-width="'+Math.max(8,2.4*zoom+7)+'" stroke-linecap="round"/>';
+    html+='<path class="flow-link-path'+(group.selected?' selected':'')+'" style="stroke-width:'+Math.max(.6,2.4*zoom)+'" d="'+stem+'" marker-end="url(#'+marker+')"/>';
   });
   layer.innerHTML=html;return targets;
 }
