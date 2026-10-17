@@ -92,51 +92,32 @@ function routeBloodBankFlow(container) {
   layer.setAttribute('viewBox','0 0 '+width+' '+height);layer.setAttribute('width',width);layer.setAttribute('height',height);layer.style.width=width+'px';layer.style.height=height+'px';
   // Use a separate marker per canvas so multi-page exports remain self-contained.
   var marker='flow-arrow-'+(container.dataset.routeId||(container.dataset.routeId=Math.random().toString(36).slice(2)));
-  var openMarker=marker+'-open';
-  var html='<defs><marker id="'+marker+'" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#c0173d"/></marker><marker id="'+openMarker+'" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path d="M 1 1 L 9 5 L 1 9" fill="none" stroke="#c0173d" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>';
+  var html='<defs><marker id="'+marker+'" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#c0173d"/></marker></defs>';
   var links=Array.from(container.querySelectorAll('.flow-link-marker')),incomingByTarget={};
-  links.forEach(function(m){var to=m.dataset.flowLinkTo,parents=incomingByTarget[to]||(incomingByTarget[to]=[]);if(!parents.some(function(parent){return parent.dataset.flowLinkFrom===m.dataset.flowLinkFrom;}))parents.push(m);});
-  var mergeGroups={};
+  links.forEach(function(m){var to=m.dataset.flowLinkTo,parents=incomingByTarget[to]||(incomingByTarget[to]=[]);parents.push(m);});
   links.forEach(function(m){
     var from=m.dataset.flowLinkFrom,to=m.dataset.flowLinkTo,a=nodes[from],b=nodes[to];if(!a||!b)return;
-    var source={x:(a.left+a.right)/2,y:a.bottom},start={x:(a.left+a.right)/2,y:a.bottom+gap},end={x:(b.left+b.right)/2,y:b.top-gap};
-    if(a.decision&&Math.abs(end.x-start.x)>a.right-a.left){var direction=end.x<start.x?-1:1;source={x:direction<0?a.left:a.right,y:(a.top+a.bottom)/2};start={x:source.x+direction*gap,y:source.y};}
-    var join=incomingByTarget[to].length>1,branchEnd=end;
-    if(join){
-      var parents=incomingByTarget[to].map(function(link){return nodes[link.dataset.flowLinkFrom];}).filter(Boolean),lowest=Math.max.apply(null,parents.map(function(p){return p.bottom;}));
-      // Keep the shared bus in the open space above the destination so each source remains legible.
-      var joinY=lowest<b.top-gap*2?(lowest+b.top)/2:b.top-gap*2;
-      branchEnd={x:start.x,y:joinY};
-      (mergeGroups[to]||(mergeGroups[to]={target:b,y:joinY,xs:[],selected:false})).xs.push(start.x);
-      if(m.dataset.selected==='true')mergeGroups[to].selected=true;
+    var parents=incomingByTarget[to].filter(function(parent){return nodes[parent.dataset.flowLinkFrom];}).sort(function(left,right){var x=nodes[left.dataset.flowLinkFrom],y=nodes[right.dataset.flowLinkFrom];return ((x.left+x.right)/2)-((y.left+y.right)/2);});
+    var port=parents.indexOf(m),targetX=(b.left+b.right)/2,targetY=b.top;
+    if(parents.length>1){
+      targetX=b.left+(b.right-b.left)*(b.decision ? .38+.24*port/(parents.length-1) : .18+.64*port/(parents.length-1));
+      if(b.decision)targetY=b.top+Math.abs(targetX-(b.left+b.right)/2)*(b.bottom-b.top)/(b.right-b.left);
     }
-    var points=route(start,branchEnd,false);if(!points)return;
-    points.unshift(source);if(!join)points.push({x:end.x,y:b.top});
+    var source={x:(a.left+a.right)/2,y:a.bottom},start={x:(a.left+a.right)/2,y:a.bottom+gap},end={x:targetX,y:b.top-gap};
+    if(a.decision&&Math.abs(end.x-start.x)>a.right-a.left){var direction=end.x<start.x?-1:1;source={x:direction<0?a.left:a.right,y:(a.top+a.bottom)/2};start={x:source.x+direction*gap,y:source.y};}
+    var points=route(start,end,false);if(!points)return;
+    points.unshift(source);points.push({x:end.x,y:targetY});
     // Remove collinear points while preserving turns for hit testing.
     points=points.filter(function(p,i,all){if(i===0||i===all.length-1)return true;var a=all[i-1],b=all[i+1];return !((a.x===p.x&&p.x===b.x)||(a.y===p.y&&p.y===b.y));});
     var d=points.map(function(p,i){return (i?'L ':'M ')+p.x.toFixed(2)+' '+p.y.toFixed(2);}).join(' ');
     if(m.dataset.selected==='true')html+='<path d="'+d+'" fill="none" stroke="#ffcf00" stroke-width="'+Math.max(8,2.4*zoom+7)+'" stroke-linecap="round" stroke-linejoin="round"/>';
-    html+='<path class="flow-link-path'+(m.dataset.selected==='true'?' selected':'')+'" style="stroke-width:'+Math.max(.6,2.4*zoom)+'" d="'+d+'"'+(join?'':' marker-end="url(#'+marker+')"')+'/>';
-    var hitPoints=points.slice();
-    if(join){var centerX=(b.left+b.right)/2;hitPoints.push(Math.abs(start.x-centerX)<gap?{x:centerX,y:b.top}:{x:centerX+(start.x<centerX?-gap:gap),y:branchEnd.y});}
-    targets.push({from:from,branchId:m.dataset.branchId,points:hitPoints});
+    html+='<path class="flow-link-path'+(m.dataset.selected==='true'?' selected':'')+'" style="stroke-width:'+Math.max(.6,2.4*zoom)+'" d="'+d+'" marker-end="url(#'+marker+')"/>';
+    targets.push({from:from,branchId:m.dataset.branchId,points:points});
     if(m.dataset.label && m.dataset.label.toLowerCase()!=='next'){
       var best=0;for(var i=1;i<points.length;i++){if(Math.abs(points[i].x-points[i-1].x)>best){best=Math.abs(points[i].x-points[i-1].x);var labelX=(points[i].x+points[i-1].x)/2,labelY=points[i].y-5;}}
       if(!best && points.length>1){labelX=points[0].x+14*zoom;labelY=(points[0].y+points[1].y)/2;}
       {var text=document.createElementNS('http://www.w3.org/2000/svg','text');text.setAttribute('x',labelX);text.setAttribute('y',labelY);text.setAttribute('text-anchor','middle');text.setAttribute('class','flow-route-label');text.setAttribute('style','font-size:'+(11*zoom)+'px;stroke-width:'+(4*zoom)+'px');text.textContent=m.dataset.label||'Next';html+=text.outerHTML;}
     }
-  });
-  // Draw one visible bus and one centered arrow for each multi-source destination.
-  Object.keys(mergeGroups).forEach(function(to){
-    var group=mergeGroups[to],targetX=(group.target.left+group.target.right)/2,uniqueXs=Array.from(new Set(group.xs));
-    uniqueXs.forEach(function(x){
-      if(Math.abs(x-targetX)<gap)return;
-      var arrowEnd=targetX+(x<targetX?-gap:gap),d='M '+x.toFixed(2)+' '+group.y.toFixed(2)+' L '+arrowEnd.toFixed(2)+' '+group.y.toFixed(2);
-      html+='<path class="flow-link-path'+(group.selected?' selected':'')+'" style="stroke-width:'+Math.max(.6,2.4*zoom)+'" d="'+d+'" marker-end="url(#'+openMarker+')"/>';
-    });
-    var stem='M '+targetX.toFixed(2)+' '+group.y.toFixed(2)+' L '+targetX.toFixed(2)+' '+group.target.top.toFixed(2);
-    if(group.selected)html+='<path d="'+stem+'" fill="none" stroke="#ffcf00" stroke-width="'+Math.max(8,2.4*zoom+7)+'" stroke-linecap="round"/>';
-    html+='<path class="flow-link-path'+(group.selected?' selected':'')+'" style="stroke-width:'+Math.max(.6,2.4*zoom)+'" d="'+stem+'" marker-end="url(#'+marker+')"/>';
   });
   layer.innerHTML=html;return targets;
 }

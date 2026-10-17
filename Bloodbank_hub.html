@@ -1022,7 +1022,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="shared/pdf-export.js?v=20260605-export-fit"></script>
 <script src="safe-supabase-sync.js"></script>
-<script src="shared/bloodbank-flow.js?v=20261016-arrow-hitbox"></script>
+<script src="shared/bloodbank-flow.js?v=20261017-separate-arrows-4"></script>
 <script>
 // ============================================================
 // CONFIG - SUPABASE + PASSWORD
@@ -2728,6 +2728,7 @@ function renderFlowSelectionPanel(data) {
       '<button class="flow-tool-btn primary" onclick="addFlowBranchToSelected()">Add branch</button>' +
       '<button class="flow-tool-btn" onclick="insertFlowBox(\'before\')">Insert before</button>' +
       '<button class="flow-tool-btn" onclick="insertFlowBox(\'after\')">Insert after</button>' +
+      '<button class="flow-tool-btn" onclick="duplicateSelectedFlowNode()">Duplicate box</button>' +
       '<label class="flow-control">Connect to<select class="flow-select" id="flowConnectTarget">' + Object.values(data.nodes).filter(function(n){return n.id!==node.id;}).map(function(n){return '<option value="'+escAttr(n.id)+'">'+escText(n.text||'Box')+'</option>';}).join('') + '</select></label>' +
       '<button class="flow-tool-btn" onclick="connectFlowNodes(flowSelectedNodeId,document.getElementById(\'flowConnectTarget\').value)">Connect</button>' +
       '<button class="flow-tool-btn" onclick="addFlowNodeNoteToSelected()">Note</button>' +
@@ -2967,6 +2968,32 @@ function insertFlowBox(position) {
     node.branches=[edge(selected.id)];if(data.rootId===selected.id)data.rootId=id;
   } else {node.branches=selected.branches;selected.branches=[edge(id)];}
   data.nodes[id]=node;flowSelectedLink=null;flowSelectedNodeId=id;saveFlowchartData(data,true);
+}
+
+function duplicateSelectedFlowNode() {
+  if (!isAdmin) return;
+  const data=getFlowchartData(),selected=getFlowSelectedNode(data);
+  if (!selected) return;
+  const id=flowId('node'),copy=JSON.parse(JSON.stringify(selected));
+  copy.id=id;
+  copy.branches=[];
+  data.nodes[id]=copy;
+  let parent=null,branchIndex=-1;
+  Object.values(data.nodes).some(function(node){
+    if(node.id===id)return false;
+    const index=(node.branches||[]).findIndex(function(branch){return branch.to===selected.id;});
+    if(index<0)return false;
+    parent=node;branchIndex=index;return true;
+  });
+  if(parent){
+    const original=parent.branches[branchIndex];
+    parent.branches.splice(branchIndex+1,0,{id:flowId('branch'),label:original.label||'Next',to:id});
+  }else if(selected.id===data.rootId){
+    selected.branches.push({id:flowId('branch'),label:'Next',to:id});
+  }
+  flowSelectedLink=null;
+  flowSelectedNodeId=id;
+  saveFlowchartData(data,true);
 }
 
 function addFlowBranchToSelected() {
