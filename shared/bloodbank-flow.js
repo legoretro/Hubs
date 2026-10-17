@@ -2,8 +2,8 @@
 function layoutBloodBankFlow(container,options){
   options=options||{};
   var compact=options.compact===true;
-  var horizontalGap=compact?44:65;
-  var verticalGap=compact?62:85;
+  var horizontalGap=compact?54:78;
+  var verticalGap=compact?76:102;
   var topInset=compact?18:35;
   var sideInset=compact?20:50;
   var stage=container.querySelector('.flow-tree');if(!stage)return;
@@ -77,11 +77,11 @@ function routeBloodBankFlow(container) {
   var obstacles=Array.from(container.querySelectorAll('.flow-node,.flow-note-card')).map(function(el){var r=rect(el);return {left:r.left-gap/2,right:r.right+gap/2,top:r.top-gap/2,bottom:r.bottom+gap/2};});
   function clear(a,b){return !obstacles.some(function(r){return a.x===b.x ? a.x>r.left&&a.x<r.right&&Math.max(a.y,b.y)>r.top&&Math.min(a.y,b.y)<r.bottom : a.y>r.top&&a.y<r.bottom&&Math.max(a.x,b.x)>r.left&&Math.min(a.x,b.x)<r.right;});}
   var occupied=[];
-  function separate(points,from){
+  function separate(points,from,shareSource){
     for(var i=1;i<points.length;i++){
       var a=points[i-1],b=points[i];
       for(var j=0;j<occupied.length;j++){
-        if(occupied[j][2]===from)continue;
+        if(shareSource&&occupied[j][2]===from)continue;
         var c=occupied[j][0],d=occupied[j][1];
         if(a.x===b.x&&c.x===d.x&&Math.abs(a.x-c.x)<gap&&Math.min(b.y,a.y)<Math.max(c.y,d.y)-gap&&Math.max(b.y,a.y)>Math.min(c.y,d.y)+gap)return false;
         if(a.y===b.y&&c.y===d.y&&Math.abs(a.y-c.y)<gap&&Math.min(b.x,a.x)<Math.max(c.x,d.x)-gap&&Math.max(b.x,a.x)>Math.min(c.x,d.x)+gap)return false;
@@ -91,7 +91,7 @@ function routeBloodBankFlow(container) {
     }
     return true;
   }
-  function route(start,end,join,from){
+  function route(start,end,join,from,shareSource){
     var bus={x:start.x,y:end.y};if(join&&end.y>start.y&&clear(start,bus)&&clear(bus,end))return [start,bus,end];
     var middle=(start.y+end.y)/2,p1={x:start.x,y:middle},p2={x:end.x,y:middle};
     if(end.y>start.y){
@@ -100,7 +100,7 @@ function routeBloodBankFlow(container) {
       for(var laneIndex=0;laneIndex<lanes.length;laneIndex++){
         p1={x:start.x,y:lanes[laneIndex]};p2={x:end.x,y:lanes[laneIndex]};
         var candidate=[start,p1,p2,end];
-        if(clear(start,p1)&&clear(p1,p2)&&clear(p2,end)&&separate(candidate,from))return candidate;
+        if(clear(start,p1)&&clear(p1,p2)&&clear(p2,end)&&separate(candidate,from,shareSource))return candidate;
       }
     }
     if(clear(start,{x:start.x,y:end.y})&&clear({x:start.x,y:end.y},end))return [start,{x:start.x,y:end.y},end];
@@ -129,34 +129,61 @@ function routeBloodBankFlow(container) {
   layer.setAttribute('viewBox','0 0 '+width+' '+height);layer.setAttribute('width',width);layer.setAttribute('height',height);layer.style.width=width+'px';layer.style.height=height+'px';
   // Use a separate marker per canvas so multi-page exports remain self-contained.
   var marker='flow-arrow-'+(container.dataset.routeId||(container.dataset.routeId=Math.random().toString(36).slice(2)));
-  var html='<defs><marker id="'+marker+'" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#171717"/></marker></defs>';
-  var links=Array.from(container.querySelectorAll('.flow-link-marker')),incomingByTarget={};
-  links.forEach(function(m){var to=m.dataset.flowLinkTo,parents=incomingByTarget[to]||(incomingByTarget[to]=[]);parents.push(m);});
+  var html='<defs><marker id="'+marker+'" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#c0173d"/></marker></defs>';
+  var links=Array.from(container.querySelectorAll('.flow-link-marker')),incomingByTarget={},outgoingBySource={};
+  links.forEach(function(m){var to=m.dataset.flowLinkTo,from=m.dataset.flowLinkFrom,parents=incomingByTarget[to]||(incomingByTarget[to]=[]),children=outgoingBySource[from]||(outgoingBySource[from]=[]);parents.push(m);children.push(m);});
   links.forEach(function(m){
     var from=m.dataset.flowLinkFrom,to=m.dataset.flowLinkTo,a=nodes[from],b=nodes[to];if(!a||!b)return;
     var parents=incomingByTarget[to].filter(function(parent){return nodes[parent.dataset.flowLinkFrom];}).sort(function(left,right){var x=nodes[left.dataset.flowLinkFrom],y=nodes[right.dataset.flowLinkFrom];return ((x.left+x.right)/2)-((y.left+y.right)/2);});
     var port=parents.indexOf(m),targetX=(b.left+b.right)/2,targetY=b.top;
     if(parents.length>1){
-      targetX=b.left+(b.right-b.left)*(b.decision ? .38+.24*port/(parents.length-1) : .18+.64*port/(parents.length-1));
+      targetX=b.left+(b.right-b.left)*(b.decision ? .22+.56*port/(parents.length-1) : .18+.64*port/(parents.length-1));
       if(b.decision)targetY=b.top+Math.abs(targetX-(b.left+b.right)/2)*(b.bottom-b.top)/(b.right-b.left);
     }
-    var source={x:(a.left+a.right)/2,y:a.bottom},start={x:(a.left+a.right)/2,y:a.bottom+gap},end={x:targetX,y:b.top-gap};
-    if(a.decision&&Math.abs(end.x-start.x)>(a.right-a.left)*.35){var direction=end.x<start.x?-1:1;source={x:direction<0?a.left:a.right,y:(a.top+a.bottom)/2};start={x:source.x+direction*gap,y:source.y};}
+    // Leave a visible straight approach so the arrowhead is not attached to
+    // the horizontal turn immediately above a destination box.
+    var approach=Math.max(gap*4,24*zoom);
+    var source={x:(a.left+a.right)/2,y:a.bottom},start={x:(a.left+a.right)/2,y:a.bottom+gap},end={x:targetX,y:b.top-approach},sideDirection=0;
+    var children=outgoingBySource[from]||[];
+    var bottomBranch=a.decision&&children.length===1&&Math.abs(end.x-start.x)<(a.right-a.left)*.35;
+    if(a.decision&&!bottomBranch&&(children.length>1||Math.abs(end.x-start.x)>(a.right-a.left)*.35)){sideDirection=end.x<start.x?-1:1;source={x:sideDirection<0?a.left:a.right,y:(a.top+a.bottom)/2};start={x:source.x+sideDirection*Math.max(gap*3,24*zoom),y:source.y};}
     // A tiny last-second elbow looks like a stray arrow. When one connector is
     // already above the destination, bring it straight into the box instead.
     if(parents.length===1&&!b.decision&&Math.abs(start.x-end.x)<Math.max(28,gap*3)&&start.x>b.left+gap*2&&start.x<b.right-gap*2){targetX=end.x=start.x;}
-    var points=route(start,end,false,from);if(!points)return;
+    var sameRowSiblings=links.filter(function(link){var other=nodes[link.dataset.flowLinkTo];return link.dataset.flowLinkFrom===from&&other&&Math.abs(other.top-b.top)<gap*2;});
+    var shareSource=!a.decision&&sameRowSiblings.length>1&&links.filter(function(link){return link.dataset.flowLinkFrom===from;}).length===sameRowSiblings.length;
+    var points=route(start,end,false,from,shareSource);
+    if(!points&&a.decision&&sideDirection){
+      // A crowded side port can be boxed in by adjacent branches. The bottom
+      // port keeps this connection visible without cutting through the node.
+      sideDirection=0;source={x:(a.left+a.right)/2,y:a.bottom};start={x:source.x,y:source.y+gap};
+      points=route(start,end,false,from,shareSource);
+    }
+    if(!points){m.dataset.routeMissing='true';return;}delete m.dataset.routeMissing;
     points.unshift(source);points.push({x:end.x,y:targetY});
+    points=points.filter(function(p,i,all){return i===0||p.x!==all[i-1].x||p.y!==all[i-1].y;});
+    var orthogonal=[];
+    points.forEach(function(p){
+      var previous=orthogonal[orthogonal.length-1];
+      if(previous&&previous.x!==p.x&&previous.y!==p.y){
+        var horizontal={x:p.x,y:previous.y},vertical={x:previous.x,y:p.y};
+        orthogonal.push(clear(previous,horizontal)&&clear(horizontal,p)?horizontal:vertical);
+      }
+      orthogonal.push(p);
+    });
+    points=orthogonal;
     // Remove collinear points while preserving turns for hit testing.
     points=points.filter(function(p,i,all){if(i===0||i===all.length-1)return true;var a=all[i-1],b=all[i+1];return !((a.x===p.x&&p.x===b.x)||(a.y===p.y&&p.y===b.y));});
     for(var segment=1;segment<points.length;segment++)occupied.push([points[segment-1],points[segment],from]);
     var d=points.map(function(p,i){return (i?'L ':'M ')+p.x.toFixed(2)+' '+p.y.toFixed(2);}).join(' ');
-    if(m.dataset.selected==='true')html+='<path d="'+d+'" fill="none" stroke="#b7b7b7" stroke-width="'+Math.max(8,2.4*zoom+7)+'" stroke-linecap="round" stroke-linejoin="round"/>';
+    if(m.dataset.selected==='true')html+='<path d="'+d+'" fill="none" stroke="#ffcf00" stroke-width="'+Math.max(8,2.4*zoom+7)+'" stroke-linecap="round" stroke-linejoin="round"/>';
     html+='<path class="flow-link-path'+(m.dataset.selected==='true'?' selected':'')+'" style="stroke-width:'+Math.max(.6,2.4*zoom)+'" d="'+d+'" marker-end="url(#'+marker+')"/>';
     targets.push({from:from,branchId:m.dataset.branchId,points:points});
     if(m.dataset.label && m.dataset.label.toLowerCase()!=='next'){
       var best=0;for(var i=1;i<points.length;i++){if(Math.abs(points[i].x-points[i-1].x)>best){best=Math.abs(points[i].x-points[i-1].x);var labelX=(points[i].x+points[i-1].x)/2,labelY=points[i].y-5;}}
-      if(!best && points.length>1){labelX=points[0].x+14*zoom;labelY=(points[0].y+points[1].y)/2;}
+      if(a.decision&&sideDirection){labelX=source.x+sideDirection*Math.max(gap*4,32*zoom);labelY=source.y-7*zoom;}
+      else if(a.decision&&bottomBranch){labelX=source.x+22*zoom;labelY=source.y+16*zoom;}
+      else if(!best && points.length>1){labelX=points[0].x+14*zoom;labelY=(points[0].y+points[1].y)/2;}
       {var text=document.createElementNS('http://www.w3.org/2000/svg','text');text.setAttribute('x',labelX);text.setAttribute('y',labelY);text.setAttribute('text-anchor','middle');text.setAttribute('class','flow-route-label');text.setAttribute('style','font-size:'+(11*zoom)+'px;stroke-width:'+(4*zoom)+'px');text.textContent=m.dataset.label||'Next';html+=text.outerHTML;}
     }
   });
