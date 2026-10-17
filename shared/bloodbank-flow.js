@@ -18,14 +18,15 @@ function layoutBloodBankFlow(container,options){
   var queue=ids.filter(function(id){return !remaining[id];});
   for(var q=0;q<queue.length;q++){var id=queue[q];ids.forEach(function(to){if(incoming[to].indexOf(id)<0)return;rank[to]=Math.max(rank[to],rank[id]+1);remaining[to]--;if(!remaining[to])queue.push(to);});}
   var rows=[];ids.forEach(function(id){(rows[rank[id]]||(rows[rank[id]]=[])).push(id);});
-  var center={},sizes={},width=0;
+  var center={},anchor={},sizes={},width=0;
   ids.forEach(function(id){var el=elements[id];el.style.left='0';el.style.top='0';var r=el.getBoundingClientRect();sizes[id]={width:Math.max(r.width,240),height:Math.max(r.height,62)};});
   var pitch=Math.max.apply(null,ids.map(function(id){return sizes[id].width;}))+horizontalGap;
   rows.forEach(function(row){
     row.forEach(function(id){
       var parents=incoming[id];
-      if(!parents.length){center[id]=row.indexOf(id)*pitch;return;}
-      center[id]=parents.reduce(function(sum,p){return sum+center[p];},0)/parents.length;
+      if(!parents.length){anchor[id]=center[id]=row.indexOf(id)*pitch;return;}
+      anchor[id]=parents.reduce(function(sum,p){return sum+center[p];},0)/parents.length;
+      center[id]=anchor[id];
       if(parents.length===1){
         var siblings=out[parents[0]].filter(function(to){return rank[to]===rank[id]&&incoming[to].length===1;});
         center[id]+=(siblings.indexOf(id)-(siblings.length-1)/2)*pitch;
@@ -33,7 +34,7 @@ function layoutBloodBankFlow(container,options){
     });
     // Match each row's order to its incoming connections before spacing boxes.
     // Otherwise independent links can be forced to cross between two rows.
-    row.sort(function(a,b){return center[a]-center[b];});
+    row.sort(function(a,b){return anchor[a]-anchor[b]||center[a]-center[b]||ids.indexOf(a)-ids.indexOf(b);});
     var wanted=row.reduce(function(sum,id){return sum+center[id];},0)/row.length;
     var rightEdge=-Infinity,rowGap=compact?18:24;
     row.forEach(function(id){
@@ -127,7 +128,10 @@ function routeBloodBankFlow(container) {
       if(b.decision)targetY=b.top+Math.abs(targetX-(b.left+b.right)/2)*(b.bottom-b.top)/(b.right-b.left);
     }
     var source={x:(a.left+a.right)/2,y:a.bottom},start={x:(a.left+a.right)/2,y:a.bottom+gap},end={x:targetX,y:b.top-gap};
-    if(a.decision&&Math.abs(end.x-start.x)>a.right-a.left){var direction=end.x<start.x?-1:1;source={x:direction<0?a.left:a.right,y:(a.top+a.bottom)/2};start={x:source.x+direction*gap,y:source.y};}
+    if(a.decision&&Math.abs(end.x-start.x)>(a.right-a.left)*.35){var direction=end.x<start.x?-1:1;source={x:direction<0?a.left:a.right,y:(a.top+a.bottom)/2};start={x:source.x+direction*gap,y:source.y};}
+    // A tiny last-second elbow looks like a stray arrow. When one connector is
+    // already above the destination, bring it straight into the box instead.
+    if(parents.length===1&&!b.decision&&Math.abs(start.x-end.x)<Math.max(28,gap*3)&&start.x>b.left+gap*2&&start.x<b.right-gap*2){targetX=end.x=start.x;}
     var points=route(start,end,false);if(!points)return;
     points.unshift(source);points.push({x:end.x,y:targetY});
     // Remove collinear points while preserving turns for hit testing.
