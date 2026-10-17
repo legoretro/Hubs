@@ -93,6 +93,10 @@ function routeBloodBankFlow(container) {
   }
   function route(start,end,join,from,shareSource){
     var bus={x:start.x,y:end.y};if(join&&end.y>start.y&&clear(start,bus)&&clear(bus,end))return [start,bus,end];
+    // Prefer a single elbow when the direct corridor is open. Searching for
+    // intermediate lanes first creates a needless short outward/backward jog.
+    var direct={x:end.x,y:start.y};
+    if(end.y>start.y&&clear(start,direct)&&clear(direct,end))return [start,direct,end];
     var middle=(start.y+end.y)/2,p1={x:start.x,y:middle},p2={x:end.x,y:middle};
     if(end.y>start.y){
       var lanes=[middle],step=Math.max(gap*1.5,12),count=Math.floor((end.y-start.y)/2/step);
@@ -146,7 +150,22 @@ function routeBloodBankFlow(container) {
     var source={x:(a.left+a.right)/2,y:a.bottom},start={x:(a.left+a.right)/2,y:a.bottom+gap},end={x:targetX,y:b.top-approach},sideDirection=0;
     var children=outgoingBySource[from]||[];
     var bottomBranch=a.decision&&children.length===1&&Math.abs(end.x-start.x)<(a.right-a.left)*.35;
-    if(a.decision&&!bottomBranch&&(children.length>1||Math.abs(end.x-start.x)>(a.right-a.left)*.35)){sideDirection=end.x<start.x?-1:1;source={x:sideDirection<0?a.left:a.right,y:(a.top+a.bottom)/2};start={x:source.x+sideDirection*Math.max(gap*3,24*zoom),y:source.y};}
+    if(a.decision&&!bottomBranch&&(children.length>1||Math.abs(end.x-start.x)>(a.right-a.left)*.35)){
+      sideDirection=end.x<start.x?-1:1;
+      source={x:sideDirection<0?a.left:a.right,y:(a.top+a.bottom)/2};
+      if(sideDirection*(end.x-source.x)<gap*2){
+        // An inward target would force a side connector to double back.
+        // The lower point of the diamond is clearer in this tight case.
+        sideDirection=0;bottomBranch=true;source={x:(a.left+a.right)/2,y:a.bottom};
+        start={x:source.x,y:source.y+gap};
+      }else start={x:source.x+sideDirection*gap,y:source.y};
+    }
+    if(sideDirection&&!clear(start,{x:end.x,y:start.y})){
+      // A neighboring box blocks the simple side-to-down L. Leave from the
+      // lower diamond point instead of drawing a short stair-step around it.
+      sideDirection=0;bottomBranch=true;source={x:(a.left+a.right)/2,y:a.bottom};
+      start={x:source.x,y:source.y+gap};
+    }
     // A tiny last-second elbow looks like a stray arrow. When one connector is
     // already above the destination, bring it straight into the box instead.
     if(parents.length===1&&!b.decision&&Math.abs(start.x-end.x)<Math.max(28,gap*3)&&start.x>b.left+gap*2&&start.x<b.right-gap*2){targetX=end.x=start.x;}
