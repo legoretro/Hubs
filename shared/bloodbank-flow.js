@@ -45,6 +45,18 @@ function layoutBloodBankFlow(container,options){
     var actual=row.reduce(function(sum,id){return sum+center[id];},0)/row.length;
     row.forEach(function(id){center[id]+=wanted-actual;});
   });
+  // Center a parent over its immediate children. A one-child chain becomes a
+  // straight vertical line; siblings form a balanced split under one stem.
+  for(var rowIndex=rows.length-2;rowIndex>=0;rowIndex--){
+    var upper=rows[rowIndex],upperGap=compact?18:24;
+    upper.forEach(function(id){
+      var children=out[id].filter(function(to){return rank[to]===rowIndex+1;});
+      if(children.length)center[id]=children.reduce(function(sum,to){return sum+center[to];},0)/children.length;
+    });
+    upper.sort(function(a,b){return center[a]-center[b]||ids.indexOf(a)-ids.indexOf(b);});
+    var edge=-Infinity;
+    upper.forEach(function(id){var left=center[id]-sizes[id].width/2;if(left<edge+upperGap)center[id]+=edge+upperGap-left;edge=center[id]+sizes[id].width/2;});
+  }
   var minX=Math.min.apply(null,ids.map(function(id){return center[id]-sizes[id].width/2;}));
   var y=topInset;
   rows.forEach(function(row){var h=0;row.forEach(function(id){var el=elements[id],x=center[id]-sizes[id].width/2-minX+sideInset;el.style.left=x+'px';el.style.top=y+'px';width=Math.max(width,x+sizes[id].width+sideInset);h=Math.max(h,sizes[id].height);});y+=h+verticalGap;});
@@ -65,10 +77,11 @@ function routeBloodBankFlow(container) {
   var obstacles=Array.from(container.querySelectorAll('.flow-node,.flow-note-card')).map(function(el){var r=rect(el);return {left:r.left-gap/2,right:r.right+gap/2,top:r.top-gap/2,bottom:r.bottom+gap/2};});
   function clear(a,b){return !obstacles.some(function(r){return a.x===b.x ? a.x>r.left&&a.x<r.right&&Math.max(a.y,b.y)>r.top&&Math.min(a.y,b.y)<r.bottom : a.y>r.top&&a.y<r.bottom&&Math.max(a.x,b.x)>r.left&&Math.min(a.x,b.x)<r.right;});}
   var occupied=[];
-  function separate(points){
+  function separate(points,from){
     for(var i=1;i<points.length;i++){
       var a=points[i-1],b=points[i];
       for(var j=0;j<occupied.length;j++){
+        if(occupied[j][2]===from)continue;
         var c=occupied[j][0],d=occupied[j][1];
         if(a.x===b.x&&c.x===d.x&&Math.abs(a.x-c.x)<gap&&Math.min(b.y,a.y)<Math.max(c.y,d.y)-gap&&Math.max(b.y,a.y)>Math.min(c.y,d.y)+gap)return false;
         if(a.y===b.y&&c.y===d.y&&Math.abs(a.y-c.y)<gap&&Math.min(b.x,a.x)<Math.max(c.x,d.x)-gap&&Math.max(b.x,a.x)>Math.min(c.x,d.x)+gap)return false;
@@ -78,7 +91,7 @@ function routeBloodBankFlow(container) {
     }
     return true;
   }
-  function route(start,end,join){
+  function route(start,end,join,from){
     var bus={x:start.x,y:end.y};if(join&&end.y>start.y&&clear(start,bus)&&clear(bus,end))return [start,bus,end];
     var middle=(start.y+end.y)/2,p1={x:start.x,y:middle},p2={x:end.x,y:middle};
     if(end.y>start.y){
@@ -87,7 +100,7 @@ function routeBloodBankFlow(container) {
       for(var laneIndex=0;laneIndex<lanes.length;laneIndex++){
         p1={x:start.x,y:lanes[laneIndex]};p2={x:end.x,y:lanes[laneIndex]};
         var candidate=[start,p1,p2,end];
-        if(clear(start,p1)&&clear(p1,p2)&&clear(p2,end)&&separate(candidate))return candidate;
+        if(clear(start,p1)&&clear(p1,p2)&&clear(p2,end)&&separate(candidate,from))return candidate;
       }
     }
     if(clear(start,{x:start.x,y:end.y})&&clear({x:start.x,y:end.y},end))return [start,{x:start.x,y:end.y},end];
@@ -116,7 +129,7 @@ function routeBloodBankFlow(container) {
   layer.setAttribute('viewBox','0 0 '+width+' '+height);layer.setAttribute('width',width);layer.setAttribute('height',height);layer.style.width=width+'px';layer.style.height=height+'px';
   // Use a separate marker per canvas so multi-page exports remain self-contained.
   var marker='flow-arrow-'+(container.dataset.routeId||(container.dataset.routeId=Math.random().toString(36).slice(2)));
-  var html='<defs><marker id="'+marker+'" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#c0173d"/></marker></defs>';
+  var html='<defs><marker id="'+marker+'" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#171717"/></marker></defs>';
   var links=Array.from(container.querySelectorAll('.flow-link-marker')),incomingByTarget={};
   links.forEach(function(m){var to=m.dataset.flowLinkTo,parents=incomingByTarget[to]||(incomingByTarget[to]=[]);parents.push(m);});
   links.forEach(function(m){
@@ -132,13 +145,13 @@ function routeBloodBankFlow(container) {
     // A tiny last-second elbow looks like a stray arrow. When one connector is
     // already above the destination, bring it straight into the box instead.
     if(parents.length===1&&!b.decision&&Math.abs(start.x-end.x)<Math.max(28,gap*3)&&start.x>b.left+gap*2&&start.x<b.right-gap*2){targetX=end.x=start.x;}
-    var points=route(start,end,false);if(!points)return;
+    var points=route(start,end,false,from);if(!points)return;
     points.unshift(source);points.push({x:end.x,y:targetY});
     // Remove collinear points while preserving turns for hit testing.
     points=points.filter(function(p,i,all){if(i===0||i===all.length-1)return true;var a=all[i-1],b=all[i+1];return !((a.x===p.x&&p.x===b.x)||(a.y===p.y&&p.y===b.y));});
-    for(var segment=1;segment<points.length;segment++)occupied.push([points[segment-1],points[segment]]);
+    for(var segment=1;segment<points.length;segment++)occupied.push([points[segment-1],points[segment],from]);
     var d=points.map(function(p,i){return (i?'L ':'M ')+p.x.toFixed(2)+' '+p.y.toFixed(2);}).join(' ');
-    if(m.dataset.selected==='true')html+='<path d="'+d+'" fill="none" stroke="#ffcf00" stroke-width="'+Math.max(8,2.4*zoom+7)+'" stroke-linecap="round" stroke-linejoin="round"/>';
+    if(m.dataset.selected==='true')html+='<path d="'+d+'" fill="none" stroke="#b7b7b7" stroke-width="'+Math.max(8,2.4*zoom+7)+'" stroke-linecap="round" stroke-linejoin="round"/>';
     html+='<path class="flow-link-path'+(m.dataset.selected==='true'?' selected':'')+'" style="stroke-width:'+Math.max(.6,2.4*zoom)+'" d="'+d+'" marker-end="url(#'+marker+')"/>';
     targets.push({from:from,branchId:m.dataset.branchId,points:points});
     if(m.dataset.label && m.dataset.label.toLowerCase()!=='next'){
