@@ -169,9 +169,19 @@ function routeBloodBankFlow(container) {
     // A tiny last-second elbow looks like a stray arrow. When one connector is
     // already above the destination, bring it straight into the box instead.
     if(parents.length===1&&!b.decision&&Math.abs(start.x-end.x)<Math.max(28,gap*3)&&start.x>b.left+gap*2&&start.x<b.right-gap*2){targetX=end.x=start.x;}
-    var sameRowSiblings=links.filter(function(link){var other=nodes[link.dataset.flowLinkTo];return link.dataset.flowLinkFrom===from&&other&&Math.abs(other.top-b.top)<gap*2;});
-    var shareSource=!a.decision&&sameRowSiblings.length>1&&links.filter(function(link){return link.dataset.flowLinkFrom===from;}).length===sameRowSiblings.length;
-    var points=route(start,end,false,from,shareSource);
+    var shareSource=!a.decision&&children.filter(function(link){return nodes[link.dataset.flowLinkTo];}).length>1;
+    var points=null;
+    if(shareSource){
+      // Sibling steps share a single stem and horizontal split. Each branch
+      // descends separately into its destination, as in a standard flowchart.
+      var nearestTop=Math.min.apply(null,children.filter(function(link){return nodes[link.dataset.flowLinkTo];}).map(function(link){return nodes[link.dataset.flowLinkTo].top;}));
+      var busY=a.bottom+(nearestTop-a.bottom-approach)/2;
+      if(busY>start.y+gap&&busY<end.y-gap){
+        var busStart={x:start.x,y:busY},busEnd={x:end.x,y:busY};
+        if(clear(start,busStart)&&clear(busStart,busEnd)&&clear(busEnd,end))points=[start,busStart,busEnd,end];
+      }
+    }
+    if(!points)points=route(start,end,false,from,shareSource);
     if(!points&&a.decision&&sideDirection){
       // A crowded side port can be boxed in by adjacent branches. The bottom
       // port keeps this connection visible without cutting through the node.
