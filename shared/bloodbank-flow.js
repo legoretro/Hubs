@@ -57,6 +57,28 @@ function layoutBloodBankFlow(container,options){
     var edge=-Infinity;
     upper.forEach(function(id){var left=center[id]-sizes[id].width/2;if(left<edge+upperGap)center[id]+=edge+upperGap-left;edge=center[id]+sizes[id].width/2;});
   }
+  // A shared child can be pulled under one parent by bottom-up centering. Move
+  // it between widely separated incoming branches, then carry that movement
+  // down its chain and push neighboring boxes aside rather than overlapping.
+  var previousCenter={};ids.forEach(function(id){previousCenter[id]=center[id];});
+  for(var layer=1;layer<rows.length;layer++){
+    var layerRow=rows[layer],layerGap=compact?18:24;
+    layerRow.forEach(function(id){
+      var parents=incoming[id].filter(function(parent){return rank[parent]<layer;});
+      if(!parents.length)return;
+      var parentShift=parents.reduce(function(sum,parent){return sum+center[parent]-previousCenter[parent];},0)/parents.length;
+      center[id]+=parentShift;
+      if(parents.length>1){
+        var positions=parents.map(function(parent){return center[parent];});
+        var spread=Math.max.apply(null,positions)-Math.min.apply(null,positions);
+        var middle=positions.reduce(function(sum,x){return sum+x;},0)/positions.length;
+        if(spread>pitch*.65&&Math.abs(middle-center[id])>pitch*.2)center[id]=middle;
+      }
+    });
+    layerRow.sort(function(a,b){return center[a]-center[b]||ids.indexOf(a)-ids.indexOf(b);});
+    var layerEdge=-Infinity;
+    layerRow.forEach(function(id){var left=center[id]-sizes[id].width/2;if(left<layerEdge+layerGap)center[id]+=layerEdge+layerGap-left;layerEdge=center[id]+sizes[id].width/2;});
+  }
   var minX=Math.min.apply(null,ids.map(function(id){return center[id]-sizes[id].width/2;}));
   var y=topInset;
   rows.forEach(function(row){var h=0;row.forEach(function(id){var el=elements[id],x=center[id]-sizes[id].width/2-minX+sideInset;el.style.left=x+'px';el.style.top=y+'px';width=Math.max(width,x+sizes[id].width+sideInset);h=Math.max(h,sizes[id].height);});y+=h+verticalGap;});
