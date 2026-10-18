@@ -139,11 +139,11 @@ function routeBloodBankFlow(container) {
   links.forEach(function(m){
     var from=m.dataset.flowLinkFrom,to=m.dataset.flowLinkTo,a=nodes[from],b=nodes[to];if(!a||!b)return;
     var parents=incomingByTarget[to].filter(function(parent){return nodes[parent.dataset.flowLinkFrom];}).sort(function(left,right){var x=nodes[left.dataset.flowLinkFrom],y=nodes[right.dataset.flowLinkFrom];return ((x.left+x.right)/2)-((y.left+y.right)/2);});
-    var port=parents.indexOf(m),targetX=(b.left+b.right)/2,targetY=b.top;
-    if(parents.length>1){
-      targetX=b.left+(b.right-b.left)*(b.decision ? .22+.56*port/(parents.length-1) : .18+.64*port/(parents.length-1));
-      if(b.decision)targetY=b.top+Math.abs(targetX-(b.left+b.right)/2)*(b.bottom-b.top)/(b.right-b.left);
-    }
+    var targetX=(b.left+b.right)/2,targetY=b.top;
+    var mergeOwner=parents.length>1?parents.reduce(function(best,link){
+      var center=(b.left+b.right)/2,now=nodes[link.dataset.flowLinkFrom],old=nodes[best.dataset.flowLinkFrom];
+      return Math.abs((now.left+now.right)/2-center)<Math.abs((old.left+old.right)/2-center)?link:best;
+    },parents[0]):m;
     // Leave a visible straight approach so the arrowhead is not attached to
     // the horizontal turn immediately above a destination box.
     var approach=Math.max(gap*4,24*zoom);
@@ -189,7 +189,8 @@ function routeBloodBankFlow(container) {
       points=route(start,end,false,from,shareSource);
     }
     if(!points){m.dataset.routeMissing='true';return;}delete m.dataset.routeMissing;
-    points.unshift(source);points.push({x:end.x,y:targetY});
+    points.unshift(source);
+    if(m===mergeOwner)points.push({x:end.x,y:targetY});
     points=points.filter(function(p,i,all){return i===0||p.x!==all[i-1].x||p.y!==all[i-1].y;});
     var orthogonal=[];
     points.forEach(function(p){
@@ -206,12 +207,12 @@ function routeBloodBankFlow(container) {
     for(var segment=1;segment<points.length;segment++)occupied.push([points[segment-1],points[segment],from]);
     var d=points.map(function(p,i){return (i?'L ':'M ')+p.x.toFixed(2)+' '+p.y.toFixed(2);}).join(' ');
     if(m.dataset.selected==='true')html+='<path d="'+d+'" fill="none" stroke="#ffcf00" stroke-width="'+Math.max(8,2.4*zoom+7)+'" stroke-linecap="round" stroke-linejoin="round"/>';
-    html+='<path class="flow-link-path'+(m.dataset.selected==='true'?' selected':'')+'" style="stroke-width:'+Math.max(.6,2.4*zoom)+'" d="'+d+'" marker-end="url(#'+marker+')"/>';
+    html+='<path class="flow-link-path'+(m.dataset.selected==='true'?' selected':'')+'" style="stroke-width:'+Math.max(.6,2.4*zoom)+'" d="'+d+'"'+(m===mergeOwner?' marker-end="url(#'+marker+')"':'')+'/>';
     targets.push({from:from,branchId:m.dataset.branchId,points:points});
     if(m.dataset.label && m.dataset.label.toLowerCase()!=='next'){
       var best=0;for(var i=1;i<points.length;i++){if(Math.abs(points[i].x-points[i-1].x)>best){best=Math.abs(points[i].x-points[i-1].x);var labelX=(points[i].x+points[i-1].x)/2,labelY=points[i].y-5;}}
       if(a.decision&&sideDirection){labelX=source.x+sideDirection*Math.max(gap*4,32*zoom);labelY=source.y-7*zoom;}
-      else if(a.decision&&bottomBranch){labelX=source.x+22*zoom;labelY=source.y+16*zoom;}
+      else if(a.decision&&bottomBranch&&children.length===1){labelX=source.x+22*zoom;labelY=source.y+16*zoom;}
       else if(!best && points.length>1){labelX=points[0].x+14*zoom;labelY=(points[0].y+points[1].y)/2;}
       {var text=document.createElementNS('http://www.w3.org/2000/svg','text');text.setAttribute('x',labelX);text.setAttribute('y',labelY);text.setAttribute('text-anchor','middle');text.setAttribute('class','flow-route-label');text.setAttribute('style','font-size:'+(11*zoom)+'px;stroke-width:'+(4*zoom)+'px');text.textContent=m.dataset.label||'Next';html+=text.outerHTML;}
     }
