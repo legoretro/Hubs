@@ -171,7 +171,13 @@ function routeBloodBankFlow(container) {
     if(parents.length===1&&!b.decision&&Math.abs(start.x-end.x)<Math.max(28,gap*3)&&start.x>b.left+gap*2&&start.x<b.right-gap*2){targetX=end.x=start.x;}
     var shareSource=!a.decision&&children.filter(function(link){return nodes[link.dataset.flowLinkTo];}).length>1;
     var points=null;
-    if(shareSource){
+    if(parents.length>1&&m===mergeOwner&&Math.abs(start.x-end.x)<gap&&clear(start,end)){
+      // The parent directly above a merge owns its vertical spine. Other
+      // parents join that spine; they must not force it into a rectangular
+      // detour just because their route happened to be drawn first.
+      points=[start,end];
+    }
+    if(!points&&shareSource){
       // Sibling steps share a single stem and horizontal split. Each branch
       // descends separately into its destination, as in a standard flowchart.
       var nearestTop=Math.min.apply(null,children.filter(function(link){return nodes[link.dataset.flowLinkTo];}).map(function(link){return nodes[link.dataset.flowLinkTo].top;}));
@@ -190,6 +196,10 @@ function routeBloodBankFlow(container) {
     }
     if(!points)points=route(start,end,false,from,shareSource,true);
     if(!points){m.dataset.routeMissing='true';return;}delete m.dataset.routeMissing;
+    if(parents.length>1&&m!==mergeOwner&&points.length>2){
+      var owner=nodes[mergeOwner.dataset.flowLinkFrom],last=points[points.length-1],prior=points[points.length-2];
+      if(owner&&Math.abs((owner.left+owner.right)/2-targetX)<gap&&last.x===targetX&&prior.x===targetX&&prior.y>owner.bottom&&prior.y<last.y)points.pop();
+    }
     points.unshift(source);
     if(m===mergeOwner)points.push({x:end.x,y:targetY});
     points=points.filter(function(p,i,all){return i===0||p.x!==all[i-1].x||p.y!==all[i-1].y;});
