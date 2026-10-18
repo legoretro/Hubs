@@ -202,7 +202,10 @@ function routeBloodBankFlow(container) {
     // A tiny last-second elbow looks like a stray arrow. When one connector is
     // already above the destination, bring it straight into the box instead.
     if(parents.length===1&&!b.decision&&Math.abs(start.x-end.x)<Math.max(28,gap*3)&&start.x>b.left+gap*2&&start.x<b.right-gap*2){targetX=end.x=start.x;}
-    var shareSource=!a.decision&&children.filter(function(link){return nodes[link.dataset.flowLinkTo];}).length>1;
+    // Two decision branches may legitimately share their short bottom stem.
+    // Treating that stem as a collision makes a directly-below child detour
+    // around its sibling into an unnecessary M-shaped connector.
+    var shareSource=children.filter(function(link){return nodes[link.dataset.flowLinkTo];}).length>1&&(!a.decision||bottomBranch);
     var points=null;
     if(parents.length>1&&m===mergeOwner&&Math.abs(start.x-end.x)<gap&&clear(start,end)){
       // The parent directly above a merge owns its vertical spine. Other
@@ -256,7 +259,7 @@ function routeBloodBankFlow(container) {
     if(m.dataset.label && m.dataset.label.toLowerCase()!=='next'){
       var best=0;for(var i=1;i<points.length;i++){if(Math.abs(points[i].x-points[i-1].x)>best){best=Math.abs(points[i].x-points[i-1].x);var labelX=(points[i].x+points[i-1].x)/2,labelY=points[i].y-5;}}
       if(a.decision&&sideDirection){labelX=source.x+sideDirection*Math.max(gap*4,32*zoom);labelY=source.y-7*zoom;}
-      else if(a.decision&&bottomBranch){labelX=source.x+26*zoom;labelY=source.y+17*zoom;}
+      else if(a.decision&&bottomBranch&&children.length===1){labelX=source.x+26*zoom;labelY=source.y+17*zoom;}
       else if(!best && points.length>1){labelX=points[0].x+14*zoom;labelY=(points[0].y+points[1].y)/2;}
       {var text=document.createElementNS('http://www.w3.org/2000/svg','text');text.setAttribute('x',labelX);text.setAttribute('y',labelY);text.setAttribute('text-anchor','middle');text.setAttribute('class','flow-route-label'+(m.dataset.selected==='true'?' selected':''));text.setAttribute('data-flow-link-from',from);text.setAttribute('data-branch-id',m.dataset.branchId);text.setAttribute('style','font-size:'+(11*zoom)+'px;stroke-width:'+(m.dataset.selected==='true'?6*zoom:4*zoom)+'px');text.textContent=m.dataset.label||'Next';html+=text.outerHTML;}
     }
