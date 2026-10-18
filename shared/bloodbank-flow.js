@@ -18,10 +18,10 @@ function layoutBloodBankFlow(container,options){
   var queue=ids.filter(function(id){return !remaining[id];});
   for(var q=0;q<queue.length;q++){var id=queue[q];ids.forEach(function(to){if(incoming[to].indexOf(id)<0)return;rank[to]=Math.max(rank[to],rank[id]+1);remaining[to]--;if(!remaining[to])queue.push(to);});}
   var rows=[];ids.forEach(function(id){(rows[rank[id]]||(rows[rank[id]]=[])).push(id);});
-  var center={},anchor={},sizes={},width=0;
+  var center={},anchor={},sizes={},width=0,orderedPairChild={};
   ids.forEach(function(id){var el=elements[id];el.style.left='0';el.style.top='0';var r=el.getBoundingClientRect();sizes[id]={width:Math.max(r.width,240),height:Math.max(r.height,62)};});
   var pitch=Math.max.apply(null,ids.map(function(id){return sizes[id].width;}))+horizontalGap;
-  rows.forEach(function(row){
+  rows.forEach(function(row,rowIndex){
     row.forEach(function(id){
       var parents=incoming[id];
       if(!parents.length){anchor[id]=center[id]=row.indexOf(id)*pitch;return;}
@@ -31,6 +31,17 @@ function layoutBloodBankFlow(container,options){
         var siblings=out[parents[0]].filter(function(to){return rank[to]===rank[id]&&incoming[to].length===1;});
         center[id]+=(siblings.indexOf(id)-(siblings.length-1)/2)*pitch;
       }
+    });
+    // Branch order is an explicit left-to-right choice. It must also apply
+    // when one of the two children is shared with another parent; the normal
+    // single-parent sibling offset does not cover that case.
+    if(rowIndex>0)rows[rowIndex-1].forEach(function(parent){
+      var pair=out[parent].filter(function(to){return rank[to]===rowIndex;});
+      if(pair.length!==2)return;
+      var midpoint=(center[pair[0]]+center[pair[1]])/2;
+      center[pair[0]]=anchor[pair[0]]=midpoint-pitch/2;
+      center[pair[1]]=anchor[pair[1]]=midpoint+pitch/2;
+      orderedPairChild[pair[0]]=orderedPairChild[pair[1]]=true;
     });
     // Match each row's order to its incoming connections before spacing boxes.
     // Otherwise independent links can be forced to cross between two rows.
@@ -68,7 +79,7 @@ function layoutBloodBankFlow(container,options){
       if(!parents.length)return;
       var parentShift=parents.reduce(function(sum,parent){return sum+center[parent]-previousCenter[parent];},0)/parents.length;
       center[id]+=parentShift;
-      if(parents.length>1){
+      if(parents.length>1&&!orderedPairChild[id]){
         var positions=parents.map(function(parent){return center[parent];});
         var spread=Math.max.apply(null,positions)-Math.min.apply(null,positions);
         var middle=positions.reduce(function(sum,x){return sum+x;},0)/positions.length;
@@ -245,9 +256,9 @@ function routeBloodBankFlow(container) {
     if(m.dataset.label && m.dataset.label.toLowerCase()!=='next'){
       var best=0;for(var i=1;i<points.length;i++){if(Math.abs(points[i].x-points[i-1].x)>best){best=Math.abs(points[i].x-points[i-1].x);var labelX=(points[i].x+points[i-1].x)/2,labelY=points[i].y-5;}}
       if(a.decision&&sideDirection){labelX=source.x+sideDirection*Math.max(gap*4,32*zoom);labelY=source.y-7*zoom;}
-      else if(a.decision&&bottomBranch&&children.length===1){labelX=source.x+22*zoom;labelY=source.y+16*zoom;}
+      else if(a.decision&&bottomBranch){labelX=source.x+26*zoom;labelY=source.y+17*zoom;}
       else if(!best && points.length>1){labelX=points[0].x+14*zoom;labelY=(points[0].y+points[1].y)/2;}
-      {var text=document.createElementNS('http://www.w3.org/2000/svg','text');text.setAttribute('x',labelX);text.setAttribute('y',labelY);text.setAttribute('text-anchor','middle');text.setAttribute('class','flow-route-label');text.setAttribute('style','font-size:'+(11*zoom)+'px;stroke-width:'+(4*zoom)+'px');text.textContent=m.dataset.label||'Next';html+=text.outerHTML;}
+      {var text=document.createElementNS('http://www.w3.org/2000/svg','text');text.setAttribute('x',labelX);text.setAttribute('y',labelY);text.setAttribute('text-anchor','middle');text.setAttribute('class','flow-route-label'+(m.dataset.selected==='true'?' selected':''));text.setAttribute('data-flow-link-from',from);text.setAttribute('data-branch-id',m.dataset.branchId);text.setAttribute('style','font-size:'+(11*zoom)+'px;stroke-width:'+(m.dataset.selected==='true'?6*zoom:4*zoom)+'px');text.textContent=m.dataset.label||'Next';html+=text.outerHTML;}
     }
   });
   layer.innerHTML=html;return targets;

@@ -358,6 +358,8 @@ textarea{resize:none;overflow:hidden}
 .flow-canvas{border:1px solid var(--rose);border-radius:18px;background:linear-gradient(180deg,#fff,#fff7f9);height:calc(100vh - 250px);min-height:560px;max-height:760px;padding:18px;overflow:auto;scroll-padding:150px 24px 210px;-webkit-overflow-scrolling:touch}
 #flowchartPreview{position:relative;min-width:max-content}
 .flow-link-layer{position:absolute;left:0;top:0;z-index:0;pointer-events:none;overflow:visible}
+.flow-link-layer .flow-route-label{pointer-events:all;cursor:pointer}
+.flow-link-layer .flow-route-label.selected{stroke:#ffcf00;stroke-width:6px;paint-order:stroke}
 .flow-link-path{fill:none;stroke:var(--crimson);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:7 5;opacity:.86;pointer-events:none}
 .flow-link-path.selected{stroke-width:4;opacity:1;filter:drop-shadow(0 0 3px rgba(192,23,61,.22))}
 .flow-tree{position:relative;z-index:1;display:flex;justify-content:center;min-width:max-content;padding:8px 22px 220px}
@@ -1022,7 +1024,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="shared/pdf-export.js?v=20260605-export-fit"></script>
 <script src="safe-supabase-sync.js"></script>
-<script src="shared/bloodbank-flow.js?v=20261017-color-routes-25"></script>
+<script src="shared/bloodbank-flow.js?v=20261017-color-routes-26"></script>
 <script>
 // ============================================================
 // CONFIG - SUPABASE + PASSWORD
@@ -2577,6 +2579,11 @@ function isFlowEditableTarget(target) {
 
 function handleFlowPreviewClick(event) {
   if (!isAdmin || !event) return;
+  const routeLabel = event.target && event.target.closest && event.target.closest('.flow-route-label[data-branch-id]');
+  if (routeLabel) {
+    selectFlowConnectionLine(routeLabel.dataset.flowLinkFrom, routeLabel.dataset.branchId);
+    return;
+  }
   if (isFlowEditableTarget(event.target)) return;
   const preview = document.getElementById('flowchartPreview');
   if (!preview) return;
@@ -2698,10 +2705,12 @@ function renderFlowSelectionPanel(data) {
   data = normalizeFlowchartData(data || getFlowchartData());
   const selectedConnection = getFlowSelectedConnection(data);
   if (selectedConnection) {
+    const canSwap = (selectedConnection.parent.branches || []).filter(function(branch){return data.nodes[branch.to];}).length === 2;
     panel.innerHTML =
       '<div class="flow-selected-title">Current selected<strong>Line: ' + escText(selectedConnection.parent.text || 'Box') + ' -> ' + escText(selectedConnection.target.text || 'Box') + '</strong></div>' +
       '<label class="flow-control">Arrow label<select class="flow-select" onchange="setSelectedArrowLabel(this.value)">' + flowOptionHtml(['Next','Yes','No','Negative','Positive'],['No label','Yes','No','Negative','Positive'],selectedConnection.branch.label || 'Next') + '</select></label>' +
       '<div class="flow-action-group">' +
+        (canSwap ? '<button class="flow-tool-btn" onclick="swapSelectedFlowBranches()">Swap left / right branches</button>' : '') +
         '<button class="flow-tool-btn" onclick="insertFlowBox(\'arrow\')">Insert box here</button>' +
         '<button class="flow-tool-btn" onclick="deleteSelectedFlowConnectionLine()">Delete line</button>' +
         '<button class="flow-tool-btn" onclick="clearFlowConnectionSelection()">Cancel</button>' +
@@ -2710,6 +2719,7 @@ function renderFlowSelectionPanel(data) {
   }
   const node = getFlowSelectedNode(data);
   if (!node) { panel.innerHTML = ''; return; }
+  const canSwapBranches = (node.branches || []).filter(function(branch){return data.nodes[branch.to];}).length === 2;
   const shapeValues = ['step','question','terminal','plain'];
   const shapeLabels = ['Step','Question','Oval','Plain'];
   const addLabels = ['Next','Yes','No','Negative','Positive'];
@@ -2726,6 +2736,7 @@ function renderFlowSelectionPanel(data) {
     '<label class="flow-control">New<select class="flow-select" id="flowAddShape">' + flowOptionHtml(shapeValues, shapeLabels, 'step') + '</select></label>' +
     '<div class="flow-action-group">' +
       '<button class="flow-tool-btn primary" onclick="addFlowBranchToSelected()">Add branch</button>' +
+      (canSwapBranches ? '<button class="flow-tool-btn" onclick="swapSelectedFlowBranches()">Swap left / right branches</button>' : '') +
       '<button class="flow-tool-btn" onclick="insertFlowBox(\'before\')">Insert before</button>' +
       '<button class="flow-tool-btn" onclick="insertFlowBox(\'after\')">Insert after</button>' +
       '<button class="flow-tool-btn" onclick="duplicateSelectedFlowNode()">Duplicate box</button>' +
@@ -2738,6 +2749,16 @@ function renderFlowSelectionPanel(data) {
 }
 
 function setSelectedArrowLabel(value){var c=getFlowSelectedConnection(getFlowchartData());if(c){updateFlowBranchLabel(c.parent.id,c.branch.id,value);drawFlowLinkLines(getFlowchartData());}}
+function swapSelectedFlowBranches() {
+  if (!isAdmin) return;
+  const data = getFlowchartData();
+  const id = flowSelectedLink ? flowSelectedLink.from : flowSelectedNodeId;
+  const node = id && data.nodes[id];
+  if (!node || (node.branches || []).filter(function(branch){return data.nodes[branch.to];}).length !== 2) return;
+  node.branches.reverse();
+  saveFlowchartData(data, true);
+  showToast('Left and right branches swapped');
+}
 function selectFlowNode(id) {
   if (!isAdmin) return;
   const data = getFlowchartData();
