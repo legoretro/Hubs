@@ -91,12 +91,12 @@ function routeBloodBankFlow(container) {
     }
     return true;
   }
-  function route(start,end,join,from,shareSource){
+  function route(start,end,join,from,shareSource,allowCross){
     var bus={x:start.x,y:end.y};if(join&&end.y>start.y&&clear(start,bus)&&clear(bus,end))return [start,bus,end];
     // Prefer a single elbow when the direct corridor is open. Searching for
     // intermediate lanes first creates a needless short outward/backward jog.
     var direct={x:end.x,y:start.y};
-    if(end.y>start.y&&clear(start,direct)&&clear(direct,end))return [start,direct,end];
+    if(end.y>start.y&&clear(start,direct)&&clear(direct,end)&&(allowCross||separate([start,direct,end],from,shareSource)))return [start,direct,end];
     var middle=(start.y+end.y)/2,p1={x:start.x,y:middle},p2={x:end.x,y:middle};
     if(end.y>start.y){
       var lanes=[middle],step=Math.max(gap*1.5,12),count=Math.floor((end.y-start.y)/2/step);
@@ -104,11 +104,11 @@ function routeBloodBankFlow(container) {
       for(var laneIndex=0;laneIndex<lanes.length;laneIndex++){
         p1={x:start.x,y:lanes[laneIndex]};p2={x:end.x,y:lanes[laneIndex]};
         var candidate=[start,p1,p2,end];
-        if(clear(start,p1)&&clear(p1,p2)&&clear(p2,end)&&separate(candidate,from,shareSource))return candidate;
+        if(clear(start,p1)&&clear(p1,p2)&&clear(p2,end)&&(allowCross||separate(candidate,from,shareSource)))return candidate;
       }
     }
-    if(clear(start,{x:start.x,y:end.y})&&clear({x:start.x,y:end.y},end))return [start,{x:start.x,y:end.y},end];
-    if(clear(start,{x:end.x,y:start.y})&&clear({x:end.x,y:start.y},end))return [start,{x:end.x,y:start.y},end];
+    if(clear(start,{x:start.x,y:end.y})&&clear({x:start.x,y:end.y},end)&&(allowCross||separate([start,{x:start.x,y:end.y},end],from,shareSource)))return [start,{x:start.x,y:end.y},end];
+    if(clear(start,{x:end.x,y:start.y})&&clear({x:end.x,y:start.y},end)&&(allowCross||separate([start,{x:end.x,y:start.y},end],from,shareSource)))return [start,{x:end.x,y:start.y},end];
     var xs=[start.x,end.x,gap],ys=[start.y,end.y,gap];
     obstacles.forEach(function(r){xs.push(r.left-gap,r.right+gap);ys.push(r.top-gap,r.bottom+gap);});
     xs=Array.from(new Set(xs)).sort(function(a,b){return a-b;});ys=Array.from(new Set(ys)).sort(function(a,b){return a-b;});
@@ -124,7 +124,7 @@ function routeBloodBankFlow(container) {
       if(id===endId){var path=[];for(var k=key;k!==undefined;k=previous.get(k))path.push(point(Math.floor(k/3)));return path.reverse();}
       var x=id%nx,y=Math.floor(id/nx),a=point(id),neighbors=[];
       if(x>0)neighbors.push([id-1,1]);if(x+1<nx)neighbors.push([id+1,1]);if(y>0)neighbors.push([id-nx,2]);if(y+1<ny)neighbors.push([id+nx,2]);
-      neighbors.forEach(function(next){var b=point(next[0]);if(!clear(a,b))return;var nk=next[0]*3+next[1],cost=current.cost+Math.abs(a.x-b.x)+Math.abs(a.y-b.y)+(dir&&dir!==next[1]?gap*2:0);if(cost>=(costs.has(nk)?costs.get(nk):Infinity))return;costs.set(nk,cost);previous.set(nk,key);push({key:nk,cost:cost,score:cost+Math.abs(end.x-b.x)+Math.abs(end.y-b.y)});});
+      neighbors.forEach(function(next){var b=point(next[0]);if(!clear(a,b)||(!allowCross&&!separate([a,b],from,shareSource)))return;var nk=next[0]*3+next[1],cost=current.cost+Math.abs(a.x-b.x)+Math.abs(a.y-b.y)+(dir&&dir!==next[1]?gap*2:0);if(cost>=(costs.has(nk)?costs.get(nk):Infinity))return;costs.set(nk,cost);previous.set(nk,key);push({key:nk,cost:cost,score:cost+Math.abs(end.x-b.x)+Math.abs(end.y-b.y)});});
     }
     return null;
   }
@@ -178,7 +178,7 @@ function routeBloodBankFlow(container) {
       var busY=a.bottom+(nearestTop-a.bottom-approach)/2;
       if(busY>start.y+gap&&busY<end.y-gap){
         var busStart={x:start.x,y:busY},busEnd={x:end.x,y:busY};
-        if(clear(start,busStart)&&clear(busStart,busEnd)&&clear(busEnd,end))points=[start,busStart,busEnd,end];
+        if(clear(start,busStart)&&clear(busStart,busEnd)&&clear(busEnd,end)&&separate([start,busStart,busEnd,end],from,shareSource))points=[start,busStart,busEnd,end];
       }
     }
     if(!points)points=route(start,end,false,from,shareSource);
@@ -188,6 +188,7 @@ function routeBloodBankFlow(container) {
       sideDirection=0;source={x:(a.left+a.right)/2,y:a.bottom};start={x:source.x,y:source.y+gap};
       points=route(start,end,false,from,shareSource);
     }
+    if(!points)points=route(start,end,false,from,shareSource,true);
     if(!points){m.dataset.routeMissing='true';return;}delete m.dataset.routeMissing;
     points.unshift(source);
     if(m===mergeOwner)points.push({x:end.x,y:targetY});
