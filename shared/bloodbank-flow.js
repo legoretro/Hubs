@@ -2,10 +2,11 @@
 function layoutBloodBankFlow(container,options){
   options=options||{};
   var compact=options.compact===true;
-  var horizontalGap=compact?54:78;
-  var verticalGap=compact?76:102;
-  var topInset=compact?18:35;
-  var sideInset=compact?20:50;
+  var print=options.print===true;
+  var horizontalGap=print?24:(compact?54:78);
+  var verticalGap=print?44:(compact?76:102);
+  var topInset=print?8:(compact?18:35);
+  var sideInset=print?8:(compact?20:50);
   var stage=container.querySelector('.flow-tree');if(!stage)return;
   var oldZoom=stage.style.zoom;stage.style.zoom='1';
   var ids=[],elements={},out={},incoming={},rank={},gray={},done={};
@@ -47,7 +48,7 @@ function layoutBloodBankFlow(container,options){
     // Otherwise independent links can be forced to cross between two rows.
     row.sort(function(a,b){return anchor[a]-anchor[b]||center[a]-center[b]||ids.indexOf(a)-ids.indexOf(b);});
     var wanted=row.reduce(function(sum,id){return sum+center[id];},0)/row.length;
-    var rightEdge=-Infinity,rowGap=compact?18:24;
+    var rightEdge=-Infinity,rowGap=print?10:(compact?18:24);
     row.forEach(function(id){
       var left=center[id]-sizes[id].width/2;
       if(left<rightEdge+rowGap)center[id]+=rightEdge+rowGap-left;
@@ -59,7 +60,7 @@ function layoutBloodBankFlow(container,options){
   // Center a parent over its immediate children. A one-child chain becomes a
   // straight vertical line; siblings form a balanced split under one stem.
   for(var rowIndex=rows.length-2;rowIndex>=0;rowIndex--){
-    var upper=rows[rowIndex],upperGap=compact?18:24;
+    var upper=rows[rowIndex],upperGap=print?10:(compact?18:24);
     upper.forEach(function(id){
       var children=out[id].filter(function(to){return rank[to]===rowIndex+1;});
       if(children.length)center[id]=children.reduce(function(sum,to){return sum+center[to];},0)/children.length;
@@ -73,7 +74,7 @@ function layoutBloodBankFlow(container,options){
   // down its chain and push neighboring boxes aside rather than overlapping.
   var previousCenter={};ids.forEach(function(id){previousCenter[id]=center[id];});
   for(var layer=1;layer<rows.length;layer++){
-    var layerRow=rows[layer],layerGap=compact?18:24;
+    var layerRow=rows[layer],layerGap=print?10:(compact?18:24);
     layerRow.forEach(function(id){
       var parents=incoming[id].filter(function(parent){return rank[parent]<layer;});
       if(!parents.length)return;
@@ -93,7 +94,7 @@ function layoutBloodBankFlow(container,options){
   var minX=Math.min.apply(null,ids.map(function(id){return center[id]-sizes[id].width/2;}));
   var y=topInset;
   rows.forEach(function(row){var h=0;row.forEach(function(id){var el=elements[id],x=center[id]-sizes[id].width/2-minX+sideInset;el.style.left=x+'px';el.style.top=y+'px';width=Math.max(width,x+sizes[id].width+sideInset);h=Math.max(h,sizes[id].height);});y+=h+verticalGap;});
-  stage.style.width=width+'px';stage.style.height=(y-topInset)+'px';stage.style.zoom=oldZoom;
+  stage.style.width=width+'px';stage.style.height=(print?y-verticalGap+sideInset:y-topInset)+'px';stage.style.zoom=oldZoom;
 }
 
 /* Orthogonal connectors shared by the editor and standalone PDF export. */
@@ -104,7 +105,8 @@ function routeBloodBankFlow(container) {
   var pageScale=origin.width/Math.max(container.offsetWidth,1);
   if(!isFinite(pageScale)||pageScale<=0)pageScale=1;
   var zoom=parseFloat(getComputedStyle(container.querySelector('.flow-tree')).zoom)||1;
-  var gap=Math.max(3,10*zoom);
+  var printExport=container.classList.contains('flow-export-wrap');
+  var gap=printExport?Math.max(2,6*zoom):Math.max(3,10*zoom);
   function rect(el){var r=el.getBoundingClientRect();return {left:(r.left-origin.left)/pageScale,right:(r.right-origin.left)/pageScale,top:(r.top-origin.top)/pageScale,bottom:(r.bottom-origin.top)/pageScale};}
   container.querySelectorAll('[data-flow-node-id]').forEach(function(el){nodes[el.dataset.flowNodeId]=rect(el);nodes[el.dataset.flowNodeId].decision=el.classList.contains('question');});
   var obstacles=Array.from(container.querySelectorAll('.flow-node,.flow-note-card')).map(function(el){var r=rect(el);return {left:r.left-gap/2,right:r.right+gap/2,top:r.top-gap/2,bottom:r.bottom+gap/2};});
@@ -179,10 +181,10 @@ function routeBloodBankFlow(container) {
     },parents[0]):m;
     // Leave a visible straight approach so the arrowhead is not attached to
     // the horizontal turn immediately above a destination box.
-    var approach=Math.max(gap*4,24*zoom);
+    var approach=printExport?Math.max(gap*3,12*zoom):Math.max(gap*4,24*zoom);
     var source={x:(a.left+a.right)/2,y:a.bottom},start={x:(a.left+a.right)/2,y:a.bottom+gap},end={x:targetX,y:b.top-approach},sideDirection=0;
     var children=outgoingBySource[from]||[];
-    var bottomBranch=a.decision&&children.length===1&&Math.abs(end.x-start.x)<(a.right-a.left)*.35;
+    var bottomBranch=a.decision&&(children.length===2||(children.length===1&&Math.abs(end.x-start.x)<(a.right-a.left)*.35));
     if(a.decision&&!bottomBranch&&(children.length>1||Math.abs(end.x-start.x)>(a.right-a.left)*.35)){
       sideDirection=end.x<start.x?-1:1;
       source={x:sideDirection<0?a.left:a.right,y:(a.top+a.bottom)/2};
@@ -257,11 +259,24 @@ function routeBloodBankFlow(container) {
     html+='<path class="flow-link-path'+(m.dataset.selected==='true'?' selected':'')+'" style="stroke-width:'+Math.max(.6,2.4*zoom)+'" d="'+d+'"'+(m===mergeOwner?' marker-end="url(#'+marker+')"':'')+'/>';
     targets.push({from:from,branchId:m.dataset.branchId,points:points});
     if(m.dataset.label && m.dataset.label.toLowerCase()!=='next'){
-      var best=0;for(var i=1;i<points.length;i++){if(Math.abs(points[i].x-points[i-1].x)>best){best=Math.abs(points[i].x-points[i-1].x);var labelX=(points[i].x+points[i-1].x)/2,labelY=points[i].y-5;}}
-      if(a.decision&&sideDirection){labelX=source.x+sideDirection*Math.max(gap*4,32*zoom);labelY=source.y-7*zoom;}
-      else if(a.decision&&bottomBranch&&children.length===1){labelX=source.x+26*zoom;labelY=source.y+17*zoom;}
-      else if(!best && points.length>1){labelX=points[0].x+14*zoom;labelY=(points[0].y+points[1].y)/2;}
-      {var text=document.createElementNS('http://www.w3.org/2000/svg','text');text.setAttribute('x',labelX);text.setAttribute('y',labelY);text.setAttribute('text-anchor','middle');text.setAttribute('class','flow-route-label'+(m.dataset.selected==='true'?' selected':''));text.setAttribute('data-flow-link-from',from);text.setAttribute('data-branch-id',m.dataset.branchId);text.setAttribute('style','font-size:'+(11*zoom)+'px;stroke-width:'+(m.dataset.selected==='true'?6*zoom:4*zoom)+'px');text.textContent=m.dataset.label||'Next';html+=text.outerHTML;}
+      var labelSize=container.classList.contains('flow-export-wrap')?Math.max(16,11*zoom):11*zoom;
+      var labelWidth=Math.max(labelSize*2,m.dataset.label.length*labelSize*.64+8*zoom);
+      var bestHorizontal=0,bestVertical=0,labelX=source.x,labelY=source.y;
+      for(var i=1;i<points.length;i++){
+        var horizontal=Math.abs(points[i].x-points[i-1].x),vertical=Math.abs(points[i].y-points[i-1].y);
+        if(horizontal>bestHorizontal){bestHorizontal=horizontal;labelX=(points[i].x+points[i-1].x)/2;labelY=points[i].y+labelSize*.35;}
+        if(vertical>bestVertical)bestVertical=vertical;
+      }
+      if(bestHorizontal<labelWidth+6*zoom){
+        for(var i=1;i<points.length;i++)if(Math.abs(points[i].y-points[i-1].y)===bestVertical){labelX=points[i].x;labelY=(points[i].y+points[i-1].y)/2+labelSize*.35;break;}
+      }
+      var background=document.createElementNS('http://www.w3.org/2000/svg','rect');
+      background.setAttribute('x',labelX-labelWidth/2);background.setAttribute('y',labelY-labelSize*.85-2*zoom);
+      background.setAttribute('width',labelWidth);background.setAttribute('height',labelSize+4*zoom);
+      background.setAttribute('rx',2*zoom);background.setAttribute('class','flow-route-label-bg');
+      background.setAttribute('fill','#fff');
+      html+=background.outerHTML;
+      var text=document.createElementNS('http://www.w3.org/2000/svg','text');text.setAttribute('x',labelX);text.setAttribute('y',labelY);text.setAttribute('text-anchor','middle');text.setAttribute('class','flow-route-label'+(m.dataset.selected==='true'?' selected':''));text.setAttribute('data-flow-link-from',from);text.setAttribute('data-branch-id',m.dataset.branchId);text.setAttribute('style','font-size:'+labelSize+'px;stroke-width:'+(m.dataset.selected==='true'?6*zoom:Math.max(3,4*zoom))+'px');text.textContent=m.dataset.label||'Next';html+=text.outerHTML;
     }
   });
   layer.innerHTML=html;return targets;
