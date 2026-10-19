@@ -3,8 +3,8 @@ function layoutBloodBankFlow(container,options){
   options=options||{};
   var compact=options.compact===true;
   var print=options.print===true;
-  var horizontalGap=print?24:(compact?86:126);
-  var verticalGap=print?44:(compact?104:146);
+  var horizontalGap=print?40:(compact?86:126);
+  var verticalGap=print?56:(compact?104:146);
   var topInset=print?8:(compact?18:35);
   var sideInset=print?8:(compact?20:50);
   var stage=container.querySelector('.flow-tree');if(!stage)return;
@@ -48,7 +48,7 @@ function layoutBloodBankFlow(container,options){
     // Otherwise independent links can be forced to cross between two rows.
     row.sort(function(a,b){return anchor[a]-anchor[b]||center[a]-center[b]||ids.indexOf(a)-ids.indexOf(b);});
     var wanted=row.reduce(function(sum,id){return sum+center[id];},0)/row.length;
-    var rightEdge=-Infinity,rowGap=print?10:(compact?24:34);
+    var rightEdge=-Infinity,rowGap=print?14:(compact?24:34);
     row.forEach(function(id){
       var left=center[id]-sizes[id].width/2;
       if(left<rightEdge+rowGap)center[id]+=rightEdge+rowGap-left;
@@ -60,7 +60,7 @@ function layoutBloodBankFlow(container,options){
   // Center a parent over its immediate children. A one-child chain becomes a
   // straight vertical line; siblings form a balanced split under one stem.
   for(var rowIndex=rows.length-2;rowIndex>=0;rowIndex--){
-    var upper=rows[rowIndex],upperGap=print?10:(compact?24:34);
+    var upper=rows[rowIndex],upperGap=print?14:(compact?24:34);
     upper.forEach(function(id){
       var children=out[id].filter(function(to){return rank[to]===rowIndex+1;});
       if(children.length)center[id]=children.reduce(function(sum,to){return sum+center[to];},0)/children.length;
@@ -74,7 +74,7 @@ function layoutBloodBankFlow(container,options){
   // down its chain and push neighboring boxes aside rather than overlapping.
   var previousCenter={};ids.forEach(function(id){previousCenter[id]=center[id];});
   for(var layer=1;layer<rows.length;layer++){
-    var layerRow=rows[layer],layerGap=print?10:(compact?24:34);
+    var layerRow=rows[layer],layerGap=print?14:(compact?24:34);
     layerRow.forEach(function(id){
       var parents=incoming[id].filter(function(parent){return rank[parent]<layer;});
       if(!parents.length)return;
