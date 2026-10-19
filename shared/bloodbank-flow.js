@@ -209,12 +209,8 @@ function routeBloodBankFlow(container) {
         start={x:source.x,y:source.y+gap};
       }else start={x:source.x+sideDirection*gap,y:source.y};
     }
-    if(sideDirection&&!clear(start,{x:end.x,y:start.y})){
-      // A neighboring box blocks the simple side-to-down L. Leave from the
-      // lower diamond point instead of drawing a short stair-step around it.
-      sideDirection=0;bottomBranch=true;source={x:(a.left+a.right)/2,y:a.bottom};
-      start={x:source.x,y:source.y+gap};
-    }
+    // A box beside a diamond can block the first horizontal segment. Keep
+    // the side exit and let the router turn below that box before crossing.
     // A tiny last-second elbow looks like a stray arrow. When one connector is
     // already above the destination, bring it straight into the box instead.
     if(parents.length===1&&!b.decision&&Math.abs(start.x-end.x)<Math.max(28,gap*3)&&start.x>b.left+gap*2&&start.x<b.right-gap*2){targetX=end.x=start.x;}

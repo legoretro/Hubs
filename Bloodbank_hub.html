@@ -614,6 +614,10 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 #personalAntigram .personal-antigram-table th.ag-ahg-col{background:#f4c5d2!important;color:#5a0e20!important;border-left:2px solid #c0173d!important}
 #personalAntigram .personal-antigram-table td.ag-ahg-col{background:#fde8ee!important;color:#5a0e20;font-weight:800;border-left:2px solid #efb8c8!important}
 #personalAntigram .personal-antigram-table .screen-row td.ag-ahg-col{background:#f9d2de!important}
+#personalAntigram .ag-blue{color:#1766b1}
+#personalAntigram .antigram-group-screen .ag-ruled{box-shadow:inset 2px 0 #1766b1,inset -2px 0 #1766b1}
+#personalAntigram .antigram-group-screen .ag-ruled .ag-ledger{outline:2px solid #1766b1}
+#personalAntigram .antigram-group-screen tr:last-child .ag-ruled{border-bottom:2px solid #1766b1}
 #personalAntigram .personal-antigram-table input.ag-reaction-input{appearance:none;display:block;box-sizing:border-box;min-width:0;width:100%;height:32px;padding:4px 0;border:0;border-radius:0;background:transparent;color:inherit;text-align:center;font:inherit;font-weight:700;line-height:1;outline-offset:-2px}
 #personalAntigram .personal-antigram-table input.ag-reaction-input.is-filled:not(:focus){background:#fff9e6}
 #personalAntigram .personal-antigram-table input.ag-reaction-input:focus{background:#fff4bd;box-shadow:inset 0 0 0 2px #ffcf00;outline:0}
@@ -1029,7 +1033,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="shared/pdf-export.js?v=20260605-export-fit"></script>
 <script src="safe-supabase-sync.js"></script>
-<script src="shared/bloodbank-flow.js?v=20261019-clearer-routes-37"></script>
+<script src="shared/bloodbank-flow.js?v=20261019-side-exits-38"></script>
 <script>
 // ============================================================
 // CONFIG - SUPABASE + PASSWORD
@@ -9630,6 +9634,6 @@ function checkABOAnswer(answer) {
   document.getElementById('aboContent').querySelector('.sys-card:last-child').appendChild(nb);
 }
 </script>
-<script src="shared/bloodbank-antigram.js?v=20261016-answer-access"></script>
+<script src="shared/bloodbank-antigram.js?v=20261019-screen-blue-crossouts"></script>
 </body>
 </html>
