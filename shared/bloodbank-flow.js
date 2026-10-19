@@ -170,7 +170,7 @@ function routeBloodBankFlow(container) {
   var marker='flow-arrow-'+(container.dataset.routeId||(container.dataset.routeId=Math.random().toString(36).slice(2)));
   var markerSize=printExport?7:10.5;
   var html='<defs><marker id="'+marker+'" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="'+markerSize+'" markerHeight="'+markerSize+'" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#c0173d"/></marker></defs>';
-  var links=Array.from(container.querySelectorAll('.flow-link-marker')),incomingByTarget={},outgoingBySource={},placedLabels=[];
+  var links=Array.from(container.querySelectorAll('.flow-link-marker')),incomingByTarget={},outgoingBySource={},placedLabels=[],labelBackgrounds=[],labelTexts=[];
   links.forEach(function(m){var to=m.dataset.flowLinkTo,from=m.dataset.flowLinkFrom,parents=incomingByTarget[to]||(incomingByTarget[to]=[]),children=outgoingBySource[from]||(outgoingBySource[from]=[]);parents.push(m);children.push(m);});
   links.forEach(function(m){
     var from=m.dataset.flowLinkFrom,to=m.dataset.flowLinkTo,a=nodes[from],b=nodes[to];if(!a||!b)return;
@@ -185,7 +185,20 @@ function routeBloodBankFlow(container) {
     var approach=printExport?Math.max(gap*3,12*zoom):Math.max(gap*4,24*zoom);
     var source={x:(a.left+a.right)/2,y:a.bottom},start={x:(a.left+a.right)/2,y:a.bottom+gap},end={x:targetX,y:b.top-approach},sideDirection=0;
     var children=outgoingBySource[from]||[];
-    var bottomBranch=a.decision&&(children.length===2||(children.length===1&&Math.abs(end.x-start.x)<(a.right-a.left)*.35));
+    var bottomBranch=false;
+    if(a.decision&&children.length===2){
+      var otherLink=children.find(function(link){return link!==m&&nodes[link.dataset.flowLinkTo];});
+      var otherNode=otherLink&&nodes[otherLink.dataset.flowLinkTo];
+      var myOffset=end.x-start.x,otherOffset=otherNode?(otherNode.left+otherNode.right)/2-start.x:0;
+      var straightLimit=(a.right-a.left)*.35;
+      // A child directly below the diamond uses its lower point; its sibling
+      // leaves from the diamond's side. Opposite branches each use a side.
+      bottomBranch=Math.abs(myOffset)<straightLimit&&Math.abs(otherOffset)>=straightLimit;
+      if(Math.abs(myOffset)<straightLimit&&Math.abs(otherOffset)<straightLimit)bottomBranch=true;
+      if(myOffset*otherOffset>0&&Math.abs(myOffset)<Math.abs(otherOffset))bottomBranch=true;
+    }else if(a.decision&&children.length===1){
+      bottomBranch=Math.abs(end.x-start.x)<(a.right-a.left)*.35;
+    }
     if(a.decision&&!bottomBranch&&(children.length>1||Math.abs(end.x-start.x)>(a.right-a.left)*.35)){
       sideDirection=end.x<start.x?-1:1;
       source={x:sideDirection<0?a.left:a.right,y:(a.top+a.bottom)/2};
@@ -205,10 +218,9 @@ function routeBloodBankFlow(container) {
     // A tiny last-second elbow looks like a stray arrow. When one connector is
     // already above the destination, bring it straight into the box instead.
     if(parents.length===1&&!b.decision&&Math.abs(start.x-end.x)<Math.max(28,gap*3)&&start.x>b.left+gap*2&&start.x<b.right-gap*2){targetX=end.x=start.x;}
-    // Two decision branches may legitimately share their short bottom stem.
-    // Treating that stem as a collision makes a directly-below child detour
-    // around its sibling into an unnecessary M-shaped connector.
-    var shareSource=children.filter(function(link){return nodes[link.dataset.flowLinkTo];}).length>1&&(!a.decision||bottomBranch);
+    // Decision answers use independent ports. Only ordinary steps share a
+    // stem and split bus.
+    var shareSource=children.filter(function(link){return nodes[link.dataset.flowLinkTo];}).length>1&&!a.decision;
     var points=null,mergeBus=false;
     if(parents.length>1&&!sideDirection){
       // Join two downward paths on one horizontal bus, then enter the next
@@ -297,6 +309,8 @@ function routeBloodBankFlow(container) {
       var chosen=null,bestScore=Infinity;
       candidates.forEach(function(candidate){
         var box=labelBox(candidate),score=0;
+        var needed=candidate.horizontal?labelWidth+8*zoom:labelSize+8*zoom;
+        score+=Math.max(0,needed-candidate.length)*100;
         if(box.left<2||box.right>width-2||box.top<2||box.bottom>height-2)score+=100000;
         obstacles.forEach(function(node){score+=boxOverlap(box,node)*10;});
         placedLabels.forEach(function(other){score+=boxOverlap(box,other)*20;});
@@ -311,9 +325,9 @@ function routeBloodBankFlow(container) {
       background.setAttribute('width',labelWidth);background.setAttribute('height',labelSize+4*zoom);
       background.setAttribute('rx',2*zoom);background.setAttribute('class','flow-route-label-bg');
       background.setAttribute('fill','#fff');
-      html+=background.outerHTML;
-      var text=document.createElementNS('http://www.w3.org/2000/svg','text');text.setAttribute('x',labelX);text.setAttribute('y',labelY);text.setAttribute('text-anchor','middle');text.setAttribute('class','flow-route-label'+(m.dataset.selected==='true'?' selected':''));text.setAttribute('data-flow-link-from',from);text.setAttribute('data-branch-id',m.dataset.branchId);text.setAttribute('style','font-size:'+labelSize+'px;stroke-width:'+(printExport?0:(m.dataset.selected==='true'?6*zoom:Math.max(3,4*zoom)))+'px');text.textContent=m.dataset.label||'Next';html+=text.outerHTML;
+      labelBackgrounds.push(background.outerHTML);
+      var text=document.createElementNS('http://www.w3.org/2000/svg','text');text.setAttribute('x',labelX);text.setAttribute('y',labelY);text.setAttribute('text-anchor','middle');text.setAttribute('class','flow-route-label'+(m.dataset.selected==='true'?' selected':''));text.setAttribute('data-flow-link-from',from);text.setAttribute('data-branch-id',m.dataset.branchId);text.setAttribute('style','font-size:'+labelSize+'px;stroke-width:'+(printExport?0:(m.dataset.selected==='true'?6*zoom:Math.max(3,4*zoom)))+'px');text.textContent=m.dataset.label||'Next';labelTexts.push(text.outerHTML);
     }
   });
-  layer.innerHTML=html;return targets;
+  layer.innerHTML=html+labelBackgrounds.join('')+labelTexts.join('');return targets;
 }
