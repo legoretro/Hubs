@@ -170,7 +170,7 @@ function routeBloodBankFlow(container) {
   var marker='flow-arrow-'+(container.dataset.routeId||(container.dataset.routeId=Math.random().toString(36).slice(2)));
   var markerSize=printExport?7:10.5;
   var html='<defs><marker id="'+marker+'" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="'+markerSize+'" markerHeight="'+markerSize+'" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#c0173d"/></marker></defs>';
-  var links=Array.from(container.querySelectorAll('.flow-link-marker')),incomingByTarget={},outgoingBySource={};
+  var links=Array.from(container.querySelectorAll('.flow-link-marker')),incomingByTarget={},outgoingBySource={},placedLabels=[];
   links.forEach(function(m){var to=m.dataset.flowLinkTo,from=m.dataset.flowLinkFrom,parents=incomingByTarget[to]||(incomingByTarget[to]=[]),children=outgoingBySource[from]||(outgoingBySource[from]=[]);parents.push(m);children.push(m);});
   links.forEach(function(m){
     var from=m.dataset.flowLinkFrom,to=m.dataset.flowLinkTo,a=nodes[from],b=nodes[to];if(!a||!b)return;
@@ -216,7 +216,7 @@ function routeBloodBankFlow(container) {
       var lowestParent=Math.max.apply(null,parents.map(function(link){return nodes[link.dataset.flowLinkFrom].bottom;}));
       var busY=lowestParent+(b.top-lowestParent)/2;
       var busStart={x:start.x,y:busY},busJoin={x:targetX,y:busY};
-      if(busY>start.y+gap&&busY<b.top-approach-gap&&clear(start,busStart)&&clear(busStart,busJoin)){
+      if(busY>start.y+gap&&busY<b.top-approach-gap&&clear(start,busStart)&&clear(busStart,busJoin)&&separate([start,busStart,busJoin],from,true)){
         points=[start,busStart,busJoin];
         mergeBus=true;
       }
@@ -265,6 +265,16 @@ function routeBloodBankFlow(container) {
     points=orthogonal;
     // Remove collinear points while preserving turns for hit testing.
     points=points.filter(function(p,i,all){if(i===0||i===all.length-1)return true;var a=all[i-1],b=all[i+1];return !((a.x===p.x&&p.x===b.x)||(a.y===p.y&&p.y===b.y));});
+    // Move a short near-target square elbow to the top of its long vertical
+    // run whenever the earlier corridor is free.
+    if(points.length>=4){
+      var topTurn=points[points.length-4],lateTurn=points[points.length-3],lateSide=points[points.length-2],arrival=points[points.length-1];
+      var shortJog=Math.abs(lateSide.x-lateTurn.x)<Math.max(42,70*zoom)&&Math.abs(arrival.y-lateSide.y)<Math.max(44,70*zoom);
+      if(topTurn.x===lateTurn.x&&lateTurn.y===lateSide.y&&lateSide.x===arrival.x&&shortJog&&Math.abs(lateTurn.y-topTurn.y)>Math.max(80,120*zoom)){
+        var earlySide={x:arrival.x,y:topTurn.y},safeEnd={x:arrival.x,y:arrival.y-(m===mergeOwner?approach:0)};
+        if(clear(topTurn,earlySide)&&clear(earlySide,safeEnd))points.splice(points.length-3,3,earlySide,arrival);
+      }
+    }
     for(var segment=1;segment<points.length;segment++)occupied.push([points[segment-1],points[segment],from]);
     var d=points.map(function(p,i){return (i?'L ':'M ')+p.x.toFixed(2)+' '+p.y.toFixed(2);}).join(' ');
     if(m.dataset.selected==='true')html+='<path d="'+d+'" fill="none" stroke="#ffcf00" stroke-width="'+Math.max(8,2.4*zoom+7)+'" stroke-linecap="round" stroke-linejoin="round"/>';
@@ -273,16 +283,28 @@ function routeBloodBankFlow(container) {
     if(m.dataset.label && m.dataset.label.toLowerCase()!=='next'){
       // Printed branch words should be about the same size as the text in the
       // boxes after the whole diagram is fitted to a single sheet.
-      var labelSize=printExport?Math.max(7,18*zoom):9.5*zoom;
+      var labelSize=printExport?Math.max(7,18*zoom):18*zoom;
       var labelWidth=Math.max(labelSize*2,m.dataset.label.length*labelSize*.64+8*zoom);
-      var bestHorizontal=0,bestVertical=0,labelX=source.x,labelY=source.y;
+      var labelX=source.x,labelY=source.y,candidates=[];
       for(var i=1;i<points.length;i++){
-        var horizontal=Math.abs(points[i].x-points[i-1].x),vertical=Math.abs(points[i].y-points[i-1].y);
-        if(horizontal>bestHorizontal){bestHorizontal=horizontal;labelX=(points[i].x+points[i-1].x)/2;labelY=points[i].y+labelSize*.35;}
-        if(vertical>bestVertical)bestVertical=vertical;
+        var before=points[i-1],after=points[i],horizontal=Math.abs(after.x-before.x),vertical=Math.abs(after.y-before.y);
+        if(horizontal){[.5,.3,.7].forEach(function(t){candidates.push({x:before.x+(after.x-before.x)*t,y:before.y+labelSize*.35,length:horizontal,horizontal:true});});}
+        if(vertical){[.3,.5,.7].forEach(function(t){candidates.push({x:before.x,y:before.y+(after.y-before.y)*t+labelSize*.35,length:vertical,horizontal:false});});}
       }
-      if(bestHorizontal<labelWidth+6*zoom){
-        for(var i=1;i<points.length;i++)if(Math.abs(points[i].y-points[i-1].y)===bestVertical){labelX=points[i].x;labelY=(points[i].y+points[i-1].y)/2+labelSize*.35;break;}
+      candidates.sort(function(left,right){return (right.horizontal?1:0)-(left.horizontal?1:0)||right.length-left.length;});
+      function labelBox(candidate){return {left:candidate.x-labelWidth/2,right:candidate.x+labelWidth/2,top:candidate.y-labelSize*.85-2*zoom,bottom:candidate.y+labelSize*.15+2*zoom};}
+      function boxOverlap(left,right){return Math.max(0,Math.min(left.right,right.right)-Math.max(left.left,right.left))*Math.max(0,Math.min(left.bottom,right.bottom)-Math.max(left.top,right.top));}
+      var chosen=null,bestScore=Infinity;
+      candidates.forEach(function(candidate){
+        var box=labelBox(candidate),score=0;
+        if(box.left<2||box.right>width-2||box.top<2||box.bottom>height-2)score+=100000;
+        obstacles.forEach(function(node){score+=boxOverlap(box,node)*10;});
+        placedLabels.forEach(function(other){score+=boxOverlap(box,other)*20;});
+        if(score<bestScore){bestScore=score;chosen=candidate;}
+      });
+      if(chosen){
+        labelX=chosen.x;labelY=chosen.y;
+        placedLabels.push(labelBox(chosen));
       }
       var background=document.createElementNS('http://www.w3.org/2000/svg','rect');
       background.setAttribute('x',labelX-labelWidth/2);background.setAttribute('y',labelY-labelSize*.85-2*zoom);
