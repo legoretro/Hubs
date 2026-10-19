@@ -168,7 +168,8 @@ function routeBloodBankFlow(container) {
   layer.setAttribute('viewBox','0 0 '+width+' '+height);layer.setAttribute('width',width);layer.setAttribute('height',height);layer.style.width=width+'px';layer.style.height=height+'px';
   // Use a separate marker per canvas so multi-page exports remain self-contained.
   var marker='flow-arrow-'+(container.dataset.routeId||(container.dataset.routeId=Math.random().toString(36).slice(2)));
-  var html='<defs><marker id="'+marker+'" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#c0173d"/></marker></defs>';
+  var markerSize=printExport?8:12;
+  var html='<defs><marker id="'+marker+'" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="'+markerSize+'" markerHeight="'+markerSize+'" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#c0173d"/></marker></defs>';
   var links=Array.from(container.querySelectorAll('.flow-link-marker')),incomingByTarget={},outgoingBySource={};
   links.forEach(function(m){var to=m.dataset.flowLinkTo,from=m.dataset.flowLinkFrom,parents=incomingByTarget[to]||(incomingByTarget[to]=[]),children=outgoingBySource[from]||(outgoingBySource[from]=[]);parents.push(m);children.push(m);});
   links.forEach(function(m){
@@ -259,7 +260,9 @@ function routeBloodBankFlow(container) {
     html+='<path class="flow-link-path'+(m.dataset.selected==='true'?' selected':'')+'" style="stroke-width:'+Math.max(.6,2.4*zoom)+'" d="'+d+'"'+(m===mergeOwner?' marker-end="url(#'+marker+')"':'')+'/>';
     targets.push({from:from,branchId:m.dataset.branchId,points:points});
     if(m.dataset.label && m.dataset.label.toLowerCase()!=='next'){
-      var labelSize=container.classList.contains('flow-export-wrap')?Math.max(16,11*zoom):11*zoom;
+      // Printed branch words should be about the same size as the text in the
+      // boxes after the whole diagram is fitted to a single sheet.
+      var labelSize=printExport?Math.max(8,22*zoom):11*zoom;
       var labelWidth=Math.max(labelSize*2,m.dataset.label.length*labelSize*.64+8*zoom);
       var bestHorizontal=0,bestVertical=0,labelX=source.x,labelY=source.y;
       for(var i=1;i<points.length;i++){
@@ -276,7 +279,7 @@ function routeBloodBankFlow(container) {
       background.setAttribute('rx',2*zoom);background.setAttribute('class','flow-route-label-bg');
       background.setAttribute('fill','#fff');
       html+=background.outerHTML;
-      var text=document.createElementNS('http://www.w3.org/2000/svg','text');text.setAttribute('x',labelX);text.setAttribute('y',labelY);text.setAttribute('text-anchor','middle');text.setAttribute('class','flow-route-label'+(m.dataset.selected==='true'?' selected':''));text.setAttribute('data-flow-link-from',from);text.setAttribute('data-branch-id',m.dataset.branchId);text.setAttribute('style','font-size:'+labelSize+'px;stroke-width:'+(m.dataset.selected==='true'?6*zoom:Math.max(3,4*zoom))+'px');text.textContent=m.dataset.label||'Next';html+=text.outerHTML;
+      var text=document.createElementNS('http://www.w3.org/2000/svg','text');text.setAttribute('x',labelX);text.setAttribute('y',labelY);text.setAttribute('text-anchor','middle');text.setAttribute('class','flow-route-label'+(m.dataset.selected==='true'?' selected':''));text.setAttribute('data-flow-link-from',from);text.setAttribute('data-branch-id',m.dataset.branchId);text.setAttribute('style','font-size:'+labelSize+'px;stroke-width:'+(printExport?0:(m.dataset.selected==='true'?6*zoom:Math.max(3,4*zoom)))+'px');text.textContent=m.dataset.label||'Next';html+=text.outerHTML;
     }
   });
   layer.innerHTML=html;return targets;
