@@ -3,8 +3,8 @@ function layoutBloodBankFlow(container,options){
   options=options||{};
   var compact=options.compact===true;
   var print=options.print===true;
-  var horizontalGap=print?24:(compact?54:78);
-  var verticalGap=print?44:(compact?76:102);
+  var horizontalGap=print?24:(compact?86:126);
+  var verticalGap=print?44:(compact?104:146);
   var topInset=print?8:(compact?18:35);
   var sideInset=print?8:(compact?20:50);
   var stage=container.querySelector('.flow-tree');if(!stage)return;
@@ -48,7 +48,7 @@ function layoutBloodBankFlow(container,options){
     // Otherwise independent links can be forced to cross between two rows.
     row.sort(function(a,b){return anchor[a]-anchor[b]||center[a]-center[b]||ids.indexOf(a)-ids.indexOf(b);});
     var wanted=row.reduce(function(sum,id){return sum+center[id];},0)/row.length;
-    var rightEdge=-Infinity,rowGap=print?10:(compact?18:24);
+    var rightEdge=-Infinity,rowGap=print?10:(compact?24:34);
     row.forEach(function(id){
       var left=center[id]-sizes[id].width/2;
       if(left<rightEdge+rowGap)center[id]+=rightEdge+rowGap-left;
@@ -60,7 +60,7 @@ function layoutBloodBankFlow(container,options){
   // Center a parent over its immediate children. A one-child chain becomes a
   // straight vertical line; siblings form a balanced split under one stem.
   for(var rowIndex=rows.length-2;rowIndex>=0;rowIndex--){
-    var upper=rows[rowIndex],upperGap=print?10:(compact?18:24);
+    var upper=rows[rowIndex],upperGap=print?10:(compact?24:34);
     upper.forEach(function(id){
       var children=out[id].filter(function(to){return rank[to]===rowIndex+1;});
       if(children.length)center[id]=children.reduce(function(sum,to){return sum+center[to];},0)/children.length;
@@ -74,7 +74,7 @@ function layoutBloodBankFlow(container,options){
   // down its chain and push neighboring boxes aside rather than overlapping.
   var previousCenter={};ids.forEach(function(id){previousCenter[id]=center[id];});
   for(var layer=1;layer<rows.length;layer++){
-    var layerRow=rows[layer],layerGap=print?10:(compact?18:24);
+    var layerRow=rows[layer],layerGap=print?10:(compact?24:34);
     layerRow.forEach(function(id){
       var parents=incoming[id].filter(function(parent){return rank[parent]<layer;});
       if(!parents.length)return;
@@ -106,7 +106,7 @@ function routeBloodBankFlow(container) {
   if(!isFinite(pageScale)||pageScale<=0)pageScale=1;
   var zoom=parseFloat(getComputedStyle(container.querySelector('.flow-tree')).zoom)||1;
   var printExport=container.classList.contains('flow-export-wrap');
-  var gap=printExport?Math.max(2,6*zoom):Math.max(3,10*zoom);
+  var gap=printExport?Math.max(2,6*zoom):Math.max(5,15*zoom);
   function rect(el){var r=el.getBoundingClientRect();return {left:(r.left-origin.left)/pageScale,right:(r.right-origin.left)/pageScale,top:(r.top-origin.top)/pageScale,bottom:(r.bottom-origin.top)/pageScale};}
   container.querySelectorAll('[data-flow-node-id]').forEach(function(el){nodes[el.dataset.flowNodeId]=rect(el);nodes[el.dataset.flowNodeId].decision=el.classList.contains('question');});
   var obstacles=Array.from(container.querySelectorAll('.flow-node,.flow-note-card')).map(function(el){var r=rect(el);return {left:r.left-gap/2,right:r.right+gap/2,top:r.top-gap/2,bottom:r.bottom+gap/2};});
@@ -170,7 +170,7 @@ function routeBloodBankFlow(container) {
   var marker='flow-arrow-'+(container.dataset.routeId||(container.dataset.routeId=Math.random().toString(36).slice(2)));
   var markerSize=printExport?7:10.5;
   var html='<defs><marker id="'+marker+'" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="'+markerSize+'" markerHeight="'+markerSize+'" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#c0173d"/></marker></defs>';
-  var links=Array.from(container.querySelectorAll('.flow-link-marker')),incomingByTarget={},outgoingBySource={},placedLabels=[],labelBackgrounds=[],labelTexts=[];
+  var links=Array.from(container.querySelectorAll('.flow-link-marker')),incomingByTarget={},outgoingBySource={},placedLabels=[],labelBackgrounds=[],labelTexts=[],pendingLabels=[];
   links.forEach(function(m){var to=m.dataset.flowLinkTo,from=m.dataset.flowLinkFrom,parents=incomingByTarget[to]||(incomingByTarget[to]=[]),children=outgoingBySource[from]||(outgoingBySource[from]=[]);parents.push(m);children.push(m);});
   links.forEach(function(m){
     var from=m.dataset.flowLinkFrom,to=m.dataset.flowLinkTo,a=nodes[from],b=nodes[to];if(!a||!b)return;
@@ -287,12 +287,17 @@ function routeBloodBankFlow(container) {
         if(clear(topTurn,earlySide)&&clear(earlySide,safeEnd))points.splice(points.length-3,3,earlySide,arrival);
       }
     }
-    for(var segment=1;segment<points.length;segment++)occupied.push([points[segment-1],points[segment],from]);
+    for(var segment=1;segment<points.length;segment++)occupied.push([points[segment-1],points[segment],from,m.dataset.branchId]);
     var d=points.map(function(p,i){return (i?'L ':'M ')+p.x.toFixed(2)+' '+p.y.toFixed(2);}).join(' ');
     if(m.dataset.selected==='true')html+='<path d="'+d+'" fill="none" stroke="#ffcf00" stroke-width="'+Math.max(8,2.4*zoom+7)+'" stroke-linecap="round" stroke-linejoin="round"/>';
     html+='<path class="flow-link-path'+(m.dataset.selected==='true'?' selected':'')+'" style="stroke-width:'+Math.max(.6,2.4*zoom)+'" d="'+d+'"'+(m===mergeOwner?' marker-end="url(#'+marker+')"':'')+'/>';
-    targets.push({from:from,branchId:m.dataset.branchId,points:points});
-    if(m.dataset.label && m.dataset.label.toLowerCase()!=='next'){
+    targets.push({from:from,to:to,branchId:m.dataset.branchId,points:points});
+    if(m.dataset.label && m.dataset.label.toLowerCase()!=='next')pendingLabels.push({marker:m,points:points,source:source,from:from,to:to});
+  });
+  // Place labels after every route is known, so each answer can avoid nearby
+  // connectors and all words are painted above the complete line network.
+  pendingLabels.forEach(function(item){
+    var m=item.marker,points=item.points,source=item.source,from=item.from,to=item.to;
       // Printed branch words should be about the same size as the text in the
       // boxes after the whole diagram is fitted to a single sheet.
       var labelSize=printExport?Math.max(7,18*zoom):18*zoom;
@@ -300,8 +305,8 @@ function routeBloodBankFlow(container) {
       var labelX=source.x,labelY=source.y,candidates=[];
       for(var i=1;i<points.length;i++){
         var before=points[i-1],after=points[i],horizontal=Math.abs(after.x-before.x),vertical=Math.abs(after.y-before.y);
-        if(horizontal){[.5,.3,.7].forEach(function(t){candidates.push({x:before.x+(after.x-before.x)*t,y:before.y+labelSize*.35,length:horizontal,horizontal:true});});}
-        if(vertical){[.3,.5,.7].forEach(function(t){candidates.push({x:before.x,y:before.y+(after.y-before.y)*t+labelSize*.35,length:vertical,horizontal:false});});}
+        if(horizontal){[.5,.3,.7].forEach(function(t){candidates.push({x:before.x+(after.x-before.x)*t,y:before.y+labelSize*.35,length:horizontal,horizontal:true,order:i});});}
+        if(vertical){[.3,.5,.7].forEach(function(t){candidates.push({x:before.x,y:before.y+(after.y-before.y)*t+labelSize*.35,length:vertical,horizontal:false,order:i});});}
       }
       candidates.sort(function(left,right){return (right.horizontal?1:0)-(left.horizontal?1:0)||right.length-left.length;});
       function labelBox(candidate){return {left:candidate.x-labelWidth/2,right:candidate.x+labelWidth/2,top:candidate.y-labelSize*.85-2*zoom,bottom:candidate.y+labelSize*.15+2*zoom};}
@@ -311,8 +316,14 @@ function routeBloodBankFlow(container) {
         var box=labelBox(candidate),score=0;
         var needed=candidate.horizontal?labelWidth+8*zoom:labelSize+8*zoom;
         score+=Math.max(0,needed-candidate.length)*100;
+        score+=candidate.order*labelSize*2;
         if(box.left<2||box.right>width-2||box.top<2||box.bottom>height-2)score+=100000;
         obstacles.forEach(function(node){score+=boxOverlap(box,node)*10;});
+        occupied.forEach(function(segment){
+          if(segment[2]===from&&segment[3]===m.dataset.branchId)return;
+          var a=segment[0],b=segment[1],padding=Math.max(2,2*zoom);
+          score+=boxOverlap(box,{left:Math.min(a.x,b.x)-padding,right:Math.max(a.x,b.x)+padding,top:Math.min(a.y,b.y)-padding,bottom:Math.max(a.y,b.y)+padding})*30;
+        });
         placedLabels.forEach(function(other){score+=boxOverlap(box,other)*20;});
         if(score<bestScore){bestScore=score;chosen=candidate;}
       });
@@ -324,10 +335,15 @@ function routeBloodBankFlow(container) {
       background.setAttribute('x',labelX-labelWidth/2);background.setAttribute('y',labelY-labelSize*.85-2*zoom);
       background.setAttribute('width',labelWidth);background.setAttribute('height',labelSize+4*zoom);
       background.setAttribute('rx',2*zoom);background.setAttribute('class','flow-route-label-bg');
+      background.setAttribute('data-flow-link-from',from);background.setAttribute('data-flow-link-to',to);
       background.setAttribute('fill','#fff');
       labelBackgrounds.push(background.outerHTML);
-      var text=document.createElementNS('http://www.w3.org/2000/svg','text');text.setAttribute('x',labelX);text.setAttribute('y',labelY);text.setAttribute('text-anchor','middle');text.setAttribute('class','flow-route-label'+(m.dataset.selected==='true'?' selected':''));text.setAttribute('data-flow-link-from',from);text.setAttribute('data-branch-id',m.dataset.branchId);text.setAttribute('style','font-size:'+labelSize+'px;stroke-width:'+(printExport?0:(m.dataset.selected==='true'?6*zoom:Math.max(3,4*zoom)))+'px');text.textContent=m.dataset.label||'Next';labelTexts.push(text.outerHTML);
-    }
+      var text=document.createElementNS('http://www.w3.org/2000/svg','text');text.setAttribute('x',labelX);text.setAttribute('y',labelY);text.setAttribute('text-anchor','middle');text.setAttribute('class','flow-route-label'+(m.dataset.selected==='true'?' selected':''));text.setAttribute('data-flow-link-from',from);text.setAttribute('data-flow-link-to',to);text.setAttribute('data-branch-id',m.dataset.branchId);text.setAttribute('style','font-size:'+labelSize+'px;stroke-width:'+(printExport?0:(m.dataset.selected==='true'?6*zoom:Math.max(3,4*zoom)))+'px');text.textContent=m.dataset.label||'Next';labelTexts.push(text.outerHTML);
   });
-  layer.innerHTML=html+labelBackgrounds.join('')+labelTexts.join('');return targets;
+  layer.innerHTML=html+labelBackgrounds.join('')+labelTexts.join('');
+  layer.querySelectorAll('.flow-link-path').forEach(function(path,index){
+    path.dataset.flowLinkFrom=targets[index].from;
+    path.dataset.flowLinkTo=targets[index].to;
+  });
+  return targets;
 }

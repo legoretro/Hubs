@@ -641,6 +641,11 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 #flowchartPreview .flow-node.question.selected{outline:none;filter:drop-shadow(0 0 4px #ffcf00)}
 #flowchartPreview .flow-node.question.selected .flow-diamond polygon{stroke:#ffcf00;stroke-width:6;vector-effect:non-scaling-stroke}
 #flowchartPreview .flow-link-path.selected{stroke:#c0173d!important}
+#flowchartPreview .flow-link-path.flow-trace-dim{opacity:.14}
+#flowchartPreview .flow-link-path.flow-trace-active{opacity:1;stroke-width:4px!important;filter:drop-shadow(0 0 2px rgba(192,23,61,.3))}
+#flowchartPreview :is(.flow-route-label,.flow-route-label-bg).flow-trace-dim{opacity:.18}
+.admin-mode #flowchartPreview .flow-node-tools{opacity:0;pointer-events:none;transition:opacity .12s ease}
+.admin-mode #flowchartPreview .flow-node:hover .flow-node-tools,.admin-mode #flowchartPreview .flow-node:focus-within .flow-node-tools,.admin-mode #flowchartPreview .flow-node.selected .flow-node-tools{opacity:1;pointer-events:auto}
 #sec-flowchart .flow-shell{max-width:none;width:100%;margin:0}
 #sec-flowchart .flow-builder-card{padding:8px;margin:0}
 #sec-flowchart .flow-editor-tray{padding:5px;margin:0 0 6px;position:relative;top:auto}
@@ -1024,7 +1029,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="shared/pdf-export.js?v=20260605-export-fit"></script>
 <script src="safe-supabase-sync.js"></script>
-<script src="shared/bloodbank-flow.js?v=20261019-decision-ports-labels-34"></script>
+<script src="shared/bloodbank-flow.js?v=20261019-clearer-routes-36"></script>
 <script>
 // ============================================================
 // CONFIG - SUPABASE + PASSWORD
@@ -2465,6 +2470,24 @@ function renderFlowGraph(data){
 function renderFlowchartPreview(data) {
   const preview = document.getElementById('flowchartPreview');
   if (!preview) return;
+  if (!preview.dataset.traceBound) {
+    preview.dataset.traceBound='true';
+    preview.addEventListener('pointerover',function(event){
+      const node=event.target.closest&&event.target.closest('[data-flow-node-id]');
+      if (!node || preview.dataset.traceHover===node.dataset.flowNodeId) return;
+      preview.dataset.traceHover=node.dataset.flowNodeId;
+      updateFlowRouteFocus(preview);
+    });
+    preview.addEventListener('pointerout',function(event){
+      const node=event.target.closest&&event.target.closest('[data-flow-node-id]');
+      const next=event.relatedTarget&&event.relatedTarget.closest&&event.relatedTarget.closest('[data-flow-node-id]');
+      if (!node || node===next) return;
+      delete preview.dataset.traceHover;
+      updateFlowRouteFocus(preview);
+    });
+  }
+  delete preview.dataset.traceHover;
+  delete preview.dataset.tracePinned;
   data = normalizeFlowchartData(data);
   if (flowSelectedLink && !getFlowSelectedConnection(data)) flowSelectedLink = null;
   if (flowSelectedLink) flowSelectedNodeId = null;
@@ -2543,6 +2566,16 @@ function drawFlowLinkLines(data) {
   preview.insertAdjacentHTML('beforeend',flowConnectionMarkers(data||getFlowchartData()));
   layoutBloodBankFlow(preview);
   flowLinkClickTargets=routeBloodBankFlow(preview);
+  updateFlowRouteFocus(preview);
+}
+function updateFlowRouteFocus(preview) {
+  if (!preview) return;
+  const id=preview.dataset.traceHover||preview.dataset.tracePinned;
+  preview.querySelectorAll('.flow-link-path,.flow-route-label,.flow-route-label-bg').forEach(function(part){
+    const active=Boolean(id&&(part.dataset.flowLinkFrom===id||part.dataset.flowLinkTo===id));
+    part.classList.toggle('flow-trace-active',active);
+    part.classList.toggle('flow-trace-dim',Boolean(id&&!active));
+  });
 }
 window.addEventListener('resize',function(){scheduleFlowLinkDraw();});
 
@@ -2791,6 +2824,8 @@ function selectFlowNode(id) {
   document.querySelectorAll('#flowchartPreview .flow-node').forEach(function(el){ el.classList.remove('selected'); });
   const active = document.querySelector('[data-flow-node-id="' + id + '"]');
   if (active) active.classList.add('selected');
+  const preview=document.getElementById('flowchartPreview');
+  if (preview) preview.dataset.tracePinned=id;
   renderFlowSelectionPanel(data);
   drawFlowLinkLines(data);
 }
@@ -3072,6 +3107,8 @@ function selectFlowConnectionLine(parentId, branchId) {
   if (!parent || !parent.branches.some(function(branch){ return branch.id === branchId; })) return;
   flowSelectedLink = {from:parentId, branchId:branchId};
   flowSelectedNodeId = null;
+  const preview=document.getElementById('flowchartPreview');
+  if (preview) delete preview.dataset.tracePinned;
   renderFlowSelectionPanel(data);
   drawFlowLinkLines(data);
 }
