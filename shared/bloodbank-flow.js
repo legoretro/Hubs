@@ -168,7 +168,7 @@ function routeBloodBankFlow(container) {
   layer.setAttribute('viewBox','0 0 '+width+' '+height);layer.setAttribute('width',width);layer.setAttribute('height',height);layer.style.width=width+'px';layer.style.height=height+'px';
   // Use a separate marker per canvas so multi-page exports remain self-contained.
   var marker='flow-arrow-'+(container.dataset.routeId||(container.dataset.routeId=Math.random().toString(36).slice(2)));
-  var markerSize=printExport?8:12;
+  var markerSize=printExport?7:10.5;
   var html='<defs><marker id="'+marker+'" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="'+markerSize+'" markerHeight="'+markerSize+'" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#c0173d"/></marker></defs>';
   var links=Array.from(container.querySelectorAll('.flow-link-marker')),incomingByTarget={},outgoingBySource={};
   links.forEach(function(m){var to=m.dataset.flowLinkTo,from=m.dataset.flowLinkFrom,parents=incomingByTarget[to]||(incomingByTarget[to]=[]),children=outgoingBySource[from]||(outgoingBySource[from]=[]);parents.push(m);children.push(m);});
@@ -209,8 +209,19 @@ function routeBloodBankFlow(container) {
     // Treating that stem as a collision makes a directly-below child detour
     // around its sibling into an unnecessary M-shaped connector.
     var shareSource=children.filter(function(link){return nodes[link.dataset.flowLinkTo];}).length>1&&(!a.decision||bottomBranch);
-    var points=null;
-    if(parents.length>1&&m===mergeOwner&&Math.abs(start.x-end.x)<gap&&clear(start,end)){
+    var points=null,mergeBus=false;
+    if(parents.length>1&&!sideDirection){
+      // Join two downward paths on one horizontal bus, then enter the next
+      // box through a single centered vertical stem (a clean U-shaped join).
+      var lowestParent=Math.max.apply(null,parents.map(function(link){return nodes[link.dataset.flowLinkFrom].bottom;}));
+      var busY=lowestParent+(b.top-lowestParent)/2;
+      var busStart={x:start.x,y:busY},busJoin={x:targetX,y:busY};
+      if(busY>start.y+gap&&busY<b.top-approach-gap&&clear(start,busStart)&&clear(busStart,busJoin)){
+        points=[start,busStart,busJoin];
+        mergeBus=true;
+      }
+    }
+    if(!points&&parents.length>1&&m===mergeOwner&&Math.abs(start.x-end.x)<gap&&clear(start,end)){
       // The parent directly above a merge owns its vertical spine. Other
       // parents join that spine; they must not force it into a rectangular
       // detour just because their route happened to be drawn first.
@@ -235,7 +246,7 @@ function routeBloodBankFlow(container) {
     }
     if(!points)points=route(start,end,false,from,shareSource,true);
     if(!points){m.dataset.routeMissing='true';return;}delete m.dataset.routeMissing;
-    if(parents.length>1&&m!==mergeOwner&&points.length>2){
+    if(parents.length>1&&m!==mergeOwner&&points.length>2&&!mergeBus){
       var owner=nodes[mergeOwner.dataset.flowLinkFrom],last=points[points.length-1],prior=points[points.length-2];
       if(owner&&Math.abs((owner.left+owner.right)/2-targetX)<gap&&last.x===targetX&&prior.x===targetX&&prior.y>owner.bottom&&prior.y<last.y)points.pop();
     }
@@ -262,7 +273,7 @@ function routeBloodBankFlow(container) {
     if(m.dataset.label && m.dataset.label.toLowerCase()!=='next'){
       // Printed branch words should be about the same size as the text in the
       // boxes after the whole diagram is fitted to a single sheet.
-      var labelSize=printExport?Math.max(8,22*zoom):11*zoom;
+      var labelSize=printExport?Math.max(7,18*zoom):9.5*zoom;
       var labelWidth=Math.max(labelSize*2,m.dataset.label.length*labelSize*.64+8*zoom);
       var bestHorizontal=0,bestVertical=0,labelX=source.x,labelY=source.y;
       for(var i=1;i<points.length;i++){

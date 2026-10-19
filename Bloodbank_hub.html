@@ -969,7 +969,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
           </div>
           <div class="flow-selection-editor flow-admin-action"><div class="flow-selection-heading">Edit selected</div><div class="flow-selection-panel" id="flowSelectionPanel"></div></div>
         </div>
-        <div id="flowDiagramKey" class="flow-legend"></div><div id="flowchartViewport" class="flow-canvas">
+        <div id="flowchartViewport" class="flow-canvas">
           <div id="flowchartPreview" onclick="handleFlowPreviewClick(event)"></div>
         </div>
       </div>
@@ -1024,7 +1024,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="shared/pdf-export.js?v=20260605-export-fit"></script>
 <script src="safe-supabase-sync.js"></script>
-<script src="shared/bloodbank-flow.js?v=20261019-balanced-print-type-31"></script>
+<script src="shared/bloodbank-flow.js?v=20261019-custom-label-clean-joins-32"></script>
 <script>
 // ============================================================
 // CONFIG - SUPABASE + PASSWORD
@@ -2463,7 +2463,6 @@ function renderFlowGraph(data){
   return Object.keys(flat.nodes).map(function(id){return renderFlowNode(flat,id,[],{primaryParent:{}},null);}).join('');
 }
 function renderFlowchartPreview(data) {
-  document.getElementById('flowDiagramKey').innerHTML=flowDiagramKey(normalizeFlowchartData(data));
   const preview = document.getElementById('flowchartPreview');
   if (!preview) return;
   data = normalizeFlowchartData(data);
@@ -2712,9 +2711,13 @@ function renderFlowSelectionPanel(data) {
   const selectedConnection = getFlowSelectedConnection(data);
   if (selectedConnection) {
     const canSwap = (selectedConnection.parent.branches || []).filter(function(branch){return data.nodes[branch.to];}).length === 2;
+    const arrowPresets = ['Next','Yes','No','Negative','Positive'];
+    const arrowLabel = selectedConnection.branch.label || 'Next';
+    const customArrowLabel = arrowPresets.indexOf(arrowLabel) < 0;
     panel.innerHTML =
       '<div class="flow-selected-title">Current selected<strong>Line: ' + escText(selectedConnection.parent.text || 'Box') + ' -> ' + escText(selectedConnection.target.text || 'Box') + '</strong></div>' +
-      '<label class="flow-control">Arrow label<select class="flow-select" onchange="setSelectedArrowLabel(this.value)">' + flowOptionHtml(['Next','Yes','No','Negative','Positive'],['No label','Yes','No','Negative','Positive'],selectedConnection.branch.label || 'Next') + '</select></label>' +
+      '<label class="flow-control">Arrow label<select class="flow-select" onchange="chooseSelectedArrowLabel(this.value)">' + flowOptionHtml(arrowPresets,['No label','Yes','No','Negative','Positive'],customArrowLabel?'':arrowLabel) + '<option value="custom"'+(customArrowLabel?' selected':'')+'>Custom text…</option></select></label>' +
+      '<label class="flow-control">Custom label<input class="flow-select" id="flowCustomArrowLabel" maxlength="50" placeholder="Type any arrow label" value="'+escAttr(customArrowLabel?arrowLabel:'')+'" onchange="setSelectedArrowLabel(this.value)" onkeydown="if(event.key===\'Enter\'){event.preventDefault();this.blur()}"></label>' +
       '<div class="flow-action-group">' +
         (canSwap ? '<button class="flow-tool-btn" onclick="swapSelectedFlowBranches()">Swap left / right branches</button>' : '') +
         '<button class="flow-tool-btn" onclick="insertFlowBox(\'arrow\')">Insert box here</button>' +
@@ -2754,7 +2757,21 @@ function renderFlowSelectionPanel(data) {
     '</div>';
 }
 
-function setSelectedArrowLabel(value){var c=getFlowSelectedConnection(getFlowchartData());if(c){updateFlowBranchLabel(c.parent.id,c.branch.id,value);drawFlowLinkLines(getFlowchartData());}}
+function chooseSelectedArrowLabel(value){
+  if(value==='custom'){
+    var input=document.getElementById('flowCustomArrowLabel');
+    if(input)input.focus();
+    return;
+  }
+  setSelectedArrowLabel(value);
+}
+function setSelectedArrowLabel(value){
+  var c=getFlowSelectedConnection(getFlowchartData());
+  if(!c)return;
+  updateFlowBranchLabel(c.parent.id,c.branch.id,value);
+  drawFlowLinkLines(getFlowchartData());
+  renderFlowSelectionPanel(getFlowchartData());
+}
 function swapSelectedFlowBranches() {
   if (!isAdmin) return;
   const data = getFlowchartData();
@@ -7103,7 +7120,7 @@ function buildFlowchartExportPage(input, name, metadata) {
   var tree = '<svg class="flow-link-layer" aria-hidden="true"></svg><div class="flow-tree">' + renderFlowGraph(data) + '</div>' + markers;
   isAdmin = oldAdmin;
   flowSelectedNodeId = oldSelected; flowSelectedLink=oldLink;
-  return '<section class="page flow-export-page'+(nonAdminExport?' nonadmin-flow-export-page':'')+'" style="--flow-export-zoom:' + flowPrintZoom + ';--flow-font-family:' + escAttr(flowFontStack(data.font)) + '"><header><h2 class="flow-export-title">'+escText(name)+'</h2><p class="flow-export-meta">'+(metadata.creator?'Created by '+escText(metadata.creator)+' · ':'')+escText(metadata.date||new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'}))+'</p>'+flowDiagramKey(data)+'</header><div class="flow-export-wrap">' + tree + '</div></section>';
+  return '<section class="page flow-export-page'+(nonAdminExport?' nonadmin-flow-export-page':'')+'" style="--flow-export-zoom:' + flowPrintZoom + ';--flow-font-family:' + escAttr(flowFontStack(data.font)) + '"><header><h2 class="flow-export-title">'+escText(name)+'</h2><p class="flow-export-meta">'+(metadata.creator?'Created by '+escText(metadata.creator)+' · ':'')+escText(metadata.date||new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'}))+'</p></header><div class="flow-export-wrap">' + tree + '</div></section>';
 }
 
 function drawReadableFlowExportPages() {
@@ -7188,7 +7205,7 @@ function buildExportHtml(content, title, orientation, scale) {
     '/* Process rectangles and decision diamonds, matching the supplied DAT reference. */ :is(#flowchartPreview,.flow-export-wrap) .flow-tree{display:block;position:relative;padding:0;min-width:0}:is(#flowchartPreview,.flow-export-wrap) .flow-tree>.flow-node-wrap{position:absolute;min-width:0;width:auto}.flow-node-row{align-items:center}:is(#flowchartPreview,.flow-export-wrap) .flow-node{width:240px;min-width:240px;max-width:240px;min-height:62px;border-radius:7px;padding:12px 15px;font:600 15px/1.3 Arial,sans-serif;box-shadow:0 2px 5px #5a0e2010}.flow-node-kind{display:none}.flow-node-text{position:relative;z-index:1;padding:0;min-height:0}:is(#flowchartPreview,.flow-export-wrap) .flow-node.question{width:240px;min-height:112px;display:flex;align-items:center;justify-content:center;background:transparent!important;border:0;padding:26px 42px;border-radius:0}.flow-diamond{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}.flow-diamond polygon{fill:var(--node-fill,#ffd7df);stroke:var(--node-border,#c0173d);stroke-width:2}:is(#flowchartPreview,.flow-export-wrap) .flow-node.start,:is(#flowchartPreview,.flow-export-wrap) .flow-node.terminal{border-radius:8px}:is(#flowchartPreview,.flow-export-wrap) .flow-node.question .flow-node-text{width:100%}.flow-note-card{flex-shrink:0}:is(#flowchartPreview,.flow-export-wrap) .flow-node.question .flow-node-tools{right:22px;top:13px}.site-logo:empty,.hero-emoji:empty,.sys-icon:empty{display:none}.flow-legend{font-size:11px;color:var(--warm-grey);margin:8px 0} ' +
     portraitTweaks +
     lesserExportTweaks + nonAdminFlowExportTweaks +
-    '.flow-export-page>header{position:relative;min-height:66px;padding-right:170px}.flow-export-page>header .flow-export-meta{margin-bottom:0}.flow-export-page>header aside{position:absolute;right:0;top:0;margin:0!important;transform:scale(.48);transform-origin:top right;white-space:nowrap}.flow-export-wrap .flow-node{width:230px!important;min-width:230px!important;max-width:230px!important;min-height:44px!important;padding:5px 8px!important;font-size:22px!important;line-height:1.08!important}.flow-export-wrap .flow-node.question{width:230px!important;min-width:230px!important;min-height:80px!important;padding:12px 28px!important}.flow-export-wrap .flow-tree{padding:0!important}.flow-export-wrap .flow-route-label{font-weight:800!important}' +
+    '.flow-export-page>header{position:relative;min-height:46px;padding-right:0}.flow-export-page>header .flow-export-meta{margin-bottom:0}.flow-export-wrap .flow-node{width:230px!important;min-width:230px!important;max-width:230px!important;min-height:44px!important;padding:5px 8px!important;font-size:22px!important;line-height:1.08!important}.flow-export-wrap .flow-node.question{width:230px!important;min-width:230px!important;min-height:80px!important;padding:12px 28px!important}.flow-export-wrap .flow-tree{padding:0!important}.flow-export-wrap .flow-route-label{font-weight:800!important}' +
     '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.bb-export-scale-wrap{zoom:var(--bb-export-scale,1);transform:none;width:auto;min-height:0}}</style></head><body style="--bb-export-scale:' + printScale + '"><div class="bb-export-scale-wrap">' + content + '</div>' + flowExportScript + '</body></html>';
 }
 
