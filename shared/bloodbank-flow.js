@@ -19,7 +19,7 @@ function layoutBloodBankFlow(container,options){
   var queue=ids.filter(function(id){return !remaining[id];});
   for(var q=0;q<queue.length;q++){var id=queue[q];ids.forEach(function(to){if(incoming[to].indexOf(id)<0)return;rank[to]=Math.max(rank[to],rank[id]+1);remaining[to]--;if(!remaining[to])queue.push(to);});}
   var rows=[];ids.forEach(function(id){(rows[rank[id]]||(rows[rank[id]]=[])).push(id);});
-  var center={},anchor={},sizes={},width=0,orderedPairChild={};
+  var center={},anchor={},sizes={},width=0,orderedBranchChild={};
   ids.forEach(function(id){var el=elements[id];el.style.left='0';el.style.top='0';var r=el.getBoundingClientRect();sizes[id]={width:Math.max(r.width,240),height:Math.max(r.height,62)};});
   var pitch=Math.max.apply(null,ids.map(function(id){return sizes[id].width;}))+horizontalGap;
   rows.forEach(function(row,rowIndex){
@@ -33,16 +33,13 @@ function layoutBloodBankFlow(container,options){
         center[id]+=(siblings.indexOf(id)-(siblings.length-1)/2)*pitch;
       }
     });
-    // Branch order is an explicit left-to-right choice. It must also apply
-    // when one of the two children is shared with another parent; the normal
-    // single-parent sibling offset does not cover that case.
+    // Branch order is an explicit left-to-right choice, including groups of
+    // three or more and children shared with another parent.
     if(rowIndex>0)rows[rowIndex-1].forEach(function(parent){
-      var pair=out[parent].filter(function(to){return rank[to]===rowIndex;});
-      if(pair.length!==2)return;
-      var midpoint=(center[pair[0]]+center[pair[1]])/2;
-      center[pair[0]]=anchor[pair[0]]=midpoint-pitch/2;
-      center[pair[1]]=anchor[pair[1]]=midpoint+pitch/2;
-      orderedPairChild[pair[0]]=orderedPairChild[pair[1]]=true;
+      var branches=out[parent].filter(function(to){return rank[to]===rowIndex;});
+      if(branches.length<2)return;
+      var midpoint=branches.reduce(function(sum,to){return sum+center[to];},0)/branches.length;
+      branches.forEach(function(to,index){center[to]=anchor[to]=midpoint+(index-(branches.length-1)/2)*pitch;orderedBranchChild[to]=true;});
     });
     // Match each row's order to its incoming connections before spacing boxes.
     // Otherwise independent links can be forced to cross between two rows.
@@ -80,7 +77,7 @@ function layoutBloodBankFlow(container,options){
       if(!parents.length)return;
       var parentShift=parents.reduce(function(sum,parent){return sum+center[parent]-previousCenter[parent];},0)/parents.length;
       center[id]+=parentShift;
-      if(parents.length>1&&!orderedPairChild[id]){
+      if(parents.length>1&&!orderedBranchChild[id]){
         var positions=parents.map(function(parent){return center[parent];});
         var spread=Math.max.apply(null,positions)-Math.min.apply(null,positions);
         var middle=positions.reduce(function(sum,x){return sum+x;},0)/positions.length;
@@ -172,6 +169,35 @@ function routeBloodBankFlow(container) {
   var html='<defs><marker id="'+marker+'" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="'+markerSize+'" markerHeight="'+markerSize+'" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#c0173d"/></marker></defs>';
   var links=Array.from(container.querySelectorAll('.flow-link-marker')),incomingByTarget={},outgoingBySource={},placedLabels=[],labelBackgrounds=[],labelTexts=[],pendingLabels=[];
   links.forEach(function(m){var to=m.dataset.flowLinkTo,from=m.dataset.flowLinkFrom,parents=incomingByTarget[to]||(incomingByTarget[to]=[]),children=outgoingBySource[from]||(outgoingBySource[from]=[]);parents.push(m);children.push(m);});
+  // Branches with the same printed answer leave the decision on one stem.
+  // Empty and default Next labels remain individual connectors.
+  var sharedLabelGroups=new Map();
+  Object.keys(outgoingBySource).forEach(function(from){
+    var parent=nodes[from],byLabel={};if(!parent)return;
+    outgoingBySource[from].forEach(function(link){
+      var label=(link.dataset.label||'').trim(),key=label.toLowerCase();
+      if(!key||key==='next'||!nodes[link.dataset.flowLinkTo])return;
+      (byLabel[key]||(byLabel[key]=[])).push(link);
+    });
+    var repeated=Object.keys(byLabel).map(function(key){return byLabel[key];}).filter(function(group){return group.length>1;});
+    repeated.sort(function(left,right){
+      function average(group){return group.reduce(function(sum,link){var target=nodes[link.dataset.flowLinkTo];return sum+(target.left+target.right)/2;},0)/group.length;}
+      return average(left)-average(right);
+    });
+    repeated.forEach(function(group,index){
+      var nearestTop=Math.min.apply(null,group.map(function(link){return nodes[link.dataset.flowLinkTo].top;}));
+      var approach=printExport?Math.max(gap*3,12*zoom):Math.max(gap*4,24*zoom);
+      var busY=parent.bottom+(nearestTop-parent.bottom-approach)/2;
+      if(busY<=parent.bottom+gap||busY>=nearestTop-approach-gap)return;
+      var side=repeated.length>1?(index<(repeated.length-1)/2?-1:1):0;
+      var source=side?{x:side<0?parent.left:parent.right,y:(parent.top+parent.bottom)/2}:{x:(parent.left+parent.right)/2,y:parent.bottom};
+      var start=side?{x:source.x+side*gap,y:source.y}:{x:source.x,y:source.y+gap};
+      var stemX=start.x,stem=[start,{x:stemX,y:busY}];
+      if(!clear(stem[0],stem[1]))return;
+      var info={group:group,leader:group[0],source:source,start:start,stem:stem,busY:busY,stemX:stemX};
+      group.forEach(function(link){sharedLabelGroups.set(link,info);});
+    });
+  });
   links.forEach(function(m){
     var from=m.dataset.flowLinkFrom,to=m.dataset.flowLinkTo,a=nodes[from],b=nodes[to];if(!a||!b)return;
     var parents=incomingByTarget[to].filter(function(parent){return nodes[parent.dataset.flowLinkFrom];}).sort(function(left,right){var x=nodes[left.dataset.flowLinkFrom],y=nodes[right.dataset.flowLinkFrom];return ((x.left+x.right)/2)-((y.left+y.right)/2);});
@@ -184,7 +210,7 @@ function routeBloodBankFlow(container) {
     // the horizontal turn immediately above a destination box.
     var approach=printExport?Math.max(gap*3,12*zoom):Math.max(gap*4,24*zoom);
     var source={x:(a.left+a.right)/2,y:a.bottom},start={x:(a.left+a.right)/2,y:a.bottom+gap},end={x:targetX,y:b.top-approach},sideDirection=0;
-    var children=outgoingBySource[from]||[];
+    var children=outgoingBySource[from]||[],sharedGroup=sharedLabelGroups.get(m);
     var bottomBranch=false;
     if(a.decision&&children.length===2){
       var otherLink=children.find(function(link){return link!==m&&nodes[link.dataset.flowLinkTo];});
@@ -199,7 +225,7 @@ function routeBloodBankFlow(container) {
     }else if(a.decision&&children.length===1){
       bottomBranch=Math.abs(end.x-start.x)<(a.right-a.left)*.35;
     }
-    if(a.decision&&!bottomBranch&&(children.length>1||Math.abs(end.x-start.x)>(a.right-a.left)*.35)){
+    if(!sharedGroup&&a.decision&&!bottomBranch&&(children.length>1||Math.abs(end.x-start.x)>(a.right-a.left)*.35)){
       sideDirection=end.x<start.x?-1:1;
       source={x:sideDirection<0?a.left:a.right,y:(a.top+a.bottom)/2};
       if(sideDirection*(end.x-source.x)<gap*2){
@@ -216,8 +242,16 @@ function routeBloodBankFlow(container) {
     if(parents.length===1&&!b.decision&&Math.abs(start.x-end.x)<Math.max(28,gap*3)&&start.x>b.left+gap*2&&start.x<b.right-gap*2){targetX=end.x=start.x;}
     // Decision answers use independent ports. Only ordinary steps share a
     // stem and split bus.
-    var shareSource=children.filter(function(link){return nodes[link.dataset.flowLinkTo];}).length>1&&!a.decision;
+    var shareSource=Boolean(sharedGroup)||children.filter(function(link){return nodes[link.dataset.flowLinkTo];}).length>1&&!a.decision;
     var points=null,mergeBus=false;
+    if(sharedGroup){
+      source=sharedGroup.source;start=sharedGroup.start;
+      var junction={x:end.x,y:sharedGroup.busY};
+      var tail=clear(junction,end)?[junction,end]:route(junction,end,false,from,true);
+      if(clear(sharedGroup.stem[sharedGroup.stem.length-1],junction)&&tail){
+        points=sharedGroup.stem.concat(junction,tail.slice(1));
+      }
+    }
     if(parents.length>1&&!sideDirection){
       // Join two downward paths on one horizontal bus, then enter the next
       // box through a single centered vertical stem (a clean U-shaped join).
@@ -288,7 +322,7 @@ function routeBloodBankFlow(container) {
     if(m.dataset.selected==='true')html+='<path d="'+d+'" fill="none" stroke="#ffcf00" stroke-width="'+Math.max(8,2.4*zoom+7)+'" stroke-linecap="round" stroke-linejoin="round"/>';
     html+='<path class="flow-link-path'+(m.dataset.selected==='true'?' selected':'')+'" style="stroke-width:'+Math.max(.6,2.4*zoom)+'" d="'+d+'"'+(m===mergeOwner?' marker-end="url(#'+marker+')"':'')+'/>';
     targets.push({from:from,to:to,branchId:m.dataset.branchId,points:points});
-    if(m.dataset.label && m.dataset.label.toLowerCase()!=='next')pendingLabels.push({marker:m,points:points,source:source,from:from,to:to});
+    if(m.dataset.label && m.dataset.label.toLowerCase()!=='next'&&(!sharedGroup||sharedGroup.leader===m))pendingLabels.push({marker:m,points:points,source:source,from:from,to:to,fixedLabel:sharedGroup?{x:sharedGroup.stemX,y:(sharedGroup.source.y+sharedGroup.busY)/2}:null});
   });
   // Place labels after every route is known, so each answer can avoid nearby
   // connectors and all words are painted above the complete line network.
@@ -323,7 +357,8 @@ function routeBloodBankFlow(container) {
         placedLabels.forEach(function(other){score+=boxOverlap(box,other)*20;});
         if(score<bestScore){bestScore=score;chosen=candidate;}
       });
-      if(chosen){
+      if(item.fixedLabel){labelX=item.fixedLabel.x;labelY=item.fixedLabel.y;placedLabels.push(labelBox({x:labelX,y:labelY}));}
+      else if(chosen){
         labelX=chosen.x;labelY=chosen.y;
         placedLabels.push(labelBox(chosen));
       }
