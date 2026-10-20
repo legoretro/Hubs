@@ -2883,13 +2883,14 @@ function startFlowNodeMove(event,id) {
   const node=Array.from(stage.querySelectorAll('[data-flow-node-id]')).find(function(el){return el.dataset.flowNodeId===id;});
   const wrap=node&&node.closest('.flow-node-wrap');if(!wrap)return;
   const initial={x:parseFloat(wrap.style.left)||0,y:parseFloat(wrap.style.top)||0};
-  const scale=parseFloat(getComputedStyle(stage).zoom)||1;
+  const pointerScale=wrap.getBoundingClientRect().width/Math.max(wrap.offsetWidth,1)||1;
+  const stageZoom=parseFloat(getComputedStyle(stage).zoom)||1;
   const pointer={x:event.clientX,y:event.clientY};
   const handle=event.currentTarget;handle.setPointerCapture(event.pointerId);
   let moved=false,frame=0;
-  function refresh(){frame=0;const width=Math.max(parseFloat(stage.style.width)||0,parseFloat(wrap.style.left)+wrap.offsetWidth+50),height=Math.max(parseFloat(stage.style.height)||0,parseFloat(wrap.style.top)+wrap.offsetHeight+50);stage.style.width=width+'px';stage.style.height=height+'px';preview.style.width=width*scale+'px';preview.style.height=height*scale+'px';flowLinkClickTargets=routeBloodBankFlow(preview);updateFlowRouteFocus(preview);}
+  function refresh(){frame=0;const width=Math.max(parseFloat(stage.style.width)||0,parseFloat(wrap.style.left)+wrap.offsetWidth+50),height=Math.max(parseFloat(stage.style.height)||0,parseFloat(wrap.style.top)+wrap.offsetHeight+50);stage.style.width=width+'px';stage.style.height=height+'px';preview.style.width=width*stageZoom+'px';preview.style.height=height*stageZoom+'px';flowLinkClickTargets=routeBloodBankFlow(preview);updateFlowRouteFocus(preview);}
   function move(e){
-    const x=Math.max(0,initial.x+(e.clientX-pointer.x)/scale),y=Math.max(0,initial.y+(e.clientY-pointer.y)/scale);
+    const x=Math.max(0,initial.x+(e.clientX-pointer.x)/pointerScale),y=Math.max(0,initial.y+(e.clientY-pointer.y)/pointerScale);
     moved=moved||Math.abs(x-initial.x)>2||Math.abs(y-initial.y)>2;
     wrap.style.left=x+'px';wrap.style.top=y+'px';
     if(!frame)frame=requestAnimationFrame(refresh);
@@ -2899,7 +2900,7 @@ function startFlowNodeMove(event,id) {
     if(frame)cancelAnimationFrame(frame);
     if(cancelled===true){wrap.style.left=initial.x+'px';wrap.style.top=initial.y+'px';refresh();return;}
     if(!moved){refresh();return;}
-    const rect=wrap.getBoundingClientRect(),pad=8*scale;
+    const rect=wrap.getBoundingClientRect(),pad=8*pointerScale;
     const overlap=Array.from(stage.querySelectorAll(':scope > .flow-node-wrap')).some(function(other){
       if(other===wrap)return false;
       const r=other.getBoundingClientRect();return rect.left<r.right+pad&&rect.right>r.left-pad&&rect.top<r.bottom+pad&&rect.bottom>r.top-pad;
