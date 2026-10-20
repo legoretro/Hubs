@@ -91,7 +91,20 @@ function layoutBloodBankFlow(container,options){
   var minX=Math.min.apply(null,ids.map(function(id){return center[id]-sizes[id].width/2;}));
   var y=topInset;
   rows.forEach(function(row){var h=0;row.forEach(function(id){var el=elements[id],x=center[id]-sizes[id].width/2-minX+sideInset;el.style.left=x+'px';el.style.top=y+'px';width=Math.max(width,x+sizes[id].width+sideInset);h=Math.max(h,sizes[id].height);});y+=h+verticalGap;});
-  stage.style.width=width+'px';stage.style.height=(print?y-verticalGap+sideInset:y-topInset)+'px';stage.style.zoom=oldZoom;
+  var autoHeight=print?y-verticalGap+sideInset:y-topInset;
+  var saved=options.positions||{};
+  if(ids.length&&ids.every(function(id){return saved[id]&&isFinite(saved[id].x)&&isFinite(saved[id].y);})){
+    width=0;autoHeight=0;
+  }
+  ids.forEach(function(id){
+    var position=saved[id];
+    if(!position||!isFinite(position.x)||!isFinite(position.y))return;
+    var x=Math.max(0,position.x),top=Math.max(0,position.y);
+    elements[id].style.left=x+'px';elements[id].style.top=top+'px';
+    width=Math.max(width,x+sizes[id].width+sideInset);
+    autoHeight=Math.max(autoHeight,top+sizes[id].height+sideInset);
+  });
+  stage.style.width=width+'px';stage.style.height=autoHeight+'px';stage.style.zoom=oldZoom;
 }
 
 /* Orthogonal connectors shared by the editor and standalone PDF export. */
@@ -258,7 +271,9 @@ function routeBloodBankFlow(container) {
       var lowestParent=Math.max.apply(null,parents.map(function(link){return nodes[link.dataset.flowLinkFrom].bottom;}));
       var busY=lowestParent+(b.top-lowestParent)/2;
       var busStart={x:start.x,y:busY},busJoin={x:targetX,y:busY};
-      if(busY>start.y+gap&&busY<b.top-approach-gap&&clear(start,busStart)&&clear(busStart,busJoin)&&separate([start,busStart,busJoin],from,true)){
+      // Incoming branches intentionally share this final bus. Treating its
+      // overlap as a collision sends them on long crossing detours instead.
+      if(busY>start.y+gap&&busY<b.top-approach-gap&&clear(start,busStart)&&clear(busStart,busJoin)){
         points=[start,busStart,busJoin];
         mergeBus=true;
       }
