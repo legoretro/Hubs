@@ -601,7 +601,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 .bb-calc-actions{display:flex;justify-content:flex-end;margin:8px 0}.bb-antibody-remove{border:1px solid var(--rose);background:#fff;color:var(--crimson);border-radius:8px;padding:6px 9px;cursor:pointer;font-weight:700}.bb-antibody-meta{display:flex;align-items:center;justify-content:space-between;gap:8px}.bb-antibody-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
 .bb-map-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;padding:20px 0}.bb-map-tile{position:relative;cursor:help;outline-offset:3px}.bb-map-tile:focus{outline:2px solid var(--crimson)}.bb-map-tile .bb-map-tip{display:none;position:absolute;left:8px;right:8px;bottom:calc(100% - 15px);z-index:3;background:var(--wine);color:#fff;padding:10px;border-radius:8px;font:12px/1.35 Arial,sans-serif;box-shadow:0 4px 16px #0003}.bb-map-tile:hover .bb-map-tip,.bb-map-tile:focus .bb-map-tip,.bb-map-tile.show-structure .bb-map-tip{display:block}
 #simulationShell{zoom:.9}.abo-methods{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}.abo-method{min-width:0}.abo-method>h3{font-size:15px;color:var(--wine);margin:0 0 10px}.abo-gel-card{display:flex;gap:5px;align-items:flex-start;padding:12px;background:#f2f6fb;border:3px solid #d5e0ec;border-radius:14px;min-height:180px;width:max-content;max-width:100%}.abo-gel-well{width:36px;text-align:center;font-size:10px;font-weight:700;color:var(--wine)}.abo-gel-column{height:125px;border:2px solid #b4c5d4;border-radius:5px 5px 14px 14px;background:linear-gradient(#fff 0 10%,#ffe9d8 10% 100%);position:relative;overflow:hidden}.abo-gel-column:before{content:'';position:absolute;top:7px;left:7px;right:7px;height:9px;border-radius:50%;background:#a80f2e}.abo-gel-column.is-read:before{top:var(--gel-top,7px)}.abo-gel-result{margin-top:5px}.abo-rack-row{flex-wrap:wrap}.abo-tube-btn{cursor:pointer}
-.abo-gel-column:not(.is-read):before{background:#c8b5a5;opacity:.35}
+.abo-gel-card{background:#eef4fb;border-color:#8ba0cc;gap:4px;align-items:flex-end;flex-wrap:wrap}.abo-gel-well{width:54px;min-width:54px}.abo-gel-well svg{display:block;width:54px;height:134px}.abo-gel-well .abo-gel-result{min-height:14px}
 @media(max-width:760px){#simulationShell{zoom:1}.abo-methods{grid-template-columns:1fr}.bb-map-tile .bb-map-tip{bottom:auto;top:24px}}
 @media(max-width:1000px){.bb-system-overview{grid-template-columns:1fr}.bb-system-overview .membrane-card-live{max-width:none}}
 @media(max-width:820px){.flow-branches{grid-auto-flow:column;grid-auto-columns:minmax(210px,max-content);grid-template-columns:none;min-width:max-content}.flow-tree{min-width:max-content;justify-content:center}.flow-node-wrap{min-width:190px;width:auto}.flow-node-row{width:auto;flex-direction:row;align-items:flex-start}.flow-node{max-width:270px;min-width:185px;width:auto}.flow-note-card{width:152px;max-width:152px}.flow-canvas{height:60dvh;min-height:300px}.flow-diagrams{font-size:12px}.flow-diagrams input{width:150px}.bb-calc-inputs label:last-child{grid-column:auto}}
@@ -762,7 +762,6 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
   <div class="modal-box" style="max-width:560px">
     <div style="font-size:26px;margin-bottom:6px"></div>
     <h3 style="margin-bottom:4px">Gel Card (Column Agglutination)</h3>
-    <p style="font-size:12px;color:var(--warm-grey);margin-bottom:14px">Same patient, same antibodies -- gel format. Strong reactions stay high, weaker agglutinates travel lower, and negative cells pellet at the bottom.</p>
     <div id="gelCardContent" style="overflow-x:auto;margin-bottom:14px"></div>
     <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
       <button class="btn btn-primary" onclick="downloadGelCardPng()" title="Download a high-resolution PNG of this gel card">Download PNG</button>
@@ -1063,7 +1062,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="shared/pdf-export.js?v=20260605-export-fit"></script>
 <script src="safe-supabase-sync.js"></script>
-<script src="shared/bloodbank-flow.js?v=20261021-compact-routing-47"></script>
+<script src="shared/bloodbank-flow.js?v=20261021-separated-branches-48"></script>
 <script>
 // ============================================================
 // CONFIG - SUPABASE + PASSWORD
@@ -9135,16 +9134,6 @@ function showGelCard() {
       '<ellipse cx="44" cy="182" rx="8" ry="2.5" fill="#c43150" opacity=".8"/>';
   }
 
-  function gradeDescription(grade) {
-    if (grade === '4+') return 'solid agglutinate band at the top';
-    if (grade === '3+') return 'agglutinates retained in the upper gel';
-    if (grade === '2+') return 'agglutinates dispersed through the gel';
-    if (grade === '1+') return 'small agglutinates low in the gel above the pellet';
-    if (grade === 'MF') return 'a top agglutinate band plus a bottom pellet';
-    if (grade === 'NT') return 'not tested';
-    return 'a compact red-cell pellet at the bottom';
-  }
-
   function gelCol(col) {
     var positive = positiveGelGrade(col.grade);
     var accent = '#246494';
@@ -9172,19 +9161,12 @@ function showGelCard() {
     '<div style="background:#d8e5f5;border:1px solid #8ba0cc;border-radius:5px;text-align:center;font-size:11px;font-weight:800;color:#245d8b;padding:5px;margin-top:10px;letter-spacing:1px">ANTI-HUMAN GLOBULIN (AHG)</div>' +
     '</div>';
 
-  var resultText = cols.map(function(col) {
-    return '<strong>' + col.label + ' ' + col.grade + ':</strong> ' + gradeDescription(col.grade) + '.';
-  }).join(' ');
   window.currentGelCardColumns = cols.map(function(col) {
     return {label:col.label, grade:col.grade};
   });
 
   document.getElementById('gelCardContent').innerHTML =
-    '<div style="text-align:center;margin-bottom:14px">' + gelHTML + '</div>' +
-    '<div style="font-size:12px;color:var(--warm-grey);background:var(--blush);border-radius:8px;padding:12px;line-height:1.6">' +
-    '<strong>How to read the card:</strong> Strong reactions remain high in the column. As reaction strength decreases, smaller agglutinates travel farther down the gel. A negative reaction forms a compact pellet at the bottom.<br><br>' +
-    resultText +
-    '</div>';
+    '<div style="text-align:center;margin-bottom:14px">' + gelHTML + '</div>';
 
   document.getElementById('gelModal').classList.add('visible');
 }
@@ -9585,7 +9567,8 @@ function normalizeAboCase(item) {
     fwd: {
       antiA: String((item.fwd && item.fwd.antiA) || '0'),
       antiB: String((item.fwd && item.fwd.antiB) || '0'),
-      antiD: String((item.fwd && item.fwd.antiD) || '0')
+      antiD: String((item.fwd && item.fwd.antiD) || '0'),
+      dControl: String((item.fwd && item.fwd.dControl) || '0')
     },
     rev: {
       a1: String((item.rev && item.rev.a1) || '0'),
@@ -9614,11 +9597,13 @@ function aboStrength(result) {
 
 function aboTubeDots(strength) {
   if (!strength) return '';
-  var points = [
-    [17,62,5],[30,60,5.5],[22,72,4.5],[36,70,4],[15,80,4],[29,78,5],[36,84,3.6],[20,88,3.8],[27,67,3.5]
-  ];
-  var count = strength === 1 ? 2 : strength === 2 ? 4 : strength === 3 ? 6 : 9;
-  return points.slice(0, count).map(function(p, i) {
+  if (strength >= 4) return '<ellipse class="abo-clump" cx="25" cy="73" rx="13" ry="10"/><ellipse cx="20" cy="69" rx="6" ry="3" fill="#ce4561" opacity=".65"/>';
+  var points = strength === 3
+    ? [[24,69,8],[15,78,3],[34,80,3.2],[20,87,2.5],[31,90,2.4]]
+    : strength === 2
+      ? [[16,68,5],[32,70,5.5],[22,81,5],[34,88,4.6],[15,91,4]]
+      : [[15,66,2],[25,70,2.3],[34,74,2],[19,81,2.2],[29,87,2],[36,92,1.8]];
+  return points.map(function(p, i) {
     return '<circle class="abo-clump ' + (i % 2 ? 'light' : '') + '" cx="' + p[0] + '" cy="' + p[1] + '" r="' + p[2] + '" opacity=".95"/>';
   }).join('');
 }
@@ -9647,8 +9632,23 @@ function aboTube(id, label, result, color, bg) {
   '</button>';
 }
 function aboGelWell(id,label,result){
-  var read=!!aboShaken[id],strength=aboStrength(result),top=strength>=3?'8px':strength===2?'40px':strength===1?'72px':'108px';
-  return '<button type="button" class="abo-gel-well abo-tube-btn" onclick="shakeAboTube(\''+id+'\')" title="Read '+escAttr(label)+' gel well"><div class="abo-gel-column'+(read?' is-read':'')+'" style="--gel-top:'+(read?top:'108px')+'"></div><span>'+escText(label)+'</span><div class="abo-gel-result">'+(read?escText(result):'read')+'</div></button>';
+  var read=!!aboShaken[id],strength=aboStrength(result),marks='';
+  if(read){
+    if(strength>=4)marks='<ellipse cx="44" cy="77" rx="12" ry="5" fill="#850a2b"/>';
+    else if(strength===3)marks='<ellipse cx="44" cy="84" rx="9" ry="5" fill="#850a2b"/><circle cx="36" cy="94" r="3" fill="#a91038"/><circle cx="51" cy="97" r="3" fill="#a91038"/>';
+    else if(strength===2)marks='<circle cx="39" cy="108" r="4" fill="#a91038"/><circle cx="48" cy="119" r="4" fill="#a91038"/><circle cx="36" cy="133" r="3.5" fill="#a91038"/><circle cx="50" cy="144" r="3.5" fill="#a91038"/>';
+    else if(strength===1)marks='<circle cx="39" cy="150" r="2.5" fill="#a91038"/><circle cx="49" cy="159" r="2.5" fill="#a91038"/><circle cx="43" cy="168" r="2.5" fill="#a91038"/><ellipse cx="44" cy="184" rx="6" ry="3" fill="#850a2b"/>';
+    else marks='<ellipse cx="44" cy="184" rx="11" ry="5" fill="#850a2b"/><ellipse cx="44" cy="182" rx="7" ry="2" fill="#c43150"/>';
+  }
+  return '<button type="button" class="abo-gel-well abo-tube-btn" onclick="shakeAboTube(\''+id+'\')" title="Read '+escAttr(label)+' gel well">' +
+    '<svg viewBox="0 0 88 218" role="img" aria-label="'+escAttr(label)+' gel reaction '+(read?escAttr(result):'unread')+'" xmlns="http://www.w3.org/2000/svg">' +
+      '<path d="M17 11 H71 V58 L58 75 V188 Q58 199 44 204 Q30 199 30 188 V75 L17 58Z" fill="#fff" stroke="#246494" stroke-width="2.8"/>' +
+      '<path d="M20 16 H68 V55 L55 72 V185 Q55 193 44 197 Q33 193 33 185 V72 L20 55Z" fill="#f7fbfe"/>' +
+      '<rect x="33" y="75" width="22" height="113" rx="10" fill="#dcecf5" opacity=".88"/>' +
+      '<path d="M20 51 Q44 56 68 51" fill="none" stroke="#bfd4df" stroke-width="1.4"/>' +
+      '<rect x="13" y="5" width="62" height="10" rx="3" fill="#f7f7f7" stroke="#a8afb5" stroke-width="2"/>' +
+      '<rect x="9" y="1" width="70" height="7" rx="2" fill="#fff" stroke="#a8afb5" stroke-width="2"/>' + marks +
+    '</svg><span>'+escText(label)+'</span><div class="abo-gel-result">'+(read?escText(result):'read')+'</div></button>';
 }
 
 function shakeAboTube(id) {
@@ -9661,7 +9661,7 @@ function revealAllAboTubes() {
 }
 
 function getAboTubeIds(cs) {
-  var ids = ['fwdA','fwdB','fwdD','revA1','revB'];
+  var ids = ['fwdA','fwdB','fwdD','fwdControl','revA1','revB'];
   (cs.extra || []).forEach(function(t) { ids.push('extra_' + t.id); });
   return ids;
 }
@@ -9703,6 +9703,7 @@ function renderABOsim() {
         aboTube('fwdA','Anti-A', cs.fwd.antiA, '#c0173d') +
         aboTube('fwdB','Anti-B', cs.fwd.antiB, '#1a5c8c') +
         aboTube('fwdD','Anti-D', cs.fwd.antiD, '#5a2070') +
+        aboTube('fwdControl','D Control', cs.fwd.dControl || '0', '#526678') +
       '</div></div>' +
       '<div><div class="abo-rack-title">Reverse: patient serum + known cells</div><div class="abo-rack-group">' +
         aboTube('revA1','A1 Cells', cs.rev.a1, '#7a4e00', 'rgba(252,240,220,.85)') +
@@ -9712,7 +9713,7 @@ function renderABOsim() {
         return aboTube('extra_' + t.id, t.label, t.result, t.color, t.bg);
       }).join('') + '</div></div>' : '') +
     '</div></div><div class="abo-method"><h3>Gel Method</h3><div class="abo-gel-card">'+
-      aboGelWell('fwdA','Anti-A',cs.fwd.antiA)+aboGelWell('fwdB','Anti-B',cs.fwd.antiB)+aboGelWell('fwdD','Anti-D',cs.fwd.antiD)+aboGelWell('revA1','A1',cs.rev.a1)+aboGelWell('revB','B',cs.rev.b)+
+      aboGelWell('fwdA','Anti-A',cs.fwd.antiA)+aboGelWell('fwdB','Anti-B',cs.fwd.antiB)+aboGelWell('fwdD','Anti-D',cs.fwd.antiD)+aboGelWell('fwdControl','D Ctrl',cs.fwd.dControl||'0')+aboGelWell('revA1','A1',cs.rev.a1)+aboGelWell('revB','B',cs.rev.b)+
     '</div></div></div>' +
     '<div class="phase-instr" style="margin-top:10px">Click each tube or gel well to read its reaction. Agglutination is graded 1+ to 4+.</div>' +
     '</div>' +
@@ -9745,6 +9746,7 @@ function updateAboCase(index, field, value) {
   if (field === 'antiA') item.fwd.antiA = value;
   if (field === 'antiB') item.fwd.antiB = value;
   if (field === 'antiD') item.fwd.antiD = value;
+  if (field === 'dControl') item.fwd.dControl = value;
   if (field === 'a1') item.rev.a1 = value;
   if (field === 'b') item.rev.b = value;
   if (field === 'a1lectin') {
@@ -9778,12 +9780,13 @@ function buildAboAdminPanel() {
     item = normalizeAboCase(item);
     var lectin = (item.extra || []).find(function(t){ return t.id === 'a1lectin'; }) || {result:''};
     var saline = (item.extra || []).find(function(t){ return t.id === 'saline'; }) || {result:''};
-    return '<div style="display:grid;grid-template-columns:90px 110px repeat(5,62px) repeat(2,76px) auto;gap:6px;align-items:center;margin-bottom:7px">' +
+    return '<div style="display:grid;grid-template-columns:90px 110px repeat(6,62px) repeat(2,76px) auto;gap:6px;align-items:center;margin-bottom:7px">' +
       '<input class="xm-input" value="' + escText(item.type) + '" placeholder="Type" onchange="updateAboCase(' + i + ',\'type\',this.value)">' +
       '<input class="xm-input" value="' + escText(item.label) + '" placeholder="Label" onchange="updateAboCase(' + i + ',\'label\',this.value)">' +
       '<input class="xm-input" value="' + escText(item.fwd.antiA) + '" title="Anti-A" onchange="updateAboCase(' + i + ',\'antiA\',this.value)">' +
       '<input class="xm-input" value="' + escText(item.fwd.antiB) + '" title="Anti-B" onchange="updateAboCase(' + i + ',\'antiB\',this.value)">' +
       '<input class="xm-input" value="' + escText(item.fwd.antiD) + '" title="Anti-D" onchange="updateAboCase(' + i + ',\'antiD\',this.value)">' +
+      '<input class="xm-input" value="' + escText(item.fwd.dControl) + '" title="D control" onchange="updateAboCase(' + i + ',\'dControl\',this.value)">' +
       '<input class="xm-input" value="' + escText(item.rev.a1) + '" title="A1 cells" onchange="updateAboCase(' + i + ',\'a1\',this.value)">' +
       '<input class="xm-input" value="' + escText(item.rev.b) + '" title="B cells" onchange="updateAboCase(' + i + ',\'b\',this.value)">' +
       '<input class="xm-input" value="' + escText(lectin.result) + '" placeholder="A1 lectin" onchange="updateAboCase(' + i + ',\'a1lectin\',this.value)">' +
@@ -9793,7 +9796,7 @@ function buildAboAdminPanel() {
   }).join('');
   return '<div class="xm-admin-panel"><div class="sec-label" style="margin-bottom:10px">Admin: Add ABO Typing Cases</div>' +
     '<div style="font-size:12px;color:var(--warm-grey);margin-bottom:8px">Use 0, 1+, 2+, 3+, or 4+. Custom cases autosave with Simulation Lab.</div>' +
-    '<div style="display:grid;grid-template-columns:90px 110px repeat(5,62px) repeat(2,76px) auto;gap:6px;font-size:10px;color:var(--warm-grey);font-weight:800;margin-bottom:4px"><span>Type</span><span>Label</span><span>Anti-A</span><span>Anti-B</span><span>Anti-D</span><span>A1</span><span>B</span><span>A1 lectin</span><span>Saline</span><span></span></div>' +
+    '<div style="display:grid;grid-template-columns:90px 110px repeat(6,62px) repeat(2,76px) auto;gap:6px;font-size:10px;color:var(--warm-grey);font-weight:800;margin-bottom:4px"><span>Type</span><span>Label</span><span>Anti-A</span><span>Anti-B</span><span>Anti-D</span><span>D Ctrl</span><span>A1</span><span>B</span><span>A1 lectin</span><span>Saline</span><span></span></div>' +
     (rows || '<div class="phase-instr">No custom ABO cases yet.</div>') +
     '<button class="btn btn-ghost btn-sm" onclick="addAboCase()" style="margin-top:8px">+ Add ABO Case</button>' +
   '</div>';
