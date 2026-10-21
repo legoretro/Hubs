@@ -20,7 +20,7 @@ function layoutBloodBankFlow(container,options){
   for(var q=0;q<queue.length;q++){var id=queue[q];ids.forEach(function(to){if(incoming[to].indexOf(id)<0)return;rank[to]=Math.max(rank[to],rank[id]+1);remaining[to]--;if(!remaining[to])queue.push(to);});}
   var rows=[];ids.forEach(function(id){(rows[rank[id]]||(rows[rank[id]]=[])).push(id);});
   var center={},anchor={},sizes={},width=0,orderedBranchChild={};
-  ids.forEach(function(id){var el=elements[id];el.style.left='0';el.style.top='0';var r=el.getBoundingClientRect();sizes[id]={width:Math.max(r.width,240),height:Math.max(r.height,62)};});
+  ids.forEach(function(id){var el=elements[id];el.style.left='0';el.style.top='0';var r=el.getBoundingClientRect();sizes[id]={width:Math.max(r.width,el.offsetWidth,240),height:Math.max(r.height,el.offsetHeight,62)};});
   var pitch=Math.max.apply(null,ids.map(function(id){return sizes[id].width;}))+horizontalGap;
   rows.forEach(function(row,rowIndex){
     row.forEach(function(id){
@@ -90,16 +90,35 @@ function layoutBloodBankFlow(container,options){
   }
   var minX=Math.min.apply(null,ids.map(function(id){return center[id]-sizes[id].width/2;}));
   var y=topInset;
-  rows.forEach(function(row){var h=0;row.forEach(function(id){var el=elements[id],x=center[id]-sizes[id].width/2-minX+sideInset;el.style.left=x+'px';el.style.top=y+'px';width=Math.max(width,x+sizes[id].width+sideInset);h=Math.max(h,sizes[id].height);});y+=h+verticalGap;});
+  rows.forEach(function(row,index){var h=0;row.forEach(function(id){var el=elements[id],x=center[id]-sizes[id].width/2-minX+sideInset;el.style.left=x+'px';el.style.top=y+'px';width=Math.max(width,x+sizes[id].width+sideInset);h=Math.max(h,sizes[id].height);});
+    var next=rows[index+1]||[],mergeSpace=next.some(function(id){return incoming[id].length>1;})?(print?42:(compact?52:64)):0;
+    y+=h+verticalGap+mergeSpace;
+  });
   var autoHeight=print?y-verticalGap+sideInset:y-topInset;
   var saved=options.positions||{};
-  if(ids.length&&ids.every(function(id){return saved[id]&&isFinite(saved[id].x)&&isFinite(saved[id].y);})){
+  var completeSaved=ids.length&&ids.every(function(id){return saved[id]&&isFinite(saved[id].x)&&isFinite(saved[id].y);});
+  var savedShift={};
+  if(completeSaved){
+    // Older saved charts can leave too little room above a join. Move that
+    // row and everything below it together; never move its ancestors.
+    var carried=0,previousBottom=-Infinity;
+    rows.forEach(function(row){
+      if(!row.length)return;
+      var top=Math.min.apply(null,row.map(function(id){return Math.max(0,saved[id].y)+carried;}));
+      var joins=row.some(function(id){return incoming[id].length>1;});
+      var clearance=joins?(print?170:(compact?230:320)):(print?100:(compact?130:160));
+      if(previousBottom>-Infinity)carried+=Math.max(0,previousBottom+clearance-top);
+      row.forEach(function(id){savedShift[id]=carried;});
+      previousBottom=Math.max(previousBottom,Math.max.apply(null,row.map(function(id){return Math.max(0,saved[id].y)+carried+sizes[id].height;})));
+    });
+  }
+  if(completeSaved){
     width=0;autoHeight=0;
   }
   ids.forEach(function(id){
     var position=saved[id];
     if(!position||!isFinite(position.x)||!isFinite(position.y))return;
-    var x=Math.max(0,position.x),top=Math.max(0,position.y);
+    var x=Math.max(0,position.x),top=Math.max(0,position.y)+(savedShift[id]||0);
     elements[id].style.left=x+'px';elements[id].style.top=top+'px';
     width=Math.max(width,x+sizes[id].width+sideInset);
     autoHeight=Math.max(autoHeight,top+sizes[id].height+sideInset);
@@ -116,7 +135,7 @@ function routeBloodBankFlow(container) {
   if(!isFinite(pageScale)||pageScale<=0)pageScale=1;
   var zoom=parseFloat(getComputedStyle(container.querySelector('.flow-tree')).zoom)||1;
   var printExport=container.classList.contains('flow-export-wrap');
-  var gap=printExport?Math.max(2,6*zoom):Math.max(5,15*zoom);
+  var gap=printExport?Math.max(8,12*zoom):Math.max(9,24*zoom);
   function rect(el){var r=el.getBoundingClientRect();return {left:(r.left-origin.left)/pageScale,right:(r.right-origin.left)/pageScale,top:(r.top-origin.top)/pageScale,bottom:(r.bottom-origin.top)/pageScale};}
   container.querySelectorAll('[data-flow-node-id]').forEach(function(el){nodes[el.dataset.flowNodeId]=rect(el);nodes[el.dataset.flowNodeId].decision=el.classList.contains('question');});
   var obstacles=Array.from(container.querySelectorAll('.flow-node,.flow-note-card')).map(function(el){var r=rect(el);return {left:r.left-gap/2,right:r.right+gap/2,top:r.top-gap/2,bottom:r.bottom+gap/2};});
@@ -238,6 +257,7 @@ function routeBloodBankFlow(container) {
     }else if(a.decision&&children.length===1){
       bottomBranch=Math.abs(end.x-start.x)<(a.right-a.left)*.35;
     }
+    if(parents.length>1&&b.top>a.bottom+gap*3)bottomBranch=true;
     if(!sharedGroup&&a.decision&&!bottomBranch&&(children.length>1||Math.abs(end.x-start.x)>(a.right-a.left)*.35)){
       sideDirection=end.x<start.x?-1:1;
       source={x:sideDirection<0?a.left:a.right,y:(a.top+a.bottom)/2};

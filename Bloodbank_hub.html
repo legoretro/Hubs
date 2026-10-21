@@ -1058,7 +1058,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="shared/pdf-export.js?v=20260605-export-fit"></script>
 <script src="safe-supabase-sync.js"></script>
-<script src="shared/bloodbank-flow.js?v=20261020-local-layout-44"></script>
+<script src="shared/bloodbank-flow.js?v=20261020-subtree-spacing-45"></script>
 <script>
 // ============================================================
 // CONFIG - SUPABASE + PASSWORD
@@ -2912,6 +2912,51 @@ function startFlowNodeMove(event,id) {
   function cancel(){finish(true);}
   handle.addEventListener('pointermove',move);handle.addEventListener('pointerup',finish);handle.addEventListener('pointercancel',cancel);
 }
+function rearrangeFlowBranchSubtrees(data,parentId,oldOrder,before) {
+  const parent=before[parentId];if(!parent)return before;
+  const slots=oldOrder.map(function(branch){return before[branch.to]&&before[branch.to].x;});
+  const shifts={},parents={},owned={};
+  Object.keys(data.nodes).forEach(function(id){(data.nodes[id].branches||[]).forEach(function(branch){(parents[branch.to]||(parents[branch.to]=[])).push(id);});});
+  data.nodes[parentId].branches.forEach(function(branch,index){
+    const start=before[branch.to];if(!start||!Number.isFinite(slots[index]))return;
+    const delta=slots[index]-start.x,seen={};
+    function visit(id){
+      if(seen[id]||!data.nodes[id]||!before[id]||before[id].y<=parent.y)return;
+      seen[id]=true;owned[id]=true;(shifts[id]||(shifts[id]=[])).push(delta);
+      (data.nodes[id].branches||[]).forEach(function(child){visit(child.to);});
+    }
+    visit(branch.to);
+  });
+  const positions={};
+  Object.keys(before).forEach(function(id){positions[id]={x:before[id].x,y:before[id].y};});
+  Object.keys(shifts).forEach(function(id){
+    const values=shifts[id].slice();
+    if((parents[id]||[]).some(function(p){return p!==parentId&&!owned[p];}))values.push(0);
+    positions[id].x=Math.max(0,before[id].x+values.reduce(function(sum,value){return sum+value;},0)/values.length);
+  });
+  // Keep the chosen parent and every row above it fixed. Spread only lower
+  // rows, carrying each branch's descendants into its new column.
+  const widths={},heights={};document.querySelectorAll('#flowStage > .flow-node-wrap').forEach(function(wrap){
+    const el=wrap.querySelector('[data-flow-node-id]');if(el){widths[el.dataset.flowNodeId]=Math.max(wrap.offsetWidth,230);heights[el.dataset.flowNodeId]=Math.max(wrap.offsetHeight,62);}
+  });
+  const rowKeys=[...new Set(Object.keys(positions).filter(function(id){return before[id].y>parent.y;}).map(function(id){return before[id].y.toFixed(1);}))].sort(function(a,b){return Number(a)-Number(b);});
+  let extraY=0,previousBottom=Math.max.apply(null,Object.keys(before).filter(function(id){return Math.abs(before[id].y-parent.y)<1;}).map(function(id){return before[id].y+(heights[id]||62);}));
+  rowKeys.forEach(function(key){
+    const row=Object.keys(positions).filter(function(id){return before[id].y.toFixed(1)===key;});
+    const merge=row.some(function(id){return (parents[id]||[]).length>1;});
+    const clearance=merge?320:160;
+    if(Number(key)+extraY<previousBottom+clearance)extraY+=previousBottom+clearance-(Number(key)+extraY);
+    row.sort(function(a,b){return positions[a].x-positions[b].x||before[a].x-before[b].x;});
+    let right=-Infinity;
+    row.forEach(function(id){
+      positions[id].x=Math.max(0,positions[id].x,right+58);
+      positions[id].y=before[id].y+extraY;
+      right=positions[id].x+(widths[id]||240);
+    });
+    previousBottom=Math.max.apply(null,row.map(function(id){return positions[id].y+(heights[id]||62);}));
+  });
+  return positions;
+}
 function swapSelectedFlowBranches(direction) {
   if (!isAdmin) return;
   const data = getFlowchartData();
@@ -2926,13 +2971,9 @@ function swapSelectedFlowBranches(direction) {
     if (index<0||other<0||other>=node.branches.length) return;
     const branch=node.branches[index];node.branches[index]=node.branches[other];node.branches[other]=branch;
   } else node.branches.reverse();
-  // Keep every other box in place. Only siblings attached to this parent
-  // exchange slots; layout must not recenter their ancestors or nearby paths.
-  const slots=oldOrder.map(function(branch){return before[branch.to]&&before[branch.to].x;});
-  node.branches.forEach(function(branch,index){if(before[branch.to]&&Number.isFinite(slots[index]))before[branch.to].x=slots[index];});
-  data.positions=before;
+  data.positions=rearrangeFlowBranchSubtrees(data,id,oldOrder,before);
   saveFlowchartData(data, true);
-  showToast('Only these branches moved. Undo is available.');
+  showToast('Branch and downstream boxes moved. Undo is available.');
 }
 function selectFlowNode(id) {
   if (!isAdmin) return;
