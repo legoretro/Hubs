@@ -109,7 +109,7 @@ function layoutBloodBankFlow(container,options){
       var desired={};
       row.forEach(function(id){
         var parents=incoming[id];if(!parents.length){desired[id]=visualSaved[id].x;return;}
-        var parentX=parents.reduce(function(sum,p){return sum+visualSaved[p].x+sizes[p].width/2;},0)/parents.length;
+        var parentX=parents.length>1?Math.min.apply(null,parents.map(function(p){return visualSaved[p].x+sizes[p].width/2;})):visualSaved[parents[0]].x+sizes[parents[0]].width/2;
         var offset=0;
         if(parents.length===1){var siblings=out[parents[0]].filter(function(to){return rank[to]===rowIndex&&incoming[to].length===1;});offset=(siblings.indexOf(id)-(siblings.length-1)/2)*(sizes[id].width+horizontalGap);}
         desired[id]=parentX+offset-sizes[id].width/2;
