@@ -565,7 +565,7 @@ textarea{resize:none;overflow:hidden}
 @media(max-width:480px){.sys-card{padding:14px}.section{padding:14px 10px 48px}.ws-table td.ws-label{width:130px;font-size:10px}}
 
 .bb-welcome{max-width:1050px;margin:12px auto 24px;padding:38px;border-radius:24px;background:var(--blush);border:1px solid var(--rose)}
-.bb-home-carousel{min-height:190px;margin:0 auto 20px;max-width:1180px;border-radius:18px;background:transparent}
+.bb-home-carousel:empty{display:none}.bb-home-carousel{margin:18px auto 0;max-width:900px;border-radius:18px}.bb-carousel-frame{position:relative;overflow:hidden;border:1px solid var(--rose);border-radius:14px;background:var(--cream)}.bb-carousel-frame img{display:block;width:100%;max-height:440px;object-fit:contain}.bb-carousel-controls{display:flex;align-items:center;justify-content:center;gap:12px;margin:8px 0}.bb-carousel-admin{padding:12px;margin-top:12px;border:1px dashed var(--rose);border-radius:12px}.bb-carousel-admin-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.bb-carousel-admin input[type=url]{flex:1;min-width:180px;padding:8px;border:1px solid var(--rose);border-radius:8px}
 .bb-welcome h1{font-size:clamp(28px,4vw,48px);line-height:1.15;margin:12px 0;color:var(--wine,#5a0e20)}
 .bb-home-grid{max-width:1050px;margin:auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 .bb-home-card{text-align:left;border:1px solid var(--rose);border-top:4px solid var(--crimson);background:var(--cream,#fffaf7);border-radius:16px;padding:24px;cursor:pointer;color:inherit;font:inherit}
@@ -598,6 +598,11 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 .flow-selection-editor{display:none;margin:4px 0 0}.admin-mode .flow-selection-editor{display:block}.flow-selection-heading{font-size:12px;font-weight:800;color:var(--warm-grey);margin:0 0 4px}.flow-selection-editor .flow-selection-panel{width:100%;box-sizing:border-box;max-height:none;overflow:visible}
 .bb-system-overview{display:grid;grid-template-columns:minmax(220px,380px) minmax(220px,1fr);gap:16px;align-items:stretch}.bb-system-overview .sys-card{max-width:none}.bb-history .timeline{margin-top:14px}.bb-structure-wrap{position:relative;cursor:help;outline-offset:4px}.bb-structure-tooltip{display:none;position:absolute;z-index:10;left:0;right:0;bottom:30px;padding:13px;background:#5a0e20;color:#fff;border-radius:9px;font-size:13px;line-height:1.5;box-shadow:0 4px 20px #0003}.bb-structure-wrap:hover .bb-structure-tooltip,.bb-structure-wrap:focus .bb-structure-tooltip,.bb-structure-wrap.show-structure .bb-structure-tooltip{display:block}.bb-structure-hint{display:block;text-align:center;font-size:11px;color:var(--warm-grey)}
 .bb-calc-inputs{grid-template-columns:1fr 1fr}.bb-math-steps{padding-left:22px}.bb-math-steps li{margin:10px 0}.bb-math-steps b{font-size:inherit}.flow-shell,.flow-builder-card{min-width:0;max-width:100%}.flow-editor-tray{position:relative;top:auto;margin:0 0 12px;box-shadow:none}.flow-diagrams{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}.flow-diagrams select,.flow-diagrams input{max-width:210px;padding:8px;border:1px solid var(--rose);border-radius:8px;font:inherit;background:#fff;color:var(--wine)}.flow-diagrams label{font-weight:700}.flow-canvas{height:65dvh;min-height:330px;max-height:800px;overflow:auto;overscroll-behavior:auto;touch-action:pan-x pan-y;scroll-padding:20px;padding:18px;position:relative}.flow-tree{padding:35px 45px 60px}.flow-link-path{stroke-dasharray:none;stroke-width:2.4;opacity:1}.flow-branch:before,.flow-branch:after{display:none}.flow-branches{gap:34px;margin-top:65px}.flow-edge-row{margin-top:-30px;margin-bottom:16px}.flow-route-label{font:700 11px Arial;fill:#5a0e20;stroke:#fff;stroke-width:5;paint-order:stroke;stroke-linejoin:round}
+.bb-calc-actions{display:flex;justify-content:flex-end;margin:8px 0}.bb-antibody-remove{border:1px solid var(--rose);background:#fff;color:var(--crimson);border-radius:8px;padding:6px 9px;cursor:pointer;font-weight:700}.bb-antibody-meta{display:flex;align-items:center;justify-content:space-between;gap:8px}.bb-antibody-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.bb-map-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;padding:20px 0}.bb-map-tile{position:relative;cursor:help;outline-offset:3px}.bb-map-tile:focus{outline:2px solid var(--crimson)}.bb-map-tile .bb-map-tip{display:none;position:absolute;left:8px;right:8px;bottom:calc(100% - 15px);z-index:3;background:var(--wine);color:#fff;padding:10px;border-radius:8px;font:12px/1.35 Arial,sans-serif;box-shadow:0 4px 16px #0003}.bb-map-tile:hover .bb-map-tip,.bb-map-tile:focus .bb-map-tip,.bb-map-tile.show-structure .bb-map-tip{display:block}
+#simulationShell{zoom:.9}.abo-methods{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}.abo-method{min-width:0}.abo-method>h3{font-size:15px;color:var(--wine);margin:0 0 10px}.abo-gel-card{display:flex;gap:5px;align-items:flex-start;padding:12px;background:#f2f6fb;border:3px solid #d5e0ec;border-radius:14px;min-height:180px;width:max-content;max-width:100%}.abo-gel-well{width:36px;text-align:center;font-size:10px;font-weight:700;color:var(--wine)}.abo-gel-column{height:125px;border:2px solid #b4c5d4;border-radius:5px 5px 14px 14px;background:linear-gradient(#fff 0 10%,#ffe9d8 10% 100%);position:relative;overflow:hidden}.abo-gel-column:before{content:'';position:absolute;top:7px;left:7px;right:7px;height:9px;border-radius:50%;background:#a80f2e}.abo-gel-column.is-read:before{top:var(--gel-top,7px)}.abo-gel-result{margin-top:5px}.abo-rack-row{flex-wrap:wrap}.abo-tube-btn{cursor:pointer}
+.abo-gel-column:not(.is-read):before{background:#c8b5a5;opacity:.35}
+@media(max-width:760px){#simulationShell{zoom:1}.abo-methods{grid-template-columns:1fr}.bb-map-tile .bb-map-tip{bottom:auto;top:24px}}
 @media(max-width:1000px){.bb-system-overview{grid-template-columns:1fr}.bb-system-overview .membrane-card-live{max-width:none}}
 @media(max-width:820px){.flow-branches{grid-auto-flow:column;grid-auto-columns:minmax(210px,max-content);grid-template-columns:none;min-width:max-content}.flow-tree{min-width:max-content;justify-content:center}.flow-node-wrap{min-width:190px;width:auto}.flow-node-row{width:auto;flex-direction:row;align-items:flex-start}.flow-node{max-width:270px;min-width:185px;width:auto}.flow-note-card{width:152px;max-width:152px}.flow-canvas{height:60dvh;min-height:300px}.flow-diagrams{font-size:12px}.flow-diagrams input{width:150px}.bb-calc-inputs label:last-child{grid-column:auto}}
 
@@ -877,8 +882,8 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 
 <section id="sec-home" class="section active">
 <div class="bb-welcome"><h1>Welcome to Blood Bank!</h1><p>Check out the calculator below!</p></div>
-<div class="bb-home-carousel" aria-label="Carousel images"></div>
-<div id="calcContent"></div></section>
+<div id="calcContent"></div>
+<div class="bb-home-carousel" id="homeCarousel" aria-label="Carousel images"></div></section>
   <!-- ===== ENCYCLOPEDIA ===== -->
   <div id="sec-encyclopedia" class="section">
     <div class="section-hero">
@@ -1058,7 +1063,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="shared/pdf-export.js?v=20260605-export-fit"></script>
 <script src="safe-supabase-sync.js"></script>
-<script src="shared/bloodbank-flow.js?v=20261020-subtree-spacing-45"></script>
+<script src="shared/bloodbank-flow.js?v=20261020-compact-routing-46"></script>
 <script>
 // ============================================================
 // CONFIG - SUPABASE + PASSWORD
@@ -1315,6 +1320,7 @@ function hydrateNotesData(data) {
 
 function applyRemoteNotes(data) {
   hydrateNotesData(data);
+  renderHomeCarousel();
   renderSystem(currentSystemKey);
   renderRbcDiagram();
   renderChromMap();
@@ -1370,6 +1376,7 @@ function cleanRemoteCalcScenarios(list) {
 function applyRemoteXm(data) {
   xmUpdatedAt = Number(data && data.updatedAt) || 0;
   xmCases = data && Array.isArray(data.cases) && data.cases.length > 0 ? data.cases : defaultXmCases();
+  if (!xmCurrent) xmCurrent = xmCases[0];
   aboCustomCases = cleanRemoteAboCases(data && data.aboCases);
   calcCustomScenarios = cleanRemoteCalcScenarios(data && data.calcScenarios);
   antigramLots = cleanRemoteAntigramLots(data && data.antigramLots, data && data.antigramCase);
@@ -1610,6 +1617,7 @@ async function attemptLogin() {
     if (document.getElementById('sec-crossmatch').classList.contains('active') && document.getElementById('xmContent').style.display !== 'none') renderXm();
     if (document.getElementById('sec-rbc-diagram').classList.contains('active')) renderRbcDiagram();
     if (document.getElementById('sec-flowchart').classList.contains('active')) renderFlowchart();
+    renderHomeCarousel();
   } else {
     document.getElementById('adminErr').textContent = 'Incorrect password.';
     document.getElementById('adminPwInput').value = '';
@@ -1636,6 +1644,7 @@ function logoutAdminLocally(message, isError) {
   if (document.getElementById('sec-rbc-diagram').classList.contains('active')) renderRbcDiagram();
   if (document.getElementById('sec-flowchart').classList.contains('active')) renderFlowchart();
   if (document.getElementById('sec-antigram').classList.contains('active')) renderPersonalAntigram();
+  renderHomeCarousel();
   if (document.getElementById('sec-crossmatch').classList.contains('active') && document.getElementById('xmContent').style.display !== 'none') renderXm();
   showToast(message || 'Admin locked', !!isError);
 }
@@ -2534,7 +2543,7 @@ function renderFlowchartPreview(data) {
   const layout = buildFlowLayoutInfo(data);
   preview.innerHTML = '<svg id="flowLinkLayer" class="flow-link-layer" aria-hidden="true"></svg><div class="flow-tree" id="flowStage">' + renderFlowGraph(data) + '</div>'+flowConnectionMarkers(data);
   preview.classList.toggle('flow-manual-mode',flowManualMode&&isAdmin);
-  layoutBloodBankFlow(preview,{positions:data.positions});
+  layoutBloodBankFlow(preview,{positions:data.positions,manual:flowManualMode&&isAdmin});
   updateFlowManualControls(data);
   applyFlowZoom();
   updateFlowMeta(data);
@@ -2944,12 +2953,12 @@ function rearrangeFlowBranchSubtrees(data,parentId,oldOrder,before) {
   rowKeys.forEach(function(key){
     const row=Object.keys(positions).filter(function(id){return before[id].y.toFixed(1)===key;});
     const merge=row.some(function(id){return (parents[id]||[]).length>1;});
-    const clearance=merge?320:160;
+    const clearance=merge?90:62;
     if(Number(key)+extraY<previousBottom+clearance)extraY+=previousBottom+clearance-(Number(key)+extraY);
     row.sort(function(a,b){return positions[a].x-positions[b].x||before[a].x-before[b].x;});
     let right=-Infinity;
     row.forEach(function(id){
-      positions[id].x=Math.max(0,positions[id].x,right+58);
+      positions[id].x=Math.max(0,positions[id].x,right+20);
       positions[id].y=before[id].y+extraY;
       right=positions[id].x+(widths[id]||240);
     });
@@ -5007,7 +5016,11 @@ function renderRbcMapViewControls() {
 function renderRbcDiagram() {
   const container = document.getElementById('rbcDiagramContainer');
   rbcMapZoom = clampRbcMapZoom(rbcMapZoom || readSavedRbcMapZoom());
-  container.innerHTML = buildFullRbcSVG();
+  container.innerHTML = '<div class="bb-map-grid">'+RBC_ITEMS.map(function(item){
+    var system=SYSTEMS[item.system],structure=system?getNote(system.notes_key||item.system,'antigen_structure'):'';
+    if(!structure)structure=({carb:'Carbohydrate antigen on the outer RBC surface.',adsorbed:'Adsorbed glycolipid antigen on the outer RBC surface.',type1:'Single-pass type I membrane protein.',type2:'Single-pass type II membrane protein.',multi:'Multi-pass integral membrane protein.',gpi:'GPI-linked protein on the outer RBC surface.',gpa:'Glycophorin A membrane protein.',gpb:'Glycophorin B membrane protein.'})[item.type]||'RBC surface antigen.';
+    return '<div class="bb-map-tile" tabindex="0" onclick="this.classList.toggle(\'show-structure\')" aria-label="'+escAttr(item.label+': '+structure)+'">'+buildStaticAntigens([item],item.label)+'<div class="bb-map-tip"><b>'+escText(item.label)+'</b><br>'+escText(structure)+'</div></div>';
+  }).join('')+'</div>';
 }
 
 function buildFullRbcSVG(options) {
@@ -8076,6 +8089,23 @@ function buildCalcAdminPanel(scenarios) {
   '</div>';
 }
 
+var homeCarouselIndex=0;
+function homeCarouselImages(){return Array.isArray(notesData.__homeCarouselImages)?notesData.__homeCarouselImages:[];}
+function renderHomeCarousel(){
+  var host=document.getElementById('homeCarousel');if(!host)return;
+  var images=homeCarouselImages();homeCarouselIndex=Math.min(homeCarouselIndex,Math.max(0,images.length-1));
+  var current=images[homeCarouselIndex];
+  host.innerHTML=(current?'<div class="bb-carousel-frame"><img src="'+escAttr(current.src)+'" alt="'+escAttr(current.alt||'Blood Bank carousel image')+'"></div><div class="bb-carousel-controls"><button class="btn btn-ghost btn-sm" onclick="moveHomeCarousel(-1)" aria-label="Previous image">←</button><span>'+(homeCarouselIndex+1)+' / '+images.length+'</span><button class="btn btn-ghost btn-sm" onclick="moveHomeCarousel(1)" aria-label="Next image">→</button>'+(isAdmin?'<button class="bb-antibody-remove" onclick="removeHomeCarouselImage()">Remove image</button>':'')+'</div>':'')+
+    (isAdmin?'<div class="bb-carousel-admin"><strong>Homepage carousel images</strong><div class="bb-carousel-admin-row"><input id="homeCarouselUrl" type="url" placeholder="Image URL" aria-label="Image URL"><button class="btn btn-ghost btn-sm" onclick="addHomeCarouselUrl()">Add URL</button><label class="btn btn-ghost btn-sm" style="cursor:pointer">Upload image<input type="file" accept="image/*" style="display:none" onchange="addHomeCarouselFile(this.files[0]);this.value=\'\'"></label></div></div>':'');
+}
+function moveHomeCarousel(direction){var images=homeCarouselImages();if(!images.length)return;homeCarouselIndex=(homeCarouselIndex+direction+images.length)%images.length;renderHomeCarousel();}
+function saveHomeCarouselImage(src,alt){if(!isAdmin)return;notesData.__homeCarouselImages=homeCarouselImages().concat([{src:src,alt:alt||'Blood Bank image'}]);homeCarouselIndex=notesData.__homeCarouselImages.length-1;scheduleSave();renderHomeCarousel();}
+function addHomeCarouselUrl(){if(!isAdmin)return;var input=document.getElementById('homeCarouselUrl');var src=input&&input.value.trim();if(!/^https:\/\//i.test(src||'')){showToast('Enter an HTTPS image URL.',true);return;}saveHomeCarouselImage(src,'Blood Bank image');}
+function addHomeCarouselFile(file){
+  if(!isAdmin||!file)return;if(!file.type.startsWith('image/')){showToast('Choose an image file.',true);return;}
+  var image=new Image(),reader=new FileReader();reader.onload=function(){image.onload=function(){var scale=Math.min(1,1200/Math.max(image.width,image.height)),canvas=document.createElement('canvas');canvas.width=Math.round(image.width*scale);canvas.height=Math.round(image.height*scale);canvas.getContext('2d').drawImage(image,0,0,canvas.width,canvas.height);saveHomeCarouselImage(canvas.toDataURL('image/jpeg',.72),file.name);};image.src=reader.result;};reader.readAsDataURL(file);
+}
+function removeHomeCarouselImage(){if(!isAdmin)return;var images=homeCarouselImages().slice();images.splice(homeCarouselIndex,1);notesData.__homeCarouselImages=images;homeCarouselIndex=Math.max(0,homeCarouselIndex-1);scheduleSave();renderHomeCarousel();}
 var unitCalculator={count:1,units:'',population:'c',antibodies:Array.from({length:5},function(){return {name:''};})};
 function calculatorFrequencies(){
   var result={};
@@ -8090,15 +8120,17 @@ function calculatorFrequencies(){
   });return result;
 }
 function setUnitAntibodyCount(value){unitCalculator.count=Math.max(1,Math.min(5,Math.floor(Number(value)||1)));renderCalcSim();}
+function removeUnitAntibody(index){unitCalculator.antibodies.splice(index,1);unitCalculator.antibodies.push({name:''});unitCalculator.count=Math.max(1,unitCalculator.count-1);renderCalcSim();}
+function resetUnitCalculator(){unitCalculator={count:1,units:'',population:'c',antibodies:Array.from({length:5},function(){return {name:''};})};renderCalcSim();}
 function renderCalcSim(){
   var area=document.getElementById('calcContent');if(!area)return;
   var frequencies=calculatorFrequencies(),keys=Object.keys(frequencies),pop='c';
   unitCalculator.population='c';
   area.innerHTML=`<div class="bb-unit-calculator sys-card"><h2>Compatible Unit Calculator</h2><p>Select antibodies. Frequencies come from column C in the reference table.</p>
-    <div class="bb-calc-inputs"><label>Antibodies (1–5)<input type="number" min="1" max="5" value="${unitCalculator.count}" onchange="setUnitAntibodyCount(this.value)"></label><label>Units needed<input id="unitsNeeded" type="number" min="1" step="1" value="${escAttr(unitCalculator.units)}" oninput="unitCalculator.units=this.value;updateUnitEstimate()"></label></div>
+    <div class="bb-calc-inputs"><label>Antibodies (1–5)<input type="number" min="1" max="5" value="${unitCalculator.count}" oninput="setUnitAntibodyCount(this.value)"></label><label>Units needed<input id="unitsNeeded" type="number" min="1" step="1" value="${escAttr(unitCalculator.units)}" oninput="unitCalculator.units=this.value;updateUnitEstimate()"></label></div><div class="bb-calc-actions"><button class="btn btn-ghost btn-sm" onclick="resetUnitCalculator()">Reset calculator</button></div>
     <div class="bb-antibody-rows">${unitCalculator.antibodies.slice(0,unitCalculator.count).map(function(item,i){
       var freq=frequencies[item.name]&&frequencies[item.name][pop];
-      return `<div class="bb-antibody-row"><label>Antibody ${i+1}<select onchange="unitCalculator.antibodies[${i}].name=this.value;renderCalcSim()"><option value="">Choose antibody</option>${keys.map(function(ag){return `<option ${item.name===ag?'selected ':''}value="${escAttr(ag)}">anti-${escText(ag)}</option>`;}).join('')}</select></label><div class="bb-auto-frequency">Antigen frequency: <b>${freq===undefined?'—':freq+'%'}</b><br>Compatible: <b>${freq===undefined?'—':Number((100-freq).toFixed(6))+'%'}</b></div></div>`;
+      return `<div class="bb-antibody-row"><label>Antibody ${i+1}<select onchange="unitCalculator.antibodies[${i}].name=this.value;renderCalcSim()"><option value="">Choose antibody</option>${keys.map(function(ag){return `<option ${item.name===ag?'selected ':''}value="${escAttr(ag)}">anti-${escText(ag)}</option>`;}).join('')}</select></label><div class="bb-auto-frequency"><div class="bb-antibody-meta"><span>Antigen frequency: <b>${freq===undefined?'—':freq+'%'}</b></span><button class="bb-antibody-remove" onclick="removeUnitAntibody(${i})" aria-label="Remove antibody ${i+1}">Remove</button></div>Compatible: <b>${freq===undefined?'—':Number((100-freq).toFixed(6))+'%'}</b></div></div>`;
     }).join('')}</div><div id="unitEstimate" class="bb-unit-result" aria-live="polite"></div>
     <details class="bb-frequency-box"><summary>Antigen frequency reference (%)</summary><table><thead><tr><th>Antigen</th>${Object.keys(CALC_POP_FULL).map(function(p){return `<th title="${escAttr(CALC_POP_FULL[p])}">${p.toUpperCase()}</th>`;}).join('')}</tr></thead><tbody>${keys.map(function(ag){return `<tr><th>${escText(ag)}</th>${Object.keys(CALC_POP_FULL).map(function(p){return '<td>'+(frequencies[ag][p]===undefined?'—':frequencies[ag][p])+'</td>';}).join('')}</tr>`;}).join('')}</tbody></table></details>
     <p class="bb-calc-help">*Assume donor pool is from Caucasian population.</p></div>`;
@@ -8128,11 +8160,7 @@ function updateUnitEstimate(){
   var result=calculateUnitEstimate(unitCalculator.units,selected.map(function(item){var value=freq[item.name]&&freq[item.name][unitCalculator.population];return {negative:value===undefined?'':String(100-value)};}));
   if(result.error){el.textContent=result.error;return;}
   var fmt=function(n){return Number(n.toPrecision(10)).toLocaleString('en-US',{maximumFractionDigits:10});};
-  var steps=selected.map(function(item,i){
-    var positive=freq[item.name].c,negative=100-positive;
-    return '<li><b>anti-'+escText(item.name)+'</b>: '+fmt(positive)+'% is the antigen frequency from reference column C. Compatible = 100% − '+fmt(positive)+'% = '+fmt(negative)+'%. Convert to a decimal: '+fmt(negative)+' ÷ 100 = '+fmt(result.factors[i])+'.</li>';
-  }).join('');
-  el.innerHTML='<span>Estimated donor units to screen</span><strong>'+result.screen.toLocaleString()+'</strong><ol class="bb-math-steps">'+steps+
+  el.innerHTML='<span>Estimated donor units to screen</span><strong>'+result.screen.toLocaleString()+'</strong><ol class="bb-math-steps">'+
     '<li>Multiply the compatible fractions: '+result.factors.map(fmt).join(' × ')+' = '+fmt(result.probability)+' ('+fmt(result.probability*100)+'% combined compatible).</li>'+
     '<li>Divide your requested '+result.units+' unit'+(result.units===1?'':'s')+' by the combined fraction: '+result.units+' ÷ '+fmt(result.probability)+' = '+fmt(result.units/result.probability)+'.</li>'+
     '<li>Round up to a whole donor unit: '+result.screen.toLocaleString()+' units to screen.</li></ol>';
@@ -8738,7 +8766,7 @@ function renderXm() {
     '</div>' +
     resultArea +
     '<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">' +
-      (xmStep>=6 ? '<button class="btn btn-primary" onclick="nextXm()">Next Case</button>' : '') +
+      '<button class="btn btn-primary" onclick="nextXm()">Next Case</button>' +
       '<button class="btn btn-ghost btn-sm" onclick="resetXm2()">Reset</button></div>' +
     '<div class="xm-admin-panel"><div class="sec-label" style="margin-bottom:10px">Admin: Manage Crossmatch Cases</div>' +
       '<div id="xmCaseEditor"></div>' +
@@ -9517,7 +9545,7 @@ function showChromDetail(n) {
 
 // ────────────────────────────────────────────────────────────────
 // ABO TYPING SIMULATION
-// IS only (cold antibodies). A, B, AB, O, and A2B with Rh+/-
+// IS only (cold antibodies). A, B, AB, and O with Rh+/-
 // Forward: Anti-A | Anti-B | Anti-D
 // Reverse/workup: A1 cells | B cells | A1 lectin | saline control
 // ────────────────────────────────────────────────────────────────
@@ -9537,8 +9565,6 @@ var ABO_CASES = [
   {type:'AB-', fwd:{antiA:'4+',antiB:'4+',antiD:'0'},  rev:{a1:'0',b:'0'}, extra:[], label:'AB Rh-'},
   {type:'O+',  fwd:{antiA:'0',antiB:'0',antiD:'4+'}, rev:{a1:'3+',b:'3+'}, extra:[], label:'O Rh+'},
   {type:'O-',  fwd:{antiA:'0',antiB:'0',antiD:'0'},  rev:{a1:'3+',b:'3+'}, extra:[], label:'O Rh-'},
-  {type:'A2B+',fwd:{antiA:'4+',antiB:'4+',antiD:'4+'}, rev:{a1:'1+',b:'0'}, extra:[{id:'a1lectin',label:'A1 Lectin',result:'0',color:'#d4860a',bg:'rgba(252,240,220,.85)'},{id:'saline',label:'Saline Ctrl',result:'0',color:'#7a6468',bg:'rgba(238,238,238,.9)'}], label:'A2B Rh+'},
-  {type:'A2B-',fwd:{antiA:'4+',antiB:'4+',antiD:'0'},  rev:{a1:'1+',b:'0'}, extra:[{id:'a1lectin',label:'A1 Lectin',result:'0',color:'#d4860a',bg:'rgba(252,240,220,.85)'},{id:'saline',label:'Saline Ctrl',result:'0',color:'#7a6468',bg:'rgba(238,238,238,.9)'}], label:'A2B Rh-'},
 ];
 
 function normalizeAboCase(item) {
@@ -9570,7 +9596,7 @@ function normalizeAboCase(item) {
 }
 
 function getAboCases() {
-  return ABO_CASES.concat(aboCustomCases.map(normalizeAboCase).filter(Boolean));
+  return ABO_CASES.concat(aboCustomCases.map(normalizeAboCase).filter(function(item){return item&&!/^A2B/i.test(item.type); }));
 }
 
 function nextABOCase() {
@@ -9603,21 +9629,26 @@ function aboTube(id, label, result, color, bg) {
   var positive = strength > 0;
   var fill = read
     ? (positive
-      ? '<rect x="8" y="52" width="34" height="48" rx="0 0 3 3" fill="rgba(240,180,190,.52)"/>' + aboTubeDots(strength)
-      : '<rect x="10" y="82" width="30" height="18" rx="0 0 3 3" fill="rgba(192,23,61,.22)"/>')
-    : '<rect x="10" y="74" width="30" height="26" rx="0 0 3 3" fill="rgba(192,23,61,.18)"/>';
+      ? '<rect x="11" y="57" width="28" height="41" fill="rgba(240,180,190,.52)"/>' + aboTubeDots(strength)
+      : '<rect x="11" y="82" width="28" height="16" fill="rgba(192,23,61,.22)"/>')
+    : '<rect x="11" y="74" width="28" height="24" fill="rgba(192,23,61,.18)"/>';
   return '<button type="button" class="abo-tube-btn" onclick="shakeAboTube(\'' + id + '\')" title="Click to shake/read ' + escText(label) + '">' +
     '<div class="tube-wrap">' +
       '<svg class="abo-tube-svg ' + (read ? 'is-shaking' : '') + '" width="58" height="132" viewBox="0 0 50 120" xmlns="http://www.w3.org/2000/svg">' +
-        '<rect x="6" y="4" width="38" height="100" rx="4" fill="' + (bg || 'rgba(220,235,248,.85)') + '" stroke="rgba(150,180,210,.6)" stroke-width="2"/>' +
-        '<rect x="22" y="4" width="6" height="100" fill="rgba(255,255,255,.2)" rx="2"/>' +
+        '<path d="M7 13 L7 91 Q7 105 25 105 Q43 105 43 91 L43 13 Z" fill="' + (bg || 'rgba(220,235,248,.85)') + '" stroke="#9eb6c8" stroke-width="2"/>' +
+        '<path d="M13 22 L13 89" stroke="rgba(255,255,255,.6)" stroke-width="4" stroke-linecap="round"/>' +
         fill +
-        '<rect x="8" y="6" width="8" height="55" rx="3" fill="rgba(255,255,255,.15)"/>' +
+        '<path d="M7 91 Q7 105 25 105 Q43 105 43 91" fill="none" stroke="#9eb6c8" stroke-width="2"/>' +
+        '<rect x="4" y="6" width="42" height="9" rx="3" fill="#e6eff5" stroke="#9eb6c8" stroke-width="2"/>' +
       '</svg>' +
       '<div class="tube-lbl" style="font-size:11px;font-weight:800;color:' + color + '">' + label + '</div>' +
       '<div class="tube-result ' + (read ? (positive ? 'pos' : 'neg') : 'abo-result-pending') + '">' + (read ? result : 'shake') + '</div>' +
     '</div>' +
   '</button>';
+}
+function aboGelWell(id,label,result){
+  var read=!!aboShaken[id],strength=aboStrength(result),top=strength>=3?'8px':strength===2?'40px':strength===1?'72px':'108px';
+  return '<button type="button" class="abo-gel-well abo-tube-btn" onclick="shakeAboTube(\''+id+'\')" title="Read '+escAttr(label)+' gel well"><div class="abo-gel-column'+(read?' is-read':'')+'" style="--gel-top:'+(read?top:'108px')+'"></div><span>'+escText(label)+'</span><div class="abo-gel-result">'+(read?escText(result):'read')+'</div></button>';
 }
 
 function shakeAboTube(id) {
@@ -9646,7 +9677,7 @@ function renderABOsim() {
   var cs = currentABO;
 
   // Answer buttons
-  var answers = ['A+','A-','B+','B-','AB+','AB-','O+','O-','A2B+','A2B-'];
+  var answers = ['A+','A-','B+','B-','AB+','AB-','O+','O-'];
   getAboCases().forEach(function(item) {
     if (answers.indexOf(item.type) === -1) answers.push(item.type);
   });
@@ -9666,8 +9697,8 @@ function renderABOsim() {
 
     // Typing rack
     '<div class="sys-card" style="padding:16px;margin-bottom:12px">' +
-    '<div class="sec-label" style="margin-bottom:10px">ABO / Rh Typing Rack -- click each tube to shake and read</div>' +
-    '<div class="abo-rack-row">' +
+    '<div class="sec-label" style="margin-bottom:10px">ABO / Rh typing</div>' +
+    '<div class="abo-methods"><div class="abo-method"><h3>Tube Method</h3><div class="abo-rack-row">' +
       '<div><div class="abo-rack-title">Forward: patient RBCs + antisera</div><div class="abo-rack-group">' +
         aboTube('fwdA','Anti-A', cs.fwd.antiA, '#c0173d') +
         aboTube('fwdB','Anti-B', cs.fwd.antiB, '#1a5c8c') +
@@ -9677,11 +9708,13 @@ function renderABOsim() {
         aboTube('revA1','A1 Cells', cs.rev.a1, '#7a4e00', 'rgba(252,240,220,.85)') +
         aboTube('revB','B Cells', cs.rev.b, '#7a4e00', 'rgba(252,240,220,.85)') +
       '</div></div>' +
-      (cs.extra && cs.extra.length ? '<div><div class="abo-rack-title">A2B workup</div><div class="abo-rack-group">' + cs.extra.map(function(t) {
+      (cs.extra && cs.extra.length ? '<div><div class="abo-rack-title">Additional workup</div><div class="abo-rack-group">' + cs.extra.map(function(t) {
         return aboTube('extra_' + t.id, t.label, t.result, t.color, t.bg);
       }).join('') + '</div></div>' : '') +
-    '</div>' +
-    '<div class="phase-instr" style="margin-top:10px">Shake each tube, then read agglutination. Red clumps show positive reactions graded 1+ to 4+. A2B cases add A1 lectin and saline control.</div>' +
+    '</div></div><div class="abo-method"><h3>Gel Method</h3><div class="abo-gel-card">'+
+      aboGelWell('fwdA','Anti-A',cs.fwd.antiA)+aboGelWell('fwdB','Anti-B',cs.fwd.antiB)+aboGelWell('fwdD','Anti-D',cs.fwd.antiD)+aboGelWell('revA1','A1',cs.rev.a1)+aboGelWell('revB','B',cs.rev.b)+
+    '</div></div></div>' +
+    '<div class="phase-instr" style="margin-top:10px">Click each tube or gel well to read its reaction. Agglutination is graded 1+ to 4+.</div>' +
     '</div>' +
 
     // Interpretation
@@ -9689,13 +9722,14 @@ function renderABOsim() {
     '<div class="sec-label" style="margin-bottom:10px">Interpretation -- What is this patient\'s blood type?</div>' +
     '<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">' + btnHTML + '</div>' +
     '<div id="aboFeedback" class="xm-feedback" style="margin-top:12px">Review forward and reverse typing results, then select the blood type.</div>' +
+    '<div style="text-align:center;margin-top:12px"><button class="btn btn-primary" onclick="nextABOCase()">Next Case →</button></div>' +
     '</div>' +
     buildAboAdminPanel();
 }
 
 function addAboCase() {
   if (!isAdmin) return;
-  aboCustomCases.push(normalizeAboCase({type:'A2B+', label:'Custom A2B Rh+', fwd:{antiA:'4+',antiB:'4+',antiD:'4+'}, rev:{a1:'1+',b:'0'}, extra:[{id:'a1lectin',label:'A1 Lectin',result:'0',color:'#d4860a',bg:'rgba(252,240,220,.85)'},{id:'saline',label:'Saline Ctrl',result:'0',color:'#7a6468',bg:'rgba(238,238,238,.9)'}]}));
+  aboCustomCases.push(normalizeAboCase({type:'A+', label:'Custom A Rh+', fwd:{antiA:'4+',antiB:'0',antiD:'4+'}, rev:{a1:'0',b:'3+'}, extra:[]}));
   currentABO = aboCustomCases[aboCustomCases.length - 1];
   aboShaken = {};
   scheduleXmSave();
@@ -9785,11 +9819,6 @@ function checkABOAnswer(answer) {
   }
   // Disable all buttons
   document.querySelectorAll('#aboContent .donor-btn').forEach(function(b){ b.disabled = true; });
-  // Add next button
-  var nb = document.createElement('div');
-  nb.style.cssText = 'text-align:center;margin-top:12px';
-  nb.innerHTML = '<button class="btn btn-primary" onclick="nextABOCase()">Next Case</button>';
-  document.getElementById('aboContent').querySelector('.sys-card:last-child').appendChild(nb);
 }
 </script>
 <script src="shared/bloodbank-antigram.js?v=20261020-ahg-zero-43"></script>

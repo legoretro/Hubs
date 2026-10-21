@@ -3,8 +3,8 @@ function layoutBloodBankFlow(container,options){
   options=options||{};
   var compact=options.compact===true;
   var print=options.print===true;
-  var horizontalGap=print?40:(compact?86:126);
-  var verticalGap=print?56:(compact?104:146);
+  var horizontalGap=print?32:(compact?48:68);
+  var verticalGap=print?48:(compact?72:92);
   var topInset=print?8:(compact?18:35);
   var sideInset=print?8:(compact?20:50);
   var stage=container.querySelector('.flow-tree');if(!stage)return;
@@ -91,32 +91,65 @@ function layoutBloodBankFlow(container,options){
   var minX=Math.min.apply(null,ids.map(function(id){return center[id]-sizes[id].width/2;}));
   var y=topInset;
   rows.forEach(function(row,index){var h=0;row.forEach(function(id){var el=elements[id],x=center[id]-sizes[id].width/2-minX+sideInset;el.style.left=x+'px';el.style.top=y+'px';width=Math.max(width,x+sizes[id].width+sideInset);h=Math.max(h,sizes[id].height);});
-    var next=rows[index+1]||[],mergeSpace=next.some(function(id){return incoming[id].length>1;})?(print?42:(compact?52:64)):0;
+    var next=rows[index+1]||[],mergeSpace=next.some(function(id){return incoming[id].length>1;})?(print?22:(compact?32:42)):0;
     y+=h+verticalGap+mergeSpace;
   });
   var autoHeight=print?y-verticalGap+sideInset:y-topInset;
   var saved=options.positions||{};
   var completeSaved=ids.length&&ids.every(function(id){return saved[id]&&isFinite(saved[id].x)&&isFinite(saved[id].y);});
+  var visualSaved={};
+  ids.forEach(function(id){if(saved[id])visualSaved[id]={x:Number(saved[id].x),y:Number(saved[id].y)};});
+  if(completeSaved&&!options.manual){
+    // Position each child beneath its own parent(s), not beneath the deepest
+    // unrelated branch in the same global rank. Keep a minimum corridor for
+    // connectors, and use branch order to arrange siblings left to right.
+    var positioned=[];
+    rows.forEach(function(row,rowIndex){
+      if(!rowIndex){row.forEach(function(id){visualSaved[id].y=topInset;positioned.push(id);});return;}
+      var desired={};
+      row.forEach(function(id){
+        var parents=incoming[id];if(!parents.length){desired[id]=visualSaved[id].x;return;}
+        var parentX=parents.reduce(function(sum,p){return sum+visualSaved[p].x+sizes[p].width/2;},0)/parents.length;
+        var offset=0;
+        if(parents.length===1){var siblings=out[parents[0]].filter(function(to){return rank[to]===rowIndex&&incoming[to].length===1;});offset=(siblings.indexOf(id)-(siblings.length-1)/2)*(sizes[id].width+horizontalGap);}
+        desired[id]=parentX+offset-sizes[id].width/2;
+        visualSaved[id].y=Math.max.apply(null,parents.map(function(p){return visualSaved[p].y+sizes[p].height;}))+(parents.length>1?128:100);
+      });
+      var ordered=row.slice().sort(function(a,b){return desired[a]-desired[b]||visualSaved[a].x-visualSaved[b].x;});
+      var edge=-Infinity;
+      ordered.forEach(function(id){visualSaved[id].x=Math.max(desired[id],edge+20);edge=visualSaved[id].x+sizes[id].width;});
+      ordered.forEach(function(id){
+        positioned.forEach(function(other){
+          var x=visualSaved[id],p=visualSaved[other];
+          if(x.x<p.x+sizes[other].width+12&&x.x+sizes[id].width+12>p.x&&x.y<p.y+sizes[other].height+70&&x.y+sizes[id].height+70>p.y)
+            x.y=Math.max(x.y,p.y+sizes[other].height+70);
+        });
+        positioned.push(id);
+      });
+    });
+    var visualMinX=Math.min.apply(null,ids.map(function(id){return visualSaved[id].x;}));
+    ids.forEach(function(id){visualSaved[id].x=Math.max(0,visualSaved[id].x-visualMinX+sideInset);});
+  }
   var savedShift={};
-  if(completeSaved){
+  if(completeSaved&&options.manual){
     // Older saved charts can leave too little room above a join. Move that
     // row and everything below it together; never move its ancestors.
     var carried=0,previousBottom=-Infinity;
     rows.forEach(function(row){
       if(!row.length)return;
-      var top=Math.min.apply(null,row.map(function(id){return Math.max(0,saved[id].y)+carried;}));
+      var top=Math.min.apply(null,row.map(function(id){return Math.max(0,visualSaved[id].y)+carried;}));
       var joins=row.some(function(id){return incoming[id].length>1;});
-      var clearance=joins?(print?170:(compact?230:320)):(print?100:(compact?130:160));
+      var clearance=joins?(print?46:(compact?70:90)):(print?30:(compact?48:62));
       if(previousBottom>-Infinity)carried+=Math.max(0,previousBottom+clearance-top);
       row.forEach(function(id){savedShift[id]=carried;});
-      previousBottom=Math.max(previousBottom,Math.max.apply(null,row.map(function(id){return Math.max(0,saved[id].y)+carried+sizes[id].height;})));
+      previousBottom=Math.max(previousBottom,Math.max.apply(null,row.map(function(id){return Math.max(0,visualSaved[id].y)+carried+sizes[id].height;})));
     });
   }
   if(completeSaved){
     width=0;autoHeight=0;
   }
   ids.forEach(function(id){
-    var position=saved[id];
+    var position=visualSaved[id];
     if(!position||!isFinite(position.x)||!isFinite(position.y))return;
     var x=Math.max(0,position.x),top=Math.max(0,position.y)+(savedShift[id]||0);
     elements[id].style.left=x+'px';elements[id].style.top=top+'px';
@@ -188,7 +221,7 @@ function routeBloodBankFlow(container) {
       if(id===endId){var path=[];for(var k=key;k!==undefined;k=previous.get(k))path.push(point(Math.floor(k/3)));return path.reverse();}
       var x=id%nx,y=Math.floor(id/nx),a=point(id),neighbors=[];
       if(x>0)neighbors.push([id-1,1]);if(x+1<nx)neighbors.push([id+1,1]);if(y>0)neighbors.push([id-nx,2]);if(y+1<ny)neighbors.push([id+nx,2]);
-      neighbors.forEach(function(next){var b=point(next[0]);if(!clear(a,b)||(!allowCross&&!separate([a,b],from,shareSource)))return;var nk=next[0]*3+next[1],cost=current.cost+Math.abs(a.x-b.x)+Math.abs(a.y-b.y)+(dir&&dir!==next[1]?gap*2:0);if(cost>=(costs.has(nk)?costs.get(nk):Infinity))return;costs.set(nk,cost);previous.set(nk,key);push({key:nk,cost:cost,score:cost+Math.abs(end.x-b.x)+Math.abs(end.y-b.y)});});
+      neighbors.forEach(function(next){var b=point(next[0]);if(!clear(a,b)||(!allowCross&&!separate([a,b],from,shareSource)))return;var nk=next[0]*3+next[1],cost=current.cost+Math.abs(a.x-b.x)+Math.abs(a.y-b.y)+(dir&&dir!==next[1]?gap*2:0)+(end.y>start.y&&b.y<a.y?gap*20:0);if(cost>=(costs.has(nk)?costs.get(nk):Infinity))return;costs.set(nk,cost);previous.set(nk,key);push({key:nk,cost:cost,score:cost+Math.abs(end.x-b.x)+Math.abs(end.y-b.y)});});
     }
     return null;
   }
@@ -240,7 +273,8 @@ function routeBloodBankFlow(container) {
     },parents[0]):m;
     // Leave a visible straight approach so the arrowhead is not attached to
     // the horizontal turn immediately above a destination box.
-    var approach=printExport?Math.max(gap*3,12*zoom):Math.max(gap*4,24*zoom);
+    var corridor=b.top-a.bottom;
+    var approach=Math.min(printExport?Math.max(gap*3,12*zoom):Math.max(gap*4,24*zoom),Math.max(gap*.8,corridor/5));
     var source={x:(a.left+a.right)/2,y:a.bottom},start={x:(a.left+a.right)/2,y:a.bottom+gap},end={x:targetX,y:b.top-approach},sideDirection=0;
     var children=outgoingBySource[from]||[],sharedGroup=sharedLabelGroups.get(m);
     var bottomBranch=false;
@@ -266,7 +300,7 @@ function routeBloodBankFlow(container) {
         // The lower point of the diamond is clearer in this tight case.
         sideDirection=0;bottomBranch=true;source={x:(a.left+a.right)/2,y:a.bottom};
         start={x:source.x,y:source.y+gap};
-      }else start={x:source.x+sideDirection*gap,y:source.y};
+      }else start={x:source.x+sideDirection*gap*.5,y:source.y};
     }
     // A box beside a diamond can block the first horizontal segment. Keep
     // the side exit and let the router turn below that box before crossing.
