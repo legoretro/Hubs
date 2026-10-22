@@ -608,7 +608,39 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 #simulationShell{zoom:.9}.abo-methods{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}.abo-method{min-width:0}.abo-method>h3{font-size:15px;color:var(--wine);margin:0 0 10px}.abo-gel-card{display:flex;gap:5px;align-items:flex-start;padding:12px;background:#f2f6fb;border:3px solid #d5e0ec;border-radius:14px;min-height:180px;width:max-content;max-width:100%}.abo-gel-well{width:36px;text-align:center;font-size:10px;font-weight:700;color:var(--wine)}.abo-gel-column{height:125px;border:2px solid #b4c5d4;border-radius:5px 5px 14px 14px;background:linear-gradient(#fff 0 10%,#ffe9d8 10% 100%);position:relative;overflow:hidden}.abo-gel-column:before{content:'';position:absolute;top:7px;left:7px;right:7px;height:9px;border-radius:50%;background:#a80f2e}.abo-gel-column.is-read:before{top:var(--gel-top,7px)}.abo-gel-result{margin-top:5px}.abo-rack-row{flex-wrap:wrap}.abo-tube-btn{cursor:pointer}
 .abo-gel-card{background:#eef4fb;border-color:#8ba0cc;gap:4px;align-items:flex-end;flex-wrap:wrap}.abo-gel-well{width:54px;min-width:54px}.abo-gel-well svg{display:block;width:54px;height:134px}.abo-gel-well .abo-gel-result{min-height:14px}
 .xm-screen-methods,.xm-screen-gel{border:1px solid var(--rose);border-radius:14px;background:#fffaf7;padding:16px;margin:12px 0}.xm-screen-methods h3,.xm-screen-gel h3{font-size:17px;color:var(--wine);margin:0 0 12px}.xm-screen-gel{min-height:58px}.xm-screen-rack{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;align-items:flex-end}.xm-screen-tube{text-align:center;min-width:68px}.xm-screen-tube svg{display:block;margin:auto}.xm-screen-tube strong{display:block;font:700 12px Georgia,serif;color:var(--wine)}.xm-screen-tube span{display:block;font-size:12px;min-height:18px}.xm-centrifuge{width:205px;margin:15px auto 8px;text-align:center}.xm-centrifuge-body{height:118px;border:4px solid #8fa4bb;border-radius:50% 50% 18px 18px;background:linear-gradient(#dce8f3,#aebfd1);position:relative;box-shadow:inset 0 6px 10px #fff8,0 5px 10px #364e6125}.xm-centrifuge-rotor{position:absolute;left:50%;top:8px;width:100px;height:100px;margin-left:-50px;border-radius:50%;background:#647d98;border:6px solid #d5e2ed;display:flex;align-items:center;justify-content:space-around}.xm-centrifuge-rotor span{display:block;width:19px;height:49px;border:3px solid #e7f3fb;border-radius:4px 4px 9px 9px;background:linear-gradient(#d5eaf8 65%,#c0173d 66%)}.xm-centrifuge-rotor.is-spinning{animation:xmRotorSpin .18s linear infinite}@keyframes xmRotorSpin{to{transform:rotate(360deg)}}.xm-centrifuge-label{font-size:12px;color:var(--warm-grey);margin-top:5px}
+#simulationShell{zoom:.76;max-width:1380px!important;width:100%}
+#simulationShell .sim-mode-strip{gap:7px;margin-bottom:12px}
+#simulationShell .sim-mode-strip .btn{padding:8px 14px;font-size:15px}
+.sim-tab-tools{display:flex;justify-content:flex-end;align-items:center;gap:7px;margin:0 0 6px;color:var(--warm-grey);font-size:12px}
+.sim-tab-tools [hidden],.xm-screen-subtabs [hidden]{display:none!important}
+.sim-mode-strip.is-arranging .btn{cursor:grab;outline:1px dashed #c0173d;outline-offset:2px}
+.sim-mode-strip .btn.sim-drag-over{box-shadow:inset 4px 0 #c0173d}
+.xm-screen-subtabs{display:flex;justify-content:center;gap:8px;margin:8px 0 12px}
+.xm-screen-subtabs button[aria-selected="true"]{background:var(--crimson);color:#fff;border-color:var(--crimson)}
+.xm-screen-gel{min-height:150px;display:grid;place-items:center;text-align:center}
+.screen-table{width:min(100%,560px);table-layout:fixed;margin:0 auto}
+.screen-table th,.screen-table td{width:20%;padding:6px 5px}
+.abo-results-wrap{max-width:700px;margin:12px auto 0;overflow-x:auto}
+.abo-results-table{border-collapse:collapse;width:100%;table-layout:fixed;text-align:center;font:700 12px Arial,sans-serif}
+.abo-results-table th,.abo-results-table td{border:1px solid #efc3d0;padding:7px 4px;width:16.666%}
+.abo-results-table th{background:#fce8ed;color:var(--wine)}
+.abo-results-table td{background:#fff;color:var(--crimson);font-size:16px}
+.xm-device-row{display:flex;justify-content:center;align-items:end;gap:18px;flex-wrap:wrap;margin:8px 0}
+.xm-screen-summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 14px!important;margin-bottom:6px!important}
+.xm-screen-summary .sec-label{margin:0!important}
+.xm-screen-summary>div:last-child{padding:0!important;display:flex;align-items:center;gap:12px;text-align:right!important}
+.xm-screen-summary>div:last-child>div:first-child{font-size:18px!important;margin:0!important}
+.xm-screen-workbench{display:flex;align-items:center;justify-content:center;gap:34px;flex-wrap:wrap}
+.xm-screen-workbench .xm-screen-rack{margin:0}
+.xm-screen-workbench .xm-device-row{margin:0}
+.xm-device{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;min-width:148px}
+.xm-device svg{display:block;width:160px;height:128px}
+.xm-device strong{font:800 12px Arial,sans-serif;color:var(--wine)}
+.xm-device small{font:11px Arial,sans-serif;color:var(--warm-grey)}
+.xm-rotor.is-spinning{transform-origin:80px 49px;animation:xmRotorSpin .3s linear infinite}
+.xm-heatblock svg{width:150px;height:120px}
 @media(max-width:760px){#simulationShell{zoom:1}.abo-methods{grid-template-columns:1fr}.bb-map-tile .bb-map-tip{bottom:auto;top:24px}}
+@media(max-width:760px){.xm-screen-summary{display:block}.xm-screen-workbench{gap:10px}}
 @media(max-width:1000px){.bb-system-overview{grid-template-columns:1fr}.bb-system-overview .membrane-card-live{max-width:none}}
 @media(max-width:820px){.flow-branches{grid-auto-flow:column;grid-auto-columns:minmax(210px,max-content);grid-template-columns:none;min-width:max-content}.flow-tree{min-width:max-content;justify-content:center}.flow-node-wrap{min-width:190px;width:auto}.flow-node-row{width:auto;flex-direction:row;align-items:flex-start}.flow-node{max-width:270px;min-width:185px;width:auto}.flow-note-card{width:152px;max-width:152px}.flow-canvas{height:60dvh;min-height:300px}.flow-diagrams{font-size:12px}.flow-diagrams input{width:150px}.bb-calc-inputs label:last-child{grid-column:auto}}
 
@@ -646,7 +678,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 #personalAntigram .personal-antigram-table .ag-ruled .ag-ledger{outline:0!important}
 #personalAntigram .personal-antigram-table tr:last-child .ag-ruled{border-bottom:1px solid #a89c9a!important}
 #personalAntigram .antigram-group-panel.ag-answers-visible .ag-antigen-row th.ag-remains{background:#b8e1bd!important;color:#123c23!important;border-bottom:3px solid #398650!important}
-#personalAntigram .personal-antigram-table.ag-row-highlights-visible tr.ag-ahg-zero td{background:#fff0a0!important}
+#personalAntigram .personal-antigram-table.ag-row-highlights-visible tr.ag-ahg-zero td,#personalAntigram .personal-antigram-table.ag-row-highlights-visible tr.ag-ahg-zero th[scope=row]{background:#fff0a0!important}
 #personalAntigram .personal-antigram-table.ag-row-highlights-visible tr.ag-ahg-zero td.ag-ahg-col{background:#ffe16b!important;color:#241806!important}
 #personalAntigram .personal-antigram-table.ag-row-highlights-visible tr.ag-ahg-zero .ag-reaction-input.is-filled:not(:focus){background:transparent!important}
 #personalAntigram .personal-antigram-table.ag-row-highlights-visible tr:not(.ag-ahg-zero) td.ag-unresolved{background:#fff!important}
@@ -952,8 +984,9 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
     <div class="section-hero">
       <h2><span class="hero-emoji"></span> Simulation Lab</h2>
     </div>
-    <div id="simulationShell" style="max-width:1180px;margin:0 auto">
-      <div class="sim-mode-strip">
+    <div id="simulationShell" style="max-width:1380px;margin:0 auto">
+      <div class="sim-tab-tools"><button class="btn btn-ghost btn-sm" id="simArrangeBtn" type="button" onclick="toggleSimulationTabArrange()" aria-pressed="false">Arrange tabs</button><span id="simArrangeHint" hidden>Drag tabs to reorder, or select a tab and use the arrows.</span><button class="btn btn-ghost btn-sm sim-arrange-action" type="button" onclick="moveSimulationTab(-1)" hidden aria-label="Move selected tab left">←</button><button class="btn btn-ghost btn-sm sim-arrange-action" type="button" onclick="moveSimulationTab(1)" hidden aria-label="Move selected tab right">→</button></div>
+      <div class="sim-mode-strip" id="simModeStrip">
         <button id="aboSimBtn" class="btn btn-primary" onclick="startABOsim()">ABO/Rh</button>
         <button id="xmSimBtn" class="btn btn-ghost" onclick="startXMsim()">Screen</button>
         <button id="crossmatchSimBtn" class="btn btn-ghost" onclick="startCrossmatchSim()">Crossmatch</button>
@@ -1058,7 +1091,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="shared/pdf-export.js?v=20260605-export-fit"></script>
 <script src="safe-supabase-sync.js"></script>
-<script src="shared/bloodbank-flow.js?v=20261022-manual-ports-58"></script>
+<script src="shared/bloodbank-flow.js?v=20261022-shared-forks-59"></script>
 <script>
 // ============================================================
 // CONFIG - SUPABASE + PASSWORD
@@ -1080,6 +1113,9 @@ let xmCases   = [];       // crossmatch cases (loaded from supabase or defaults)
 let xmCurrent = null;
 let xmSpinDone = false;
 let xmSpinRunning = false;
+let xmSpinRunningPhase = '';
+let xmScreenSpinDone = {is:false,t37:false,wash:false,ahg:false,cc:false};
+let xmScreenMethod = 'tube';
 let saveTimer  = null;
 let xmSaveTimer = null;
 let xmLocalCacheTimer = null;
@@ -2810,6 +2846,7 @@ function renderFlowSelectionPanel(data) {
         (siblings.length===2 ? '<button class="flow-tool-btn" onclick="swapSelectedFlowBranches()">Swap destinations</button>' : '') +
         (siblings.length>2&&branchIndex>0 ? '<button class="flow-tool-btn" onclick="swapSelectedFlowBranches(\'left\')">Swap with left destination</button>' : '') +
         (siblings.length>2&&branchIndex<siblings.length-1 ? '<button class="flow-tool-btn" onclick="swapSelectedFlowBranches(\'right\')">Swap with right destination</button>' : '') +
+        (siblings.filter(function(branch){return String(branch.label||'').trim().toLowerCase()===String(arrowLabel).trim().toLowerCase();}).length>1 ? '<button class="flow-tool-btn" onclick="forkSelectedFlowLabel()">Fork matching '+escText(arrowLabel)+' lines</button>' : '') +
         '<button class="flow-tool-btn" onclick="insertFlowBox(\'arrow\')">Insert box here</button>' +
         '<button class="flow-tool-btn" onclick="deleteSelectedFlowConnectionLine()">Delete line</button>' +
         '<button class="flow-tool-btn" onclick="clearFlowConnectionSelection()">Cancel</button>' +
@@ -2838,6 +2875,7 @@ function renderFlowSelectionPanel(data) {
       '<button class="flow-tool-btn primary" onclick="addFlowBranchToSelected()">Add branch</button>' +
       (branchCount===2 ? '<button class="flow-tool-btn" onclick="swapSelectedFlowBranches()">Swap branch destinations</button>' : '') +
       (branchCount>2 ? '<button class="flow-tool-btn" onclick="swapSelectedFlowBranches()">Reverse branch destinations</button>' : '') +
+      (Object.values((node.branches||[]).reduce(function(groups,branch){var label=String(branch.label||'').trim().toLowerCase();if(label&&label!=='next')groups[label]=(groups[label]||0)+1;return groups;},{})).some(function(count){return count>1;}) ? '<button class="flow-tool-btn" onclick="forkSelectedFlowLabel()">Fork matching answer lines</button>' : '') +
       '<button class="flow-tool-btn" onclick="insertFlowBox(\'before\')">Insert before</button>' +
       '<button class="flow-tool-btn" onclick="insertFlowBox(\'after\')">Insert after</button>' +
       '<button class="flow-tool-btn" onclick="duplicateSelectedFlowNode()">Duplicate box</button>' +
@@ -2863,6 +2901,20 @@ function setSelectedArrowLabel(value){
   updateFlowBranchLabel(c.parent.id,c.branch.id,value);
   drawFlowLinkLines(getFlowchartData());
   renderFlowSelectionPanel(getFlowchartData());
+}
+function forkSelectedFlowLabel(){
+  if(!isAdmin)return;
+  const data=getFlowchartData(),node=flowSelectedLink?data.nodes[flowSelectedLink.from]:data.nodes[flowSelectedNodeId];
+  if(!node)return;
+  const chosen=flowSelectedLink&&(node.branches||[]).find(function(branch){return branch.id===flowSelectedLink.branchId;});
+  const counts={};(node.branches||[]).forEach(function(branch){const label=String(branch.label||'').trim().toLowerCase();if(label&&label!=='next')counts[label]=(counts[label]||0)+1;});
+  const label=chosen?String(chosen.label||'').trim().toLowerCase():Object.keys(counts).find(function(key){return counts[key]>1;});
+  if(!label||counts[label]<2){showToast('Add two or more lines with the same answer to fork them.',true);return;}
+  let changed=false;
+  (node.branches||[]).forEach(function(branch){if(String(branch.label||'').trim().toLowerCase()===label){if(branch.fromSide||branch.toSide)changed=true;delete branch.fromSide;delete branch.toSide;}});
+  data.positions=captureFlowPositions(data);data.positionsLocked=true;
+  saveFlowchartData(data,true);
+  showToast((changed?'Manual ports cleared. ':'')+'Matching '+label+' lines now share a fork. Undo is available.');
 }
 function moveSelectedFlowConnection(endpoint,side){
   if(!isAdmin || !['fromSide','toSide'].includes(endpoint))return;
@@ -8294,13 +8346,55 @@ function updateUnitEstimate(){
 
 }
 
+const SIM_TAB_ORDER_KEY='bb-simulation-tab-order-v1';
+let simTabArrangeMode=false;
+function simulationTabButtons(){return Array.from(document.querySelectorAll('#simModeStrip > button[id]'));}
+function saveSimulationTabOrder(){
+  const order=simulationTabButtons().map(function(button){return button.id;});
+  try{localStorage.setItem(SIM_TAB_ORDER_KEY,JSON.stringify(order));}catch(e){}
+  if(isAdmin){notesData.__simulationTabOrder=order;scheduleSave();}
+}
+function initSimulationTabOrder(){
+  const strip=document.getElementById('simModeStrip');if(!strip)return;
+  let order=Array.isArray(notesData.__simulationTabOrder)?notesData.__simulationTabOrder:null;
+  if(!order)try{order=JSON.parse(localStorage.getItem(SIM_TAB_ORDER_KEY)||'null');}catch(e){}
+  if(Array.isArray(order))order.forEach(function(id){const button=document.getElementById(id);if(button&&button.parentElement===strip)strip.appendChild(button);});
+  simulationTabButtons().forEach(function(button){
+    button.addEventListener('dragstart',function(event){if(!simTabArrangeMode){event.preventDefault();return;}event.dataTransfer.setData('text/plain',button.id);event.dataTransfer.effectAllowed='move';});
+    button.addEventListener('dragover',function(event){if(!simTabArrangeMode)return;event.preventDefault();button.classList.add('sim-drag-over');});
+    button.addEventListener('dragleave',function(){button.classList.remove('sim-drag-over');});
+    button.addEventListener('drop',function(event){
+      button.classList.remove('sim-drag-over');if(!simTabArrangeMode)return;event.preventDefault();
+      const dragged=document.getElementById(event.dataTransfer.getData('text/plain'));
+      if(!dragged||dragged===button||dragged.parentElement!==strip)return;
+      const after=event.clientX>button.getBoundingClientRect().left+button.getBoundingClientRect().width/2;
+      strip.insertBefore(dragged,after?button.nextSibling:button);saveSimulationTabOrder();
+    });
+  });
+}
+function toggleSimulationTabArrange(){
+  simTabArrangeMode=!simTabArrangeMode;
+  const strip=document.getElementById('simModeStrip'),button=document.getElementById('simArrangeBtn');
+  strip.classList.toggle('is-arranging',simTabArrangeMode);
+  simulationTabButtons().forEach(function(tab){tab.draggable=simTabArrangeMode;});
+  button.textContent=simTabArrangeMode?'Done arranging':'Arrange tabs';button.setAttribute('aria-pressed',String(simTabArrangeMode));
+  document.getElementById('simArrangeHint').hidden=!simTabArrangeMode;
+  document.querySelectorAll('.sim-arrange-action').forEach(function(action){action.hidden=!simTabArrangeMode;});
+}
+function moveSimulationTab(direction){
+  if(!simTabArrangeMode)return;
+  const strip=document.getElementById('simModeStrip'),tabs=simulationTabButtons(),active=tabs.find(function(tab){return tab.classList.contains('btn-primary');});
+  const index=tabs.indexOf(active),target=tabs[index+direction];if(!active||!target)return;
+  strip.insertBefore(active,direction<0?target:target.nextSibling);saveSimulationTabOrder();
+}
 function initXmatch() {
+  initSimulationTabOrder();
   startABOsim();  // Start with ABO typing
 }
 
 function setSimulationShellWidth(width) {
   var shell = document.getElementById('simulationShell');
-  if (shell) shell.style.maxWidth = width || '860px';
+  if (shell) shell.style.maxWidth = '1380px';
 }
 
 function startABOsim() {
@@ -8773,7 +8867,7 @@ function nextXm() {
   var idx = Math.floor(Math.random() * xmCases.length);
   xmCurrent = xmCases[idx];
   xmStep = 0; xmSelectedDonor = null; xmDonorIdx2 = null; xmMode = null;
-  xmSpinDone = false; xmSpinRunning = false;
+  xmSpinDone = false; xmSpinRunning = false; xmSpinRunningPhase=''; xmScreenSpinDone={is:false,t37:false,wash:false,ahg:false,cc:false};
   renderXm();
 }
 
@@ -8792,7 +8886,7 @@ function startXmScreenCells() {
   };
   xmDonorIdx2 = null;
   xmStep = 1;
-  xmSpinDone = false; xmSpinRunning = false;
+  xmSpinDone = false; xmSpinRunning = false; xmSpinRunningPhase=''; xmScreenSpinDone={is:false,t37:false,wash:false,ahg:false,cc:false};xmScreenMethod='tube';
   renderXm();
 }
 
@@ -8831,8 +8925,8 @@ function renderXm() {
       return '<td><span class="' + (pos ? 'rxn-pos' : 'rxn-neg') + '">' + val + '</span></td>';
     }
     screenHTML += '<tr><td>' + sc + '</td>' +
-      cell(v.is, xmMode === 'screen' ? (xmSpinDone || xmStep > 1) : xmStep >= 1) + cell(v.t37, xmStep >= 3) +
-      cell(v.ahg, xmMode === 'screen' ? xmStep >= 4 : xmStep >= 5) + cell(v.cc, xmMode === 'screen' ? xmStep >= 4 : xmStep >= 5) + '</tr>';
+      cell(v.is, xmMode === 'screen' ? xmScreenSpinDone.is : xmStep >= 1) + cell(v.t37, xmMode === 'screen' ? xmScreenSpinDone.t37 && xmStep >= 3 : xmStep >= 3) +
+      cell(v.ahg, xmMode === 'screen' ? xmScreenSpinDone.ahg : xmStep >= 5) + cell(v.cc, xmMode === 'screen' ? xmScreenSpinDone.cc : xmStep >= 5) + '</tr>';
   });
   if (xmStep >= 6) {
     var isStar = xmSelectedDonor && xmSelectedDonor.compat;
@@ -8847,6 +8941,11 @@ function renderXm() {
   else if (xmStep === 3) labArea = buildRead37Step();
   else if (xmStep === 4) labArea = buildWashStep2();
   else if (xmStep === 5) labArea = buildAHGStep2();
+  if(xmMode==='donor'&&[1,3,4].includes(xmStep)){
+    const spinLabel=xmStep===1?'IS Spin':xmStep===3?'Wash Spin × 3–4':'AHG IS Spin';
+    const equipment=xmStep===4?'<div class="xm-device-row">'+xmCentrifugeUnit('AHG IS Spin',1,true,false)+xmCentrifugeUnit('Check Cell IS Spin',1,true,false)+'</div>':xmCentrifugeUnit(spinLabel,1,true,false);
+    labArea=labArea.replace(/<svg width="72" height="72" viewBox="0 0 72 72"[\s\S]*?<\/svg>/g,equipment);
+  }
 
   var resultArea = '';
   if (xmStep >= 6) {
@@ -8869,7 +8968,7 @@ function renderXm() {
           ? '<span style="font-size:12px;color:var(--good)">Screen Negative</span>'
           : (c.patient_abs||[]).map(function(a){ return '<span style="display:inline-block;background:#fee2e8;color:#9b1030;border-radius:4px;padding:1px 7px;font-size:11px;font-weight:700;margin:2px">' + a + '</span>'; }).join('')) +
         '</div></div>') +
-      '<div class="sys-card" style="padding:16px">' +
+      '<div class="sys-card'+(xmMode==='screen'&&xmStep>0?' xm-screen-summary':'')+'" style="padding:16px">' +
         '<div class="sec-label" style="margin-bottom:8px">' + (xmStep===0?'Choose Test Type':(xmMode === 'donor'?'Selected Donor':'Selected Screen Cells')) + '</div>' +
         (xmStep === 0
           ? '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">' +
@@ -8881,15 +8980,15 @@ function renderXm() {
       '</div>' +
     '</div>' +
     (xmStep > 1 && xmStep < 6 ? '<div style="margin-bottom:8px"><button class="btn btn-ghost btn-sm" onclick="prevXm2()" style="font-size:11px">&larr; Back</button></div>' : '') +
-    (xmMode === 'screen' ? '<div class="xm-screen-methods"><h3>Tube Method</h3>' : '') + labArea +
-    (xmMode === 'screen' ? '</div><div class="xm-screen-gel"><h3>Gel Method</h3></div>' : '') +
-    '<div class="sys-card" style="padding:16px;margin-bottom:12px;margin-top:12px">' +
+    (xmMode === 'screen' && xmStep > 0 ? '<div class="xm-screen-subtabs" role="tablist" aria-label="Screen method"><button class="btn btn-ghost btn-sm" type="button" role="tab" aria-selected="'+(xmScreenMethod==='tube')+'" onclick="selectXmScreenMethod(\'tube\')">Tube Method</button><button class="btn btn-ghost btn-sm" type="button" role="tab" aria-selected="'+(xmScreenMethod==='gel')+'" onclick="selectXmScreenMethod(\'gel\')">Gel Method</button></div>' : '') +
+    (xmMode === 'screen' && xmScreenMethod === 'gel' ? '<div class="xm-screen-gel"><div><h3>Gel Method</h3><p>Gel screen practice will be added here.</p></div></div>' : labArea) +
+    (xmMode === 'screen' && xmScreenMethod === 'gel' ? '' : '<div class="sys-card" style="padding:16px;margin-bottom:12px;margin-top:12px">' +
       '<div class="sec-label" style="margin-bottom:8px">' + (xmMode === 'screen' ? 'Screen Cell Results' : 'Crossmatch Results') + '</div>' +
       (xmStep===0 ? '<div class="phase-instr"><strong>Step 1:</strong> Choose screen cells or donor blood. The tube phases are the same after that choice.</div>' : '') +
       '<div style="overflow-x:auto"><table class="screen-table">' +
         '<thead><tr><th style="text-align:left">Tube</th><th>IS</th><th>37°C</th><th>AHG</th><th>CC</th></tr></thead>' +
         '<tbody>' + screenHTML + '</tbody></table></div>' +
-    '</div>' +
+    '</div>') +
     resultArea +
     '<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">' +
       '<button class="btn btn-primary" onclick="nextXm()">Next Case</button>' +
@@ -8915,34 +9014,54 @@ function xmScreenTube(index, phase, reveal) {
     '<path d="M7 91 Q7 105 25 105 Q43 105 43 91" fill="none" stroke="#9eb6c8" stroke-width="2"/>' +
     '<rect x="4" y="6" width="42" height="9" rx="3" fill="#e6eff5" stroke="#9eb6c8" stroke-width="2"/></svg><strong>' + labels[index] + '</strong><span>' + (reveal ? escText(result) : '') + '</span></div>';
 }
-function spinXmScreenTubes() {
-  if (xmMode !== 'screen' || xmStep !== 1 || xmSpinRunning || xmSpinDone) return;
-  var currentScreen = xmSelectedDonor;
-  xmSpinRunning = true;
-  renderXm();
-  setTimeout(function() { if (xmMode === 'screen' && xmStep === 1 && xmSelectedDonor === currentScreen) { xmSpinRunning = false; xmSpinDone = true; renderXm(); } }, 1200);
+function xmCentrifugeUnit(label,count,loaded,running){
+  const tubePoints=[[80,29,-90],[104,55,30],[56,55,-30]];
+  const tubes=loaded?tubePoints.slice(0,Math.max(1,Math.min(3,count))).map(function(p){return '<g transform="translate('+p[0]+' '+p[1]+') rotate('+p[2]+')"><rect x="-6" y="-18" width="12" height="35" rx="4" fill="#eaf6fc" stroke="#8daec5" stroke-width="2"/><path d="M-4 7 H4 V13 Q0 16 -4 13Z" fill="#ad1738"/><rect x="-7" y="-19" width="14" height="5" rx="2" fill="#e7edf2" stroke="#8daec5"/></g>';}).join(''):'';
+  return '<div class="xm-device xm-centrifuge-unit"><svg viewBox="0 0 160 128" role="img" aria-label="'+escAttr(label)+' centrifuge with '+count+' tube'+(count===1?'':'s')+'">'+
+    '<path d="M18 29 Q31 7 79 8 Q126 8 143 29 L133 43 Q81 32 27 43Z" fill="#d9e7f1" stroke="#849fb4" stroke-width="3"/>'+
+    '<path d="M23 39 Q80 28 137 39 L143 84 Q141 101 126 109 H34 Q19 101 17 84Z" fill="#c6d8e6" stroke="#7794a9" stroke-width="3"/>'+
+    '<ellipse cx="80" cy="52" rx="56" ry="29" fill="#617c91" stroke="#e8f1f5" stroke-width="5"/>'+
+    '<ellipse cx="80" cy="49" rx="42" ry="22" fill="#314b61" stroke="#91a9bb" stroke-width="3"/>'+
+    '<g class="xm-rotor'+(running?' is-spinning':'')+'"><circle cx="80" cy="49" r="13" fill="#9ab2c1" stroke="#e8f1f5" stroke-width="3"/>'+tubes+'</g>'+
+    '<path d="M19 83 Q80 96 141 83 V96 Q137 112 123 114 H37 Q23 112 19 96Z" fill="#e9eff4" stroke="#7995aa" stroke-width="3"/>'+
+    '<rect x="58" y="97" width="44" height="8" rx="3" fill="#346da4"/><circle cx="116" cy="101" r="5" fill="'+(running?'#27a668':'#e9ae34')+'"/>'+
+    '</svg><strong>'+escText(label)+'</strong><small>'+(running?'Tubes spinning':loaded?'Tubes loaded':'Rotor ready')+'</small></div>';
 }
+function xmHeatBlockUnit(count){
+  const holes=Array.from({length:Math.max(1,Math.min(3,count))},function(_,i){const x=49+i*31;return '<rect x="'+x+'" y="24" width="14" height="53" rx="5" fill="#eaf7fc" stroke="#90aabd" stroke-width="2"/><path d="M'+(x+2)+' 65 H'+(x+12)+' V73 H'+(x+2)+'Z" fill="#a41435"/>';}).join('');
+  return '<div class="xm-device xm-heatblock"><svg viewBox="0 0 160 120" role="img" aria-label="37 degree Celsius incubator or heat block with tubes"><rect x="18" y="47" width="124" height="64" rx="10" fill="#d9e5ec" stroke="#8ca7b7" stroke-width="3"/><rect x="28" y="43" width="104" height="28" rx="7" fill="#efbb59" stroke="#c79235" stroke-width="3"/>'+holes+'<rect x="47" y="86" width="65" height="16" rx="3" fill="#314958"/><text x="80" y="98" text-anchor="middle" fill="#adf5ce" font-family="Arial" font-size="12" font-weight="700">37°C</text></svg><strong>37°C Incubator / Heat Block</strong><small>Tubes incubating</small></div>';
+}
+function selectXmScreenMethod(method){if(method!=='tube'&&method!=='gel')return;xmScreenMethod=method;renderXm();}
+function spinXmScreenPhase(phase){
+  const expected=xmStep===1?'is':xmStep===2?'t37':xmStep===3?'wash':xmStep===4?(xmScreenSpinDone.ahg?'cc':'ahg'):'';
+  if(xmMode!=='screen'||phase!==expected||xmSpinRunning||xmScreenSpinDone[phase])return;
+  const currentScreen=xmSelectedDonor,currentStep=xmStep;
+  xmSpinRunning=true;xmSpinRunningPhase=phase;renderXm();
+  setTimeout(function(){if(xmMode==='screen'&&xmStep===currentStep&&xmSelectedDonor===currentScreen){xmSpinRunning=false;xmSpinRunningPhase='';xmScreenSpinDone[phase]=true;if(phase==='is')xmSpinDone=true;renderXm();}},1200);
+}
+function spinXmScreenTubes(){spinXmScreenPhase('is');}
 function buildScreenTubeStep() {
   var step = xmStep;
   var title = ['','Step 1: Immediate Spin (IS)','Step 2: 37°C Incubation','Step 3: Read 37°C and Wash','Step 4: AHG and Check Cells'][step];
   var phase = step === 1 ? 'is' : step === 3 ? 't37' : step === 4 ? 'ahg' : 'is';
-  var reveal = step === 1 ? xmSpinDone : step >= 3;
+  var reveal = step === 1 ? xmScreenSpinDone.is : step === 3 ? xmScreenSpinDone.t37 : step === 4 ? xmScreenSpinDone.ahg : false;
   var instructions = step === 1
     ? 'Add patient plasma and reagent screen cells to the labeled tubes, then place the tubes in the centrifuge.'
     : step === 2 ? 'Place the tubes in the 37°C heat block. Incubate, spin, and read before washing.'
     : step === 3 ? 'Record the 37°C reactions. Wash the cells 3–4 times with saline, then add AHG.'
     : 'Spin and read AHG. Add check cells to negative AHG tubes, spin, and verify the check-cell reaction.';
   var rack = '<div class="xm-screen-rack">' + xmTubeLabels().map(function(_, i) { return xmScreenTube(i, phase, reveal); }).join('') + '</div>';
-  var rotor = '<div class="xm-centrifuge"><div class="xm-centrifuge-body"><div class="xm-centrifuge-rotor' + (xmSpinRunning ? ' is-spinning' : '') + '">' +
-    (xmSpinRunning || xmSpinDone ? '<span></span><span></span><span></span>' : '') +
-    '</div></div><div class="xm-centrifuge-label">' + (xmSpinRunning ? 'Tubes spinning' : xmSpinDone ? 'Spin complete' : 'Centrifuge') + '</div></div>';
+  var spinKey=step===1?'is':step===2?'t37':step===3?'wash':xmScreenSpinDone.ahg?'cc':'ahg';
+  var spinLabel={is:'IS Spin',t37:'37°C Read · IS Spin',wash:'Wash Spin × 3–4',ahg:'AHG Read · IS Spin',cc:'Check Cell · IS Spin'}[spinKey];
+  var device=xmCentrifugeUnit(spinLabel,3,xmSpinRunning||xmScreenSpinDone[spinKey],xmSpinRunning&&xmSpinRunningPhase===spinKey);
+  var equipment='<div class="xm-device-row">'+(step===2?xmHeatBlockUnit(3):'')+device+'</div>';
   var action = step === 1
-    ? (xmSpinDone ? '<button class="btn btn-primary" onclick="advanceXm2()">Place in 37°C Heat Block</button>' : '<button class="btn btn-primary" onclick="spinXmScreenTubes()" ' + (xmSpinRunning ? 'disabled' : '') + '>Place tubes in centrifuge and spin</button>')
-    : step === 2 ? '<button class="btn btn-primary" onclick="advanceXm2()">Spin and Read 37°C</button>'
-    : step === 3 ? '<button class="btn btn-primary" onclick="advanceXm2()">Add AHG and Read</button>'
-    : '<button class="btn btn-primary" onclick="finishXm2()">Record Final Result</button>';
+    ? (xmScreenSpinDone.is ? '<button class="btn btn-primary" onclick="advanceXm2()">Place in 37°C Incubator</button>' : '<button class="btn btn-primary" onclick="spinXmScreenPhase(\'is\')" '+(xmSpinRunning?'disabled':'')+'>Load tubes and run IS Spin</button>')
+    : step === 2 ? (xmScreenSpinDone.t37?'<button class="btn btn-primary" onclick="advanceXm2()">Read 37°C Results</button>':'<button class="btn btn-primary" onclick="spinXmScreenPhase(\'t37\')" '+(xmSpinRunning?'disabled':'')+'>Incubate, then run IS Spin</button>')
+    : step === 3 ? (xmScreenSpinDone.wash?'<button class="btn btn-primary" onclick="advanceXm2()">Add AHG</button>':'<button class="btn btn-primary" onclick="spinXmScreenPhase(\'wash\')" '+(xmSpinRunning?'disabled':'')+'>Run Wash Spin × 3–4</button>')
+    : !xmScreenSpinDone.ahg?'<button class="btn btn-primary" onclick="spinXmScreenPhase(\'ahg\')" '+(xmSpinRunning?'disabled':'')+'>Run AHG IS Spin</button>':!xmScreenSpinDone.cc?'<button class="btn btn-primary" onclick="spinXmScreenPhase(\'cc\')" '+(xmSpinRunning?'disabled':'')+'>Run Check Cell IS Spin</button>':'<button class="btn btn-primary" onclick="finishXm2()">Record Final Result</button>';
   return '<div class="lab-bench" style="margin-top:4px"><div class="lab-bench-label">' + title + '</div>' +
-    '<p class="phase-instr">' + instructions + '</p>' + (step === 1 && xmSpinRunning ? rotor : rack + (step === 1 && !xmSpinDone ? rotor : '')) +
+    '<p class="phase-instr">' + instructions + '</p><div class="xm-screen-workbench">' + (xmSpinRunning?rack.replace('xm-screen-rack','xm-screen-rack is-loading'):rack) + equipment + '</div>' +
     '<div style="text-align:center;margin-top:12px">' + action + '</div></div>';
 }
 
@@ -8999,8 +9118,8 @@ function buildISStep2() {
 function build37Step2() {
   var d = xmSelectedDonor;
   var hasWarm = d && !d.compat && /anti-D|anti-E|anti-K/i.test(d.reason||'');
-  var CENT = '<svg width="56" height="56" viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="30" width="56" height="36" rx="7" fill="#e8edf5" stroke="#aabcd0" stroke-width="1.5"/><rect x="8" y="30" width="56" height="13" rx="7" fill="#c8d4e8"/><rect x="18" y="52" width="36" height="5" rx="2" fill="#4a90d9" opacity=".8"/><circle cx="28" cy="60" r="3.5" fill="#f5a623" stroke="#d48a00" stroke-width="1"/><ellipse cx="36" cy="34" rx="16" ry="5" fill="#d0daf0" stroke="#aab0cc" stroke-width="1.2"/><line x1="26" y1="29" x2="22" y2="16" stroke="#999" stroke-width="2.5" stroke-linecap="round"/><line x1="36" y1="28" x2="36" y2="14" stroke="#999" stroke-width="2.5" stroke-linecap="round"/><line x1="46" y1="29" x2="50" y2="16" stroke="#999" stroke-width="2.5" stroke-linecap="round"/><circle cx="22" cy="13" r="3.5" fill="#5a8cbf" stroke="#2a5c8c" stroke-width="1.2"/><circle cx="36" cy="11" r="3.5" fill="#5a8cbf" stroke="#2a5c8c" stroke-width="1.2"/><circle cx="50" cy="13" r="3.5" fill="#5a8cbf" stroke="#2a5c8c" stroke-width="1.2"/></svg>';
-  var HEAT = '<svg width="56" height="56" viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="24" width="60" height="40" rx="6" fill="#e8edf0" stroke="#b0c0cc" stroke-width="1.5"/><rect x="6" y="24" width="60" height="14" rx="6" fill="#f0b432" stroke="#d4960a" stroke-width="1.5"/><rect x="16" y="46" width="40" height="4" rx="2" fill="#f5a623" opacity=".7"/><text x="36" y="33" text-anchor="middle" font-size="9" fill="#5a3000" font-weight="bold" font-family="Georgia,serif">37C</text><circle cx="24" cy="62" r="3" fill="#f5a623" stroke="#d48a00" stroke-width="1"/><rect x="14" y="10" width="44" height="14" rx="4" fill="#d0daf0" stroke="#aab0cc" stroke-width="1.2"/><circle cx="24" cy="17" r="2.5" fill="#8bb0d0"/><circle cx="36" cy="17" r="2.5" fill="#8bb0d0"/><circle cx="48" cy="17" r="2.5" fill="#8bb0d0"/></svg>';
+  var CENT = xmCentrifugeUnit('37°C Read · IS Spin',xmTubeLabels().length,true,false);
+  var HEAT = xmHeatBlockUnit(xmTubeLabels().length);
   function tube(idx, showResult) {
     var lbl = xmTubeLabels()[idx];
     var react = hasWarm && idx === 0 && showResult;
@@ -9855,6 +9974,12 @@ function renderABOsim() {
       '<span class="donor-type">' + escText(a) + '</span>' +
       '</button>';
   }).join('');
+  var resultColumns=[
+    ['Anti-A','fwdA',cs.fwd.antiA],['Anti-B','fwdB',cs.fwd.antiB],
+    ['Anti-D','fwdD',cs.fwd.antiD],['D Control','fwdControl',cs.fwd.dControl||'0'],
+    ['A₁ Cells','revA1',cs.rev.a1],['B Cells','revB',cs.rev.b]
+  ];
+  var aboResults='<div class="abo-results-wrap"><table class="abo-results-table" aria-label="ABO and Rh reaction results"><thead><tr>'+resultColumns.map(function(column){return '<th scope="col">'+escText(column[0])+'</th>';}).join('')+'</tr></thead><tbody><tr>'+resultColumns.map(function(column){return '<td>'+(aboShaken[column[1]]?escText(column[2]):'—')+'</td>';}).join('')+'</tr></tbody></table></div>';
 
   area.innerHTML =
     // Typing rack
@@ -9876,7 +10001,7 @@ function renderABOsim() {
       }).join('') + '</div></div>' : '') +
     '</div></div><div class="abo-method"><h3>Gel Method</h3><div class="abo-gel-card">'+
       aboGelWell('fwdA','Anti-A',cs.fwd.antiA)+aboGelWell('fwdB','Anti-B',cs.fwd.antiB)+aboGelWell('fwdD','Anti-D',cs.fwd.antiD)+aboGelWell('fwdControl','D Ctrl',cs.fwd.dControl||'0')+aboGelWell('revA1','A1',cs.rev.a1)+aboGelWell('revB','B',cs.rev.b)+
-    '</div></div></div>' +
+    '</div></div></div>' + aboResults +
     '<div class="phase-instr" style="margin-top:10px">Click each tube or gel well to read its reaction. Agglutination is graded 1+ to 4+.</div>' +
     '</div>' +
 
@@ -9986,6 +10111,6 @@ function checkABOAnswer(answer) {
   document.querySelectorAll('#aboContent .donor-btn').forEach(function(b){ b.disabled = true; });
 }
 </script>
-<script src="shared/bloodbank-antigram.js?v=20261021-create-own-44"></script>
+<script src="shared/bloodbank-antigram.js?v=20261022-ahg-highlight-45"></script>
 </body>
 </html>

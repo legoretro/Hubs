@@ -320,9 +320,10 @@ function routeBloodBankFlow(container) {
     });
     repeated.forEach(function(group,index){
       var nearestTop=Math.min.apply(null,group.map(function(link){return nodes[link.dataset.flowLinkTo].top;}));
-      var approach=printExport?Math.max(gap*3,12*zoom):Math.max(gap*4,24*zoom);
-      var busY=parent.bottom+(nearestTop-parent.bottom-approach)/2;
-      if(busY<=parent.bottom+gap||busY>=nearestTop-approach-gap)return;
+      var corridor=nearestTop-parent.bottom;
+      if(corridor<=gap*2.5)return;
+      var busY=parent.bottom+Math.max(gap*1.25,Math.min(corridor*.45,corridor-gap*1.25));
+      if(busY<=parent.bottom+gap||busY>=nearestTop-gap)return;
       var side=repeated.length>1?(index<(repeated.length-1)/2?-1:1):0;
       var source=side?{x:side<0?parent.left:parent.right,y:(parent.top+parent.bottom)/2}:{x:(parent.left+parent.right)/2,y:parent.bottom};
       var start=side?{x:source.x+side*gap,y:source.y}:{x:source.x,y:source.y+gap};
