@@ -8779,9 +8779,10 @@ function xmScreenTube(index, phase, reveal) {
 }
 function spinXmScreenTubes() {
   if (xmMode !== 'screen' || xmStep !== 1 || xmSpinRunning || xmSpinDone) return;
+  var currentScreen = xmSelectedDonor;
   xmSpinRunning = true;
   renderXm();
-  setTimeout(function() { if (xmMode === 'screen' && xmStep === 1) { xmSpinRunning = false; xmSpinDone = true; renderXm(); } }, 1200);
+  setTimeout(function() { if (xmMode === 'screen' && xmStep === 1 && xmSelectedDonor === currentScreen) { xmSpinRunning = false; xmSpinDone = true; renderXm(); } }, 1200);
 }
 function buildScreenTubeStep() {
   var step = xmStep;
