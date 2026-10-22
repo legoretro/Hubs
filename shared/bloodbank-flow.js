@@ -99,36 +99,6 @@ function layoutBloodBankFlow(container,options){
   var completeSaved=ids.length&&ids.every(function(id){return saved[id]&&isFinite(saved[id].x)&&isFinite(saved[id].y);});
   var visualSaved={};
   ids.forEach(function(id){if(saved[id])visualSaved[id]={x:Number(saved[id].x),y:Number(saved[id].y)};});
-  if(completeSaved&&options.locked&&elements.hdn_baby&&elements.hdn_prenatal&&elements.hdn_postpartum){
-    // Keep the user's vertical placement and branch order, but remove the
-    // empty lanes left by older HDN layouts. A shared Fetal Screen belongs to
-    // the postpartum lane for spacing even though FMH also connects to it.
-    (visualSaved.hdn_screenpos?out.hdn_screenpos:[]).forEach(function(child){
-      if(incoming[child].length!==1)return;
-      var excess=visualSaved[child].x-visualSaved.hdn_screenpos.x-sizes.hdn_screenpos.width-95;
-      var shift=Math.max(0,Math.min(excess,170));
-      if(!shift)return;
-      var seen={},stack=[child];
-      while(stack.length){var id=stack.pop();if(seen[id]||incoming[id].length>1)continue;seen[id]=true;visualSaved[id].x-=shift;(out[id]||[]).forEach(function(next){stack.push(next);});}
-    });
-    var roots=['hdn_baby','hdn_prenatal','hdn_postpartum'];
-    var groups=roots.map(function(root){var seen={},stack=[root];while(stack.length){var id=stack.pop();if(seen[id]||!elements[id])continue;seen[id]=true;(out[id]||[]).forEach(function(next){stack.push(next);});}return Object.keys(seen);});
-    var membership={};groups.forEach(function(group,index){group.forEach(function(id){membership[id]=index;});});
-    var minClearance=print?18:32;
-    for(var groupIndex=1;groupIndex<groups.length;groupIndex++){
-      var desiredShift=Infinity;
-      groups[groupIndex].filter(function(id){return membership[id]===groupIndex;}).forEach(function(id){
-        ids.filter(function(other){return membership[other]===groupIndex-1;}).forEach(function(other){
-          var a=visualSaved[id],b=visualSaved[other];
-          if(a.y<b.y+sizes[other].height+20&&a.y+sizes[id].height+20>b.y)
-            desiredShift=Math.min(desiredShift,a.x-(b.x+sizes[other].width+minClearance));
-        });
-      });
-      var shift=Math.max(0,Math.min(isFinite(desiredShift)?desiredShift:0,print?100:190));
-      if(!shift)continue;
-      ids.forEach(function(id){if(membership[id]>=groupIndex)visualSaved[id].x-=shift;});
-    }
-  }
   if(completeSaved&&!options.manual&&!options.locked){
     // Position each child beneath its own parent(s), not beneath the deepest
     // unrelated branch in the same global rank. Keep a minimum corridor for
@@ -317,7 +287,7 @@ function routeBloodBankFlow(container) {
     var parent=nodes[from],byLabel={};if(!parent)return;
     outgoingBySource[from].forEach(function(link){
       var label=(link.dataset.label||'').trim(),key=label.toLowerCase();
-      if(!key||key==='next'||!nodes[link.dataset.flowLinkTo])return;
+      if(!key||key==='next'||link.dataset.fromSide||link.dataset.toSide||!nodes[link.dataset.flowLinkTo])return;
       (byLabel[key]||(byLabel[key]=[])).push(link);
     });
     var repeated=Object.keys(byLabel).map(function(key){return byLabel[key];}).filter(function(group){return group.length>1;});
@@ -341,6 +311,7 @@ function routeBloodBankFlow(container) {
   });
   orderedLinks.forEach(function(m){
     var from=m.dataset.flowLinkFrom,to=m.dataset.flowLinkTo,a=nodes[from],b=nodes[to];if(!a||!b)return;
+    var fromSide=m.dataset.fromSide||'',toSide=m.dataset.toSide||'',manualPort=Boolean(fromSide||toSide);
     var parents=incomingByTarget[to].filter(function(parent){return nodes[parent.dataset.flowLinkFrom];}).sort(function(left,right){var x=nodes[left.dataset.flowLinkFrom],y=nodes[right.dataset.flowLinkFrom];return ((x.left+x.right)/2)-((y.left+y.right)/2);});
     var targetX=(b.left+b.right)/2,targetY=b.top;
     var mergeOwner=parents.length>1?mergeOwnerFor(to):m;
@@ -410,7 +381,7 @@ function routeBloodBankFlow(container) {
     var lateralSide=b.right<a.left?-1:(b.left>a.right?1:0);
     var lateralGap=lateralSide<0?a.left-b.right:(lateralSide>0?b.left-a.right:0);
     var lateralY=(overlapTop+overlapBottom)/2;
-    var lateral=parents.length===1&&lateralSide&&overlapBottom-overlapTop>Math.min(a.bottom-a.top,b.bottom-b.top)*.45&&lateralGap>Math.max(10,gap*.4)&&lateralGap<Math.max(320,460*zoom)&&!Object.keys(nodes).some(function(id){
+    var lateral=!manualPort&&parents.length===1&&lateralSide&&overlapBottom-overlapTop>Math.min(a.bottom-a.top,b.bottom-b.top)*.45&&lateralGap>Math.max(10,gap*.4)&&lateralGap<Math.max(320,460*zoom)&&!Object.keys(nodes).some(function(id){
       if(id===from||id===to)return false;
       var box=nodes[id],left=Math.min(lateralSide<0?a.left:a.right,lateralSide<0?b.right:b.left),right=Math.max(lateralSide<0?a.left:a.right,lateralSide<0?b.right:b.left);
       return lateralY>box.top-4&&lateralY<box.bottom+4&&left<box.right+4&&right>box.left-4;
@@ -422,7 +393,24 @@ function routeBloodBankFlow(container) {
     }
     // Decision answers use independent ports. Only ordinary steps share a
     // stem and split bus.
-    var shareSource=sharedGroup?(sharedGroup.leader.dataset.label||'').trim().toLowerCase():(children.filter(function(link){return nodes[link.dataset.flowLinkTo];}).length>1&&!a.decision?'__step__':false);
+    var shareSource=manualPort?false:(sharedGroup?(sharedGroup.leader.dataset.label||'').trim().toLowerCase():(children.filter(function(link){return nodes[link.dataset.flowLinkTo];}).length>1&&!a.decision?'__step__':false));
+    function port(box,side){
+      if(side==='top')return {x:(box.left+box.right)/2,y:box.top,dx:0,dy:-1};
+      if(side==='left')return {x:box.left,y:(box.top+box.bottom)/2,dx:-1,dy:0};
+      if(side==='right')return {x:box.right,y:(box.top+box.bottom)/2,dx:1,dy:0};
+      return {x:(box.left+box.right)/2,y:box.bottom,dx:0,dy:1};
+    }
+    var entry=null;
+    if(manualPort){
+      if(fromSide){
+        var exit=port(a,fromSide);
+        source={x:exit.x,y:exit.y};
+        start={x:exit.x+exit.dx*gap,y:exit.y+exit.dy*gap};
+      }
+      entry=toSide?port(b,toSide):{x:targetX,y:b.top,dx:0,dy:-1};
+      end={x:entry.x+entry.dx*approach,y:entry.y+entry.dy*approach};
+      sideDirection=0;
+    }
     var points=lateral?[start,end]:null;
     if(sharedGroup){
       source=sharedGroup.source;start=sharedGroup.start;
@@ -433,7 +421,7 @@ function routeBloodBankFlow(container) {
         if(separate(sharedPoints,from,shareSource,to))points=sharedPoints;
       }
     }
-    if(!points&&parents.length>1&&m===mergeOwner&&Math.abs(start.x-end.x)<gap&&clear(start,end)&&separate([start,end],from,shareSource,to)){
+    if(!points&&!manualPort&&parents.length>1&&m===mergeOwner&&Math.abs(start.x-end.x)<gap&&clear(start,end)&&separate([start,end],from,shareSource,to)){
       // The parent directly above a merge owns its vertical spine. Other
       // parents join that spine; they must not force it into a rectangular
       // detour just because their route happened to be drawn first.
@@ -449,7 +437,7 @@ function routeBloodBankFlow(container) {
         if(clear(start,busStart)&&clear(busStart,busEnd)&&clear(busEnd,end)&&separate([start,busStart,busEnd,end],from,shareSource,to))points=[start,busStart,busEnd,end];
       }
     }
-    if(!points)points=route(start,end,parents.length>1&&m!==mergeOwner,from,shareSource,false,to);
+    if(!points)points=route(start,end,parents.length>1&&m!==mergeOwner&&!manualPort,from,shareSource,false,to);
     if(!points&&a.decision&&sideDirection){
       // A crowded side port can be boxed in by adjacent branches. The bottom
       // port keeps this connection visible without cutting through the node.
@@ -459,7 +447,8 @@ function routeBloodBankFlow(container) {
     if(!points)points=route(start,end,false,from,shareSource,true,to);
     if(!points){m.dataset.routeMissing='true';return;}delete m.dataset.routeMissing;
     points.unshift(source);
-    if(m===mergeOwner&&!lateral)points.push({x:end.x,y:targetY});
+    if(manualPort)points.push({x:entry.x,y:entry.y});
+    else if(m===mergeOwner&&!lateral)points.push({x:end.x,y:targetY});
     points=points.filter(function(p,i,all){return i===0||p.x!==all[i-1].x||p.y!==all[i-1].y;});
     var orthogonal=[];
     points.forEach(function(p){
@@ -487,7 +476,7 @@ function routeBloodBankFlow(container) {
     for(var segment=1;segment<points.length;segment++)occupied.push([points[segment-1],points[segment],from,m.dataset.branchId,shareSource,to]);
     var d=points.map(function(p,i){return (i?'L ':'M ')+p.x.toFixed(2)+' '+p.y.toFixed(2);}).join(' ');
     if(m.dataset.selected==='true')html+='<path d="'+d+'" fill="none" stroke="#ffcf00" stroke-width="'+Math.max(8,2.4*zoom+7)+'" stroke-linecap="round" stroke-linejoin="round"/>';
-    html+='<path class="flow-link-path'+(m.dataset.selected==='true'?' selected':'')+'" style="stroke-width:'+Math.max(.6,2.4*zoom)+'" d="'+d+'"'+(m===mergeOwner?' marker-end="url(#'+marker+')"':'')+'/>';
+    html+='<path class="flow-link-path'+(m.dataset.selected==='true'?' selected':'')+'" style="stroke-width:'+Math.max(.6,2.4*zoom)+'" d="'+d+'"'+(m===mergeOwner||manualPort?' marker-end="url(#'+marker+')"':'')+'/>';
     targets.push({from:from,to:to,branchId:m.dataset.branchId,points:points});
     if(m.dataset.label && m.dataset.label.toLowerCase()!=='next'&&(!sharedGroup||sharedGroup.leader===m))pendingLabels.push({marker:m,points:points,source:source,from:from,to:to,fixedLabel:sharedGroup?{x:sharedGroup.stemX,y:(sharedGroup.source.y+sharedGroup.busY)/2}:null});
   });

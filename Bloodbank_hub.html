@@ -357,6 +357,11 @@ textarea{resize:none;overflow:hidden}
 .flow-control{display:flex;flex-direction:column;gap:3px;font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--warm-grey);font-weight:900}
 .flow-select{min-width:96px;border:1px solid var(--rose);border-radius:10px;background:#fff;color:var(--wine);font-family:var(--flow-font-family);font-size:12px;font-weight:800;padding:6px 8px}
 .flow-action-group{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.flow-connection-move{border:1px solid #efbdca;border-radius:10px;padding:8px 10px;background:#fffaf9;min-width:245px;color:var(--wine)}
+.flow-connection-move summary{cursor:pointer;font-weight:800;font-size:13px}
+.flow-connection-ports{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 6px}
+.flow-connection-ports .flow-control{flex:1;min-width:150px;max-width:240px}
+.flow-connection-move small{display:block;max-width:390px;line-height:1.35;color:var(--warm-grey)}
 .flow-canvas{border:1px solid var(--rose);border-radius:18px;background:linear-gradient(180deg,#fff,#fff7f9);height:calc(100vh - 250px);min-height:560px;max-height:760px;padding:18px;overflow:auto;scroll-padding:150px 24px 210px;-webkit-overflow-scrolling:touch}
 #flowchartPreview{position:relative;min-width:max-content}
 .flow-link-layer{position:absolute;left:0;top:0;z-index:0;pointer-events:none;overflow:visible}
@@ -1051,7 +1056,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="shared/pdf-export.js?v=20260605-export-fit"></script>
 <script src="safe-supabase-sync.js"></script>
-<script src="shared/bloodbank-flow.js?v=20261021-local-links-55"></script>
+<script src="shared/bloodbank-flow.js?v=20261022-movable-ports-56"></script>
 <script>
 // ============================================================
 // CONFIG - SUPABASE + PASSWORD
@@ -2195,7 +2200,9 @@ function normalizeFlowchartData(data) {
         return {
           id: String(branch.id || flowId('branch')),
           label: branch.label == null ? 'Next' : String(branch.label),
-          to: String(branch.to || '')
+          to: String(branch.to || ''),
+          fromSide: ['top','left','bottom','right'].includes(branch.fromSide) ? branch.fromSide : '',
+          toSide: ['top','left','bottom','right'].includes(branch.toSide) ? branch.toSide : ''
         };
       }).filter(function(branch) {
         return branch.to && srcNodes[branch.to];
@@ -2300,7 +2307,7 @@ function duplicateFlowchartData(data){
   var nodes={};
   Object.keys(clean.nodes).forEach(function(id){
     var node=clean.nodes[id];
-    nodes[ids[id]]=Object.assign({},node,{id:ids[id],branches:(node.branches||[]).map(function(branch){return {id:flowId('branch'),label:branch.label,to:ids[branch.to]||branch.to};})});
+    nodes[ids[id]]=Object.assign({},node,{id:ids[id],branches:(node.branches||[]).map(function(branch){return Object.assign({},branch,{id:flowId('branch'),to:ids[branch.to]||branch.to});})});
   });
   const positions={};
   Object.keys(clean.positions).forEach(function(id){positions[ids[id]]=clean.positions[id];});
@@ -2588,7 +2595,7 @@ function flowConnectionMarkers(data){
   return Object.keys(data.nodes).map(function(id){return data.nodes[id].branches.map(function(b){
     var isCross=cross.some(function(c){return c.from===id&&c.branchId===b.id;});
     var selected=flowSelectedLink&&flowSelectedLink.from===id&&flowSelectedLink.branchId===b.id;
-    return '<span hidden class="flow-link-marker" data-flow-link-from="'+escAttr(id)+'" data-flow-link-to="'+escAttr(b.to)+'" data-branch-id="'+escAttr(b.id)+'" data-cross="'+isCross+'" data-label="'+escAttr(b.label)+'" data-selected="'+Boolean(selected)+'"></span>';
+    return '<span hidden class="flow-link-marker" data-flow-link-from="'+escAttr(id)+'" data-flow-link-to="'+escAttr(b.to)+'" data-branch-id="'+escAttr(b.id)+'" data-cross="'+isCross+'" data-label="'+escAttr(b.label)+'" data-from-side="'+escAttr(b.fromSide||'')+'" data-to-side="'+escAttr(b.toSide||'')+'" data-selected="'+Boolean(selected)+'"></span>';
   }).join('');}).join('');
 }
 let flowLinkDrawTimer=null;
@@ -2789,10 +2796,14 @@ function renderFlowSelectionPanel(data) {
       '<div class="flow-selected-title">Current selected<strong>Line: ' + escText(selectedConnection.parent.text || 'Box') + ' -> ' + escText(selectedConnection.target.text || 'Box') + '</strong></div>' +
       '<label class="flow-control">Arrow label<select class="flow-select" onchange="chooseSelectedArrowLabel(this.value)">' + flowOptionHtml(arrowPresets,['No label','Yes','No','Negative','Positive'],customArrowLabel?'':arrowLabel) + '<option value="custom"'+(customArrowLabel?' selected':'')+'>Custom text…</option></select></label>' +
       '<label class="flow-control">Custom label<input class="flow-select" id="flowCustomArrowLabel" maxlength="50" placeholder="Type any arrow label" value="'+escAttr(customArrowLabel?arrowLabel:'')+'" onchange="setSelectedArrowLabel(this.value)" onkeydown="if(event.key===\'Enter\'){event.preventDefault();this.blur()}"></label>' +
+      '<details class="flow-connection-move"><summary>Move connection</summary><div class="flow-connection-ports">' +
+        '<label class="flow-control">Leave ' + escText(selectedConnection.parent.text || 'box') + '<select class="flow-select" onchange="moveSelectedFlowConnection(\'fromSide\',this.value)">' + flowOptionHtml(['','top','left','bottom','right'],['Automatic','1 · Top','2 · Left','3 · Bottom','4 · Right'],selectedConnection.branch.fromSide||'') + '</select></label>' +
+        '<label class="flow-control">Enter ' + escText(selectedConnection.target.text || 'box') + '<select class="flow-select" onchange="moveSelectedFlowConnection(\'toSide\',this.value)">' + flowOptionHtml(['','top','left','bottom','right'],['Automatic','1 · Top','2 · Left','3 · Bottom','4 · Right'],selectedConnection.branch.toSide||'') + '</select></label>' +
+      '</div><small>Automatic keeps matching Yes/No lines together. Moving either end gives this line its own path.</small></details>' +
       '<div class="flow-action-group">' +
-        (siblings.length===2 ? '<button class="flow-tool-btn" onclick="swapSelectedFlowBranches()">Swap left / right branches</button>' : '') +
-        (siblings.length>2&&branchIndex>0 ? '<button class="flow-tool-btn" onclick="swapSelectedFlowBranches(\'left\')">Move branch left</button>' : '') +
-        (siblings.length>2&&branchIndex<siblings.length-1 ? '<button class="flow-tool-btn" onclick="swapSelectedFlowBranches(\'right\')">Move branch right</button>' : '') +
+        (siblings.length===2 ? '<button class="flow-tool-btn" onclick="swapSelectedFlowBranches()">Swap destinations</button>' : '') +
+        (siblings.length>2&&branchIndex>0 ? '<button class="flow-tool-btn" onclick="swapSelectedFlowBranches(\'left\')">Swap with left destination</button>' : '') +
+        (siblings.length>2&&branchIndex<siblings.length-1 ? '<button class="flow-tool-btn" onclick="swapSelectedFlowBranches(\'right\')">Swap with right destination</button>' : '') +
         '<button class="flow-tool-btn" onclick="insertFlowBox(\'arrow\')">Insert box here</button>' +
         '<button class="flow-tool-btn" onclick="deleteSelectedFlowConnectionLine()">Delete line</button>' +
         '<button class="flow-tool-btn" onclick="clearFlowConnectionSelection()">Cancel</button>' +
@@ -2819,8 +2830,8 @@ function renderFlowSelectionPanel(data) {
     '<label class="flow-control">New<select class="flow-select" id="flowAddShape">' + flowOptionHtml(shapeValues, shapeLabels, 'step') + '</select></label>' +
     '<div class="flow-action-group">' +
       '<button class="flow-tool-btn primary" onclick="addFlowBranchToSelected()">Add branch</button>' +
-      (branchCount===2 ? '<button class="flow-tool-btn" onclick="swapSelectedFlowBranches()">Swap left / right branches</button>' : '') +
-      (branchCount>2 ? '<button class="flow-tool-btn" onclick="swapSelectedFlowBranches()">Reverse branch order</button>' : '') +
+      (branchCount===2 ? '<button class="flow-tool-btn" onclick="swapSelectedFlowBranches()">Swap branch destinations</button>' : '') +
+      (branchCount>2 ? '<button class="flow-tool-btn" onclick="swapSelectedFlowBranches()">Reverse branch destinations</button>' : '') +
       '<button class="flow-tool-btn" onclick="insertFlowBox(\'before\')">Insert before</button>' +
       '<button class="flow-tool-btn" onclick="insertFlowBox(\'after\')">Insert after</button>' +
       '<button class="flow-tool-btn" onclick="duplicateSelectedFlowNode()">Duplicate box</button>' +
@@ -2847,6 +2858,17 @@ function setSelectedArrowLabel(value){
   drawFlowLinkLines(getFlowchartData());
   renderFlowSelectionPanel(getFlowchartData());
 }
+function moveSelectedFlowConnection(endpoint,side){
+  if(!isAdmin || !['fromSide','toSide'].includes(endpoint))return;
+  const data=getFlowchartData(),connection=getFlowSelectedConnection(data);
+  if(!connection)return;
+  data.positions=captureFlowPositions(data);
+  data.positionsLocked=true;
+  connection.branch[endpoint]=['top','left','bottom','right'].includes(side)?side:'';
+  saveFlowchartData(data,true);
+  const details=document.querySelector('#flowSelectionPanel .flow-connection-move');
+  if(details)details.open=true;
+}
 function captureFlowPositions(data) {
   const positions=Object.assign({},data.positions||{});
   document.querySelectorAll('#flowStage > .flow-node-wrap').forEach(function(wrap){
@@ -2854,6 +2876,32 @@ function captureFlowPositions(data) {
     if(node&&data.nodes[node.dataset.flowNodeId])positions[node.dataset.flowNodeId]={x:parseFloat(wrap.style.left)||0,y:parseFloat(wrap.style.top)||0};
   });
   return positions;
+}
+function placeNewFlowBox(data,newId,anchorId){
+  const positions=captureFlowPositions(data),anchor=positions[anchorId]||{x:50,y:50};
+  const wraps=Array.from(document.querySelectorAll('#flowStage > .flow-node-wrap'));
+  const sizes={};
+  wraps.forEach(function(wrap){
+    const node=wrap.querySelector('[data-flow-node-id]');
+    if(node)sizes[node.dataset.flowNodeId]={w:Math.max(wrap.offsetWidth,220),h:Math.max(wrap.offsetHeight,64)};
+  });
+  const own=sizes[anchorId]||{w:260,h:80},newSize={w:260,h:80};
+  const occupied=Object.keys(positions).filter(function(id){return id!==newId;});
+  const base={x:Math.max(20,anchor.x+(own.w-newSize.w)/2),y:anchor.y+own.h+85};
+  let chosen=null;
+  for(let row=0;row<30&&!chosen;row++){
+    for(const lane of [0,-1,1,-2,2,-3,3]){
+      const candidate={x:Math.max(20,base.x+lane*300),y:base.y+row*140};
+      const overlap=occupied.some(function(id){
+        const p=positions[id],size=sizes[id]||newSize;
+        return candidate.x<p.x+size.w+25&&candidate.x+newSize.w+25>p.x&&candidate.y<p.y+size.h+45&&candidate.y+newSize.h+45>p.y;
+      });
+      if(!overlap){chosen=candidate;break;}
+    }
+  }
+  positions[newId]=chosen||base;
+  data.positions=positions;
+  data.positionsLocked=true;
 }
 function updateFlowManualControls(data) {
   const toggle=document.getElementById('flowManualModeBtn'),reset=document.getElementById('flowAutoLayoutBtn');
@@ -2960,16 +3008,19 @@ function swapSelectedFlowBranches(direction) {
   const node = id && data.nodes[id];
   if (!node || (node.branches || []).filter(function(branch){return data.nodes[branch.to];}).length < 2) return;
   const before=captureFlowPositions(data);
-  const oldOrder=node.branches.slice();
   if (flowSelectedLink && direction) {
     const index=node.branches.findIndex(function(branch){return branch.id===flowSelectedLink.branchId;});
     const other=index+(direction==='left'?-1:1);
     if (index<0||other<0||other>=node.branches.length) return;
-    const branch=node.branches[index];node.branches[index]=node.branches[other];node.branches[other]=branch;
-  } else node.branches.reverse();
-  data.positions=rearrangeFlowBranchSubtrees(data,id,oldOrder,before);
+    const target=node.branches[index].to;node.branches[index].to=node.branches[other].to;node.branches[other].to=target;
+  } else {
+    const targets=node.branches.map(function(branch){return branch.to;}).reverse();
+    node.branches.forEach(function(branch,index){branch.to=targets[index];});
+  }
+  data.positions=before;
+  data.positionsLocked=true;
   saveFlowchartData(data, true);
-  showToast('Branch and downstream boxes moved. Undo is available.');
+  showToast('Branch destinations swapped; boxes stayed in place. Undo is available.');
 }
 function selectFlowNode(id) {
   if (!isAdmin) return;
@@ -3168,6 +3219,7 @@ function addFlowBranch(parentId, label, childType) {
     branches: []
   };
   parent.branches.push({id:flowId('branch'), label:label == null ? 'Next' : label, to:childId});
+  placeNewFlowBox(data,childId,parentId);
   flowSelectedNodeId = childId;
   saveFlowchartData(data, true);
 }
@@ -3204,7 +3256,9 @@ function insertFlowBox(position) {
     Object.values(data.nodes).forEach(function(n){n.branches.forEach(function(b){if(b.to===selected.id)b.to=id;});});
     node.branches=[edge(selected.id)];if(data.rootId===selected.id)data.rootId=id;
   } else {node.branches=selected.branches;selected.branches=[edge(id)];}
-  data.nodes[id]=node;flowSelectedLink=null;flowSelectedNodeId=id;saveFlowchartData(data,true);
+  data.nodes[id]=node;
+  placeNewFlowBox(data,id,position==='arrow'?link.parent.id:selected.id);
+  flowSelectedLink=null;flowSelectedNodeId=id;saveFlowchartData(data,true);
 }
 
 function duplicateSelectedFlowNode() {
@@ -3228,6 +3282,7 @@ function duplicateSelectedFlowNode() {
   }else if(selected.id===data.rootId){
     selected.branches.push({id:flowId('branch'),label:'Next',to:id});
   }
+  placeNewFlowBox(data,id,parent?parent.id:selected.id);
   flowSelectedLink=null;
   flowSelectedNodeId=id;
   saveFlowchartData(data,true);
