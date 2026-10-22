@@ -20,7 +20,9 @@ function layoutBloodBankFlow(container,options){
   for(var q=0;q<queue.length;q++){var id=queue[q];ids.forEach(function(to){if(incoming[to].indexOf(id)<0)return;rank[to]=Math.max(rank[to],rank[id]+1);remaining[to]--;if(!remaining[to])queue.push(to);});}
   var rows=[];ids.forEach(function(id){(rows[rank[id]]||(rows[rank[id]]=[])).push(id);});
   var center={},anchor={},sizes={},width=0,orderedBranchChild={};
-  ids.forEach(function(id){var el=elements[id];el.style.left='0';el.style.top='0';var r=el.getBoundingClientRect();sizes[id]={width:Math.max(r.width,el.offsetWidth,240),height:Math.max(r.height,el.offsetHeight,62)};});
+  // Use the rendered width for centers; a minimum logical width made narrower
+  // boxes look off-center even when their computed center coordinates matched.
+  ids.forEach(function(id){var el=elements[id];el.style.left='0';el.style.top='0';var r=el.getBoundingClientRect();sizes[id]={width:Math.max(r.width,el.offsetWidth,1),height:Math.max(r.height,el.offsetHeight,1)};});
   var pitch=Math.max.apply(null,ids.map(function(id){return sizes[id].width;}))+horizontalGap;
   rows.forEach(function(row,rowIndex){
     row.forEach(function(id){
@@ -87,6 +89,27 @@ function layoutBloodBankFlow(container,options){
     layerRow.sort(function(a,b){return center[a]-center[b]||ids.indexOf(a)-ids.indexOf(b);});
     var layerEdge=-Infinity;
     layerRow.forEach(function(id){var left=center[id]-sizes[id].width/2;if(left<layerEdge+layerGap)center[id]+=layerEdge+layerGap-left;layerEdge=center[id]+sizes[id].width/2;});
+  }
+  // Keep a one-to-one continuation directly under its parent. Where three or
+  // more branches join, align the join with the middle parent. Follow each
+  // chain downward after row spacing, but never make boxes overlap.
+  for(var straightLayer=1;straightLayer<rows.length;straightLayer++){
+    var straightRow=rows[straightLayer],straightGap=print?14:(compact?24:34);
+    straightRow.forEach(function(id){
+      var parents=incoming[id].filter(function(parent){return rank[parent]===straightLayer-1;});
+      var desired;
+      if(parents.length===1&&incoming[id].length===1){
+        var parent=parents[0],siblings=out[parent].filter(function(to){return rank[to]===straightLayer;});
+        if(siblings.length!==1)return;
+        desired=center[parent];
+      }else if(parents.length>=3&&parents.length%2===1&&parents.length===incoming[id].length){
+        var parentCenters=parents.map(function(parent){return center[parent];}).sort(function(a,b){return a-b;});
+        desired=parentCenters[(parentCenters.length-1)/2];
+      }else return;
+      var half=sizes[id].width/2;
+      var clear=straightRow.every(function(other){return other===id||desired+half+straightGap<=center[other]-sizes[other].width/2||desired-half-straightGap>=center[other]+sizes[other].width/2;});
+      if(clear)center[id]=desired;
+    });
   }
   var minX=Math.min.apply(null,ids.map(function(id){return center[id]-sizes[id].width/2;}));
   var y=topInset;
@@ -313,18 +336,10 @@ function routeBloodBankFlow(container) {
     var from=m.dataset.flowLinkFrom,to=m.dataset.flowLinkTo,a=nodes[from],b=nodes[to];if(!a||!b)return;
     var fromSide=m.dataset.fromSide||'',toSide=m.dataset.toSide||'',manualPort=Boolean(fromSide||toSide);
     var parents=incomingByTarget[to].filter(function(parent){return nodes[parent.dataset.flowLinkFrom];}).sort(function(left,right){var x=nodes[left.dataset.flowLinkFrom],y=nodes[right.dataset.flowLinkFrom];return ((x.left+x.right)/2)-((y.left+y.right)/2);});
+    // Every automatic entry uses the center of a real box side. In
+    // particular, a merge must not slide its arrow along the top edge.
     var targetX=(b.left+b.right)/2,targetY=b.top;
     var mergeOwner=parents.length>1?mergeOwnerFor(to):m;
-    if(parents.length>1){
-      var ownerBox=nodes[mergeOwner.dataset.flowLinkFrom];
-      // If the owner's box blocks the centered approach, enter within the
-      // destination a little to its side. Both links can share one straight
-      // stem instead of drawing a tiny rectangle around the obstruction.
-      if(ownerBox.bottom<b.top-gap*2&&targetX>ownerBox.left-gap*.5&&targetX<ownerBox.right+gap*.5){
-        var ownerCenter=(ownerBox.left+ownerBox.right)/2;
-        targetX=ownerCenter>targetX?Math.max(b.left+gap,ownerBox.left-gap*.65):Math.min(b.right-gap,ownerBox.right+gap*.65);
-      }
-    }
     // Leave a visible straight approach so the arrowhead is not attached to
     // the horizontal turn immediately above a destination box.
     var corridor=b.top-a.bottom;
@@ -380,8 +395,8 @@ function routeBloodBankFlow(container) {
     var overlapTop=Math.max(a.top,b.top),overlapBottom=Math.min(a.bottom,b.bottom);
     var lateralSide=b.right<a.left?-1:(b.left>a.right?1:0);
     var lateralGap=lateralSide<0?a.left-b.right:(lateralSide>0?b.left-a.right:0);
-    var lateralY=(overlapTop+overlapBottom)/2;
-    var lateral=!manualPort&&parents.length===1&&lateralSide&&overlapBottom-overlapTop>Math.min(a.bottom-a.top,b.bottom-b.top)*.45&&lateralGap>Math.max(10,gap*.4)&&lateralGap<Math.max(320,460*zoom)&&!Object.keys(nodes).some(function(id){
+    var lateralY=(a.top+a.bottom)/2,targetLateralY=(b.top+b.bottom)/2;
+    var lateral=!manualPort&&parents.length===1&&lateralSide&&Math.abs(lateralY-targetLateralY)<2&&overlapBottom-overlapTop>Math.min(a.bottom-a.top,b.bottom-b.top)*.45&&lateralGap>Math.max(10,gap*.4)&&lateralGap<Math.max(320,460*zoom)&&!Object.keys(nodes).some(function(id){
       if(id===from||id===to)return false;
       var box=nodes[id],left=Math.min(lateralSide<0?a.left:a.right,lateralSide<0?b.right:b.left),right=Math.max(lateralSide<0?a.left:a.right,lateralSide<0?b.right:b.left);
       return lateralY>box.top-4&&lateralY<box.bottom+4&&left<box.right+4&&right>box.left-4;
@@ -448,7 +463,7 @@ function routeBloodBankFlow(container) {
     if(!points){m.dataset.routeMissing='true';return;}delete m.dataset.routeMissing;
     points.unshift(source);
     if(manualPort)points.push({x:entry.x,y:entry.y});
-    else if(m===mergeOwner&&!lateral)points.push({x:end.x,y:targetY});
+    else if(!lateral)points.push({x:targetX,y:targetY});
     points=points.filter(function(p,i,all){return i===0||p.x!==all[i-1].x||p.y!==all[i-1].y;});
     var orthogonal=[];
     points.forEach(function(p){

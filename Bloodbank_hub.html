@@ -688,7 +688,8 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 #sec-flowchart .flow-selection-panel .flow-selected-title{max-width:200px}
 #flowchartViewport{height:88dvh;min-height:520px;max-height:none;width:100%}
 .flow-manual-mode .flow-node{outline:1px dashed rgba(26,92,140,.35);outline-offset:3px;cursor:grab;touch-action:none}.flow-manual-mode .flow-node:active{cursor:grabbing}.flow-manual-mode{background-color:#fff!important;background-image:linear-gradient(rgba(90,14,32,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(90,14,32,.055) 1px,transparent 1px)!important;background-size:32px 32px!important}
-@media print{#flowchartPreview,.flow-export-wrap{background:#fff!important;background-image:none!important}}
+.flow-snap-guide{position:absolute;z-index:5;pointer-events:none;background:#248db2;opacity:.75}.flow-snap-guide.vertical{top:0;width:1px;height:100%}.flow-snap-guide.horizontal{left:0;height:1px;width:100%}
+@media print{#flowchartPreview,.flow-export-wrap{background:#fff!important;background-image:none!important}.flow-snap-guide{display:none!important}}
 @media screen and (min-width:761px){#sec-flowchart.active{zoom:.7;max-width:none;width:calc(142.857vw - 354.286px)}}
 @media print{#sec-flowchart{zoom:1!important;width:auto!important;max-width:none!important}}
 @media print{#sec-flowchart .flow-node.terminal{border-radius:999px!important;border:2px solid #333!important}}
@@ -993,7 +994,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
               <button class="flow-tool-btn" onclick="fitFlowchart()">Closer View</button>
               <button class="flow-tool-btn" onclick="fitFlowchartForLandscape()">Page Fit</button>
               <button class="flow-tool-btn flow-admin-action" id="flowManualModeBtn" type="button" onclick="toggleFlowManualMode()" aria-pressed="false">✋ Move Mode</button>
-              <button class="flow-tool-btn flow-admin-action" id="flowAutoLayoutBtn" type="button" onclick="resetFlowManualLayout()" hidden>Reset positions</button>
+              <button class="flow-tool-btn flow-admin-action" id="flowAutoLayoutBtn" type="button" onclick="autoArrangeFlowchart()">Auto arrange</button>
               <button class="flow-tool-btn flow-admin-action" id="flowUndoBtn" onclick="undoFlowchartChange()">Undo</button>
               <button class="flow-tool-btn flow-admin-action" id="flowRedoBtn" onclick="redoFlowchartChange()">Redo</button>
               <button class="flow-tool-btn primary" onclick="exportFlowchart()">Export diagram</button>
@@ -2218,7 +2219,7 @@ function normalizeFlowchartData(data) {
     if (!nodes[id] || !point || !Number.isFinite(Number(point.x)) || !Number.isFinite(Number(point.y))) return;
     positions[id] = {x:Math.max(0,Math.min(50000,Number(point.x))),y:Math.max(0,Math.min(50000,Number(point.y)))};
   });
-  return {rootId:rootId, font:normalizeFlowFont(data.font), nodes:nodes, positions:positions, positionsLocked:Boolean(data.positionsLocked)};
+  return {rootId:rootId, font:normalizeFlowFont(data.font), nodes:nodes, positions:positions, positionsLocked:Boolean(data.positionsLocked), manualPositions:data.manualPositions==null?Boolean(data.positionsLocked):Boolean(data.manualPositions)};
 }
 
 function isOldStarterFlowchart(data) {
@@ -2312,7 +2313,7 @@ function duplicateFlowchartData(data){
   });
   const positions={};
   Object.keys(clean.positions).forEach(function(id){positions[ids[id]]=clean.positions[id];});
-  return normalizeFlowchartData({rootId:ids[clean.rootId],font:clean.font,nodes:nodes,positions:positions,positionsLocked:clean.positionsLocked});
+  return normalizeFlowchartData({rootId:ids[clean.rootId],font:clean.font,nodes:nodes,positions:positions,positionsLocked:clean.positionsLocked,manualPositions:clean.manualPositions});
 }
 function duplicateFlowDiagram(){
   if(!isAdmin)return;
@@ -2941,7 +2942,7 @@ function bringConnectedFlowBoxesCloser(data,firstId,secondId){
 function updateFlowManualControls(data) {
   const toggle=document.getElementById('flowManualModeBtn'),reset=document.getElementById('flowAutoLayoutBtn');
   if(toggle){toggle.textContent=flowManualMode?'✋ Done moving':'✋ Move Mode';toggle.setAttribute('aria-pressed',String(flowManualMode));}
-  if(reset)reset.hidden=!Object.keys((data||getFlowchartData()).positions||{}).length;
+  if(reset)reset.hidden=false;
 }
 function toggleFlowManualMode() {
   if(!isAdmin)return;
@@ -2950,10 +2951,18 @@ function toggleFlowManualMode() {
   renderFlowchart();
   showToast(flowManualMode?'Drag any box to place it. Its position saves when released.':'Box positions saved');
 }
-function resetFlowManualLayout() {
+function autoArrangeFlowchart() {
   if(!isAdmin)return;
-  const data=getFlowchartData();if(!Object.keys(data.positions||{}).length)return;
-  data.positions={};data.positionsLocked=false;flowManualMode=false;saveFlowchartData(data,true);showToast('Automatic positions restored. Undo is available.');
+  const data=getFlowchartData();
+  flowManualMode=false;
+  saveAutoArrangedFlowchart(data);
+  showToast('Boxes auto arranged in downward rows. Undo is available.');
+}
+function saveAutoArrangedFlowchart(data){
+  data.positions={};data.positionsLocked=false;data.manualPositions=false;
+  saveFlowchartData(data,true);
+  const arranged=getFlowchartData();arranged.positions=captureFlowPositions(arranged);arranged.positionsLocked=true;
+  storeFlowchartData(arranged);scheduleSave();
 }
 function startFlowNodeMove(event,id) {
   if(!isAdmin||!flowManualMode||event.button!==0)return;
@@ -2967,16 +2976,45 @@ function startFlowNodeMove(event,id) {
   const stageZoom=parseFloat(getComputedStyle(stage).zoom)||1;
   const pointer={x:event.clientX,y:event.clientY};
   const handle=event.currentTarget;handle.setPointerCapture(event.pointerId);
+  const graph=getFlowchartData(),linked=new Set();
+  Object.keys(graph.nodes).forEach(function(from){(graph.nodes[from].branches||[]).forEach(function(branch){if(from===id)linked.add(branch.to);if(branch.to===id)linked.add(from);});});
+  const others=Array.from(stage.querySelectorAll(':scope > .flow-node-wrap')).filter(function(other){return other!==wrap;});
+  const verticalGuide=document.createElement('div'),horizontalGuide=document.createElement('div');
+  verticalGuide.className='flow-snap-guide vertical';horizontalGuide.className='flow-snap-guide horizontal';
+  verticalGuide.hidden=true;horizontalGuide.hidden=true;stage.append(verticalGuide,horizontalGuide);
   let moved=false,frame=0;
   function refresh(){frame=0;const width=Math.max(parseFloat(stage.style.width)||0,parseFloat(wrap.style.left)+wrap.offsetWidth+50),height=Math.max(parseFloat(stage.style.height)||0,parseFloat(wrap.style.top)+wrap.offsetHeight+50);stage.style.width=width+'px';stage.style.height=height+'px';preview.style.width=width*stageZoom+'px';preview.style.height=height*stageZoom+'px';flowLinkClickTargets=routeBloodBankFlow(preview);updateFlowRouteFocus(preview);}
+  function snapAxis(raw,size,axis){
+    const grid=32,candidates=[];
+    [0,size].forEach(function(edge){const value=Math.round((raw+edge)/grid)*grid-edge;candidates.push({value:value,distance:Math.abs(value-raw),kind:'grid',priority:0});});
+    others.forEach(function(other){
+      const el=other.querySelector('[data-flow-node-id]');if(!el)return;
+      const peerId=el.dataset.flowNodeId,position=parseFloat(other.style[axis==='x'?'left':'top'])||0,extent=axis==='x'?other.offsetWidth:other.offsetHeight;
+      const anchors=[0,extent/2,extent],ownAnchors=[0,size/2,size];
+      anchors.forEach(function(anchor,index){
+        const value=position+anchor-ownAnchors[index],distance=Math.abs(value-raw);
+        const connectedCenter=axis==='x'&&linked.has(peerId)&&index===1;
+        candidates.push({value:value,distance:distance,kind:connectedCenter?'connected':'box',priority:connectedCenter?2:1,guide:position+anchor});
+      });
+    });
+    const allowed=candidates.filter(function(item){return item.value>=0&&item.distance<=(item.kind==='connected'?22:item.kind==='box'?12:9);});
+    allowed.sort(function(a,b){return b.priority-a.priority||a.distance-b.distance;});
+    return allowed[0]||{value:Math.max(0,raw),kind:'none'};
+  }
   function move(e){
-    const x=Math.max(0,initial.x+(e.clientX-pointer.x)/pointerScale),y=Math.max(0,initial.y+(e.clientY-pointer.y)/pointerScale);
+    const rawX=Math.max(0,initial.x+(e.clientX-pointer.x)/pointerScale),rawY=Math.max(0,initial.y+(e.clientY-pointer.y)/pointerScale);
+    const snappedX=snapAxis(rawX,wrap.offsetWidth,'x'),snappedY=snapAxis(rawY,wrap.offsetHeight,'y');
+    const x=snappedX.value,y=snappedY.value;
     moved=moved||Math.abs(x-initial.x)>2||Math.abs(y-initial.y)>2;
     wrap.style.left=x+'px';wrap.style.top=y+'px';
+    verticalGuide.hidden=!snappedX.guide;horizontalGuide.hidden=!snappedY.guide;
+    if(snappedX.guide)verticalGuide.style.left=snappedX.guide+'px';
+    if(snappedY.guide)horizontalGuide.style.top=snappedY.guide+'px';
     if(!frame)frame=requestAnimationFrame(refresh);
   }
   function finish(cancelled){
     handle.removeEventListener('pointermove',move);handle.removeEventListener('pointerup',finish);handle.removeEventListener('pointercancel',cancel);
+    verticalGuide.remove();horizontalGuide.remove();
     if(frame)cancelAnimationFrame(frame);
     if(cancelled===true){wrap.style.left=initial.x+'px';wrap.style.top=initial.y+'px';refresh();return;}
     if(!moved){refresh();return;}
@@ -2986,7 +3024,7 @@ function startFlowNodeMove(event,id) {
       const r=other.getBoundingClientRect();return rect.left<r.right+pad&&rect.right>r.left-pad&&rect.top<r.bottom+pad&&rect.bottom>r.top-pad;
     });
     if(overlap){wrap.style.left=initial.x+'px';wrap.style.top=initial.y+'px';refresh();showToast('Boxes cannot overlap. Move this box to an open space.',true);return;}
-    const data=getFlowchartData();data.positions=captureFlowPositions(data);data.positionsLocked=true;
+    const data=getFlowchartData();data.positions=captureFlowPositions(data);data.positionsLocked=true;data.manualPositions=true;
     saveFlowchartData(data,true);showToast('Box position saved. Undo is available.');
   }
   function cancel(){finish(true);}
@@ -3255,9 +3293,9 @@ function addFlowBranch(parentId, label, childType) {
     branches: []
   };
   parent.branches.push({id:flowId('branch'), label:label == null ? 'Next' : label, to:childId});
-  placeNewFlowBox(data,childId,parentId);
+  if(data.manualPositions)placeNewFlowBox(data,childId,parentId);
   flowSelectedNodeId = childId;
-  saveFlowchartData(data, true);
+  if(data.manualPositions)saveFlowchartData(data,true);else saveAutoArrangedFlowchart(data);
 }
 
 function connectFlowNodes(parentId, targetId) {
@@ -3276,10 +3314,15 @@ function connectFlowNodes(parentId, targetId) {
   data.positionsLocked=true;
   if (/^(yes|no|negative|positive)$/i.test(label || '')) parent.type = 'question';
   parent.branches.push({id:flowId('branch'), label:label == null ? 'Next' : label, to:targetId});
-  const moved=bringConnectedFlowBoxesCloser(data,parentId,targetId);
   flowSelectedNodeId = targetId;
-  saveFlowchartData(data, true);
-  showToast(moved?'Connected; the lower box moved closer. Use Move Mode to fine tune.':'Boxes connected. Use Move Mode to place them exactly.');
+  if(data.manualPositions){
+    const moved=bringConnectedFlowBoxesCloser(data,parentId,targetId);
+    saveFlowchartData(data,true);
+    showToast(moved?'Connected; the lower box moved closer. Use Move Mode to fine tune.':'Boxes connected. Use Move Mode to place them exactly.');
+  }else{
+    saveAutoArrangedFlowchart(data);
+    showToast('Connected and auto arranged. Use Move Mode to fine tune.');
+  }
 }
 
 function insertFlowBox(position) {
@@ -3294,8 +3337,9 @@ function insertFlowBox(position) {
     node.branches=[edge(selected.id)];if(data.rootId===selected.id)data.rootId=id;
   } else {node.branches=selected.branches;selected.branches=[edge(id)];}
   data.nodes[id]=node;
-  placeNewFlowBox(data,id,position==='arrow'?link.parent.id:selected.id);
-  flowSelectedLink=null;flowSelectedNodeId=id;saveFlowchartData(data,true);
+  if(data.manualPositions)placeNewFlowBox(data,id,position==='arrow'?link.parent.id:selected.id);
+  flowSelectedLink=null;flowSelectedNodeId=id;
+  if(data.manualPositions)saveFlowchartData(data,true);else saveAutoArrangedFlowchart(data);
 }
 
 function duplicateSelectedFlowNode() {
@@ -3319,10 +3363,10 @@ function duplicateSelectedFlowNode() {
   }else if(selected.id===data.rootId){
     selected.branches.push({id:flowId('branch'),label:'Next',to:id});
   }
-  placeNewFlowBox(data,id,parent?parent.id:selected.id);
+  if(data.manualPositions)placeNewFlowBox(data,id,parent?parent.id:selected.id);
   flowSelectedLink=null;
   flowSelectedNodeId=id;
-  saveFlowchartData(data,true);
+  if(data.manualPositions)saveFlowchartData(data,true);else saveAutoArrangedFlowchart(data);
 }
 
 function addFlowBranchToSelected() {
