@@ -1062,7 +1062,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="shared/pdf-export.js?v=20260605-export-fit"></script>
 <script src="safe-supabase-sync.js"></script>
-<script src="shared/bloodbank-flow.js?v=20261021-separated-branches-48"></script>
+<script src="shared/bloodbank-flow.js?v=20261021-local-links-49"></script>
 <script>
 // ============================================================
 // CONFIG - SUPABASE + PASSWORD
@@ -2222,7 +2222,7 @@ function normalizeFlowchartData(data) {
     if (!nodes[id] || !point || !Number.isFinite(Number(point.x)) || !Number.isFinite(Number(point.y))) return;
     positions[id] = {x:Math.max(0,Math.min(50000,Number(point.x))),y:Math.max(0,Math.min(50000,Number(point.y)))};
   });
-  return {rootId:rootId, font:normalizeFlowFont(data.font), nodes:nodes, positions:positions};
+  return {rootId:rootId, font:normalizeFlowFont(data.font), nodes:nodes, positions:positions, positionsLocked:Boolean(data.positionsLocked)};
 }
 
 function isOldStarterFlowchart(data) {
@@ -2316,7 +2316,7 @@ function duplicateFlowchartData(data){
   });
   const positions={};
   Object.keys(clean.positions).forEach(function(id){positions[ids[id]]=clean.positions[id];});
-  return normalizeFlowchartData({rootId:ids[clean.rootId],font:clean.font,nodes:nodes,positions:positions});
+  return normalizeFlowchartData({rootId:ids[clean.rootId],font:clean.font,nodes:nodes,positions:positions,positionsLocked:clean.positionsLocked});
 }
 function duplicateFlowDiagram(){
   if(!isAdmin)return;
@@ -2542,7 +2542,7 @@ function renderFlowchartPreview(data) {
   const layout = buildFlowLayoutInfo(data);
   preview.innerHTML = '<svg id="flowLinkLayer" class="flow-link-layer" aria-hidden="true"></svg><div class="flow-tree" id="flowStage">' + renderFlowGraph(data) + '</div>'+flowConnectionMarkers(data);
   preview.classList.toggle('flow-manual-mode',flowManualMode&&isAdmin);
-  layoutBloodBankFlow(preview,{positions:data.positions,manual:flowManualMode&&isAdmin});
+  layoutBloodBankFlow(preview,{positions:data.positions,manual:flowManualMode&&isAdmin,locked:data.positionsLocked});
   updateFlowManualControls(data);
   applyFlowZoom();
   updateFlowMeta(data);
@@ -2613,7 +2613,7 @@ function drawFlowLinkLines(data) {
   data=normalizeFlowchartData(data||getFlowchartData());
   preview.querySelectorAll('.flow-link-marker').forEach(function(el){el.remove();});
   preview.insertAdjacentHTML('beforeend',flowConnectionMarkers(data));
-  layoutBloodBankFlow(preview,{positions:data.positions});
+  layoutBloodBankFlow(preview,{positions:data.positions,locked:data.positionsLocked});
   flowLinkClickTargets=routeBloodBankFlow(preview);
   updateFlowRouteFocus(preview);
 }
@@ -2874,7 +2874,7 @@ function updateFlowManualControls(data) {
 }
 function toggleFlowManualMode() {
   if(!isAdmin)return;
-  if(!flowManualMode){const data=getFlowchartData();data.positions=captureFlowPositions(data);saveFlowchartData(data,false);}
+  if(!flowManualMode){const data=getFlowchartData();data.positions=captureFlowPositions(data);data.positionsLocked=true;saveFlowchartData(data,false);}
   flowManualMode=!flowManualMode;
   renderFlowchart();
   showToast(flowManualMode?'Drag a box by its move handle. Positions save when released.':'Box positions saved');
@@ -2882,7 +2882,7 @@ function toggleFlowManualMode() {
 function resetFlowManualLayout() {
   if(!isAdmin)return;
   const data=getFlowchartData();if(!Object.keys(data.positions||{}).length)return;
-  data.positions={};flowManualMode=false;saveFlowchartData(data,true);showToast('Automatic positions restored. Undo is available.');
+  data.positions={};data.positionsLocked=false;flowManualMode=false;saveFlowchartData(data,true);showToast('Automatic positions restored. Undo is available.');
 }
 function startFlowNodeMove(event,id) {
   if(!isAdmin||!flowManualMode||event.button!==0)return;
@@ -2914,7 +2914,7 @@ function startFlowNodeMove(event,id) {
       const r=other.getBoundingClientRect();return rect.left<r.right+pad&&rect.right>r.left-pad&&rect.top<r.bottom+pad&&rect.bottom>r.top-pad;
     });
     if(overlap){wrap.style.left=initial.x+'px';wrap.style.top=initial.y+'px';refresh();showToast('Boxes cannot overlap. Move this box to an open space.',true);return;}
-    const data=getFlowchartData();data.positions=captureFlowPositions(data);
+    const data=getFlowchartData();data.positions=captureFlowPositions(data);data.positionsLocked=true;
     saveFlowchartData(data,true);showToast('Box position saved. Undo is available.');
   }
   function cancel(){finish(true);}
@@ -3196,6 +3196,8 @@ function connectFlowNodes(parentId, targetId) {
   }
   const labelEl = document.getElementById('flowAddLabel');
   const label = labelEl ? labelEl.value : 'Next';
+  data.positions=captureFlowPositions(data);
+  data.positionsLocked=true;
   if (/^(yes|no|negative|positive)$/i.test(label || '')) parent.type = 'question';
   parent.branches.push({id:flowId('branch'), label:label == null ? 'Next' : label, to:targetId});
   flowSelectedNodeId = targetId;
@@ -3366,7 +3368,8 @@ function renderFlowNode(data, id, path, layout, parentId) {
   const cls = 'flow-node ' + type + (id === data.rootId ? ' start' : '') + (id === flowSelectedNodeId ? ' selected' : '');
   const kind = type === 'question' ? 'Question' : (type === 'terminal' ? 'Oval' : 'Step');
   const editable = isAdmin ? 'contenteditable="true" spellcheck="true"' : '';
-  const nodeStyle = 'style="--node-fill:' + normalizeFlowFillColor(node.fillColor) + ';--node-border:' + normalizeFlowBorderColor(node.borderColor) + ';background:' + normalizeFlowFillColor(node.fillColor) + ';border-color:' + normalizeFlowBorderColor(node.borderColor) + '"';
+  const spaciousQuestion = type === 'question' && /positive screen\s+or\s+incompatible crossmatch/i.test(node.text || '');
+  const nodeStyle = 'style="--node-fill:' + normalizeFlowFillColor(node.fillColor) + ';--node-border:' + normalizeFlowBorderColor(node.borderColor) + ';background:' + normalizeFlowFillColor(node.fillColor) + ';border-color:' + normalizeFlowBorderColor(node.borderColor) + (spaciousQuestion ? ';width:290px;min-width:290px;max-width:290px;min-height:128px' : '') + '"';
   const dropAttrs = isAdmin ? ' ondragover="allowFlowConnectDrop(event,\'' + id + '\')" ondragleave="clearFlowConnectTarget(event)" ondrop="dropFlowConnect(event,\'' + id + '\')"' : '';
   let html = '<div class="flow-node-wrap"><div class="flow-node-row"><div class="' + cls + '" data-flow-node-id="' + escAttr(id) + '" ' + nodeStyle + dropAttrs + (isAdmin ? ' onclick="selectFlowNode(\'' + id + '\')"' : '') + '>' +
     (type==='question'?'<svg class="flow-diamond" viewBox="0 0 240 112" preserveAspectRatio="none" aria-hidden="true"><polygon points="120,2 238,56 120,110 2,56"/></svg>':'')+'<div class="flow-node-kind">' + escText(kind) + '</div>' +
@@ -3376,7 +3379,6 @@ function renderFlowNode(data, id, path, layout, parentId) {
     html += '<div class="flow-node-tools">' +
       '<button class="flow-mini-btn flow-node-move" type="button" title="Drag to move this box" aria-label="Move '+escAttr(node.text||'box')+'" onpointerdown="startFlowNodeMove(event,\''+id+'\')" onclick="event.stopPropagation()">✥</button>' +
       '<button class="flow-mini-btn flow-node-plus" draggable="true" title="Click to add; drag to connect" ondragstart="startFlowConnectDrag(event,\'' + id + '\')" ondragend="endFlowConnectDrag()" onclick="event.stopPropagation();handleFlowPlusClick(\'' + id + '\')">+</button>' +
-      (id === data.rootId ? '' : '<button class="flow-mini-btn flow-node-delete" type="button" title="Delete this box" aria-label="Delete '+escAttr(node.text||'box')+'" onclick="event.stopPropagation();deleteFlowNode(\'' + id + '\')">×</button>') +
       '</div>';
   }
   html += '</div>' + renderFlowNote(id, node, false) + '</div>';
@@ -7331,7 +7333,7 @@ function buildFlowchartExportPage(input, name, metadata) {
   var tree = '<svg class="flow-link-layer" aria-hidden="true"></svg><div class="flow-tree">' + renderFlowGraph(data) + '</div>' + markers;
   isAdmin = oldAdmin;
   flowSelectedNodeId = oldSelected; flowSelectedLink=oldLink;
-  return '<section class="page flow-export-page'+(nonAdminExport?' nonadmin-flow-export-page':'')+'" style="--flow-export-zoom:' + flowPrintZoom + ';--flow-font-family:' + escAttr(flowFontStack(data.font)) + '"><header><h2 class="flow-export-title">'+escText(name)+'</h2><p class="flow-export-meta">'+(metadata.creator?'Created by '+escText(metadata.creator)+' · ':'')+escText(metadata.date||new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'}))+'</p></header><div class="flow-export-wrap" data-flow-positions="'+escAttr(JSON.stringify(data.positions))+'">' + tree + '</div></section>';
+  return '<section class="page flow-export-page'+(nonAdminExport?' nonadmin-flow-export-page':'')+'" style="--flow-export-zoom:' + flowPrintZoom + ';--flow-font-family:' + escAttr(flowFontStack(data.font)) + '"><header><h2 class="flow-export-title">'+escText(name)+'</h2><p class="flow-export-meta">'+(metadata.creator?'Created by '+escText(metadata.creator)+' · ':'')+escText(metadata.date||new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'}))+'</p></header><div class="flow-export-wrap" data-flow-positions="'+escAttr(JSON.stringify(data.positions))+'" data-flow-locked="'+data.positionsLocked+'">' + tree + '</div></section>';
 }
 
 function drawReadableFlowExportPages() {
@@ -7346,7 +7348,7 @@ function drawReadableFlowExportPages() {
     tree.style.top='0px';
     tree.style.zoom='1';
     page.style.setProperty('--flow-export-zoom','1');
-    layoutBloodBankFlow(wrap,{compact:true,print:true,positions:JSON.parse(wrap.dataset.flowPositions||'{}')});
+    layoutBloodBankFlow(wrap,{compact:true,print:true,positions:JSON.parse(wrap.dataset.flowPositions||'{}'),locked:wrap.dataset.flowLocked==='true'});
     var naturalWidth=parseFloat(tree.style.width)||tree.scrollWidth;
     var naturalHeight=parseFloat(tree.style.height)||tree.scrollHeight;
     var pageWidth=Math.max(wrap.clientWidth,1),pageHeight=Math.max(wrap.clientHeight,1);

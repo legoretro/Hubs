@@ -99,7 +99,7 @@ function layoutBloodBankFlow(container,options){
   var completeSaved=ids.length&&ids.every(function(id){return saved[id]&&isFinite(saved[id].x)&&isFinite(saved[id].y);});
   var visualSaved={};
   ids.forEach(function(id){if(saved[id])visualSaved[id]={x:Number(saved[id].x),y:Number(saved[id].y)};});
-  if(completeSaved&&!options.manual){
+  if(completeSaved&&!options.manual&&!options.locked){
     // Position each child beneath its own parent(s), not beneath the deepest
     // unrelated branch in the same global rank. Keep a minimum corridor for
     // connectors, and use branch order to arrange siblings left to right.
@@ -131,7 +131,7 @@ function layoutBloodBankFlow(container,options){
     ids.forEach(function(id){visualSaved[id].x=Math.max(0,visualSaved[id].x-visualMinX+sideInset);});
   }
   var savedShift={};
-  if(completeSaved&&options.manual){
+  if(completeSaved&&options.manual&&!options.locked){
     // Older saved charts can leave too little room above a join. Move that
     // row and everything below it together; never move its ancestors.
     var carried=0,previousBottom=-Infinity;
@@ -156,7 +156,7 @@ function layoutBloodBankFlow(container,options){
     width=Math.max(width,x+sizes[id].width+sideInset);
     autoHeight=Math.max(autoHeight,top+sizes[id].height+sideInset);
   });
-  if(!options.manual){
+  if(!options.manual&&!options.locked){
     // Independent root branches stay in separate lanes even when only some
     // nodes have saved positions. Do not alter a chart's manual placement.
     ids.filter(function(id){return !incoming[id].length;}).forEach(function(root){
@@ -201,26 +201,28 @@ function routeBloodBankFlow(container) {
   var obstacles=Array.from(container.querySelectorAll('.flow-node,.flow-note-card')).map(function(el){var r=rect(el);return {left:r.left-gap/2,right:r.right+gap/2,top:r.top-gap/2,bottom:r.bottom+gap/2};});
   function clear(a,b){return !obstacles.some(function(r){return a.x===b.x ? a.x>r.left&&a.x<r.right&&Math.max(a.y,b.y)>r.top&&Math.min(a.y,b.y)<r.bottom : a.y>r.top&&a.y<r.bottom&&Math.max(a.x,b.x)>r.left&&Math.min(a.x,b.x)<r.right;});}
   var occupied=[];
-  function separate(points,from,shareSource){
+  function separate(points,from,shareSource,to){
     for(var i=1;i<points.length;i++){
       var a=points[i-1],b=points[i];
       for(var j=0;j<occupied.length;j++){
-        if(shareSource&&occupied[j][2]===from)continue;
         var c=occupied[j][0],d=occupied[j][1];
+        if(shareSource&&occupied[j][2]===from&&occupied[j][4]===shareSource)continue;
+        if(to&&occupied[j][5]===to&&((a.x===b.x&&c.x===d.x)||(a.y===b.y&&c.y===d.y)))continue;
         if(a.x===b.x&&c.x===d.x&&Math.abs(a.x-c.x)<gap&&Math.min(b.y,a.y)<Math.max(c.y,d.y)-gap&&Math.max(b.y,a.y)>Math.min(c.y,d.y)+gap)return false;
         if(a.y===b.y&&c.y===d.y&&Math.abs(a.y-c.y)<gap&&Math.min(b.x,a.x)<Math.max(c.x,d.x)-gap&&Math.max(b.x,a.x)>Math.min(c.x,d.x)+gap)return false;
-        if(a.x===b.x&&c.y===d.y&&a.x>Math.min(c.x,d.x)+gap&&a.x<Math.max(c.x,d.x)-gap&&c.y>Math.min(a.y,b.y)+gap&&c.y<Math.max(a.y,b.y)-gap)return false;
-        if(a.y===b.y&&c.x===d.x&&c.x>Math.min(a.x,b.x)+gap&&c.x<Math.max(a.x,b.x)-gap&&a.y>Math.min(c.y,d.y)+gap&&a.y<Math.max(c.y,d.y)-gap)return false;
+        var crossingPad=Math.max(2,gap*.12);
+        if(a.x===b.x&&c.y===d.y&&a.x>Math.min(c.x,d.x)+crossingPad&&a.x<Math.max(c.x,d.x)-crossingPad&&c.y>Math.min(a.y,b.y)+crossingPad&&c.y<Math.max(a.y,b.y)-crossingPad)return false;
+        if(a.y===b.y&&c.x===d.x&&c.x>Math.min(a.x,b.x)+crossingPad&&c.x<Math.max(a.x,b.x)-crossingPad&&a.y>Math.min(c.y,d.y)+crossingPad&&a.y<Math.max(c.y,d.y)-crossingPad)return false;
       }
     }
     return true;
   }
-  function route(start,end,join,from,shareSource,allowCross){
+  function route(start,end,join,from,shareSource,allowCross,to){
     var bus={x:start.x,y:end.y};if(join&&end.y>start.y&&clear(start,bus)&&clear(bus,end))return [start,bus,end];
     // Prefer a single elbow when the direct corridor is open. Searching for
     // intermediate lanes first creates a needless short outward/backward jog.
     var direct={x:end.x,y:start.y};
-    if(end.y>start.y&&clear(start,direct)&&clear(direct,end)&&(allowCross||separate([start,direct,end],from,shareSource)))return [start,direct,end];
+    if(end.y>start.y&&clear(start,direct)&&clear(direct,end)&&(allowCross||separate([start,direct,end],from,shareSource,to)))return [start,direct,end];
     var middle=(start.y+end.y)/2,p1={x:start.x,y:middle},p2={x:end.x,y:middle};
     if(end.y>start.y){
       var lanes=[middle],step=Math.max(gap*1.5,12),count=Math.floor((end.y-start.y)/2/step);
@@ -228,13 +230,14 @@ function routeBloodBankFlow(container) {
       for(var laneIndex=0;laneIndex<lanes.length;laneIndex++){
         p1={x:start.x,y:lanes[laneIndex]};p2={x:end.x,y:lanes[laneIndex]};
         var candidate=[start,p1,p2,end];
-        if(clear(start,p1)&&clear(p1,p2)&&clear(p2,end)&&(allowCross||separate(candidate,from,shareSource)))return candidate;
+        if(clear(start,p1)&&clear(p1,p2)&&clear(p2,end)&&(allowCross||separate(candidate,from,shareSource,to)))return candidate;
       }
     }
-    if(clear(start,{x:start.x,y:end.y})&&clear({x:start.x,y:end.y},end)&&(allowCross||separate([start,{x:start.x,y:end.y},end],from,shareSource)))return [start,{x:start.x,y:end.y},end];
-    if(clear(start,{x:end.x,y:start.y})&&clear({x:end.x,y:start.y},end)&&(allowCross||separate([start,{x:end.x,y:start.y},end],from,shareSource)))return [start,{x:end.x,y:start.y},end];
+    if(clear(start,{x:start.x,y:end.y})&&clear({x:start.x,y:end.y},end)&&(allowCross||separate([start,{x:start.x,y:end.y},end],from,shareSource,to)))return [start,{x:start.x,y:end.y},end];
+    if(clear(start,{x:end.x,y:start.y})&&clear({x:end.x,y:start.y},end)&&(allowCross||separate([start,{x:end.x,y:start.y},end],from,shareSource,to)))return [start,{x:end.x,y:start.y},end];
     var xs=[start.x,end.x,gap],ys=[start.y,end.y,gap];
     obstacles.forEach(function(r){xs.push(r.left-gap,r.right+gap);ys.push(r.top-gap,r.bottom+gap);});
+    occupied.forEach(function(segment){[segment[0],segment[1]].forEach(function(point){xs.push(Math.max(gap,point.x-gap),point.x+gap);ys.push(Math.max(gap,point.y-gap),point.y+gap);});});
     xs=Array.from(new Set(xs)).sort(function(a,b){return a-b;});ys=Array.from(new Set(ys)).sort(function(a,b){return a-b;});
     var nx=xs.length,ny=ys.length,startId=ys.indexOf(start.y)*nx+xs.indexOf(start.x),endId=ys.indexOf(end.y)*nx+xs.indexOf(end.x);
     var costs=new Map(),previous=new Map(),heap=[];
@@ -248,7 +251,7 @@ function routeBloodBankFlow(container) {
       if(id===endId){var path=[];for(var k=key;k!==undefined;k=previous.get(k))path.push(point(Math.floor(k/3)));return path.reverse();}
       var x=id%nx,y=Math.floor(id/nx),a=point(id),neighbors=[];
       if(x>0)neighbors.push([id-1,1]);if(x+1<nx)neighbors.push([id+1,1]);if(y>0)neighbors.push([id-nx,2]);if(y+1<ny)neighbors.push([id+nx,2]);
-      neighbors.forEach(function(next){var b=point(next[0]);if(!clear(a,b)||(!allowCross&&!separate([a,b],from,shareSource)))return;var nk=next[0]*3+next[1],cost=current.cost+Math.abs(a.x-b.x)+Math.abs(a.y-b.y)+(dir&&dir!==next[1]?gap*2:0)+(end.y>start.y&&b.y<a.y?gap*20:0);if(cost>=(costs.has(nk)?costs.get(nk):Infinity))return;costs.set(nk,cost);previous.set(nk,key);push({key:nk,cost:cost,score:cost+Math.abs(end.x-b.x)+Math.abs(end.y-b.y)});});
+      neighbors.forEach(function(next){var b=point(next[0]);if(!clear(a,b)||(!allowCross&&!separate([a,b],from,shareSource,to)))return;var nk=next[0]*3+next[1],cost=current.cost+Math.abs(a.x-b.x)+Math.abs(a.y-b.y)+(dir&&dir!==next[1]?gap*2:0)+(end.y>start.y&&b.y<a.y?gap*20:0);if(cost>=(costs.has(nk)?costs.get(nk):Infinity))return;costs.set(nk,cost);previous.set(nk,key);push({key:nk,cost:cost,score:cost+Math.abs(end.x-b.x)+Math.abs(end.y-b.y)});});
     }
     return null;
   }
@@ -317,12 +320,21 @@ function routeBloodBankFlow(container) {
       if(myOffset*otherOffset>0&&Math.abs(myOffset)<Math.abs(otherOffset))bottomBranch=true;
     }else if(a.decision&&children.length===1){
       bottomBranch=Math.abs(end.x-start.x)<(a.right-a.left)*.35;
+    }else if(a.decision&&children.length>2){
+      // In a three-way split, the middle destination leaves the lower point.
+      // Two links leaving the same side would otherwise cross on their way
+      // to the nearer and farther boxes.
+      var orderedTargets=children.filter(function(link){return nodes[link.dataset.flowLinkTo];}).sort(function(left,right){
+        var l=nodes[left.dataset.flowLinkTo],r=nodes[right.dataset.flowLinkTo];
+        return (l.left+l.right)-(r.left+r.right);
+      });
+      bottomBranch=orderedTargets[Math.floor((orderedTargets.length-1)/2)]===m;
     }
-    if(parents.length>1&&b.top>a.bottom+gap*3)bottomBranch=true;
+    if(!a.decision&&parents.length>1&&b.top>a.bottom+gap*3)bottomBranch=true;
     if(!sharedGroup&&a.decision&&!bottomBranch&&(children.length>1||Math.abs(end.x-start.x)>(a.right-a.left)*.35)){
       sideDirection=end.x<start.x?-1:1;
       source={x:sideDirection<0?a.left:a.right,y:(a.top+a.bottom)/2};
-      if(sideDirection*(end.x-source.x)<gap*2){
+      if(sideDirection*(end.x-source.x)<gap*2&&children.length<=2){
         // An inward target would force a side connector to double back.
         // The lower point of the diamond is clearer in this tight case.
         sideDirection=0;bottomBranch=true;source={x:(a.left+a.right)/2,y:a.bottom};
@@ -336,30 +348,31 @@ function routeBloodBankFlow(container) {
     if(parents.length===1&&!b.decision&&Math.abs(start.x-end.x)<Math.max(28,gap*3)&&start.x>b.left+gap*2&&start.x<b.right-gap*2){targetX=end.x=start.x;}
     // Decision answers use independent ports. Only ordinary steps share a
     // stem and split bus.
-    var shareSource=Boolean(sharedGroup)||children.filter(function(link){return nodes[link.dataset.flowLinkTo];}).length>1&&!a.decision;
+    var shareSource=sharedGroup?(sharedGroup.leader.dataset.label||'').trim().toLowerCase():(children.filter(function(link){return nodes[link.dataset.flowLinkTo];}).length>1&&!a.decision?'__step__':false);
     var points=null,mergeBus=false;
     if(sharedGroup){
       source=sharedGroup.source;start=sharedGroup.start;
       var junction={x:end.x,y:sharedGroup.busY};
-      var tail=clear(junction,end)?[junction,end]:route(junction,end,false,from,true);
+      var tail=clear(junction,end)?[junction,end]:route(junction,end,false,from,shareSource,false,to);
       if(clear(sharedGroup.stem[sharedGroup.stem.length-1],junction)&&tail){
-        points=sharedGroup.stem.concat(junction,tail.slice(1));
+        var sharedPoints=sharedGroup.stem.concat(junction,tail.slice(1));
+        if(separate(sharedPoints,from,shareSource,to))points=sharedPoints;
       }
     }
     if(parents.length>1&&!sideDirection){
       // Join two downward paths on one horizontal bus, then enter the next
       // box through a single centered vertical stem (a clean U-shaped join).
       var lowestParent=Math.max.apply(null,parents.map(function(link){return nodes[link.dataset.flowLinkFrom].bottom;}));
-      var busY=lowestParent+(b.top-lowestParent)/2;
-      var busStart={x:start.x,y:busY},busJoin={x:targetX,y:busY};
-      // Incoming branches intentionally share this final bus. Treating its
-      // overlap as a collision sends them on long crossing detours instead.
-      if(busY>start.y+gap&&busY<b.top-approach-gap&&clear(start,busStart)&&clear(busStart,busJoin)){
-        points=[start,busStart,busJoin];
-        mergeBus=true;
-      }
+      var middleBus=lowestParent+(b.top-lowestParent)/2;
+      // Try nearby lower join lanes when a sibling connector already crosses
+      // the middle one. Both branches can then join above the same target.
+      [middleBus,middleBus+gap*.5,middleBus+gap,middleBus-gap*.5].some(function(busY){
+        var busStart={x:start.x,y:busY},busJoin={x:targetX,y:busY};
+        if(busY<=start.y+gap||busY>=b.top-approach-gap||!clear(start,busStart)||!clear(busStart,busJoin)||!separate([start,busStart,busJoin],from,shareSource,to))return false;
+        points=[start,busStart,busJoin];mergeBus=true;return true;
+      });
     }
-    if(!points&&parents.length>1&&m===mergeOwner&&Math.abs(start.x-end.x)<gap&&clear(start,end)){
+    if(!points&&parents.length>1&&m===mergeOwner&&Math.abs(start.x-end.x)<gap&&clear(start,end)&&separate([start,end],from,shareSource,to)){
       // The parent directly above a merge owns its vertical spine. Other
       // parents join that spine; they must not force it into a rectangular
       // detour just because their route happened to be drawn first.
@@ -372,17 +385,17 @@ function routeBloodBankFlow(container) {
       var busY=a.bottom+(nearestTop-a.bottom-approach)/2;
       if(busY>start.y+gap&&busY<end.y-gap){
         var busStart={x:start.x,y:busY},busEnd={x:end.x,y:busY};
-        if(clear(start,busStart)&&clear(busStart,busEnd)&&clear(busEnd,end)&&separate([start,busStart,busEnd,end],from,shareSource))points=[start,busStart,busEnd,end];
+        if(clear(start,busStart)&&clear(busStart,busEnd)&&clear(busEnd,end)&&separate([start,busStart,busEnd,end],from,shareSource,to))points=[start,busStart,busEnd,end];
       }
     }
-    if(!points)points=route(start,end,false,from,shareSource);
+    if(!points)points=route(start,end,false,from,shareSource,false,to);
     if(!points&&a.decision&&sideDirection){
       // A crowded side port can be boxed in by adjacent branches. The bottom
       // port keeps this connection visible without cutting through the node.
       sideDirection=0;source={x:(a.left+a.right)/2,y:a.bottom};start={x:source.x,y:source.y+gap};
-      points=route(start,end,false,from,shareSource);
+      points=route(start,end,false,from,shareSource,false,to);
     }
-    if(!points)points=route(start,end,false,from,shareSource,true);
+    if(!points)points=route(start,end,false,from,shareSource,true,to);
     if(!points){m.dataset.routeMissing='true';return;}delete m.dataset.routeMissing;
     if(parents.length>1&&m!==mergeOwner&&points.length>2&&!mergeBus){
       var owner=nodes[mergeOwner.dataset.flowLinkFrom],last=points[points.length-1],prior=points[points.length-2];
@@ -410,10 +423,11 @@ function routeBloodBankFlow(container) {
       var shortJog=Math.abs(lateSide.x-lateTurn.x)<Math.max(42,70*zoom)&&Math.abs(arrival.y-lateSide.y)<Math.max(44,70*zoom);
       if(topTurn.x===lateTurn.x&&lateTurn.y===lateSide.y&&lateSide.x===arrival.x&&shortJog&&Math.abs(lateTurn.y-topTurn.y)>Math.max(80,120*zoom)){
         var earlySide={x:arrival.x,y:topTurn.y},safeEnd={x:arrival.x,y:arrival.y-(m===mergeOwner?approach:0)};
-        if(clear(topTurn,earlySide)&&clear(earlySide,safeEnd))points.splice(points.length-3,3,earlySide,arrival);
+        var earlyPoints=points.slice(0,-3).concat(earlySide,arrival);
+        if(clear(topTurn,earlySide)&&clear(earlySide,safeEnd)&&separate(earlyPoints,from,shareSource,to))points=earlyPoints;
       }
     }
-    for(var segment=1;segment<points.length;segment++)occupied.push([points[segment-1],points[segment],from,m.dataset.branchId]);
+    for(var segment=1;segment<points.length;segment++)occupied.push([points[segment-1],points[segment],from,m.dataset.branchId,shareSource,to]);
     var d=points.map(function(p,i){return (i?'L ':'M ')+p.x.toFixed(2)+' '+p.y.toFixed(2);}).join(' ');
     if(m.dataset.selected==='true')html+='<path d="'+d+'" fill="none" stroke="#ffcf00" stroke-width="'+Math.max(8,2.4*zoom+7)+'" stroke-linecap="round" stroke-linejoin="round"/>';
     html+='<path class="flow-link-path'+(m.dataset.selected==='true'?' selected':'')+'" style="stroke-width:'+Math.max(.6,2.4*zoom)+'" d="'+d+'"'+(m===mergeOwner?' marker-end="url(#'+marker+')"':'')+'/>';
