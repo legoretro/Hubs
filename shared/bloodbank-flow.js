@@ -99,6 +99,36 @@ function layoutBloodBankFlow(container,options){
   var completeSaved=ids.length&&ids.every(function(id){return saved[id]&&isFinite(saved[id].x)&&isFinite(saved[id].y);});
   var visualSaved={};
   ids.forEach(function(id){if(saved[id])visualSaved[id]={x:Number(saved[id].x),y:Number(saved[id].y)};});
+  if(completeSaved&&options.locked&&elements.hdn_baby&&elements.hdn_prenatal&&elements.hdn_postpartum){
+    // Keep the user's vertical placement and branch order, but remove the
+    // empty lanes left by older HDN layouts. A shared Fetal Screen belongs to
+    // the postpartum lane for spacing even though FMH also connects to it.
+    (visualSaved.hdn_screenpos?out.hdn_screenpos:[]).forEach(function(child){
+      if(incoming[child].length!==1)return;
+      var excess=visualSaved[child].x-visualSaved.hdn_screenpos.x-sizes.hdn_screenpos.width-95;
+      var shift=Math.max(0,Math.min(excess,170));
+      if(!shift)return;
+      var seen={},stack=[child];
+      while(stack.length){var id=stack.pop();if(seen[id]||incoming[id].length>1)continue;seen[id]=true;visualSaved[id].x-=shift;(out[id]||[]).forEach(function(next){stack.push(next);});}
+    });
+    var roots=['hdn_baby','hdn_prenatal','hdn_postpartum'];
+    var groups=roots.map(function(root){var seen={},stack=[root];while(stack.length){var id=stack.pop();if(seen[id]||!elements[id])continue;seen[id]=true;(out[id]||[]).forEach(function(next){stack.push(next);});}return Object.keys(seen);});
+    var membership={};groups.forEach(function(group,index){group.forEach(function(id){membership[id]=index;});});
+    var minClearance=print?18:32;
+    for(var groupIndex=1;groupIndex<groups.length;groupIndex++){
+      var desiredShift=Infinity;
+      groups[groupIndex].filter(function(id){return membership[id]===groupIndex;}).forEach(function(id){
+        ids.filter(function(other){return membership[other]===groupIndex-1;}).forEach(function(other){
+          var a=visualSaved[id],b=visualSaved[other];
+          if(a.y<b.y+sizes[other].height+20&&a.y+sizes[id].height+20>b.y)
+            desiredShift=Math.min(desiredShift,a.x-(b.x+sizes[other].width+minClearance));
+        });
+      });
+      var shift=Math.max(0,Math.min(isFinite(desiredShift)?desiredShift:0,print?100:190));
+      if(!shift)continue;
+      ids.forEach(function(id){if(membership[id]>=groupIndex)visualSaved[id].x-=shift;});
+    }
+  }
   if(completeSaved&&!options.manual&&!options.locked){
     // Position each child beneath its own parent(s), not beneath the deepest
     // unrelated branch in the same global rank. Keep a minimum corridor for
@@ -218,7 +248,7 @@ function routeBloodBankFlow(container) {
     return true;
   }
   function route(start,end,join,from,shareSource,allowCross,to){
-    var bus={x:start.x,y:end.y};if(join&&end.y>start.y&&clear(start,bus)&&clear(bus,end))return [start,bus,end];
+    var bus={x:start.x,y:end.y};if(join&&end.y>start.y&&clear(start,bus)&&clear(bus,end)&&(allowCross||separate([start,bus,end],from,shareSource,to)))return [start,bus,end];
     // Prefer a single elbow when the direct corridor is open. Searching for
     // intermediate lanes first creates a needless short outward/backward jog.
     var direct={x:end.x,y:start.y};
@@ -264,6 +294,22 @@ function routeBloodBankFlow(container) {
   var html='<defs><marker id="'+marker+'" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="'+markerSize+'" markerHeight="'+markerSize+'" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#c0173d"/></marker></defs>';
   var links=Array.from(container.querySelectorAll('.flow-link-marker')),incomingByTarget={},outgoingBySource={},placedLabels=[],labelBackgrounds=[],labelTexts=[],pendingLabels=[];
   links.forEach(function(m){var to=m.dataset.flowLinkTo,from=m.dataset.flowLinkFrom,parents=incomingByTarget[to]||(incomingByTarget[to]=[]),children=outgoingBySource[from]||(outgoingBySource[from]=[]);parents.push(m);children.push(m);});
+  function mergeOwnerFor(to){
+    var parents=(incomingByTarget[to]||[]).filter(function(link){return nodes[link.dataset.flowLinkFrom];}),target=nodes[to];
+    if(!target||!parents.length)return null;
+    var center=(target.left+target.right)/2;
+    return parents.reduce(function(best,link){
+      var now=nodes[link.dataset.flowLinkFrom],old=nodes[best.dataset.flowLinkFrom];
+      return Math.abs((now.left+now.right)/2-center)<Math.abs((old.left+old.right)/2-center)?link:best;
+    },parents[0]);
+  }
+  // Paint the link that enters a shared box first. Every other incoming link
+  // can then terminate on its exact spine instead of drawing a nearby spur.
+  var orderedLinks=links.slice().sort(function(left,right){
+    var leftSecondary=(incomingByTarget[left.dataset.flowLinkTo]||[]).length>1&&mergeOwnerFor(left.dataset.flowLinkTo)!==left;
+    var rightSecondary=(incomingByTarget[right.dataset.flowLinkTo]||[]).length>1&&mergeOwnerFor(right.dataset.flowLinkTo)!==right;
+    return Number(leftSecondary)-Number(rightSecondary);
+  });
   // Branches with the same printed answer leave the decision on one stem.
   // Empty and default Next labels remain individual connectors.
   var sharedLabelGroups=new Map();
@@ -293,19 +339,30 @@ function routeBloodBankFlow(container) {
       group.forEach(function(link){sharedLabelGroups.set(link,info);});
     });
   });
-  links.forEach(function(m){
+  orderedLinks.forEach(function(m){
     var from=m.dataset.flowLinkFrom,to=m.dataset.flowLinkTo,a=nodes[from],b=nodes[to];if(!a||!b)return;
     var parents=incomingByTarget[to].filter(function(parent){return nodes[parent.dataset.flowLinkFrom];}).sort(function(left,right){var x=nodes[left.dataset.flowLinkFrom],y=nodes[right.dataset.flowLinkFrom];return ((x.left+x.right)/2)-((y.left+y.right)/2);});
     var targetX=(b.left+b.right)/2,targetY=b.top;
-    var mergeOwner=parents.length>1?parents.reduce(function(best,link){
-      var center=(b.left+b.right)/2,now=nodes[link.dataset.flowLinkFrom],old=nodes[best.dataset.flowLinkFrom];
-      return Math.abs((now.left+now.right)/2-center)<Math.abs((old.left+old.right)/2-center)?link:best;
-    },parents[0]):m;
+    var mergeOwner=parents.length>1?mergeOwnerFor(to):m;
+    if(parents.length>1){
+      var ownerBox=nodes[mergeOwner.dataset.flowLinkFrom];
+      // If the owner's box blocks the centered approach, enter within the
+      // destination a little to its side. Both links can share one straight
+      // stem instead of drawing a tiny rectangle around the obstruction.
+      if(ownerBox.bottom<b.top-gap*2&&targetX>ownerBox.left-gap*.5&&targetX<ownerBox.right+gap*.5){
+        var ownerCenter=(ownerBox.left+ownerBox.right)/2;
+        targetX=ownerCenter>targetX?Math.max(b.left+gap,ownerBox.left-gap*.65):Math.min(b.right-gap,ownerBox.right+gap*.65);
+      }
+    }
     // Leave a visible straight approach so the arrowhead is not attached to
     // the horizontal turn immediately above a destination box.
     var corridor=b.top-a.bottom;
     var approach=Math.min(printExport?Math.max(gap*3,12*zoom):Math.max(gap*4,24*zoom),Math.max(gap*.8,corridor/5));
     var source={x:(a.left+a.right)/2,y:a.bottom},start={x:(a.left+a.right)/2,y:a.bottom+gap},end={x:targetX,y:b.top-approach},sideDirection=0;
+    if(parents.length>1){
+      var lowestParent=Math.max.apply(null,parents.map(function(link){return nodes[link.dataset.flowLinkFrom].bottom;}));
+      end.y=Math.min(b.top-gap,Math.max(lowestParent+gap,(lowestParent+b.top)/2));
+    }
     var children=outgoingBySource[from]||[],sharedGroup=sharedLabelGroups.get(m);
     var bottomBranch=false;
     if(a.decision&&children.length===2){
@@ -330,7 +387,8 @@ function routeBloodBankFlow(container) {
       });
       bottomBranch=orderedTargets[Math.floor((orderedTargets.length-1)/2)]===m;
     }
-    if(!a.decision&&parents.length>1&&b.top>a.bottom+gap*3)bottomBranch=true;
+    if(parents.length>1&&m===mergeOwner&&Math.abs(end.x-start.x)<(a.right-a.left)*.65)bottomBranch=true;
+    if(parents.length>1&&m!==mergeOwner&&b.top>a.bottom+gap*3)bottomBranch=true;
     if(!sharedGroup&&a.decision&&!bottomBranch&&(children.length>1||Math.abs(end.x-start.x)>(a.right-a.left)*.35)){
       sideDirection=end.x<start.x?-1:1;
       source={x:sideDirection<0?a.left:a.right,y:(a.top+a.bottom)/2};
@@ -346,10 +404,26 @@ function routeBloodBankFlow(container) {
     // A tiny last-second elbow looks like a stray arrow. When one connector is
     // already above the destination, bring it straight into the box instead.
     if(parents.length===1&&!b.decision&&Math.abs(start.x-end.x)<Math.max(28,gap*3)&&start.x>b.left+gap*2&&start.x<b.right-gap*2){targetX=end.x=start.x;}
+    // A link between adjacent boxes on the same row needs only one short
+    // side-to-side connector. Routing it down and back up makes a large loop.
+    var overlapTop=Math.max(a.top,b.top),overlapBottom=Math.min(a.bottom,b.bottom);
+    var lateralSide=b.right<a.left?-1:(b.left>a.right?1:0);
+    var lateralGap=lateralSide<0?a.left-b.right:(lateralSide>0?b.left-a.right:0);
+    var lateralY=(overlapTop+overlapBottom)/2;
+    var lateral=parents.length===1&&lateralSide&&overlapBottom-overlapTop>Math.min(a.bottom-a.top,b.bottom-b.top)*.45&&lateralGap>Math.max(10,gap*.4)&&lateralGap<Math.max(320,460*zoom)&&!Object.keys(nodes).some(function(id){
+      if(id===from||id===to)return false;
+      var box=nodes[id],left=Math.min(lateralSide<0?a.left:a.right,lateralSide<0?b.right:b.left),right=Math.max(lateralSide<0?a.left:a.right,lateralSide<0?b.right:b.left);
+      return lateralY>box.top-4&&lateralY<box.bottom+4&&left<box.right+4&&right>box.left-4;
+    });
+    if(lateral){
+      source={x:lateralSide<0?a.left:a.right,y:lateralY};
+      start=source;
+      end={x:lateralSide<0?b.right:b.left,y:lateralY};
+    }
     // Decision answers use independent ports. Only ordinary steps share a
     // stem and split bus.
     var shareSource=sharedGroup?(sharedGroup.leader.dataset.label||'').trim().toLowerCase():(children.filter(function(link){return nodes[link.dataset.flowLinkTo];}).length>1&&!a.decision?'__step__':false);
-    var points=null,mergeBus=false;
+    var points=lateral?[start,end]:null;
     if(sharedGroup){
       source=sharedGroup.source;start=sharedGroup.start;
       var junction={x:end.x,y:sharedGroup.busY};
@@ -358,19 +432,6 @@ function routeBloodBankFlow(container) {
         var sharedPoints=sharedGroup.stem.concat(junction,tail.slice(1));
         if(separate(sharedPoints,from,shareSource,to))points=sharedPoints;
       }
-    }
-    if(parents.length>1&&!sideDirection){
-      // Join two downward paths on one horizontal bus, then enter the next
-      // box through a single centered vertical stem (a clean U-shaped join).
-      var lowestParent=Math.max.apply(null,parents.map(function(link){return nodes[link.dataset.flowLinkFrom].bottom;}));
-      var middleBus=lowestParent+(b.top-lowestParent)/2;
-      // Try nearby lower join lanes when a sibling connector already crosses
-      // the middle one. Both branches can then join above the same target.
-      [middleBus,middleBus+gap*.5,middleBus+gap,middleBus-gap*.5].some(function(busY){
-        var busStart={x:start.x,y:busY},busJoin={x:targetX,y:busY};
-        if(busY<=start.y+gap||busY>=b.top-approach-gap||!clear(start,busStart)||!clear(busStart,busJoin)||!separate([start,busStart,busJoin],from,shareSource,to))return false;
-        points=[start,busStart,busJoin];mergeBus=true;return true;
-      });
     }
     if(!points&&parents.length>1&&m===mergeOwner&&Math.abs(start.x-end.x)<gap&&clear(start,end)&&separate([start,end],from,shareSource,to)){
       // The parent directly above a merge owns its vertical spine. Other
@@ -388,21 +449,17 @@ function routeBloodBankFlow(container) {
         if(clear(start,busStart)&&clear(busStart,busEnd)&&clear(busEnd,end)&&separate([start,busStart,busEnd,end],from,shareSource,to))points=[start,busStart,busEnd,end];
       }
     }
-    if(!points)points=route(start,end,false,from,shareSource,false,to);
+    if(!points)points=route(start,end,parents.length>1&&m!==mergeOwner,from,shareSource,false,to);
     if(!points&&a.decision&&sideDirection){
       // A crowded side port can be boxed in by adjacent branches. The bottom
       // port keeps this connection visible without cutting through the node.
       sideDirection=0;source={x:(a.left+a.right)/2,y:a.bottom};start={x:source.x,y:source.y+gap};
-      points=route(start,end,false,from,shareSource,false,to);
+      points=route(start,end,parents.length>1&&m!==mergeOwner,from,shareSource,false,to);
     }
     if(!points)points=route(start,end,false,from,shareSource,true,to);
     if(!points){m.dataset.routeMissing='true';return;}delete m.dataset.routeMissing;
-    if(parents.length>1&&m!==mergeOwner&&points.length>2&&!mergeBus){
-      var owner=nodes[mergeOwner.dataset.flowLinkFrom],last=points[points.length-1],prior=points[points.length-2];
-      if(owner&&Math.abs((owner.left+owner.right)/2-targetX)<gap&&last.x===targetX&&prior.x===targetX&&prior.y>owner.bottom&&prior.y<last.y)points.pop();
-    }
     points.unshift(source);
-    if(m===mergeOwner)points.push({x:end.x,y:targetY});
+    if(m===mergeOwner&&!lateral)points.push({x:end.x,y:targetY});
     points=points.filter(function(p,i,all){return i===0||p.x!==all[i-1].x||p.y!==all[i-1].y;});
     var orthogonal=[];
     points.forEach(function(p){
