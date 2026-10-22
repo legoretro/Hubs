@@ -687,7 +687,8 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 #sec-flowchart .flow-selection-panel .flow-control{min-width:100px}
 #sec-flowchart .flow-selection-panel .flow-selected-title{max-width:200px}
 #flowchartViewport{height:88dvh;min-height:520px;max-height:none;width:100%}
-.flow-manual-mode .flow-node-move{display:inline-flex}.flow-node-move{display:none;cursor:grab;touch-action:none}.flow-node-move:active{cursor:grabbing}.flow-manual-mode .flow-node{outline:1px dashed rgba(26,92,140,.35);outline-offset:3px}
+.flow-manual-mode .flow-node{outline:1px dashed rgba(26,92,140,.35);outline-offset:3px;cursor:grab;touch-action:none}.flow-manual-mode .flow-node:active{cursor:grabbing}.flow-manual-mode{background-color:#fff!important;background-image:linear-gradient(rgba(90,14,32,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(90,14,32,.055) 1px,transparent 1px)!important;background-size:32px 32px!important}
+@media print{#flowchartPreview,.flow-export-wrap{background:#fff!important;background-image:none!important}}
 @media screen and (min-width:761px){#sec-flowchart.active{zoom:.7;max-width:none;width:calc(142.857vw - 354.286px)}}
 @media print{#sec-flowchart{zoom:1!important;width:auto!important;max-width:none!important}}
 @media print{#sec-flowchart .flow-node.terminal{border-radius:999px!important;border:2px solid #333!important}}
@@ -991,7 +992,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
               <button class="flow-tool-btn" onclick="zoomFlowchart(0.1)">+</button>
               <button class="flow-tool-btn" onclick="fitFlowchart()">Closer View</button>
               <button class="flow-tool-btn" onclick="fitFlowchartForLandscape()">Page Fit</button>
-              <button class="flow-tool-btn flow-admin-action" id="flowManualModeBtn" type="button" onclick="toggleFlowManualMode()" aria-pressed="false">Move boxes</button>
+              <button class="flow-tool-btn flow-admin-action" id="flowManualModeBtn" type="button" onclick="toggleFlowManualMode()" aria-pressed="false">✋ Move Mode</button>
               <button class="flow-tool-btn flow-admin-action" id="flowAutoLayoutBtn" type="button" onclick="resetFlowManualLayout()" hidden>Reset positions</button>
               <button class="flow-tool-btn flow-admin-action" id="flowUndoBtn" onclick="undoFlowchartChange()">Undo</button>
               <button class="flow-tool-btn flow-admin-action" id="flowRedoBtn" onclick="redoFlowchartChange()">Redo</button>
@@ -2903,9 +2904,43 @@ function placeNewFlowBox(data,newId,anchorId){
   data.positions=positions;
   data.positionsLocked=true;
 }
+function bringConnectedFlowBoxesCloser(data,firstId,secondId){
+  const positions=captureFlowPositions(data);
+  const first=positions[firstId],second=positions[secondId];
+  if(!first||!second)return false;
+  const sizes={};
+  document.querySelectorAll('#flowStage > .flow-node-wrap').forEach(function(wrap){
+    const node=wrap.querySelector('[data-flow-node-id]');
+    if(node)sizes[node.dataset.flowNodeId]={w:Math.max(wrap.offsetWidth,220),h:Math.max(wrap.offsetHeight,64)};
+  });
+  const upperId=first.y<=second.y?firstId:secondId;
+  const lowerId=upperId===firstId?secondId:firstId;
+  const upper=positions[upperId],lower=positions[lowerId];
+  const upperSize=sizes[upperId]||{w:260,h:80},lowerSize=sizes[lowerId]||{w:260,h:80};
+  const desiredY=upper.y+upperSize.h+84;
+  if(lower.y<=desiredY+32)return false;
+  const centeredX=Math.max(20,upper.x+(upperSize.w-lowerSize.w)/2);
+  const otherIds=Object.keys(positions).filter(function(id){return id!==lowerId;});
+  let chosen=null;
+  for(let y=desiredY;y<lower.y-20&&!chosen;y+=28){
+    for(const offset of [0,-48,48,-96,96,-160,160,-260,260]){
+      const x=Math.max(20,centeredX+offset);
+      const blocked=otherIds.some(function(id){
+        const p=positions[id],size=sizes[id]||{w:260,h:80};
+        return x<p.x+size.w+24&&x+lowerSize.w+24>p.x&&y<p.y+size.h+45&&y+lowerSize.h+45>p.y;
+      });
+      if(!blocked){chosen={x:x,y:y};break;}
+    }
+  }
+  if(!chosen)return false;
+  positions[lowerId]=chosen;
+  data.positions=positions;
+  data.positionsLocked=true;
+  return true;
+}
 function updateFlowManualControls(data) {
   const toggle=document.getElementById('flowManualModeBtn'),reset=document.getElementById('flowAutoLayoutBtn');
-  if(toggle){toggle.textContent=flowManualMode?'Done moving':'Move boxes';toggle.setAttribute('aria-pressed',String(flowManualMode));}
+  if(toggle){toggle.textContent=flowManualMode?'✋ Done moving':'✋ Move Mode';toggle.setAttribute('aria-pressed',String(flowManualMode));}
   if(reset)reset.hidden=!Object.keys((data||getFlowchartData()).positions||{}).length;
 }
 function toggleFlowManualMode() {
@@ -2913,7 +2948,7 @@ function toggleFlowManualMode() {
   if(!flowManualMode){const data=getFlowchartData();data.positions=captureFlowPositions(data);data.positionsLocked=true;saveFlowchartData(data,false);}
   flowManualMode=!flowManualMode;
   renderFlowchart();
-  showToast(flowManualMode?'Drag a box by its move handle. Positions save when released.':'Box positions saved');
+  showToast(flowManualMode?'Drag any box to place it. Its position saves when released.':'Box positions saved');
 }
 function resetFlowManualLayout() {
   if(!isAdmin)return;
@@ -2922,6 +2957,7 @@ function resetFlowManualLayout() {
 }
 function startFlowNodeMove(event,id) {
   if(!isAdmin||!flowManualMode||event.button!==0)return;
+  if(event.currentTarget.classList.contains('flow-node')&&event.target.closest('button'))return;
   event.preventDefault();event.stopPropagation();
   const preview=document.getElementById('flowchartPreview'),stage=document.getElementById('flowStage');
   const node=Array.from(stage.querySelectorAll('[data-flow-node-id]')).find(function(el){return el.dataset.flowNodeId===id;});
@@ -3240,9 +3276,10 @@ function connectFlowNodes(parentId, targetId) {
   data.positionsLocked=true;
   if (/^(yes|no|negative|positive)$/i.test(label || '')) parent.type = 'question';
   parent.branches.push({id:flowId('branch'), label:label == null ? 'Next' : label, to:targetId});
+  const moved=bringConnectedFlowBoxesCloser(data,parentId,targetId);
   flowSelectedNodeId = targetId;
   saveFlowchartData(data, true);
-
+  showToast(moved?'Connected; the lower box moved closer. Use Move Mode to fine tune.':'Boxes connected. Use Move Mode to place them exactly.');
 }
 
 function insertFlowBox(position) {
@@ -3410,17 +3447,16 @@ function renderFlowNode(data, id, path, layout, parentId) {
   const type = normalizeFlowNodeType(node.type);
   const cls = 'flow-node ' + type + (id === data.rootId ? ' start' : '') + (id === flowSelectedNodeId ? ' selected' : '');
   const kind = type === 'question' ? 'Question' : (type === 'terminal' ? 'Oval' : 'Step');
-  const editable = isAdmin ? 'contenteditable="true" spellcheck="true"' : '';
+  const editable = isAdmin && !flowManualMode ? 'contenteditable="true" spellcheck="true"' : '';
   const spaciousQuestion = type === 'question' && /positive screen\s+or\s+incompatible crossmatch/i.test(node.text || '');
   const nodeStyle = 'style="--node-fill:' + normalizeFlowFillColor(node.fillColor) + ';--node-border:' + normalizeFlowBorderColor(node.borderColor) + ';background:' + normalizeFlowFillColor(node.fillColor) + ';border-color:' + normalizeFlowBorderColor(node.borderColor) + (spaciousQuestion ? ';width:290px;min-width:290px;max-width:290px;min-height:128px' : '') + '"';
   const dropAttrs = isAdmin ? ' ondragover="allowFlowConnectDrop(event,\'' + id + '\')" ondragleave="clearFlowConnectTarget(event)" ondrop="dropFlowConnect(event,\'' + id + '\')"' : '';
-  let html = '<div class="flow-node-wrap"><div class="flow-node-row"><div class="' + cls + '" data-flow-node-id="' + escAttr(id) + '" ' + nodeStyle + dropAttrs + (isAdmin ? ' onclick="selectFlowNode(\'' + id + '\')"' : '') + '>' +
+  let html = '<div class="flow-node-wrap"><div class="flow-node-row"><div class="' + cls + '" data-flow-node-id="' + escAttr(id) + '" ' + nodeStyle + dropAttrs + (isAdmin ? ' onclick="selectFlowNode(\'' + id + '\')" onpointerdown="startFlowNodeMove(event,\'' + id + '\')"' : '') + '>' +
     (type==='question'?'<svg class="flow-diamond" viewBox="0 0 240 112" preserveAspectRatio="none" aria-hidden="true"><polygon points="120,2 238,56 120,110 2,56"/></svg>':'')+'<div class="flow-node-kind">' + escText(kind) + '</div>' +
     '<div class="flow-node-text flow-editable" data-placeholder="' + (type === 'question' ? 'Type a question' : 'Type a step') + '" ' + editable +
     (isAdmin ? ' oninput="updateFlowNodeText(\'' + id + '\',this.textContent)"' : '') + '>' + escText(node.text || '') + '</div>';
   if (isAdmin) {
     html += '<div class="flow-node-tools">' +
-      '<button class="flow-mini-btn flow-node-move" type="button" title="Drag to move this box" aria-label="Move '+escAttr(node.text||'box')+'" onpointerdown="startFlowNodeMove(event,\''+id+'\')" onclick="event.stopPropagation()">✥</button>' +
       '<button class="flow-mini-btn flow-node-plus" draggable="true" title="Click to add; drag to connect" ondragstart="startFlowConnectDrag(event,\'' + id + '\')" ondragend="endFlowConnectDrag()" onclick="event.stopPropagation();handleFlowPlusClick(\'' + id + '\')">+</button>' +
       '</div>';
   }
