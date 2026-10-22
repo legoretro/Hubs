@@ -602,6 +602,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 .bb-map-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;padding:20px 0}.bb-map-tile{position:relative;cursor:help;outline-offset:3px}.bb-map-tile:focus{outline:2px solid var(--crimson)}.bb-map-tile .bb-map-tip{display:none;position:absolute;left:8px;right:8px;bottom:calc(100% - 15px);z-index:3;background:var(--wine);color:#fff;padding:10px;border-radius:8px;font:12px/1.35 Arial,sans-serif;box-shadow:0 4px 16px #0003}.bb-map-tile:hover .bb-map-tip,.bb-map-tile:focus .bb-map-tip,.bb-map-tile.show-structure .bb-map-tip{display:block}
 #simulationShell{zoom:.9}.abo-methods{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}.abo-method{min-width:0}.abo-method>h3{font-size:15px;color:var(--wine);margin:0 0 10px}.abo-gel-card{display:flex;gap:5px;align-items:flex-start;padding:12px;background:#f2f6fb;border:3px solid #d5e0ec;border-radius:14px;min-height:180px;width:max-content;max-width:100%}.abo-gel-well{width:36px;text-align:center;font-size:10px;font-weight:700;color:var(--wine)}.abo-gel-column{height:125px;border:2px solid #b4c5d4;border-radius:5px 5px 14px 14px;background:linear-gradient(#fff 0 10%,#ffe9d8 10% 100%);position:relative;overflow:hidden}.abo-gel-column:before{content:'';position:absolute;top:7px;left:7px;right:7px;height:9px;border-radius:50%;background:#a80f2e}.abo-gel-column.is-read:before{top:var(--gel-top,7px)}.abo-gel-result{margin-top:5px}.abo-rack-row{flex-wrap:wrap}.abo-tube-btn{cursor:pointer}
 .abo-gel-card{background:#eef4fb;border-color:#8ba0cc;gap:4px;align-items:flex-end;flex-wrap:wrap}.abo-gel-well{width:54px;min-width:54px}.abo-gel-well svg{display:block;width:54px;height:134px}.abo-gel-well .abo-gel-result{min-height:14px}
+.xm-screen-methods,.xm-screen-gel{border:1px solid var(--rose);border-radius:14px;background:#fffaf7;padding:16px;margin:12px 0}.xm-screen-methods h3,.xm-screen-gel h3{font-size:17px;color:var(--wine);margin:0 0 12px}.xm-screen-gel{min-height:58px}.xm-screen-rack{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;align-items:flex-end}.xm-screen-tube{text-align:center;min-width:68px}.xm-screen-tube svg{display:block;margin:auto}.xm-screen-tube strong{display:block;font:700 12px Georgia,serif;color:var(--wine)}.xm-screen-tube span{display:block;font-size:12px;min-height:18px}.xm-centrifuge{width:205px;margin:15px auto 8px;text-align:center}.xm-centrifuge-body{height:118px;border:4px solid #8fa4bb;border-radius:50% 50% 18px 18px;background:linear-gradient(#dce8f3,#aebfd1);position:relative;box-shadow:inset 0 6px 10px #fff8,0 5px 10px #364e6125}.xm-centrifuge-rotor{position:absolute;left:50%;top:8px;width:100px;height:100px;margin-left:-50px;border-radius:50%;background:#647d98;border:6px solid #d5e2ed;display:flex;align-items:center;justify-content:space-around}.xm-centrifuge-rotor span{display:block;width:19px;height:49px;border:3px solid #e7f3fb;border-radius:4px 4px 9px 9px;background:linear-gradient(#d5eaf8 65%,#c0173d 66%)}.xm-centrifuge-rotor.is-spinning{animation:xmRotorSpin .18s linear infinite}@keyframes xmRotorSpin{to{transform:rotate(360deg)}}.xm-centrifuge-label{font-size:12px;color:var(--warm-grey);margin-top:5px}
 @media(max-width:760px){#simulationShell{zoom:1}.abo-methods{grid-template-columns:1fr}.bb-map-tile .bb-map-tip{bottom:auto;top:24px}}
 @media(max-width:1000px){.bb-system-overview{grid-template-columns:1fr}.bb-system-overview .membrane-card-live{max-width:none}}
 @media(max-width:820px){.flow-branches{grid-auto-flow:column;grid-auto-columns:minmax(210px,max-content);grid-template-columns:none;min-width:max-content}.flow-tree{min-width:max-content;justify-content:center}.flow-node-wrap{min-width:190px;width:auto}.flow-node-row{width:auto;flex-direction:row;align-items:flex-start}.flow-node{max-width:270px;min-width:185px;width:auto}.flow-note-card{width:152px;max-width:152px}.flow-canvas{height:60dvh;min-height:300px}.flow-diagrams{font-size:12px}.flow-diagrams input{width:150px}.bb-calc-inputs label:last-child{grid-column:auto}}
@@ -651,22 +652,10 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 #personalAntigram .personal-antigram-table input.ag-reaction-input.is-filled:not(:focus){background:#fff9e6}
 #personalAntigram .personal-antigram-table input.ag-reaction-input:focus{background:#fff4bd;box-shadow:inset 0 0 0 2px #ffcf00;outline:0}
 #personalAntigram .personal-antigram-table td.ag-ahg-col input.ag-reaction-input{color:#5a0e20!important;font-weight:800;min-height:32px}
-.ag-own-tools,.ag-own-checks{margin:16px 0;padding:16px;border:1px solid #efc3d0;border-radius:12px;background:#fffaf7}
-.ag-own-tools>div:first-child strong,.ag-own-checks>div strong{display:block;color:#5a0e20;font-size:16px}
+.ag-own-tools{margin:16px 0;padding:16px;border:1px solid #efc3d0;border-radius:12px;background:#fffaf7;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.ag-own-tools>div:first-child strong{display:block;color:#5a0e20;font-size:16px}
 .ag-own-tools p{margin:6px 0 12px;color:#755c64;font-size:13px;line-height:1.5;max-width:850px}
-.ag-upload-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.ag-upload-controls input[type=file]{max-width:min(420px,100%);font:13px Arial;color:#5a0e20}
-.ag-no-identifiers,.ag-own-checks label{display:inline-flex;align-items:center;gap:8px;color:#32141e;font-size:14px;font-weight:700}
-.ag-no-identifiers input,.ag-own-checks input{width:17px;height:17px;accent-color:#c0173d}
-.ag-upload-status{min-height:20px;margin-top:10px;color:#755c64;font-size:13px}
-.ag-upload-status.is-error{color:#a0193a;font-weight:700}
-.ag-import-preview{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;padding:10px 12px;border:1px solid #efc3d0;border-radius:8px;background:#fce8ee;color:#5a0e20;font-size:13px}
-.ag-autosave-note{display:block;margin-top:8px;color:#8c5964;font-size:12px}
-.ag-own-checks{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
-.ag-own-checks>div{margin-right:8px}
-.ag-own-checks>div span{display:block;margin-top:5px;color:#755c64;font-size:12px;font-weight:400}
-.ag-own-checks label{font-weight:600}
-@media(max-width:760px){.ag-import-preview{align-items:flex-start;flex-direction:column}.ag-own-checks{align-items:flex-start;flex-direction:column;gap:10px}}
+@media(max-width:760px){.ag-own-tools{align-items:flex-start;flex-direction:column}}
 </style>
 <style>
 #flowExportDetails input:disabled{background:#e8e5e6;color:#777;cursor:not-allowed;opacity:1}
@@ -1082,9 +1071,8 @@ let isAdmin = false;
 let notesData = {};       // {system_key: {field_key: value, ...}, ...}
 let xmCases   = [];       // crossmatch cases (loaded from supabase or defaults)
 let xmCurrent = null;
-let xmScore   = 0;
-let xmCorrect = 0;
-let xmTotal   = 0;
+let xmSpinDone = false;
+let xmSpinRunning = false;
 let saveTimer  = null;
 let xmSaveTimer = null;
 let xmLocalCacheTimer = null;
@@ -8169,7 +8157,6 @@ function updateUnitEstimate(){
 }
 
 function initXmatch() {
-  xmTotal = 0;
   startABOsim();  // Start with ABO typing
 }
 
@@ -8644,27 +8631,30 @@ function exportAntigramPractice(includeAnswer) {
 }
 
 function nextXm() {
-  xmTotal++;
+  if (!xmCases.length) xmCases = defaultXmCases();
   var idx = Math.floor(Math.random() * xmCases.length);
   xmCurrent = xmCases[idx];
   xmStep = 0; xmSelectedDonor = null; xmDonorIdx2 = null; xmMode = null;
+  xmSpinDone = false; xmSpinRunning = false;
   renderXm();
 }
 
 function startXmScreenCells() {
-  var hasAb = xmCurrent && xmCurrent.patient_abs && xmCurrent.patient_abs.length > 0;
+  var results = Array.isArray(xmCurrent.screenResults) ? normalizeXmResults(xmCurrent.screenResults, 3) : defaultScreenResultsForCase(xmCurrent);
+  var reactive = results.some(function(row) { return ['is','t37','ahg'].some(function(phase) { return row[phase] && row[phase] !== '0' && row[phase] !== 'NT'; }); });
   xmMode = 'screen';
   xmSelectedDonor = {
     type: 'Screen Cells',
     detail: 'Patient plasma + reagent screen cells I, II, III',
-    compat: !hasAb,
-    reason: hasAb
-      ? 'Antibody screen positive: ' + xmCurrent.patient_abs.join(', ') + '. Patient plasma reacted with at least one screen cell.'
-      : 'Antibody screen negative. No unexpected antibody detected with screen cells.',
-    results: Array.isArray(xmCurrent.screenResults) ? normalizeXmResults(xmCurrent.screenResults, 3) : defaultScreenResultsForCase(xmCurrent)
+    compat: !reactive,
+    reason: reactive
+      ? 'At least one reagent screen cell reacted.'
+      : 'No reaction was observed with the reagent screen cells.',
+    results: results
   };
   xmDonorIdx2 = null;
   xmStep = 1;
+  xmSpinDone = false; xmSpinRunning = false;
   renderXm();
 }
 
@@ -8687,12 +8677,6 @@ function renderXm() {
   var area = document.getElementById('xmContent');
   var c = xmCurrent;
 
-  var stats = '<div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:14px">' +
-    '<div class="stat-pill"><div class="stat-num">' + xmScore + '</div><div class="stat-lbl">Score</div></div>' +
-    '<div class="stat-pill"><div class="stat-num">' + xmCorrect + '</div><div class="stat-lbl">Clear</div></div>' +
-    '<div class="stat-pill"><div class="stat-num">' + xmTotal + '</div><div class="stat-lbl">Cases</div></div>' +
-    '</div>';
-
   var phases = ['IS Spin', '37C Incubation + Read', 'Wash Cells', 'AHG + CC Read'];
   var strip = phases.map(function(p, i) {
     var cls = xmStep > i+1 ? 'done' : xmStep === i+1 ? 'active' : '';
@@ -8709,8 +8693,8 @@ function renderXm() {
       return '<td><span class="' + (pos ? 'rxn-pos' : 'rxn-neg') + '">' + val + '</span></td>';
     }
     screenHTML += '<tr><td>' + sc + '</td>' +
-      cell(v.is, xmStep >= 1) + cell(v.t37, xmStep >= 3) +
-      cell(v.ahg, xmStep >= 5) + cell(v.cc, xmStep >= 5) + '</tr>';
+      cell(v.is, xmMode === 'screen' ? (xmSpinDone || xmStep > 1) : xmStep >= 1) + cell(v.t37, xmStep >= 3) +
+      cell(v.ahg, xmMode === 'screen' ? xmStep >= 4 : xmStep >= 5) + cell(v.cc, xmMode === 'screen' ? xmStep >= 4 : xmStep >= 5) + '</tr>';
   });
   if (xmStep >= 6) {
     var isStar = xmSelectedDonor && xmSelectedDonor.compat;
@@ -8719,7 +8703,8 @@ function renderXm() {
   }
 
   var labArea = '';
-  if (xmStep === 1) labArea = buildISStep2();
+  if (xmMode === 'screen' && xmStep >= 1 && xmStep <= 4) labArea = buildScreenTubeStep();
+  else if (xmStep === 1) labArea = buildISStep2();
   else if (xmStep === 2) labArea = build37Step2();
   else if (xmStep === 3) labArea = buildRead37Step();
   else if (xmStep === 4) labArea = buildWashStep2();
@@ -8730,13 +8715,14 @@ function renderXm() {
     var good = xmSelectedDonor && xmSelectedDonor.compat;
     resultArea = '<div class="xm-feedback ' + (good?'good':'bad') + '">' +
       '<strong>' + (xmMode === 'screen' ? (good?'Screen negative.':'Screen positive.') : (good?'Compatible.':'Incompatible.')) + '</strong> ' + (xmSelectedDonor?xmSelectedDonor.reason:'') +
-      (c.teach?'<br><em style="font-size:12px;opacity:.8">' + c.teach + '</em>':'') + '</div>';
+      (xmMode !== 'screen' && c.teach?'<br><em style="font-size:12px;opacity:.8">' + c.teach + '</em>':'') + '</div>';
   }
 
-  area.innerHTML = stats +
+  area.innerHTML =
     '<div class="phase-strip">' + strip + '</div>' +
-    '<div class="xm-grid">' +
-      '<div class="sys-card" style="padding:16px">' +
+    '<div class="xm-grid"' + (xmMode === 'screen' || xmStep === 0 ? ' style="grid-template-columns:1fr"' : '') + '>' +
+      (xmMode === 'screen' || xmStep === 0 ? '' : '<div class="sys-card" style="padding:16px">') +
+      (xmMode === 'screen' || xmStep === 0 ? '' :
         '<div class="sec-label">Patient</div>' +
         '<div style="font-size:36px;font-weight:700;color:var(--crimson);text-align:center;margin:8px 0">' + c.patient_type + '</div>' +
         '<div style="font-size:12px;color:var(--warm-grey);text-align:center">' + c.patient_desc + '</div>' +
@@ -8744,7 +8730,7 @@ function renderXm() {
         ((c.patient_abs||[]).length === 0
           ? '<span style="font-size:12px;color:var(--good)">Screen Negative</span>'
           : (c.patient_abs||[]).map(function(a){ return '<span style="display:inline-block;background:#fee2e8;color:#9b1030;border-radius:4px;padding:1px 7px;font-size:11px;font-weight:700;margin:2px">' + a + '</span>'; }).join('')) +
-        '</div></div>' +
+        '</div></div>') +
       '<div class="sys-card" style="padding:16px">' +
         '<div class="sec-label" style="margin-bottom:8px">' + (xmStep===0?'Choose Test Type':(xmMode === 'donor'?'Selected Donor':'Selected Screen Cells')) + '</div>' +
         (xmStep === 0
@@ -8757,9 +8743,10 @@ function renderXm() {
       '</div>' +
     '</div>' +
     (xmStep > 1 && xmStep < 6 ? '<div style="margin-bottom:8px"><button class="btn btn-ghost btn-sm" onclick="prevXm2()" style="font-size:11px">&larr; Back</button></div>' : '') +
-    labArea +
+    (xmMode === 'screen' ? '<div class="xm-screen-methods"><h3>Tube Method</h3>' : '') + labArea +
+    (xmMode === 'screen' ? '</div><div class="xm-screen-gel"><h3>Gel Method</h3></div>' : '') +
     '<div class="sys-card" style="padding:16px;margin-bottom:12px;margin-top:12px">' +
-      '<div class="sec-label" style="margin-bottom:8px">Crossmatch Results</div>' +
+      '<div class="sec-label" style="margin-bottom:8px">' + (xmMode === 'screen' ? 'Screen Cell Results' : 'Crossmatch Results') + '</div>' +
       (xmStep===0 ? '<div class="phase-instr"><strong>Step 1:</strong> Choose screen cells or donor blood. The tube phases are the same after that choice.</div>' : '') +
       '<div style="overflow-x:auto"><table class="screen-table">' +
         '<thead><tr><th style="text-align:left">Tube</th><th>IS</th><th>37°C</th><th>AHG</th><th>CC</th></tr></thead>' +
@@ -8776,6 +8763,48 @@ function renderXm() {
     '</div>';
 
   if (isAdmin) renderXmEditor2();
+}
+
+function xmScreenTube(index, phase, reveal) {
+  var labels = xmTubeLabels(), d = xmSelectedDonor || {};
+  var values = getSimResult(index, d.compat, d.reason);
+  var result = reveal ? String(values[phase] || '0') : '';
+  var strength = aboStrength(result);
+  var fill = strength ? '<rect x="11" y="57" width="28" height="41" fill="rgba(240,180,190,.52)"/>' + aboTubeDots(strength) : '<rect x="11" y="82" width="28" height="16" fill="rgba(192,23,61,.22)"/>';
+  return '<div class="xm-screen-tube"><svg width="58" height="132" viewBox="0 0 50 120" role="img" aria-label="' + escAttr(labels[index]) + (reveal ? ' ' + escAttr(result) : ' not yet read') + '" xmlns="http://www.w3.org/2000/svg">' +
+    '<path d="M7 13 L7 91 Q7 105 25 105 Q43 105 43 91 L43 13 Z" fill="rgba(220,235,248,.85)" stroke="#9eb6c8" stroke-width="2"/>' +
+    '<path d="M13 22 L13 89" stroke="rgba(255,255,255,.6)" stroke-width="4" stroke-linecap="round"/>' + fill +
+    '<path d="M7 91 Q7 105 25 105 Q43 105 43 91" fill="none" stroke="#9eb6c8" stroke-width="2"/>' +
+    '<rect x="4" y="6" width="42" height="9" rx="3" fill="#e6eff5" stroke="#9eb6c8" stroke-width="2"/></svg><strong>' + labels[index] + '</strong><span>' + (reveal ? escText(result) : '') + '</span></div>';
+}
+function spinXmScreenTubes() {
+  if (xmMode !== 'screen' || xmStep !== 1 || xmSpinRunning || xmSpinDone) return;
+  xmSpinRunning = true;
+  renderXm();
+  setTimeout(function() { if (xmMode === 'screen' && xmStep === 1) { xmSpinRunning = false; xmSpinDone = true; renderXm(); } }, 1200);
+}
+function buildScreenTubeStep() {
+  var step = xmStep;
+  var title = ['','Step 1: Immediate Spin (IS)','Step 2: 37°C Incubation','Step 3: Read 37°C and Wash','Step 4: AHG and Check Cells'][step];
+  var phase = step === 1 ? 'is' : step === 3 ? 't37' : step === 4 ? 'ahg' : 'is';
+  var reveal = step === 1 ? xmSpinDone : step >= 3;
+  var instructions = step === 1
+    ? 'Add patient plasma and reagent screen cells to the labeled tubes, then place the tubes in the centrifuge.'
+    : step === 2 ? 'Place the tubes in the 37°C heat block. Incubate, spin, and read before washing.'
+    : step === 3 ? 'Record the 37°C reactions. Wash the cells 3–4 times with saline, then add AHG.'
+    : 'Spin and read AHG. Add check cells to negative AHG tubes, spin, and verify the check-cell reaction.';
+  var rack = '<div class="xm-screen-rack">' + xmTubeLabels().map(function(_, i) { return xmScreenTube(i, phase, reveal); }).join('') + '</div>';
+  var rotor = '<div class="xm-centrifuge"><div class="xm-centrifuge-body"><div class="xm-centrifuge-rotor' + (xmSpinRunning ? ' is-spinning' : '') + '">' +
+    (xmSpinRunning || xmSpinDone ? '<span></span><span></span><span></span>' : '') +
+    '</div></div><div class="xm-centrifuge-label">' + (xmSpinRunning ? 'Tubes spinning' : xmSpinDone ? 'Spin complete' : 'Centrifuge') + '</div></div>';
+  var action = step === 1
+    ? (xmSpinDone ? '<button class="btn btn-primary" onclick="advanceXm2()">Place in 37°C Heat Block</button>' : '<button class="btn btn-primary" onclick="spinXmScreenTubes()" ' + (xmSpinRunning ? 'disabled' : '') + '>Place tubes in centrifuge and spin</button>')
+    : step === 2 ? '<button class="btn btn-primary" onclick="advanceXm2()">Spin and Read 37°C</button>'
+    : step === 3 ? '<button class="btn btn-primary" onclick="advanceXm2()">Add AHG and Read</button>'
+    : '<button class="btn btn-primary" onclick="finishXm2()">Record Final Result</button>';
+  return '<div class="lab-bench" style="margin-top:4px"><div class="lab-bench-label">' + title + '</div>' +
+    '<p class="phase-instr">' + instructions + '</p>' + (step === 1 && xmSpinRunning ? rotor : rack + (step === 1 && !xmSpinDone ? rotor : '')) +
+    '<div style="text-align:center;margin-top:12px">' + action + '</div></div>';
 }
 
 function buildISStep2() {
@@ -9005,11 +9034,9 @@ function prevXm2() {
 }
 function finishXm2() {
   xmStep = 6;
-  if (xmSelectedDonor && xmSelectedDonor.compat) { xmCorrect++; xmScore += 20; }
   renderXm();
 }
 function resetXm2() {
-  xmScore=0; xmCorrect=0; xmTotal=0;
   xmStep=0; xmSelectedDonor=null; xmDonorIdx2=null;
   nextXm();
 }
@@ -9691,12 +9718,6 @@ function renderABOsim() {
   }).join('');
 
   area.innerHTML =
-    '<div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:14px">' +
-    '<div class="stat-pill"><div class="stat-num">' + aboScore + '</div><div class="stat-lbl">Score</div></div>' +
-    '<div class="stat-pill"><div class="stat-num">' + aboCorrect + '</div><div class="stat-lbl">Correct</div></div>' +
-    '<div class="stat-pill"><div class="stat-num">' + aboCases + '</div><div class="stat-lbl">Cases</div></div>' +
-    '</div>' +
-
     // Typing rack
     '<div class="sys-card" style="padding:16px;margin-bottom:12px">' +
     '<div class="sec-label" style="margin-bottom:10px">ABO / Rh typing</div>' +
@@ -9826,6 +9847,6 @@ function checkABOAnswer(answer) {
   document.querySelectorAll('#aboContent .donor-btn').forEach(function(b){ b.disabled = true; });
 }
 </script>
-<script src="shared/bloodbank-antigram.js?v=20261020-ahg-zero-43"></script>
+<script src="shared/bloodbank-antigram.js?v=20261021-create-own-44"></script>
 </body>
 </html>
