@@ -479,7 +479,7 @@ function routeBloodBankFlow(container) {
     points=points.filter(function(p,i,all){if(i===0||i===all.length-1)return true;var a=all[i-1],b=all[i+1];return !((a.x===p.x&&p.x===b.x)||(a.y===p.y&&p.y===b.y));});
     // Move a short near-target square elbow to the top of its long vertical
     // run whenever the earlier corridor is free.
-    if(points.length>=4){
+    if(!manualPort&&points.length>=4){
       var topTurn=points[points.length-4],lateTurn=points[points.length-3],lateSide=points[points.length-2],arrival=points[points.length-1];
       var shortJog=Math.abs(lateSide.x-lateTurn.x)<Math.max(42,70*zoom)&&Math.abs(arrival.y-lateSide.y)<Math.max(44,70*zoom);
       if(topTurn.x===lateTurn.x&&lateTurn.y===lateSide.y&&lateSide.x===arrival.x&&shortJog&&Math.abs(lateTurn.y-topTurn.y)>Math.max(80,120*zoom)){

@@ -1058,7 +1058,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="shared/pdf-export.js?v=20260605-export-fit"></script>
 <script src="safe-supabase-sync.js"></script>
-<script src="shared/bloodbank-flow.js?v=20261022-smart-ports-57"></script>
+<script src="shared/bloodbank-flow.js?v=20261022-manual-ports-58"></script>
 <script>
 // ============================================================
 // CONFIG - SUPABASE + PASSWORD
@@ -2766,6 +2766,10 @@ function flowOptionHtml(values, labels, selected) {
     return '<option value="' + escAttr(value) + '"' + (value === selected ? ' selected' : '') + '>' + escText(labels[index] || value) + '</option>';
   }).join('');
 }
+function flowPortOptionHtml(selected) {
+  return (selected ? '' : '<option value="" selected disabled>Choose side…</option>') +
+    flowOptionHtml(['top','left','bottom','right'],['1 · Top','2 · Left','3 · Bottom','4 · Right'],selected);
+}
 
 function getFlowSelectedNode(data) {
   data = normalizeFlowchartData(data || getFlowchartData());
@@ -2799,9 +2803,9 @@ function renderFlowSelectionPanel(data) {
       '<label class="flow-control">Arrow label<select class="flow-select" onchange="chooseSelectedArrowLabel(this.value)">' + flowOptionHtml(arrowPresets,['No label','Yes','No','Negative','Positive'],customArrowLabel?'':arrowLabel) + '<option value="custom"'+(customArrowLabel?' selected':'')+'>Custom text…</option></select></label>' +
       '<label class="flow-control">Custom label<input class="flow-select" id="flowCustomArrowLabel" maxlength="50" placeholder="Type any arrow label" value="'+escAttr(customArrowLabel?arrowLabel:'')+'" onchange="setSelectedArrowLabel(this.value)" onkeydown="if(event.key===\'Enter\'){event.preventDefault();this.blur()}"></label>' +
       '<details class="flow-connection-move"><summary>Move connection</summary><div class="flow-connection-ports">' +
-        '<label class="flow-control">Leave ' + escText(selectedConnection.parent.text || 'box') + '<select class="flow-select" onchange="moveSelectedFlowConnection(\'fromSide\',this.value)">' + flowOptionHtml(['','top','left','bottom','right'],['Automatic','1 · Top','2 · Left','3 · Bottom','4 · Right'],selectedConnection.branch.fromSide||'') + '</select></label>' +
-        '<label class="flow-control">Enter ' + escText(selectedConnection.target.text || 'box') + '<select class="flow-select" onchange="moveSelectedFlowConnection(\'toSide\',this.value)">' + flowOptionHtml(['','top','left','bottom','right'],['Automatic','1 · Top','2 · Left','3 · Bottom','4 · Right'],selectedConnection.branch.toSide||'') + '</select></label>' +
-      '</div><small>Automatic keeps matching Yes/No lines together. Moving either end gives this line its own path.</small></details>' +
+        '<label class="flow-control">Leave ' + escText(selectedConnection.parent.text || 'box') + '<select class="flow-select" onchange="moveSelectedFlowConnection(\'fromSide\',this.value)">' + flowPortOptionHtml(selectedConnection.branch.fromSide||'') + '</select></label>' +
+        '<label class="flow-control">Enter ' + escText(selectedConnection.target.text || 'box') + '<select class="flow-select" onchange="moveSelectedFlowConnection(\'toSide\',this.value)">' + flowPortOptionHtml(selectedConnection.branch.toSide||'') + '</select></label>' +
+      '</div><small>Choose a side to anchor this line there. Other lines keep their own connections.</small></details>' +
       '<div class="flow-action-group">' +
         (siblings.length===2 ? '<button class="flow-tool-btn" onclick="swapSelectedFlowBranches()">Swap destinations</button>' : '') +
         (siblings.length>2&&branchIndex>0 ? '<button class="flow-tool-btn" onclick="swapSelectedFlowBranches(\'left\')">Swap with left destination</button>' : '') +
@@ -2864,9 +2868,8 @@ function moveSelectedFlowConnection(endpoint,side){
   if(!isAdmin || !['fromSide','toSide'].includes(endpoint))return;
   const data=getFlowchartData(),connection=getFlowSelectedConnection(data);
   if(!connection)return;
-  data.positions=captureFlowPositions(data);
-  data.positionsLocked=true;
-  connection.branch[endpoint]=['top','left','bottom','right'].includes(side)?side:'';
+  if(!['top','left','bottom','right'].includes(side))return;
+  connection.branch[endpoint]=side;
   saveFlowchartData(data,true);
   const details=document.querySelector('#flowSelectionPanel .flow-connection-move');
   if(details)details.open=true;
