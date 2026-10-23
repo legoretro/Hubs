@@ -2960,6 +2960,91 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     simpleFlowSelectedPathKey=simplePathKey(newBox);
     return true;
   }
+  function simpleDuplicateTreeNode(chart,pathKey){
+    var prefix=simplePathParts(pathKey);
+    if(!chart||prefix.length<2||!simpleNodeByPathKey(chart,pathKey))return false;
+    var parent=prefix.slice(0,-1),base=prefix[prefix.length-1]+' copy',label=base,suffix=2;
+    while(simpleNodeByPathKey(chart,simplePathKey(parent.concat(label))))label=base+' '+suffix++;
+    var replacement=parent.concat(label);
+    var copies=(chart.paths||[]).map(function(path){
+      var parts=simpleNormalizedParts(chart,path);
+      return simplePrefixMatches(parts,prefix)?replacement.concat(parts.slice(prefix.length)).join(' > '):null;
+    }).filter(Boolean);
+    if(!copies.length)return false;
+    chart.paths=chart.paths.concat(copies);
+    [chart.colors,chart.nodeStyles,chart.nodeOffsets,chart.nodeNotes,chart.organismImages,chart.organismStickers,chart.treeEdges].forEach(function(map){
+      if(!map)return;
+      Object.keys(map).forEach(function(key){
+        var parts=simplePathParts(key);
+        if(!simplePrefixMatches(parts,prefix))return;
+        var newKey=simplePathKey(replacement.concat(parts.slice(prefix.length)));
+        map[newKey]=JSON.parse(JSON.stringify(map[key]));
+      });
+    });
+    simpleFlowSelectedPathKey=simplePathKey(replacement);
+    simpleFlowSelectedLinkId=null;
+    return true;
+  }
+  function simpleInsertAfterTreeNode(chart,pathKey){
+    var prefix=simplePathParts(pathKey);
+    var node=simpleNodeByPathKey(chart,pathKey);
+    if(!chart||!node)return false;
+    var label='New step',suffix=2;
+    while(simpleNodeByPathKey(chart,simplePathKey(prefix.concat(label))))label='New step '+suffix++;
+    var newBox=prefix.concat(label);
+    var children=(node.node.children||[]).map(function(child){return child.pathParts});
+    if(!children.length)chart.paths.push(newBox.join(' > '));
+    else{
+      chart.paths=(chart.paths||[]).map(function(path){
+        var parts=simpleNormalizedParts(chart,path);
+        if(simplePrefixMatches(parts,prefix)&&parts.length>prefix.length)parts.splice(prefix.length,0,label);
+        return parts.join(' > ');
+      });
+      children.forEach(function(childPrefix){
+        var replacement=newBox.concat(childPrefix[childPrefix.length-1]);
+        [chart.colors,chart.nodeStyles,chart.nodeOffsets,chart.nodeNotes,chart.organismImages,chart.organismStickers,chart.treeEdges].forEach(function(map){simpleRewriteKeyPrefix(map,childPrefix,replacement)});
+        simpleRewriteLinksPrefix(chart,childPrefix,replacement);
+      });
+    }
+    chart.colors=chart.colors||{};
+    chart.colors[simplePathKey(newBox)]=simpleDefaultColor(label,newBox.length-1);
+    simpleFlowSelectedPathKey=simplePathKey(newBox);
+    simpleFlowSelectedLinkId=null;
+    return true;
+  }
+  function simpleReverseTreeBranches(chart,pathKey){
+    var prefix=simplePathParts(pathKey);
+    var node=simpleNodeByPathKey(chart,pathKey);
+    if(!chart||!node||node.node.children.length<2)return false;
+    var slots=[],groups={},order=[];
+    (chart.paths||[]).forEach(function(path,index){
+      var parts=simpleNormalizedParts(chart,path);
+      if(!simplePrefixMatches(parts,prefix)||parts.length<=prefix.length)return;
+      var child=parts[prefix.length];
+      slots.push(index);
+      if(!groups[child]){groups[child]=[];order.push(child)}
+      groups[child].push(path);
+    });
+    var sorted=order.reverse().reduce(function(all,child){return all.concat(groups[child])},[]);
+    slots.forEach(function(index,i){chart.paths[index]=sorted[i]});
+    return true;
+  }
+  function simpleForkMatchingTreeEdges(chart,parentKey,label){
+    var parent=simpleNodeByPathKey(chart,parentKey);
+    label=String(label||'').trim().toLowerCase();
+    if(!parent||!label)return false;
+    var matching=parent.node.children.filter(function(child){
+      var edge=(chart.treeEdges&&chart.treeEdges[simplePathKey(child.pathParts)])||{};
+      return String(edge.label||'').trim().toLowerCase()===label;
+    });
+    if(matching.length<2)return false;
+    matching.forEach(function(child){
+      var key=simplePathKey(child.pathParts);
+      chart.treeEdges[key].fromPort='auto';
+      chart.treeEdges[key].toPort='auto';
+    });
+    return true;
+  }
   function simpleConnectNodes(chart,fromKey,toKey){
     if(!chart||!fromKey||!toKey||fromKey===toKey)return;
     chart.links=chart.links||[];
@@ -3044,6 +3129,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(scope===document||!scope)simpleFlowLinkClickTargets=[];
     function drawTreeEdges(node){
       var fromEl=simpleNodeElementByPath(graph,simplePathKey(node.pathParts));
+      var sharedLabels={};
       (node.children||[]).forEach(function(child){
         var childKey=simplePathKey(child.pathParts);
         var toEl=simpleNodeElementByPath(graph,childKey);
@@ -3058,7 +3144,15 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
           var d=points.map(function(point,index){return (index?' L ':'M ')+point.x.toFixed(1)+' '+point.y.toFixed(1)}).join('');
           var selected=(scope===document||!scope)&&simpleFlowSelectedLinkId==='tree:'+childKey;
           paths.push('<path class="micro-flow-tree-path'+(selected?' selected':'')+'" d="'+d+'"/>');
-          if(edge.label){var labelPoint=points[Math.floor(points.length/2)];paths.push('<text class="micro-flow-link-label" x="'+labelPoint.x.toFixed(1)+'" y="'+(labelPoint.y-5).toFixed(1)+'" text-anchor="middle">'+escapeHtml(edge.label)+'</text>');}
+          if(edge.label){
+            var labelKey=edge.label.trim().toLowerCase();
+            var shared=(node.children||[]).filter(function(sibling){var siblingEdge=(chart.treeEdges&&chart.treeEdges[simplePathKey(sibling.pathParts)])||{};return String(siblingEdge.label||'').trim().toLowerCase()===labelKey&&(!siblingEdge.fromPort||siblingEdge.fromPort==='auto')&&(!siblingEdge.toPort||siblingEdge.toPort==='auto')}).length>1;
+            if(!shared||!sharedLabels[labelKey]){
+              var labelPoint=shared?{x:start.x,y:start.y+13}:points[Math.floor(points.length/2)];
+              paths.push('<text class="micro-flow-link-label" x="'+labelPoint.x.toFixed(1)+'" y="'+(labelPoint.y-5).toFixed(1)+'" text-anchor="middle">'+escapeHtml(edge.label)+'</text>');
+              if(shared)sharedLabels[labelKey]=true;
+            }
+          }
           if(scope===document||!scope)simpleFlowLinkClickTargets.push({chartId:chart.id,linkId:'tree:'+childKey,points:points});
         }
         drawTreeEdges(child);
@@ -3311,12 +3405,16 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
           var edge=(chart.treeEdges&&chart.treeEdges[childKey])||{};
           var treePorts=['auto','top','left','bottom','right'];
           var treePortLabels=['Automatic','1 · Top','2 · Left','3 · Bottom','4 · Right'];
+          var matchingLabel=parent&&edge.label?(parent.node.children||[]).filter(function(sibling){var other=(chart.treeEdges&&chart.treeEdges[simplePathKey(sibling.pathParts)])||{};return String(other.label||'').trim().toLowerCase()===String(edge.label).trim().toLowerCase()}).length:0;
           return '<div class="micro-flow-selection-panel">'+
             '<div class="micro-flow-selected-title">Current selected<strong>Line: '+escapeHtml(parent?parent.node.label:'Box')+' -> '+escapeHtml(child.node.label)+'</strong></div>'+
             '<label class="micro-flow-control micro-flow-link-control">Label<input class="micro-flow-select" data-action="simple-link-label" data-chart="'+chart.id+'" data-link="'+escapeHtml(simpleFlowSelectedLinkId)+'" value="'+escapeHtml(edge.label||'')+'" placeholder="Yes / No / test"></label>'+
             '<label class="micro-flow-control micro-flow-link-control">Leaves from<select class="micro-flow-select" data-action="simple-link-from-port" data-chart="'+chart.id+'" data-link="'+escapeHtml(simpleFlowSelectedLinkId)+'">'+simpleOptionHtml(treePorts,treePortLabels,edge.fromPort||'auto')+'</select></label>'+
             '<label class="micro-flow-control micro-flow-link-control">Enters at<select class="micro-flow-select" data-action="simple-link-to-port" data-chart="'+chart.id+'" data-link="'+escapeHtml(simpleFlowSelectedLinkId)+'">'+simpleOptionHtml(treePorts,treePortLabels,edge.toPort||'auto')+'</select></label>'+
-            '<div class="micro-flow-action-group"><button type="button" class="micro-flow-tool-btn" data-action="simple-insert-tree-box" data-chart="'+chart.id+'" data-path-key="'+escapeHtml(childKey)+'">Insert box here</button><button type="button" class="micro-flow-tool-btn" data-action="simple-clear-selection" data-chart="'+chart.id+'">Cancel</button><button type="button" class="micro-flow-tool-btn" data-action="simple-undo-chart" data-chart="'+chart.id+'" '+(history.undo.length?'':'disabled')+'>Undo</button><button type="button" class="micro-flow-tool-btn" data-action="simple-redo-chart" data-chart="'+chart.id+'" '+(history.redo.length?'':'disabled')+'>Redo</button></div></div>';
+            '<div class="micro-flow-action-group"><button type="button" class="micro-flow-tool-btn" data-action="simple-insert-tree-box" data-chart="'+chart.id+'" data-path-key="'+escapeHtml(childKey)+'">Insert box here</button>'+
+            (parent&&parent.node.children.length>1?'<button type="button" class="micro-flow-tool-btn" data-action="simple-reverse-branches" data-chart="'+chart.id+'" data-path-key="'+escapeHtml(parentKey)+'">Reverse branches</button>':'')+
+            (matchingLabel>1?'<button type="button" class="micro-flow-tool-btn" data-action="simple-fork-lines" data-chart="'+chart.id+'" data-path-key="'+escapeHtml(parentKey)+'" data-label="'+escapeHtml(edge.label)+'">Fork matching '+escapeHtml(edge.label)+' lines</button>':'')+
+            '<button type="button" class="micro-flow-tool-btn" data-action="simple-clear-selection" data-chart="'+chart.id+'">Cancel</button><button type="button" class="micro-flow-tool-btn" data-action="simple-undo-chart" data-chart="'+chart.id+'" '+(history.undo.length?'':'disabled')+'>Undo</button><button type="button" class="micro-flow-tool-btn" data-action="simple-redo-chart" data-chart="'+chart.id+'" '+(history.redo.length?'':'disabled')+'>Redo</button></div></div>';
         }
       }
       var link=(chart.links||[]).find(function(item){return item.id===simpleFlowSelectedLinkId});
@@ -3365,6 +3463,10 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       '<div class="micro-flow-control micro-flow-image-control"><span>Images</span><div class="micro-flow-selected-images">'+selectedImageUpload('media','Agar','agar')+selectedImageUpload('gram','Gram stain','gram')+'</div></div>'+
       '<div class="micro-flow-action-group">'+
         '<button type="button" class="micro-flow-tool-btn primary" data-action="simple-tree-add-child" data-chart="'+chart.id+'" data-path-key="'+escapeHtml(pathKey)+'">+</button>'+
+        (selected.depth>0?'<button type="button" class="micro-flow-tool-btn" data-action="simple-insert-tree-box" data-chart="'+chart.id+'" data-path-key="'+escapeHtml(pathKey)+'">Insert before</button>':'')+
+        '<button type="button" class="micro-flow-tool-btn" data-action="simple-insert-after" data-chart="'+chart.id+'" data-path-key="'+escapeHtml(pathKey)+'">Insert after</button>'+
+        (selected.depth>0?'<button type="button" class="micro-flow-tool-btn" data-action="simple-duplicate-tree" data-chart="'+chart.id+'" data-path-key="'+escapeHtml(pathKey)+'">Duplicate box</button>':'')+
+        (selected.node.children.length>1?'<button type="button" class="micro-flow-tool-btn" data-action="simple-reverse-branches" data-chart="'+chart.id+'" data-path-key="'+escapeHtml(pathKey)+'">Reverse branches</button>':'')+
         '<button type="button" class="micro-flow-tool-btn" data-action="simple-add-note" data-chart="'+chart.id+'" data-path-key="'+escapeHtml(pathKey)+'">Note</button>'+
         '<button type="button" class="micro-flow-tool-btn" data-action="simple-remove-note" data-chart="'+chart.id+'" data-path-key="'+escapeHtml(pathKey)+'">No note</button>'+
         '<button type="button" class="micro-flow-tool-btn" data-action="simple-start-link" data-chart="'+chart.id+'" data-path-key="'+escapeHtml(pathKey)+'">Link</button>'+
@@ -3842,6 +3944,18 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         simpleRememberBefore(insertChart);
         if(simpleInsertBoxOnTreeEdge(insertChart,btn.dataset.pathKey)){renderCharts();saveDraft()}
       }
+      return;
+    }
+    if(['simple-insert-after','simple-duplicate-tree','simple-reverse-branches','simple-fork-lines'].includes(btn.dataset.action)){
+      if(!isAdmin||!editMode)return;
+      var layoutChart=simpleChartById(btn.dataset.chart);
+      if(!layoutChart)return;
+      simpleRememberBefore(layoutChart);
+      var changed=btn.dataset.action==='simple-insert-after'?simpleInsertAfterTreeNode(layoutChart,btn.dataset.pathKey):
+        btn.dataset.action==='simple-duplicate-tree'?simpleDuplicateTreeNode(layoutChart,btn.dataset.pathKey):
+        btn.dataset.action==='simple-reverse-branches'?simpleReverseTreeBranches(layoutChart,btn.dataset.pathKey):
+        simpleForkMatchingTreeEdges(layoutChart,btn.dataset.pathKey,btn.dataset.label);
+      if(changed){renderCharts();saveDraft()}
       return;
     }
     if(btn.dataset.action==='simple-delete-link'){
