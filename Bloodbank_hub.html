@@ -9950,6 +9950,7 @@ var aboCases = 0;
 var aboCorrect = 0;
 var currentABO = null;
 var aboShaken = {};
+var aboGelRead = {};
 var aboCustomCases = [];
 
 var ABO_CASES = [
@@ -10001,6 +10002,7 @@ function nextABOCase() {
   var cases = getAboCases();
   currentABO = cases[Math.floor(Math.random() * cases.length)];
   aboShaken = {};
+  aboGelRead = {};
   renderABOsim();
 }
 
@@ -10031,7 +10033,7 @@ function aboTube(id, label, result, color, bg) {
       ? '<rect x="11" y="57" width="28" height="41" fill="rgba(240,180,190,.52)"/>' + aboTubeDots(strength)
       : '<rect x="11" y="82" width="28" height="16" fill="rgba(192,23,61,.22)"/>')
     : '<rect x="11" y="74" width="28" height="24" fill="rgba(192,23,61,.18)"/>';
-  return '<button type="button" class="abo-tube-btn" onclick="shakeAboTube(\'' + id + '\')" title="Click to shake/read ' + escText(label) + '">' +
+  return '<div class="abo-tube-btn" aria-label="' + escAttr(label) + ' tube ' + (read ? escAttr(result) : 'unread') + '">' +
     '<div class="tube-wrap">' +
       '<svg class="abo-tube-svg ' + (read ? 'is-shaking' : '') + '" width="58" height="132" viewBox="0 0 50 120" xmlns="http://www.w3.org/2000/svg">' +
         '<path d="M7 13 L7 91 Q7 105 25 105 Q43 105 43 91 L43 13 Z" fill="' + (bg || 'rgba(220,235,248,.85)') + '" stroke="#9eb6c8" stroke-width="2"/>' +
@@ -10041,12 +10043,12 @@ function aboTube(id, label, result, color, bg) {
         '<rect x="4" y="6" width="42" height="9" rx="3" fill="#e6eff5" stroke="#9eb6c8" stroke-width="2"/>' +
       '</svg>' +
       '<div class="tube-lbl" style="font-size:11px;font-weight:800;color:' + color + '">' + label + '</div>' +
-      '<div class="tube-result ' + (read ? (positive ? 'pos' : 'neg') : 'abo-result-pending') + '">' + (read ? result : 'shake') + '</div>' +
+      '<div class="tube-result ' + (read ? (positive ? 'pos' : 'neg') : 'abo-result-pending') + '">' + (read ? result : 'ready') + '</div>' +
     '</div>' +
-  '</button>';
+  '</div>';
 }
 function aboGelWell(id,label,result){
-  var read=!!aboShaken[id],strength=aboStrength(result),marks='';
+  var read=!!aboGelRead[id],strength=aboStrength(result),marks='';
   if(read){
     if(strength>=4)marks='<ellipse cx="44" cy="77" rx="12" ry="5" fill="#850a2b"/>';
     else if(strength===3)marks='<ellipse cx="44" cy="84" rx="9" ry="5" fill="#850a2b"/><circle cx="36" cy="94" r="3" fill="#a91038"/><circle cx="51" cy="97" r="3" fill="#a91038"/>';
@@ -10054,7 +10056,7 @@ function aboGelWell(id,label,result){
     else if(strength===1)marks='<circle cx="39" cy="150" r="2.5" fill="#a91038"/><circle cx="49" cy="159" r="2.5" fill="#a91038"/><circle cx="43" cy="168" r="2.5" fill="#a91038"/><ellipse cx="44" cy="184" rx="6" ry="3" fill="#850a2b"/>';
     else marks='<ellipse cx="44" cy="184" rx="11" ry="5" fill="#850a2b"/><ellipse cx="44" cy="182" rx="7" ry="2" fill="#c43150"/>';
   }
-  return '<button type="button" class="abo-gel-well abo-tube-btn" onclick="shakeAboTube(\''+id+'\')" title="Read '+escAttr(label)+' gel well">' +
+  return '<button type="button" class="abo-gel-well abo-tube-btn" onclick="readAboGelWell(\''+id+'\')" title="Read '+escAttr(label)+' gel well">' +
     '<svg viewBox="0 0 88 218" role="img" aria-label="'+escAttr(label)+' gel reaction '+(read?escAttr(result):'unread')+'" xmlns="http://www.w3.org/2000/svg">' +
       '<path d="M17 11 H71 V58 L58 75 V188 Q58 199 44 204 Q30 199 30 188 V75 L17 58Z" fill="#fff" stroke="#246494" stroke-width="2.8"/>' +
       '<path d="M20 16 H68 V55 L55 72 V185 Q55 193 44 197 Q33 193 33 185 V72 L20 55Z" fill="#f7fbfe"/>' +
@@ -10067,6 +10069,10 @@ function aboGelWell(id,label,result){
 
 function shakeAboTube(id) {
   aboShaken[id] = true;
+  renderABOsim();
+}
+function readAboGelWell(id) {
+  aboGelRead[id] = true;
   renderABOsim();
 }
 
@@ -10092,6 +10098,7 @@ function renderABOsim() {
     currentABO = cases[Math.floor(Math.random() * cases.length)];
     aboCases++;
     aboShaken = {};
+    aboGelRead = {};
   }
   var cs = currentABO;
 
@@ -10111,7 +10118,7 @@ function renderABOsim() {
     ['Anti-D','fwdD',cs.fwd.antiD],['D Control','fwdControl',cs.fwd.dControl||'0'],
     ['A₁ Cells','revA1',cs.rev.a1],['B Cells','revB',cs.rev.b]
   ];
-  var aboResults='<div class="abo-results-wrap"><table class="abo-results-table" aria-label="ABO and Rh reaction results"><thead><tr>'+resultColumns.map(function(column){return '<th scope="col">'+escText(column[0])+'</th>';}).join('')+'</tr></thead><tbody><tr>'+resultColumns.map(function(column){return '<td>'+(aboShaken[column[1]]?escText(column[2]):'—')+'</td>';}).join('')+'</tr></tbody></table></div>';
+  var aboResults='<div class="abo-results-wrap"><table class="abo-results-table" aria-label="ABO and Rh reaction results"><thead><tr>'+resultColumns.map(function(column){return '<th scope="col">'+escText(column[0])+'</th>';}).join('')+'</tr></thead><tbody><tr>'+resultColumns.map(function(column){return '<td>'+(aboShaken[column[1]]||aboGelRead[column[1]]?escText(column[2]):'—')+'</td>';}).join('')+'</tr></tbody></table></div>';
 
   area.innerHTML =
     // Typing rack
@@ -10134,7 +10141,7 @@ function renderABOsim() {
     '</div></div><div class="abo-method"><h3>Gel Method</h3><div class="abo-gel-card">'+
       aboGelWell('fwdA','Anti-A',cs.fwd.antiA)+aboGelWell('fwdB','Anti-B',cs.fwd.antiB)+aboGelWell('fwdD','Anti-D',cs.fwd.antiD)+aboGelWell('fwdControl','D Ctrl',cs.fwd.dControl||'0')+aboGelWell('revA1','A1',cs.rev.a1)+aboGelWell('revB','B',cs.rev.b)+
     '</div></div></div>' + aboResults +
-    '<div class="phase-instr" style="margin-top:10px">Click each tube or gel well to read its reaction. Agglutination is graded 1+ to 4+.</div>' +
+    '<div class="phase-instr" style="margin-top:10px">Shake all tubes together, or select a gel well to read it. Agglutination is graded 1+ to 4+.</div>' +
     '</div>' +
 
     // Interpretation
@@ -10152,6 +10159,7 @@ function addAboCase() {
   aboCustomCases.push(normalizeAboCase({type:'A+', label:'Custom A Rh+', fwd:{antiA:'4+',antiB:'0',antiD:'4+'}, rev:{a1:'0',b:'3+'}, extra:[]}));
   currentABO = aboCustomCases[aboCustomCases.length - 1];
   aboShaken = {};
+  aboGelRead = {};
   scheduleXmSave();
   renderABOsim();
 }
@@ -10181,6 +10189,7 @@ function updateAboCase(index, field, value) {
   aboCustomCases[Number(index)] = normalizeAboCase(item);
   currentABO = aboCustomCases[Number(index)];
   aboShaken = {};
+  aboGelRead = {};
   scheduleXmSave();
   renderABOsim();
 }
