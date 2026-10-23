@@ -101,6 +101,9 @@ html,body{max-width:100%;overflow-x:hidden}
 #charts .card{padding:10px}
 #charts .micro-flow-editor-tray{padding:8px}
 #charts .simple-flow-preview-shell{min-height:calc(100dvh - 240px)}
+#charts .micro-flow-link-path{stroke-dasharray:none}
+#charts .micro-flow-link-label{font:700 13px Arial,sans-serif;fill:var(--deep);paint-order:stroke;stroke:#fff;stroke-width:5px;stroke-linejoin:round;pointer-events:none}
+#charts .micro-flow-link-control{min-width:110px}
 #overview .lab-layout{display:block;min-width:0}
 #overview .lab-menu{display:none}
 #overview .overview-body-map-layout{grid-template-columns:minmax(0,1fr);min-width:0}
@@ -111,6 +114,13 @@ html,body{max-width:100%;overflow-x:hidden}
 .media-tests-tab{border:1px solid rgba(26,122,94,.4);border-radius:999px;padding:9px 20px;background:#fff;color:var(--deep);font-weight:800;font-size:14px;cursor:pointer}
 .media-tests-tab.active{background:var(--green);color:#fff}
 #mediaTests[data-view="media"] .tests-card,#mediaTests[data-view="tests"] .media-card{display:none}
+#resources .micro-resource-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+#resources .micro-resource-card{padding:17px 19px;border:1px solid rgba(26,122,94,.24);border-left:4px solid var(--green);border-radius:14px;background:#fff;box-shadow:0 5px 15px rgba(14,70,55,.06)}
+#resources .micro-resource-card .micro-resource-tag{display:block;margin-bottom:8px;color:var(--green);font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.1em}
+#resources .micro-resource-card h3{color:var(--deep);font-size:18px;line-height:1.2;margin:0 0 8px}
+#resources .micro-resource-card p{color:var(--ink);font-size:14px;line-height:1.48;margin:0}
+body:not(.admin-mode) #resources .resource-edit-table{display:none}
+body.admin-mode #resources .micro-resource-grid{display:none}
 @media(max-width:900px){.site-header{flex-wrap:wrap}.nav-tabs{position:static;order:10;width:100%;max-height:none;overflow:visible;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin-top:5px}.nav-tabs .nav-tab{justify-content:center;text-align:center}.wrap{width:100%;margin:0;padding:14px 12px 45px}}
 @media print{.nav-tabs{display:none!important}.wrap{width:auto!important;max-width:none!important;margin:0!important;padding:0!important}}
 </style>
@@ -281,9 +291,10 @@ html,body{max-width:100%;overflow-x:hidden}
   </section>
 
   <section class="section" id="resources">
-    <div class="hero"><h1>Resources and Attribution</h1><p>Information in editable cells is student input from the listed microbiology references.</p></div>
+    <div class="hero"><h1>Resources and Attribution</h1><p>References for the organism tables, specimen workups, and identification pathways.</p></div>
     <div class="grid">
-      <article class="card"><div class="card-title"><h2>Resources</h2><span class="tag">List</span></div><div class="table-tools" data-tools-for="resources"></div><div class="table-slot" data-table-id="resources"></div></article>
+      <div class="micro-resource-grid" id="microResourceCards"></div>
+      <article class="card resource-edit-table"><div class="card-title"><h2>Edit resources</h2><span class="tag">References</span></div><div class="table-tools" data-tools-for="resources"></div><div class="table-slot" data-table-id="resources"></div></article>
     </div>
   </section>
 
@@ -802,7 +813,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       if(text||open)nodeNotes[key]={text:text,color:color,open:open||!!text};
     });
     var links=Array.isArray(chart.links)?chart.links.map(function(link){
-      return {id:link.id||uid('link'),from:String(link.from||''),to:String(link.to||''),label:String(link.label||'Link')};
+      return {id:link.id||uid('link'),from:String(link.from||''),to:String(link.to||''),label:String(link.label==null?'Link':link.label),fromPort:String(link.fromPort||'auto'),toPort:String(link.toPort||'auto')};
     }).filter(function(link){return link.from&&link.to&&link.from!==link.to}):[];
     return {id:chart.id||uid('simple'),title:chart.title||('Flowchart '+((index||0)+1)),root:root,note:chart.note||'',font:normalizeSimpleFont(chart.font),paths:paths,colors:Object.assign({},chart.colors||{}),nodeStyles:nodeStyles,nodeNotes:nodeNotes,links:links,organismImages:organismImages,organismStickers:organismStickers,linkedSiteWorkupId:chart.linkedSiteWorkupId||chart.siteWorkupId||''};
   }
@@ -1576,6 +1587,15 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       return '<tr>'+cells+'<td class="admin-only"><button class="mini-btn danger" data-action="delete-row" data-table="'+id+'" data-row="'+row.id+'">Delete Row</button></td></tr>';
     }).join('');
     slot.innerHTML='<div class="table-wrap"><table>'+thead+'<tbody>'+rows+'</tbody></table></div>';
+  }
+  function renderResourceCards(){
+    var box=document.getElementById('microResourceCards');
+    var table=state.tables&&state.tables.resources;
+    if(!box||!table)return;
+    box.innerHTML=table.rows.map(function(row){
+      var cells=table.columns.map(function(col){return row.cells&&row.cells[col.id]||''});
+      return '<article class="micro-resource-card"><span class="micro-resource-tag">'+escapeHtml(cells[0])+'</span><h3>'+escapeHtml(cells[1])+'</h3><p>'+escapeHtml(cells[2])+'</p></article>';
+    }).join('');
   }
   function parseFlowToken(token,isLast){
     var raw=(token||'').trim();
@@ -2871,7 +2891,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(!chart||!fromKey||!toKey||fromKey===toKey)return;
     chart.links=chart.links||[];
     if(chart.links.some(function(link){return link.from===fromKey&&link.to===toKey}))return;
-    chart.links.push({id:uid('link'),from:fromKey,to:toKey,label:'Link'});
+    chart.links.push({id:uid('link'),from:fromKey,to:toKey,label:'Link',fromPort:'auto',toPort:'auto'});
     simpleFlowSelectedLinkId=chart.links[chart.links.length-1].id;
     simpleFlowSelectedPathKey=null;
   }
@@ -2906,6 +2926,34 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     for(var i=0;i<target.points.length-1;i++)best=Math.min(best,simpleDistanceToSegment(point,target.points[i],target.points[i+1]));
     return best;
   }
+  function simplePortPoint(rect,graphRect,port){
+    var x=rect.left-graphRect.left,y=rect.top-graphRect.top;
+    if(port==='top')return {x:x+rect.width/2,y:y};
+    if(port==='left')return {x:x,y:y+rect.height/2};
+    if(port==='right')return {x:x+rect.width,y:y+rect.height/2};
+    return {x:x+rect.width/2,y:y+rect.height};
+  }
+  function simpleAutoPorts(a,b){
+    var dx=(b.left+b.width/2)-(a.left+a.width/2),dy=(b.top+b.height/2)-(a.top+a.height/2);
+    if(Math.abs(dy)>=Math.abs(dx)*.6)return dy>=0?['bottom','top']:['top','bottom'];
+    return dx>=0?['right','left']:['left','right'];
+  }
+  function simpleOrthogonalPoints(start,end,fromPort,toPort){
+    var outward={top:[0,-1],bottom:[0,1],left:[-1,0],right:[1,0]};
+    var av=outward[fromPort]||outward.bottom,bv=outward[toPort]||outward.top;
+    var gap=18;
+    var a={x:start.x+av[0]*gap,y:start.y+av[1]*gap};
+    var b={x:end.x+bv[0]*gap,y:end.y+bv[1]*gap};
+    var points=[start,a];
+    if(a.x!==b.x&&a.y!==b.y){
+      if(av[0]===0&&bv[0]===0){var midY=(a.y+b.y)/2;points.push({x:a.x,y:midY},{x:b.x,y:midY});}
+      else if(av[1]===0&&bv[1]===0){var midX=(a.x+b.x)/2;points.push({x:midX,y:a.y},{x:midX,y:b.y});}
+      else if(av[0]===0)points.push({x:a.x,y:b.y});
+      else points.push({x:b.x,y:a.y});
+    }
+    points.push(b,end);
+    return points.filter(function(point,index){return index===0||point.x!==points[index-1].x||point.y!==points[index-1].y});
+  }
   function drawSimpleFlowLinksIn(scope,chart){
     chart=normalizeSimpleChart(chart||{},0);
     var graph=(scope||document).querySelector('[data-simple-flow-graph="'+chart.id+'"],[data-simple-export-chart="'+chart.id+'"]');
@@ -2926,15 +2974,15 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       var toEl=simpleNodeElementByPath(graph,link.to);
       if(!fromEl||!toEl)return;
       var a=fromEl.getBoundingClientRect(),b=toEl.getBoundingClientRect();
-      var x1=a.left+a.width/2-graphRect.left;
-      var y1=a.bottom-graphRect.top;
-      var x2=b.left+b.width/2-graphRect.left;
-      var y2=b.top-graphRect.top;
-      var mid=y1+(y2-y1)/2;
-      var d='M '+x1.toFixed(1)+' '+y1.toFixed(1)+' C '+x1.toFixed(1)+' '+mid.toFixed(1)+', '+x2.toFixed(1)+' '+mid.toFixed(1)+', '+x2.toFixed(1)+' '+y2.toFixed(1);
+      var auto=simpleAutoPorts(a,b);
+      var fromPort=link.fromPort==='auto'?auto[0]:link.fromPort;
+      var toPort=link.toPort==='auto'?auto[1]:link.toPort;
+      var points=simpleOrthogonalPoints(simplePortPoint(a,graphRect,fromPort),simplePortPoint(b,graphRect,toPort),fromPort,toPort);
+      var d=points.map(function(point,index){return (index?' L ':'M ')+point.x.toFixed(1)+' '+point.y.toFixed(1)}).join('');
       var selected=(scope===document||!scope)&&simpleFlowSelectedLinkId===link.id;
       paths.push('<path class="micro-flow-link-path '+(selected?'selected':'')+'" d="'+d+'"/>');
-      if(scope===document||!scope)simpleFlowLinkClickTargets.push({chartId:chart.id,linkId:link.id,points:simpleConnectorPoints(x1,y1,x1,mid,x2,mid,x2,y2)});
+      if(link.label){var middle=points[Math.floor(points.length/2)];paths.push('<text class="micro-flow-link-label" x="'+middle.x.toFixed(1)+'" y="'+(middle.y-5).toFixed(1)+'" text-anchor="middle">'+escapeHtml(link.label)+'</text>');}
+      if(scope===document||!scope)simpleFlowLinkClickTargets.push({chartId:chart.id,linkId:link.id,points:points});
     });
     layer.innerHTML=paths.join('');
   }
@@ -3162,8 +3210,13 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       var from=link&&simpleNodeByPathKey(chart,link.from);
       var to=link&&simpleNodeByPathKey(chart,link.to);
       if(link&&from&&to){
+        var ports=['auto','top','left','bottom','right'];
+        var portLabels=['Automatic','1 · Top','2 · Left','3 · Bottom','4 · Right'];
         return '<div class="micro-flow-selection-panel">'+
           '<div class="micro-flow-selected-title">Current selected<strong>Line: '+escapeHtml(from.node.label)+' -> '+escapeHtml(to.node.label)+'</strong></div>'+
+          '<label class="micro-flow-control micro-flow-link-control">Label<input class="micro-flow-select" data-action="simple-link-label" data-chart="'+chart.id+'" data-link="'+link.id+'" value="'+escapeHtml(link.label)+'" placeholder="Yes / No / test"></label>'+
+          '<label class="micro-flow-control micro-flow-link-control">Leaves from<select class="micro-flow-select" data-action="simple-link-from-port" data-chart="'+chart.id+'" data-link="'+link.id+'">'+simpleOptionHtml(ports,portLabels,link.fromPort||'auto')+'</select></label>'+
+          '<label class="micro-flow-control micro-flow-link-control">Enters at<select class="micro-flow-select" data-action="simple-link-to-port" data-chart="'+chart.id+'" data-link="'+link.id+'">'+simpleOptionHtml(ports,portLabels,link.toPort||'auto')+'</select></label>'+
           '<div class="micro-flow-action-group">'+
             '<button type="button" class="micro-flow-tool-btn danger" data-action="simple-delete-link" data-chart="'+chart.id+'" data-link="'+link.id+'">Delete line</button>'+
             '<button type="button" class="micro-flow-tool-btn" data-action="simple-clear-selection" data-chart="'+chart.id+'">Cancel</button>'+
@@ -3487,7 +3540,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var box=document.getElementById('exportOptions');if(!box)return;
     box.innerHTML=EXPORT_ITEMS.map(function(item){return '<label><input type="checkbox" class="export-check" value="'+item[0]+'" checked> '+escapeHtml(item[1])+'</label>'}).join('');
   }
-  function renderAll(){Object.keys(state.tables).forEach(renderTable);renderCharts();renderBodySiteDiagram();renderSiteWorkups();renderExportOptions();document.body.classList.toggle('admin-mode',editMode)}
+  function renderAll(){Object.keys(state.tables).forEach(renderTable);renderResourceCards();renderCharts();renderBodySiteDiagram();renderSiteWorkups();renderExportOptions();document.body.classList.toggle('admin-mode',editMode)}
   function setEditMode(on){if(on&&!isAdmin){toggleAdminLogin();return}if(!on)collectVisibleState();editMode=!!on;document.body.classList.toggle('admin-mode',editMode);renderAll()}
   function hasBlockedSave(){return !!(safeDoc&&safeDoc.isBlocked&&safeDoc.isBlocked())}
   function exitAdminLocally(message,isError){clearTimeout(saveTimer);collectVisibleState();saveLocal();isAdmin=false;if(syncPresence)syncPresence.setAdminMode(false);editMode=false;document.getElementById('adminBadge').classList.remove('visible');setEditMode(false);showToast(message||'Exited Admin',!!isError)}
@@ -4020,6 +4073,20 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   });
   document.addEventListener('change',function(e){
     var input=e.target;
+    if(input.dataset.action==='simple-link-label'||input.dataset.action==='simple-link-from-port'||input.dataset.action==='simple-link-to-port'){
+      if(!isAdmin||!editMode)return;
+      var linkChart=simpleChartById(input.dataset.chart);
+      var linkRecord=linkChart&&(linkChart.links||[]).find(function(item){return item.id===input.dataset.link});
+      if(linkRecord){
+        simpleRememberBefore(linkChart);
+        if(input.dataset.action==='simple-link-label')linkRecord.label=input.value.trim();
+        if(input.dataset.action==='simple-link-from-port')linkRecord.fromPort=input.value;
+        if(input.dataset.action==='simple-link-to-port')linkRecord.toPort=input.value;
+        simpleFlowSelectedLinkId=linkRecord.id;
+        saveDraft();renderCharts();
+      }
+      return;
+    }
     if(input.dataset.action==='simple-chart-font'){
       if(!isAdmin||!editMode)return;
       var fontChart=simpleChartById(input.dataset.chart);
