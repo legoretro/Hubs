@@ -104,6 +104,16 @@ html,body{max-width:100%;overflow-x:hidden}
 #charts .micro-flow-link-path{stroke-dasharray:none}
 #charts .micro-flow-link-label{font:700 13px Arial,sans-serif;fill:var(--deep);paint-order:stroke;stroke:#fff;stroke-width:5px;stroke-linejoin:round;pointer-events:none}
 #charts .micro-flow-link-control{min-width:110px}
+.micro-flow-graph .micro-flow-branch:before,.micro-flow-graph .micro-flow-branch:after{display:none!important}
+.micro-flow-tree-path{fill:none;stroke:#1a7a5e;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;opacity:.72}
+.micro-flow-tree-stage{transition:none}
+#charts .micro-flow-canvas.manual-mode{background-color:#fff;background-image:linear-gradient(rgba(26,122,94,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(26,122,94,.06) 1px,transparent 1px);background-size:24px 24px}
+#charts .micro-flow-canvas.manual-mode .micro-flow-node{cursor:grab;touch-action:none;outline:1px dashed rgba(26,122,94,.4);outline-offset:3px}
+#charts .micro-flow-canvas.manual-mode .micro-flow-node:active{cursor:grabbing}
+#charts .micro-flow-canvas.manual-mode .micro-flow-node-text{cursor:grab}
+#charts .micro-flow-canvas.manual-mode .micro-flow-node{user-select:none}
+#charts .micro-flow-tool-btn[aria-pressed="true"]{background:var(--deep);border-color:var(--deep);color:#fff}
+@media print{#charts .micro-flow-canvas.manual-mode{background:#fff!important}}
 #overview .lab-layout{display:block;min-width:0}
 #overview .lab-menu{display:none}
 #overview .overview-body-map-layout{grid-template-columns:minmax(0,1fr);min-width:0}
@@ -348,6 +358,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   var generatedFlowZoom={};
   var simpleTreeZoom={};
   var simpleFlowSelectedPathKey=null;
+  var simpleFlowMoveMode=false;
+  var simpleFlowMoveDrag=null;
   var simpleFlowSelectedLinkId=null;
   var simpleFlowConnectFrom=null;
   var simpleFlowLinkClickTargets=[];
@@ -827,7 +839,13 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var links=Array.isArray(chart.links)?chart.links.map(function(link){
       return {id:link.id||uid('link'),from:String(link.from||''),to:String(link.to||''),label:String(link.label==null?'Link':link.label),fromPort:String(link.fromPort||'auto'),toPort:String(link.toPort||'auto')};
     }).filter(function(link){return link.from&&link.to&&link.from!==link.to}):[];
-    return {id:chart.id||uid('simple'),title:chart.title||('Flowchart '+((index||0)+1)),root:root,note:chart.note||'',font:normalizeSimpleFont(chart.font),paths:paths,colors:Object.assign({},chart.colors||{}),nodeStyles:nodeStyles,nodeNotes:nodeNotes,links:links,organismImages:organismImages,organismStickers:organismStickers,linkedSiteWorkupId:chart.linkedSiteWorkupId||chart.siteWorkupId||''};
+    var nodeOffsets={};
+    Object.keys(chart.nodeOffsets||{}).forEach(function(key){
+      var position=chart.nodeOffsets[key]||{};
+      var x=Number(position.x),y=Number(position.y);
+      if(Number.isFinite(x)&&Number.isFinite(y))nodeOffsets[key]={x:Math.round(x),y:Math.round(y)};
+    });
+    return {id:chart.id||uid('simple'),title:chart.title||('Flowchart '+((index||0)+1)),root:root,note:chart.note||'',font:normalizeSimpleFont(chart.font),paths:paths,colors:Object.assign({},chart.colors||{}),nodeStyles:nodeStyles,nodeNotes:nodeNotes,links:links,nodeOffsets:nodeOffsets,organismImages:organismImages,organismStickers:organismStickers,linkedSiteWorkupId:chart.linkedSiteWorkupId||chart.siteWorkupId||''};
   }
   function ensureSpecimenBankItem(item,index){
     item=item||{};
@@ -2261,6 +2279,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(chart.colors[oldRoot]&&!chart.colors[root])chart.colors[root]=chart.colors[oldRoot];
     simpleRewriteKeyPrefix(chart.colors,[oldRoot],[root]);
     simpleRewriteKeyPrefix(chart.nodeStyles,[oldRoot],[root]);
+    simpleRewriteKeyPrefix(chart.nodeOffsets,[oldRoot],[root]);
     simpleRewriteLinksPrefix(chart,[oldRoot],[root]);
     if(simpleFlowSelectedPathKey){
       var selectedParts=simplePathParts(simpleFlowSelectedPathKey);
@@ -2401,8 +2420,10 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       '</div>';
     }
     var isTerminal=!node.children.length;
+    var offset=(chart.nodeOffsets&&chart.nodeOffsets[pathKey])||{x:0,y:0};
+    var rowStyle=offset.x||offset.y?' style="transform:translate('+Number(offset.x||0)+'px,'+Number(offset.y||0)+'px)"':'';
     var children=node.children.length?'<div class="micro-flow-branches">'+node.children.map(function(child){return '<div class="micro-flow-branch">'+simpleTreeNodeHtml(chart,child,depth+1,options)+'</div>';}).join('')+'</div>':'';
-    return '<div class="micro-flow-node-wrap"><div class="micro-flow-node-row"><div class="micro-flow-node '+escapeHtml(cls)+'" style="'+simpleNodeStyleAttr(chart,node,depth)+'" data-simple-tree-node="1" data-simple-drop-target="1" data-chart="'+chart.id+'" data-path-key="'+escapeHtml(pathKey)+'"><div class="micro-flow-node-kind">'+escapeHtml(simpleTreeNodeKind(node,depth,chart))+'</div><div class="micro-flow-node-text"'+contentAttrs+'>'+escapeHtml(parsed.label)+'</div>'+(badges?'<div class="micro-flow-badges">'+badges+'</div>':'')+simpleTreeStickerHtml(chart,pathKey)+simpleTreeImageUploadsHtml(chart,pathKey,editable,isTerminal)+tools+'</div>'+simpleTreeNoteHtml(chart,pathKey,editable)+simpleTreeImagesHtml(chart,pathKey)+'</div>'+children+'</div>';
+    return '<div class="micro-flow-node-wrap"><div class="micro-flow-node-row" data-simple-node-row="'+escapeHtml(pathKey)+'"'+rowStyle+'><div class="micro-flow-node '+escapeHtml(cls)+'" style="'+simpleNodeStyleAttr(chart,node,depth)+'" data-simple-tree-node="1" data-simple-drop-target="1" data-chart="'+chart.id+'" data-path-key="'+escapeHtml(pathKey)+'"><div class="micro-flow-node-kind">'+escapeHtml(simpleTreeNodeKind(node,depth,chart))+'</div><div class="micro-flow-node-text"'+contentAttrs+'>'+escapeHtml(parsed.label)+'</div>'+(badges?'<div class="micro-flow-badges">'+badges+'</div>':'')+simpleTreeStickerHtml(chart,pathKey)+simpleTreeImageUploadsHtml(chart,pathKey,editable,isTerminal)+tools+'</div>'+simpleTreeNoteHtml(chart,pathKey,editable)+simpleTreeImagesHtml(chart,pathKey)+'</div>'+children+'</div>';
   }
   function simpleTreeHtml(chart,options){
     chart=normalizeSimpleChart(chart||{},0);
@@ -2418,7 +2439,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function simpleChartPreviewHtml(chart){
     var zoom=simpleTreeZoom[chart.id]||.68;
-    return '<div class="micro-flow-canvas" data-simple-tree-canvas="'+chart.id+'"><div class="micro-flow-graph" data-simple-flow-graph="'+chart.id+'"><svg class="micro-flow-link-layer" data-simple-link-layer="'+chart.id+'" aria-hidden="true"></svg><div class="micro-flow-tree-stage" data-simple-tree-stage="'+chart.id+'" style="--micro-tree-zoom:'+zoom.toFixed(2)+';--micro-flow-font-family:'+escapeHtml(simpleFontStack(chart.font))+'">'+simpleTreeHtml(chart,{editable:isAdmin&&editMode})+'</div></div></div>';
+    return '<div class="micro-flow-canvas '+(simpleFlowMoveMode&&isAdmin&&editMode?'manual-mode':'')+'" data-simple-tree-canvas="'+chart.id+'"><div class="micro-flow-graph" data-simple-flow-graph="'+chart.id+'"><svg class="micro-flow-link-layer" data-simple-link-layer="'+chart.id+'" aria-hidden="true"></svg><div class="micro-flow-tree-stage" data-simple-tree-stage="'+chart.id+'" style="--micro-tree-zoom:'+zoom.toFixed(2)+';--micro-flow-font-family:'+escapeHtml(simpleFontStack(chart.font))+'">'+simpleTreeHtml(chart,{editable:isAdmin&&editMode})+'</div></div></div>';
   }
   var simpleFlowFitTimer=null;
   function fitSimpleFlowCharts(){
@@ -2795,6 +2816,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     chart.paths=simpleDedupePaths(chart.paths);
     simpleRewriteKeyPrefix(chart.colors,prefix,newPrefix);
     simpleRewriteKeyPrefix(chart.nodeStyles,prefix,newPrefix);
+    simpleRewriteKeyPrefix(chart.nodeOffsets,prefix,newPrefix);
     simpleRewriteKeyPrefix(chart.nodeNotes,prefix,newPrefix);
     simpleRewriteLinksPrefix(chart,prefix,newPrefix);
     if(simpleFlowSelectedPathKey===pathKey)simpleFlowSelectedPathKey=simplePathKey(newPrefix);
@@ -2894,6 +2916,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(!chart.paths.length)chart.paths=[root+' > New branch'];
     if(chart.colors)delete chart.colors[pathKey];
     if(chart.nodeStyles)delete chart.nodeStyles[pathKey];
+    if(chart.nodeOffsets)delete chart.nodeOffsets[pathKey];
     if(chart.nodeNotes)delete chart.nodeNotes[pathKey];
     chart.links=(chart.links||[]).filter(function(link){
       return !simplePrefixMatches(simplePathParts(link.from),prefix)&&!simplePrefixMatches(simplePathParts(link.to),prefix);
@@ -2981,6 +3004,22 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     layer.style.height=height+'px';
     var paths=[];
     if(scope===document||!scope)simpleFlowLinkClickTargets=[];
+    function drawTreeEdges(node){
+      var fromEl=simpleNodeElementByPath(graph,simplePathKey(node.pathParts));
+      (node.children||[]).forEach(function(child){
+        var toEl=simpleNodeElementByPath(graph,simplePathKey(child.pathParts));
+        if(fromEl&&toEl){
+          var start=simplePortPoint(fromEl.getBoundingClientRect(),graphRect,'bottom');
+          var end=simplePortPoint(toEl.getBoundingClientRect(),graphRect,'top');
+          var middleY=(start.y+end.y)/2;
+          var points=Math.abs(start.x-end.x)<1?[start,end]:[start,{x:start.x,y:middleY},{x:end.x,y:middleY},end];
+          var d=points.map(function(point,index){return (index?' L ':'M ')+point.x.toFixed(1)+' '+point.y.toFixed(1)}).join('');
+          paths.push('<path class="micro-flow-tree-path" d="'+d+'"/>');
+        }
+        drawTreeEdges(child);
+      });
+    }
+    simpleTree(chart).forEach(drawTreeEdges);
     (chart.links||[]).forEach(function(link){
       var fromEl=simpleNodeElementByPath(graph,link.from);
       var toEl=simpleNodeElementByPath(graph,link.to);
@@ -3289,7 +3328,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     }).join('')+'</div>';
     var admin='<details class="simple-flow-editor"><summary>Advanced edit</summary><div class="simple-flow-admin"><label>Title<input data-simple-field="title" data-chart="'+active.id+'" value="'+escapeHtml(active.title||'')+'"></label><label>Note<textarea data-simple-field="note" data-chart="'+active.id+'">'+escapeHtml(active.note||'')+'</textarea></label>'+simpleOutlineHtml(active)+'</div></details>';
     var meta=simpleTreeNodeCount(active)+' boxes / '+((active.paths||[]).length)+' branches';
-    var tray='<div class="micro-flow-editor-tray"><div class="micro-flow-preview-head"><div class="micro-flow-title-row"><h2>'+escapeHtml(active.title||'Untitled Flowchart')+'</h2>'+(active.note?'<p>'+escapeHtml(active.note)+'</p>':'')+'<div class="micro-flow-meta">'+escapeHtml(meta)+(simpleFlowConnectFrom?' / linking: choose another box':'')+'</div></div><div class="micro-flow-toolbar"><button type="button" class="micro-flow-tool-btn" data-action="zoom-simple-tree" data-chart="'+active.id+'" data-zoom="out">Zoom out</button><span class="micro-flow-zoom-pill" data-simple-tree-zoom-label="'+active.id+'">'+Math.round((simpleTreeZoom[active.id]||.68)*100)+'%</span><button type="button" class="micro-flow-tool-btn" data-action="zoom-simple-tree" data-chart="'+active.id+'" data-zoom="in">Zoom in</button><button type="button" class="micro-flow-tool-btn" data-action="fit-simple-tree" data-chart="'+active.id+'">Fit</button><button type="button" class="micro-flow-tool-btn" data-action="page-fit-simple-tree" data-chart="'+active.id+'">Page fit</button><button type="button" class="micro-flow-tool-btn micro-flow-admin-action" data-action="simple-root-add-branch" data-chart="'+active.id+'">+ Branch</button><button type="button" class="micro-flow-tool-btn primary" data-action="export-simple-chart" data-chart="'+active.id+'">Export</button></div></div>'+simpleSelectionPanelHtml(active)+'</div>';
+    var tray='<div class="micro-flow-editor-tray"><div class="micro-flow-preview-head"><div class="micro-flow-title-row"><h2>'+escapeHtml(active.title||'Untitled Flowchart')+'</h2>'+(active.note?'<p>'+escapeHtml(active.note)+'</p>':'')+'<div class="micro-flow-meta">'+escapeHtml(meta)+(simpleFlowConnectFrom?' / linking: choose another box':'')+'</div></div><div class="micro-flow-toolbar"><button type="button" class="micro-flow-tool-btn" data-action="zoom-simple-tree" data-chart="'+active.id+'" data-zoom="out">Zoom out</button><span class="micro-flow-zoom-pill" data-simple-tree-zoom-label="'+active.id+'">'+Math.round((simpleTreeZoom[active.id]||.68)*100)+'%</span><button type="button" class="micro-flow-tool-btn" data-action="zoom-simple-tree" data-chart="'+active.id+'" data-zoom="in">Zoom in</button><button type="button" class="micro-flow-tool-btn" data-action="fit-simple-tree" data-chart="'+active.id+'">Fit</button><button type="button" class="micro-flow-tool-btn" data-action="page-fit-simple-tree" data-chart="'+active.id+'">Page fit</button><button type="button" class="micro-flow-tool-btn micro-flow-admin-action" data-action="toggle-simple-hand" data-chart="'+active.id+'" aria-pressed="'+simpleFlowMoveMode+'">✋ Move</button><button type="button" class="micro-flow-tool-btn micro-flow-admin-action" data-action="simple-auto-layout" data-chart="'+active.id+'">Auto arrange</button><button type="button" class="micro-flow-tool-btn micro-flow-admin-action" data-action="simple-root-add-branch" data-chart="'+active.id+'">+ Branch</button><button type="button" class="micro-flow-tool-btn primary" data-action="export-simple-chart" data-chart="'+active.id+'">Export</button></div></div>'+simpleSelectionPanelHtml(active)+'</div>';
     grid.innerHTML=tabs+'<div class="simple-flow-card micro-flow-builder-card" data-simple-card="'+active.id+'" style="--micro-flow-font-family:'+escapeHtml(simpleFontStack(active.font))+'">'+tray+simpleChartPreviewHtml(active)+admin+'</div>';
     scheduleSimpleFlowFit();
   }
@@ -3569,6 +3608,48 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   window.closeModal=function(){document.getElementById('adminModal').classList.remove('visible');document.getElementById('adminErr').textContent='';document.getElementById('adminPwInput').value=''};
   window.showSection=function(id){document.querySelectorAll('.section').forEach(function(sec){sec.classList.toggle('active',sec.id===id)});document.querySelectorAll('.nav-tab').forEach(function(tab){tab.classList.toggle('active',tab.dataset.section===id)});if(id==='overview')renderBodySiteDiagram();if(id==='charts')scheduleSimpleFlowFit();if(id==='bodySites')renderSiteWorkups();if(syncPresence)syncPresence.setSection(id)};
   window.addEventListener('hashchange',function(){showSection(location.hash.replace(/^#/,'')||'overview')});
+  document.addEventListener('pointerdown',function(e){
+    if(!isAdmin||!editMode||!simpleFlowMoveMode||e.button!==0)return;
+    var node=e.target.closest('.micro-flow-canvas.manual-mode [data-simple-tree-node]');
+    if(!node||e.target.closest('button,input,select,textarea'))return;
+    var chart=simpleChartById(node.dataset.chart);
+    var row=node.closest('.micro-flow-node-row');
+    var stage=node.closest('[data-simple-tree-stage]');
+    if(!chart||!row||!stage)return;
+    var pathKey=node.dataset.pathKey,offset=(chart.nodeOffsets&&chart.nodeOffsets[pathKey])||{x:0,y:0};
+    simpleFlowMoveDrag={chart:chart,pathKey:pathKey,row:row,node:node,startX:e.clientX,startY:e.clientY,baseX:Number(offset.x)||0,baseY:Number(offset.y)||0,zoom:Number(getComputedStyle(stage).zoom)||1,startRect:node.getBoundingClientRect(),before:simpleChartSnapshot(chart),moved:false};
+    e.preventDefault();
+  });
+  document.addEventListener('pointermove',function(e){
+    var drag=simpleFlowMoveDrag;if(!drag)return;
+    if(Math.abs(e.clientX-drag.startX)+Math.abs(e.clientY-drag.startY)<4&&!drag.moved)return;
+    drag.moved=true;
+    var x=Math.round((drag.baseX+(e.clientX-drag.startX)/drag.zoom)/24)*24;
+    var y=Math.round((drag.baseY+(e.clientY-drag.startY)/drag.zoom)/24)*24;
+    var targetCenter=drag.startRect.left+drag.startRect.width/2+(x-drag.baseX)*drag.zoom;
+    var targetTop=drag.startRect.top+(y-drag.baseY)*drag.zoom;
+    drag.node.closest('.micro-flow-graph').querySelectorAll('[data-simple-tree-node]').forEach(function(other){
+      if(other===drag.node)return;
+      var rect=other.getBoundingClientRect();
+      var center=rect.left+rect.width/2;
+      if(Math.abs(center-targetCenter)<10){x+=Math.round((center-targetCenter)/drag.zoom);targetCenter=center;}
+      if(Math.abs(rect.top-targetTop)<10){y+=Math.round((rect.top-targetTop)/drag.zoom);targetTop=rect.top;}
+    });
+    drag.chart.nodeOffsets=drag.chart.nodeOffsets||{};
+    drag.chart.nodeOffsets[drag.pathKey]={x:x,y:y};
+    drag.row.style.transform='translate('+x+'px,'+y+'px)';
+    drawSimpleFlowLinks(drag.chart.id);
+  });
+  function finishSimpleMove(){
+    var drag=simpleFlowMoveDrag;if(!drag)return;
+    simpleFlowMoveDrag=null;
+    if(!drag.moved)return;
+    simplePushSnapshot(drag.chart.id,drag.before);
+    simpleFlowSelectedPathKey=drag.pathKey;
+    saveDraft();renderCharts();
+  }
+  document.addEventListener('pointerup',finishSimpleMove);
+  document.addEventListener('pointercancel',finishSimpleMove);
   document.addEventListener('click',function(e){
     var mediaTab=e.target.closest('[data-media-view]');
     if(mediaTab){
@@ -3746,6 +3827,17 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         simpleDeleteTreeNode(deleteTreeChart,btn.dataset.pathKey);
         renderCharts();saveDraft();
       }
+      return;
+    }
+    if(btn.dataset.action==='toggle-simple-hand'){
+      if(!isAdmin||!editMode)return;
+      simpleFlowMoveMode=!simpleFlowMoveMode;
+      renderCharts();return;
+    }
+    if(btn.dataset.action==='simple-auto-layout'){
+      if(!isAdmin||!editMode)return;
+      var layoutChart=simpleChartById(btn.dataset.chart);
+      if(layoutChart){simpleRememberBefore(layoutChart);layoutChart.nodeOffsets={};renderCharts();saveDraft()}
       return;
     }
     if(btn.dataset.action==='select-simple-chart'){activeChartId=btn.dataset.chart;renderCharts();return}
