@@ -108,8 +108,20 @@ html,body{max-width:100%;overflow-x:hidden}
 #overview .lab-menu{display:none}
 #overview .overview-body-map-layout{grid-template-columns:minmax(0,1fr);min-width:0}
 #overview .body-map-panel,#overview .body-site-association-map{min-width:0;max-width:100%}
-#overview .body-site-association-map .body-map-image{height:87%;max-width:38%}
-#overview .body-site-lines polyline{stroke-width:1.15;opacity:.72}
+#overview .body-site-association-map{min-height:900px}
+#overview .body-map-figure.image-map{min-height:900px}
+#overview .body-site-association-map .body-map-image{width:min(44%,430px);height:auto;max-width:none;max-height:82%;top:50%}
+#overview .body-site-lines polyline{stroke-width:.23;opacity:.8}
+#overview .body-site-association-map .body-hotspot.head{top:23%}
+#overview .body-site-association-map .body-hotspot.eye{top:26%;right:40%}
+#overview .body-site-association-map .body-hotspot.throat{top:36%}
+#overview .body-site-association-map .body-hotspot.chest{top:44%}
+#overview .body-site-association-map .body-hotspot.abdomen{top:53%}
+#overview .body-site-association-map .body-hotspot.pelvis{top:56%}
+#overview .body-site-association-map .body-hotspot.genital{top:64%}
+#overview .body-site-association-map .body-hotspot.wound{top:72%;left:42%}
+.micro-body-map-page .body-site-association-map .body-map-image{width:35%;height:auto;max-width:none;max-height:88%;top:50%}
+.micro-body-map-page .body-site-lines polyline{stroke-width:.25}
 .media-tests-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}
 .media-tests-tab{border:1px solid rgba(26,122,94,.4);border-radius:999px;padding:9px 20px;background:#fff;color:var(--deep);font-weight:800;font-size:14px;cursor:pointer}
 .media-tests-tab.active{background:var(--green);color:#fff}
@@ -351,15 +363,15 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   var SIMPLE_NOTE_COLOR_NAMES=['Sticky yellow','Soft blue','Soft green','Soft lilac','Soft pink','Soft gold','Soft gray','White','Mint','Gram + lilac'];
   var SIMPLE_CHART_SITE_WORKUP_MAP={blood_cultures:'blood',csf:'csf',other_body_fluids:'sterile_fluids',respiratory_cultures:'respiratory',ear_eye_cultures:'ear_eye',urine_cultures:'urine',genital_culture:'genital',wound_cultures:'wound',stool_cultures:'stool'};
   var BODY_SITE_DIAGRAM_ITEMS=[
-    {site:'csf',label:'Brain / CSF',klass:'csf',x:'2.1%',y:'2%',w:'29.5%',line:'31,9 43,9 49,12'},
-    {site:'respiratory',label:'Respiratory',klass:'respiratory',x:'2.1%',y:'23.4%',w:'29.5%',line:'31,31 43,31 49,29'},
-    {site:'sterile_fluids',label:'Other Body Fluids',klass:'fluids',x:'2.1%',y:'44.7%',w:'29.5%',line:'31,52 43,52 50,51'},
-    {site:'stool',label:'Stool',klass:'stool',x:'2.1%',y:'64.2%',w:'29.5%',line:'31,70 43,66 50,59'},
-    {site:'wound',label:'Wound',klass:'wound',x:'2.1%',y:'84.2%',w:'29.5%',line:'31,90 39,90 43,88'},
-    {site:'ear_eye',label:'Ear / Eye',klass:'ear-eye',x:'68.4%',y:'2%',w:'29.5%',line:'69,10 58,10 53,13'},
-    {site:'blood',label:'Blood',klass:'blood',x:'68.4%',y:'24.8%',w:'29.5%',line:'69,33 58,35 52,39'},
-    {site:'urine',label:'Urine',klass:'urine',x:'68.4%',y:'50.3%',w:'29.5%',line:'69,58 59,67 52,72'},
-    {site:'genital',label:'Genital',klass:'genital',x:'68.4%',y:'74.2%',w:'29.5%',line:'69,80 59,80 51,82'}
+    {site:'csf',label:'Brain / CSF',klass:'csf',x:'2.1%',y:'2%',w:'29.5%',line:'31,9 42,9 49,24'},
+    {site:'respiratory',label:'Respiratory',klass:'respiratory',x:'2.1%',y:'23.4%',w:'29.5%',line:'31,31 42,31 49,37'},
+    {site:'sterile_fluids',label:'Other Body Fluids',klass:'fluids',x:'2.1%',y:'44.7%',w:'29.5%',line:'31,52 42,52 50,53'},
+    {site:'stool',label:'Stool',klass:'stool',x:'2.1%',y:'64.2%',w:'29.5%',line:'31,70 43,64 50,53'},
+    {site:'wound',label:'Wound',klass:'wound',x:'2.1%',y:'84.2%',w:'29.5%',line:'31,90 40,85 44,73'},
+    {site:'ear_eye',label:'Ear / Eye',klass:'ear-eye',x:'68.4%',y:'2%',w:'29.5%',line:'69,10 60,10 54,27'},
+    {site:'blood',label:'Blood',klass:'blood',x:'68.4%',y:'24.8%',w:'29.5%',line:'69,33 59,35 52,44'},
+    {site:'urine',label:'Urine',klass:'urine',x:'68.4%',y:'50.3%',w:'29.5%',line:'69,58 60,58 52,56'},
+    {site:'genital',label:'Genital',klass:'genital',x:'68.4%',y:'74.2%',w:'29.5%',line:'69,80 60,72 52,64'}
   ];
   var SIMPLE_FONT_OPTIONS=[
     {id:'georgia',label:'Georgia',stack:'Georgia,"Times New Roman",serif'},
