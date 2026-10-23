@@ -2935,6 +2935,31 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       return !simplePrefixMatches(simplePathParts(link.from),prefix)&&!simplePrefixMatches(simplePathParts(link.to),prefix);
     });
   }
+  function simpleInsertBoxOnTreeEdge(chart,childKey){
+    if(!chart||!childKey)return false;
+    var oldPrefix=simplePathParts(childKey);
+    if(oldPrefix.length<2||!simpleNodeByPathKey(chart,childKey))return false;
+    var parent=oldPrefix.slice(0,-1),label='New step',suffix=2;
+    while(simpleNodeByPathKey(chart,simplePathKey(parent.concat(label))))label='New step '+suffix++;
+    var newBox=parent.concat(label);
+    var newPrefix=newBox.concat(oldPrefix[oldPrefix.length-1]);
+    var oldEdge=(chart.treeEdges&&chart.treeEdges[childKey])||{label:'',fromPort:'auto',toPort:'auto'};
+    chart.paths=(chart.paths||[]).map(function(path){
+      var parts=simpleNormalizedParts(chart,path);
+      if(simplePrefixMatches(parts,oldPrefix))parts.splice(oldPrefix.length-1,0,label);
+      return parts.join(' > ');
+    });
+    [chart.colors,chart.nodeStyles,chart.nodeOffsets,chart.nodeNotes,chart.organismImages,chart.organismStickers,chart.treeEdges].forEach(function(map){simpleRewriteKeyPrefix(map,oldPrefix,newPrefix)});
+    simpleRewriteLinksPrefix(chart,oldPrefix,newPrefix);
+    chart.treeEdges=chart.treeEdges||{};
+    chart.treeEdges[simplePathKey(newBox)]=oldEdge;
+    chart.treeEdges[simplePathKey(newPrefix)]={label:'',fromPort:'auto',toPort:'auto'};
+    chart.colors=chart.colors||{};
+    chart.colors[simplePathKey(newBox)]=simpleDefaultColor(label,newBox.length-1);
+    simpleFlowSelectedLinkId=null;
+    simpleFlowSelectedPathKey=simplePathKey(newBox);
+    return true;
+  }
   function simpleConnectNodes(chart,fromKey,toKey){
     if(!chart||!fromKey||!toKey||fromKey===toKey)return;
     chart.links=chart.links||[];
@@ -3291,7 +3316,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
             '<label class="micro-flow-control micro-flow-link-control">Label<input class="micro-flow-select" data-action="simple-link-label" data-chart="'+chart.id+'" data-link="'+escapeHtml(simpleFlowSelectedLinkId)+'" value="'+escapeHtml(edge.label||'')+'" placeholder="Yes / No / test"></label>'+
             '<label class="micro-flow-control micro-flow-link-control">Leaves from<select class="micro-flow-select" data-action="simple-link-from-port" data-chart="'+chart.id+'" data-link="'+escapeHtml(simpleFlowSelectedLinkId)+'">'+simpleOptionHtml(treePorts,treePortLabels,edge.fromPort||'auto')+'</select></label>'+
             '<label class="micro-flow-control micro-flow-link-control">Enters at<select class="micro-flow-select" data-action="simple-link-to-port" data-chart="'+chart.id+'" data-link="'+escapeHtml(simpleFlowSelectedLinkId)+'">'+simpleOptionHtml(treePorts,treePortLabels,edge.toPort||'auto')+'</select></label>'+
-            '<div class="micro-flow-action-group"><button type="button" class="micro-flow-tool-btn" data-action="simple-clear-selection" data-chart="'+chart.id+'">Cancel</button><button type="button" class="micro-flow-tool-btn" data-action="simple-undo-chart" data-chart="'+chart.id+'" '+(history.undo.length?'':'disabled')+'>Undo</button><button type="button" class="micro-flow-tool-btn" data-action="simple-redo-chart" data-chart="'+chart.id+'" '+(history.redo.length?'':'disabled')+'>Redo</button></div></div>';
+            '<div class="micro-flow-action-group"><button type="button" class="micro-flow-tool-btn" data-action="simple-insert-tree-box" data-chart="'+chart.id+'" data-path-key="'+escapeHtml(childKey)+'">Insert box here</button><button type="button" class="micro-flow-tool-btn" data-action="simple-clear-selection" data-chart="'+chart.id+'">Cancel</button><button type="button" class="micro-flow-tool-btn" data-action="simple-undo-chart" data-chart="'+chart.id+'" '+(history.undo.length?'':'disabled')+'>Undo</button><button type="button" class="micro-flow-tool-btn" data-action="simple-redo-chart" data-chart="'+chart.id+'" '+(history.redo.length?'':'disabled')+'>Redo</button></div></div>';
         }
       }
       var link=(chart.links||[]).find(function(item){return item.id===simpleFlowSelectedLinkId});
@@ -3809,6 +3834,15 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       simpleFlowConnectFrom=null;
       document.body.classList.remove('micro-flow-connecting');
       renderCharts();return;
+    }
+    if(btn.dataset.action==='simple-insert-tree-box'){
+      if(!isAdmin||!editMode)return;
+      var insertChart=simpleChartById(btn.dataset.chart);
+      if(insertChart){
+        simpleRememberBefore(insertChart);
+        if(simpleInsertBoxOnTreeEdge(insertChart,btn.dataset.pathKey)){renderCharts();saveDraft()}
+      }
+      return;
     }
     if(btn.dataset.action==='simple-delete-link'){
       if(!isAdmin||!editMode)return;
