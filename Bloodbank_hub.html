@@ -650,9 +650,6 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 /* Cohesive reference cards and a portrait diagram workspace. */
 .bb-system-overview{grid-template-columns:minmax(180px,240px) minmax(0,1fr);gap:20px;align-items:start}.bb-system-overview .sys-card{padding:20px}.bb-system-diagram{max-width:200px;margin:12px auto}.bb-history .timeline{font-size:16px;line-height:1.65}.bb-history .tl-text,.bb-history .tl-item{font-size:16px;line-height:1.6}.bb-history .tl-year{font-size:14px}.bb-history .tl-item{margin-bottom:10px}.bb-static-antigens{display:block;width:100%;height:auto;overflow:visible}.bb-structure-hint{font-size:13px}.bb-antigen-key{font-size:16px}#rbcDiagramContainer{overflow:auto;padding:14px}#rbcDiagramContainer>.bb-static-antigens{min-width:720px;max-width:1150px;margin:auto}
 #sec-flowchart .flow-shell{max-width:1000px;margin:auto}#flowchartViewport{width:100%;height:65dvh;min-height:280px;max-height:800px;box-sizing:border-box;overflow:auto;overflow-anchor:none}#flowchartPreview{width:max-content;min-width:100%;position:relative}#flowStage{margin:0 auto}#sec-flowchart .flow-editor-tray{position:sticky;top:0;z-index:20;background:var(--cream,#fff8f5)}.flow-options[open]{max-height:230px;overflow:auto}.flow-selected-title{max-width:240px}.flow-control{font-size:13px}.flow-select{font-size:14px}#personalAntigram{max-width:1500px;margin:auto}.personal-antigram-toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}.personal-antigram-table{width:100%;border-collapse:collapse;font-size:14px}.personal-antigram-table th{background:#5a0e20;color:white;padding:9px 6px}.personal-antigram-table td{text-align:center;padding:4px;border:1px solid #efd0d8}.personal-antigram-table select{min-width:44px;padding:7px 2px;border:0;background:transparent;font:inherit;color:inherit}.personal-antigram-table th:first-child{position:sticky;left:0;z-index:2}.personal-antigram-table td:first-child{position:sticky;left:0;background:#fff8f5;font-weight:bold}.personal-antigram-table .ruled{background:#f5e4e9;color:#8c5964}.personal-antigram-table .auto-row{background:#fce8ed}.personal-antigram-table .screen-row,.personal-antigram-table .screen-row td:first-child{background:#fce3ea}.antigram-personal-note{font-size:14px;line-height:1.6}.antigram-result{padding:16px;background:#fff8f5;border:1px solid #efced7;border-radius:12px;margin-top:16px}.antigram-result h3{margin-bottom:8px}
-.bb-unit-calculator{max-width:780px}.bb-unit-calculator h2{font-size:28px}.bb-calc-inputs{gap:10px;margin:10px 0}.bb-unit-calculator label{font-size:16px}.bb-unit-calculator input,.bb-unit-calculator select{font-size:18px;padding:10px}.bb-calc-stepper{display:grid;grid-template-columns:minmax(0,1fr) 48px;gap:6px;align-items:stretch}.bb-calc-stepper-controls{display:grid;grid-template-rows:1fr 1fr;gap:4px}.bb-calc-stepper-controls button{border:1px solid var(--rose);border-radius:7px;background:#fff;color:var(--wine);font-size:23px;font-weight:900;line-height:1;cursor:pointer}.bb-antibody-rows{gap:8px}.bb-antibody-row{padding:10px}.bb-auto-frequency{font-size:16px}.bb-unit-result{padding:14px 18px;margin:10px 0;font-size:18px;line-height:1.3}.bb-unit-result>strong{font-size:42px;line-height:1.05;margin:3px 0 8px}.bb-math-steps{padding-left:26px;margin:10px 0 0}.bb-math-steps li{margin:10px 0}.bb-math-steps .bb-step-label{display:block;font-size:17px;font-weight:700}.bb-math-steps .bb-ink{display:block;color:#171319;font:700 25px/1.3 'Segoe Print','Bradley Hand','Comic Sans MS',cursive;margin:2px 0 0;overflow-wrap:anywhere}
-.bb-factor-lines{display:grid;gap:3px;margin-top:5px;font-size:17px}.bb-calc-stepper input[type=number]{appearance:textfield;-moz-appearance:textfield}.bb-calc-stepper input[type=number]::-webkit-inner-spin-button,.bb-calc-stepper input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
-.bb-system-overview{grid-template-columns:minmax(280px,390px) minmax(0,1fr)}.bb-system-diagram{max-width:none}
 @media(max-width:760px){.bb-system-overview{grid-template-columns:1fr}.bb-system-diagram{max-width:175px}.bb-history .timeline,.bb-history .tl-text,.bb-history .tl-item{font-size:16px;line-height:1.6}.bb-history .tl-year{font-size:14px}#flowchartViewport{min-height:260px;height:60dvh}.flow-editor-tray{padding:8px}.flow-options[open]{max-height:180px}}
 
 /* Antigram fits the available page; smaller screens use labeled column groups. */
@@ -668,6 +665,9 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 .rbc-membrane-dialog{margin:auto;inset:0}.rbc-glycan-legend span:nth-child(1){color:#ad903c}.rbc-glycan-legend span:nth-child(2){color:#ae6635}.rbc-glycan-legend span:nth-child(3){color:#ca3a68}.rbc-glycan-legend span:nth-child(4){color:#2c7844}
 .rbc-system-open{width:100%;border:0;background:transparent;color:var(--wine);cursor:pointer;padding:0;font:inherit;text-align:center}.rbc-system-open:hover span,.rbc-system-open:focus-visible span{text-decoration:underline}.rbc-system-open .rbc-membrane-focus{display:block;width:100%;height:auto;border:1px solid #f0d2da;border-radius:10px}.rbc-system-open strong{display:block;font-size:13px;margin-top:8px}.rbc-system-open span{display:block;font-size:12px;margin-top:3px}
 .rbc-membrane-dialog{width:min(650px,calc(100vw - 28px));max-height:min(90vh,850px);border:1px solid #efc4d0;border-radius:18px;background:#fffaf7;color:#2b1c22;box-shadow:0 18px 70px #2607115e;padding:22px;overflow:auto}.rbc-membrane-dialog::backdrop{background:#1c0b1699}.rbc-membrane-dialog form{float:right}.rbc-dialog-close{border:1px solid #e7b8c5;border-radius:50%;width:32px;height:32px;background:#fff;color:#8b1839;cursor:pointer;font-size:23px;line-height:1}.rbc-dialog-eyebrow{font:700 11px Arial,sans-serif;letter-spacing:.15em;text-transform:uppercase;color:#816772;margin:4px 42px 5px 0}.rbc-membrane-dialog h3{font:700 26px Georgia,serif;color:var(--wine);margin:0 0 14px}.rbc-variant-tabs{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 12px}.rbc-variant-tabs button{border:1px solid #e8bac6;border-radius:999px;background:#fff;padding:7px 12px;color:#6a3146;cursor:pointer;font:700 13px Arial,sans-serif}.rbc-variant-tabs button[aria-pressed="true"]{background:#c0173d;color:#fff;border-color:#c0173d}.rbc-membrane-dialog .rbc-membrane-focus{display:block;width:100%;max-height:310px;border:1px solid #e8d0d6;border-radius:10px}.rbc-variant-copy{padding:12px 14px;background:#fbeef2;border-radius:10px;margin:12px 0}.rbc-variant-copy strong{color:var(--wine);font-size:17px}.rbc-variant-copy p{margin:5px 0 0;line-height:1.5}.rbc-glycan-legend{display:flex;gap:8px 16px;flex-wrap:wrap;font-size:12px;font-weight:700}.rbc-glycan-note,.rbc-diagram-caveat{font-size:12px;color:#684b55;line-height:1.45;margin:9px 0}.rbc-source-link{display:inline-block;margin-top:4px;font-weight:700}
+.rbc-atlas-instruction{font-size:18px!important;font-weight:700;line-height:1.4;margin:4px 0 16px!important;color:var(--wine)}.rbc-sugar:hover{filter:drop-shadow(0 0 5px #c0173d)}.rbc-static-variants{display:block;margin-top:6px;color:#593943;font-size:13px;font-weight:700;line-height:1.45}.rbc-membrane-dialog .rbc-glycan-note{font-size:13px}.rbc-atlas-locus[role="button"]{cursor:pointer}
+.bb-unit-calculator{max-width:780px}.bb-unit-calculator h2{font-size:28px}.bb-calc-inputs{gap:10px;margin:10px 0}.bb-unit-calculator label{font-size:16px}.bb-unit-calculator input,.bb-unit-calculator select{font-size:18px;padding:10px}.bb-calc-stepper{display:grid;grid-template-columns:minmax(0,1fr) 48px;gap:6px;align-items:stretch}.bb-calc-stepper-controls{display:grid;grid-template-rows:1fr 1fr;gap:4px}.bb-calc-stepper-controls button{border:1px solid var(--rose);border-radius:7px;background:#fff;color:var(--wine);font-size:23px;font-weight:900;line-height:1;cursor:pointer}.bb-antibody-rows{gap:8px}.bb-antibody-row{padding:10px}.bb-auto-frequency{font-size:16px}.bb-unit-result{padding:14px 18px;margin:10px 0;font-size:18px;line-height:1.3}.bb-unit-result>strong{font-size:42px;line-height:1.05;margin:3px 0 8px}.bb-math-steps{padding-left:26px;margin:10px 0 0}.bb-math-steps li{margin:10px 0}.bb-math-steps .bb-step-label{display:block;font-size:17px;font-weight:700}.bb-math-steps .bb-ink{display:block;color:#171319;font:700 25px/1.3 'Segoe Print','Bradley Hand','Comic Sans MS',cursive;margin:2px 0 0;overflow-wrap:anywhere}
+.bb-factor-lines{display:grid;gap:3px;margin-top:5px;font-size:17px}.bb-calc-stepper input[type=number]{appearance:textfield;-moz-appearance:textfield}.bb-calc-stepper input[type=number]::-webkit-inner-spin-button,.bb-calc-stepper input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 .bb-system-overview{grid-template-columns:minmax(280px,390px) minmax(0,1fr)}.bb-system-diagram{max-width:none}
 @media(max-width:760px){.bb-system-overview{grid-template-columns:1fr}.rbc-membrane-dialog{padding:14px}.rbc-membrane-dialog h3{font-size:22px}}
 </style>
@@ -703,6 +703,28 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
 #personalAntigram .personal-antigram-table input.ag-reaction-input{appearance:none;display:block;box-sizing:border-box;min-width:0;width:100%;height:32px;padding:4px 0;border:0;border-radius:0;background:transparent;color:inherit;text-align:center;font:inherit;font-weight:700;line-height:1;outline-offset:-2px}
 #personalAntigram .personal-antigram-table input.ag-reaction-input.is-filled:not(:focus){background:#fff9e6}
 #personalAntigram .personal-antigram-table input.ag-reaction-input:focus{background:#fff4bd;box-shadow:inset 0 0 0 2px #ffcf00;outline:0}
+.abo-sim-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.chrom-system-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 14px}
+.chrom-system-tabs button{border:1px solid var(--rose);border-radius:999px;background:#fff;color:var(--wine);padding:9px 14px;font-size:14px;font-weight:800;cursor:pointer}
+.chrom-system-tabs button[aria-selected="true"]{background:var(--crimson);border-color:var(--crimson);color:#fff}
+.chrom-system-panel[hidden]{display:none}
+.xm-screen-unified{border:1px solid var(--rose);border-radius:16px;background:#fffaf7;padding:14px;margin:10px auto;max-width:1050px}
+.xm-screen-unified .xm-screen-subtabs button{font-size:16px;padding:9px 15px}
+.xm-screen-unified>.sec-label{font-size:14px;letter-spacing:.08em}
+.xm-screen-unified .xm-screen-subtabs{justify-content:flex-start;margin:0 0 10px}
+.xm-screen-unified .lab-bench,.xm-screen-unified .sys-card{border-color:var(--rose);background:#fffaf7;box-shadow:none;margin:0!important;padding:10px!important}
+.xm-screen-unified .lab-bench-label{font-size:17px}
+.xm-screen-unified .phase-instr{font-size:18px;line-height:1.35;padding:8px 10px;margin:6px 0}
+.xm-screen-unified .xm-screen-workbench{gap:10px}
+.xm-screen-unified .screen-table{width:100%;max-width:670px;margin:auto;font-size:14px}
+.xm-screen-unified .screen-table th,.xm-screen-unified .screen-table td{padding:5px 8px}
+.xm-screen-gel-card{display:flex;justify-content:center;gap:4px;border:3px solid #8da3ca;background:#edf4fa;border-radius:16px;padding:10px;max-width:550px;margin:8px auto}
+.xm-screen-gel-card .gel-slot{width:14%;min-width:52px;text-align:center;color:var(--wine);font-size:14px;font-weight:800}
+.xm-screen-gel-card .gel-slot svg{width:100%;max-width:70px;height:135px;display:block;margin:auto}
+.xm-screen-gel-card .gel-slot.unused{opacity:.42}
+.xm-gel-step{font-size:22px;font-weight:800;color:var(--wine);text-align:center;margin:4px 0 8px}
+.xm-gel-action{text-align:center;margin:10px 0}
+@media screen and (min-width:761px){#simulationShell{zoom:.88}}
 #personalAntigram .personal-antigram-table td.ag-ahg-col input.ag-reaction-input{color:#5a0e20!important;font-weight:800;min-height:32px}
 .ag-own-tools{margin:16px 0;padding:16px;border:1px solid #efc3d0;border-radius:12px;background:#fffaf7;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
 .ag-own-tools>div:first-child strong{display:block;color:#5a0e20;font-size:16px}
@@ -978,7 +1000,7 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
       <h2><span class="hero-emoji"></span> RBC Antigen Map</h2>
     </div>
     <div class="sys-card sys-card-accent" id="rbcDiagramCard">
-      <div class="sec-label" style="margin-bottom:12px">One RBC membrane · representative antigen carriers · select a system to explore its variants</div>
+      <div class="sec-label" style="margin-bottom:12px">One RBC membrane · representative antigen carriers</div>
       <div style="display:flex;justify-content:flex-end;margin-bottom:12px"><button class="btn btn-primary btn-sm" onclick="exportRbcMapPage()">Print / Save PDF</button></div>
       <div id="rbcDiagramContainer"></div>
     </div>
@@ -1094,9 +1116,20 @@ html,body{overflow:visible;height:auto}body{font-family:Arial,Helvetica,sans-ser
           <p>International Society of Blood Transfusion Working Party on Red Cell Immunogenetics. System numbers and official antigen nomenclature follow ISBT guidelines as presented in the FactsBook (2012).</p>
         </div>
         <div class="resource-card">
+          <div class="rc-tag">Membrane diagrams</div>
+          <h3>Structure and carrier references</h3>
+          <p>Original educational schematics based on these references; drawings are not to scale.</p>
+          <ul><li><a href="https://www.ncbi.nlm.nih.gov/books/NBK2261/" target="_blank" rel="noopener noreferrer">NCBI · Blood Groups and Red Cell Antigens</a></li><li><a href="https://www.ncbi.nlm.nih.gov/books/NBK2267/" target="_blank" rel="noopener noreferrer">NCBI · ABO</a> and <a href="https://www.ncbi.nlm.nih.gov/books/NBK2268/" target="_blank" rel="noopener noreferrer">Hh / FUT1 / FUT2</a></li><li><a href="https://www.ncbi.nlm.nih.gov/books/NBK453042/" target="_blank" rel="noopener noreferrer">NCBI · Lewis glycans</a></li><li><a href="https://www.isbtweb.org/resource/tableofbloodgroupsystems.html" target="_blank" rel="noopener noreferrer">ISBT · Blood group systems</a></li><li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7226767/" target="_blank" rel="noopener noreferrer">Review · RBC antigen carriers</a></li></ul>
+        </div>
+        <div class="resource-card">
           <div class="rc-tag">Clinical Standard</div>
           <h3>AABB Technical Manual (current edition)</h3>
           <p>American Association of Blood Banks. The authoritative clinical reference for blood bank practice. Always consult current edition for clinical protocols.</p>
+        </div>
+        <div class="resource-card">
+          <div class="rc-tag">Gel screen procedure</div>
+          <h3>Bio-Rad DiaClon Type + Screen instructions</h3>
+          <p>Manufacturer instructions for 0.8% reagent red cells, patient plasma or serum, 37°C incubation, and gel card centrifugation. <a href="https://commerce.bio-rad.com/webroot/web/pdf/inserts/CDG/en/B002455_50683_08.10_EN.pdf" target="_blank" rel="noopener noreferrer">Read the product insert</a>.</p>
         </div>
       </div>
     </div>
@@ -1132,6 +1165,8 @@ let xmSpinRunning = false;
 let xmSpinRunningPhase = '';
 let xmScreenSpinDone = {is:false,t37:false,wash:false,ahg:false,cc:false};
 let xmScreenMethod = 'tube';
+let xmGelStep = 0;
+let xmGelRunning = false;
 let saveTimer  = null;
 let xmSaveTimer = null;
 let xmLocalCacheTimer = null;
@@ -5211,9 +5246,8 @@ function renderRbcMapViewControls() {
 function renderRbcDiagram() {
   const container = document.getElementById('rbcDiagramContainer');
   if (!container) return;
-  container.innerHTML = '<p class="rbc-atlas-instruction">Scroll across the single membrane and select a labeled carrier. The diagram compares possible structures; it is not one person’s antigen phenotype.</p>'+
-    '<div class="rbc-membrane-scroll" tabindex="0" aria-label="Scroll across one RBC membrane">'+buildRbcMembraneAtlas()+'</div>'+
-    '<div class="rbc-atlas-sources">Structural references: '+RBC_MEMBRANE_REFERENCES.map(function(ref){return '<a href="'+escAttr(ref.url)+'" target="_blank" rel="noopener noreferrer">'+escText(ref.label)+'</a>';}).join(' · ')+'</div>';
+  container.innerHTML = '<p class="rbc-atlas-instruction">Not to scale. The + marks structures with distinct visual variants; select one to compare them.</p>'+
+    '<div class="rbc-membrane-scroll" tabindex="0" aria-label="Scroll across one RBC membrane">'+buildRbcMembraneAtlas()+'</div>';
 }
 
 function buildFullRbcSVG(options) {
@@ -7871,15 +7905,15 @@ function renderChromMap() {
   var rowH = rows.map(function(row){return row.map(function(n){return HEIGHT_BY_CHR[n]||110})});
   var CW = exportMode ? 13 : 15;
   var GAP = exportMode ? 4 : 5;
-  var STEP = exportMode ? 118 : 126;
+  var STEP = exportMode ? 118 : 170;
   var rowGap = exportMode ? 12 : 18;
   var html = exportMode ? '' : '<div style="font-size:14px;font-weight:800;color:var(--warm-grey);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;line-height:1.25">Usual suspect chromosome map</div>';
-  html += '<div style="display:flex;flex-direction:column;gap:' + rowGap + 'px;max-width:' + (exportMode ? '9.4in' : '640px') + ';margin:0 auto">';
+  html += '<div style="display:flex;flex-direction:column;gap:' + rowGap + 'px;max-width:' + (exportMode ? '9.4in' : '1000px') + ';margin:0 auto">';
 
   rows.forEach(function(rowNums, ri) {
     var rh = rowH[ri];
     var maxH = Math.max.apply(null, rh);
-    var svgW = rowNums.length * STEP + 78;
+    var svgW = rowNums.length * STEP + (exportMode ? 78 : 110);
     var svgH = maxH + 62;
     var svg = '<svg viewBox="0 0 ' + svgW + ' ' + svgH + '" xmlns="http://www.w3.org/2000/svg" style="width:100%;overflow:visible;font-family:Georgia,serif;">' +
       '<defs>' +
@@ -7909,14 +7943,14 @@ function renderChromMap() {
       svg += '<rect x="' + x2 + '" y="' + yTop + '" width="' + CW + '" height="' + h + '" rx="' + (CW / 2) + '" fill="' + fillB + '" opacity="' + op + '"/>';
       genes.forEach(function(g, gi) {
         var gy = yTop + h * (genes.length === 1 ? .42 : (.26 + gi * .46));
-        var geneFs = exportMode ? '6.2' : '8.5';
-        var hapFs = exportMode ? '5.1' : '6.4';
+        var geneFs = exportMode ? '6.2' : '13';
+        var hapFs = exportMode ? '5.1' : '10';
         var labelX = x2 + CW + (exportMode ? 10 : 13);
-        var labelW = exportMode ? 63 : 78;
-        var labelH = exportMode ? 22 : 28;
+        var labelW = exportMode ? 63 : 120;
+        var labelH = exportMode ? 22 : 34;
         var labelY = gy - labelH / 2;
-        var geneY = labelY + (exportMode ? 8 : 11);
-        var hapY = labelY + (exportMode ? 17 : 22);
+        var geneY = labelY + (exportMode ? 8 : 14);
+        var hapY = labelY + (exportMode ? 17 : 28);
         var labelText = (g.h1 || g.gene) + (g.h2 ? ' | ' + g.h2 : '');
         svg += '<line x1="' + (x1 - 8) + '" y1="' + gy + '" x2="' + (x2 + CW + 8) + '" y2="' + gy + '" stroke="' + g.color + '" stroke-width="1.6" stroke-linecap="round"/>';
         svg += '<circle cx="' + x1 + '" cy="' + gy + '" r="2.4" fill="' + g.color + '"/><circle cx="' + (x2 + CW) + '" cy="' + gy + '" r="2.4" fill="' + g.color + '"/>';
@@ -8889,6 +8923,7 @@ function nextXm() {
   xmCurrent = xmCases[idx];
   xmStep = 0; xmSelectedDonor = null; xmDonorIdx2 = null; xmMode = null;
   xmSpinDone = false; xmSpinRunning = false; xmSpinRunningPhase=''; xmScreenSpinDone={is:false,t37:false,wash:false,ahg:false,cc:false};
+  xmGelStep=0;xmGelRunning=false;
   renderXm();
 }
 
@@ -8907,7 +8942,7 @@ function startXmScreenCells() {
   };
   xmDonorIdx2 = null;
   xmStep = 1;
-  xmSpinDone = false; xmSpinRunning = false; xmSpinRunningPhase=''; xmScreenSpinDone={is:false,t37:false,wash:false,ahg:false,cc:false};xmScreenMethod='tube';
+  xmSpinDone = false; xmSpinRunning = false; xmSpinRunningPhase=''; xmScreenSpinDone={is:false,t37:false,wash:false,ahg:false,cc:false};xmScreenMethod='tube';xmGelStep=0;xmGelRunning=false;
   renderXm();
 }
 
@@ -8954,6 +8989,8 @@ function renderXm() {
     screenHTML += '<tr style="background:' + (isStar?'#d4f5e8':'#fce8ed') + '"><td colspan="2" style="font-weight:700;color:var(--wine)">Interpretation</td>' +
       '<td colspan="3" style="font-weight:700;color:' + (isStar?'var(--good)':'var(--crimson)') + '">' + (xmMode === 'screen' ? (isStar?'SCREEN NEGATIVE':'SCREEN POSITIVE') : (isStar?'COMPATIBLE':'INCOMPATIBLE')) + '</td></tr>';
   }
+
+  if(xmMode==='screen'&&xmStep>0){renderScreenLab(area,screenHTML);return;}
 
   var labArea = '';
   if (xmMode === 'screen' && xmStep >= 1 && xmStep <= 4) labArea = buildScreenTubeStep();
@@ -9053,6 +9090,65 @@ function xmHeatBlockUnit(count){
   return '<div class="xm-device xm-heatblock"><svg viewBox="0 0 160 120" role="img" aria-label="37 degree Celsius incubator or heat block with tubes"><rect x="18" y="47" width="124" height="64" rx="10" fill="#d9e5ec" stroke="#8ca7b7" stroke-width="3"/><rect x="28" y="43" width="104" height="28" rx="7" fill="#efbb59" stroke="#c79235" stroke-width="3"/>'+holes+'<rect x="47" y="86" width="65" height="16" rx="3" fill="#314958"/><text x="80" y="98" text-anchor="middle" fill="#adf5ce" font-family="Arial" font-size="12" font-weight="700">37°C</text></svg><strong>37°C Incubator / Heat Block</strong><small>Tubes incubating</small></div>';
 }
 function selectXmScreenMethod(method){if(method!=='tube'&&method!=='gel')return;xmScreenMethod=method;renderXm();}
+function advanceXmGel(){
+  if(xmMode!=='screen'||xmScreenMethod!=='gel'||xmGelRunning||xmGelStep>=4)return;
+  if(xmGelStep<2){xmGelStep++;renderXm();return;}
+  var current=xmSelectedDonor,stage=xmGelStep;
+  xmGelRunning=true;renderXm();
+  setTimeout(function(){
+    if(xmMode==='screen'&&xmSelectedDonor===current&&xmGelStep===stage){
+      xmGelRunning=false;xmGelStep++;renderXm();
+    }
+  },1200);
+}
+function xmGelScreenWell(index,active,reveal){
+  var label=active?'SC '+['I','II','III'][index]:'Unused';
+  var value=active?String(getSimResult(index,xmSelectedDonor.compat,xmSelectedDonor.reason).ahg||'0'):'0';
+  var strength=active&&reveal?aboStrength(value):0;
+  var mark='';
+  if(active&&reveal){
+    if(strength>=4)mark='<ellipse cx="44" cy="78" rx="11" ry="5" fill="#8b0a26"/>';
+    else if(strength===3)mark='<ellipse cx="44" cy="86" rx="9" ry="5" fill="#8b0a26"/><circle cx="38" cy="99" r="3" fill="#8b0a26"/>';
+    else if(strength===2)mark='<circle cx="39" cy="108" r="4" fill="#8b0a26"/><circle cx="48" cy="128" r="4" fill="#8b0a26"/><circle cx="41" cy="149" r="3" fill="#8b0a26"/>';
+    else if(strength===1)mark='<circle cx="40" cy="148" r="3" fill="#8b0a26"/><circle cx="48" cy="162" r="3" fill="#8b0a26"/><ellipse cx="44" cy="183" rx="5" ry="3" fill="#8b0a26"/>';
+    else mark='<ellipse cx="44" cy="183" rx="10" ry="5" fill="#8b0a26"/>';
+  }
+  return '<div class="gel-slot'+(active?'':' unused')+'"><svg viewBox="0 0 88 218" role="img" aria-label="'+escAttr(label)+(active?(reveal?' '+escAttr(value):' unread'):'')+'" xmlns="http://www.w3.org/2000/svg">'+
+    '<path d="M17 11 H71 V58 L58 75 V188 Q58 199 44 204 Q30 199 30 188 V75 L17 58Z" fill="#fff" stroke="#246494" stroke-width="2.8"/>'+
+    '<rect x="33" y="75" width="22" height="113" rx="10" fill="#dcecf5"/><rect x="9" y="1" width="70" height="10" rx="2" fill="#fff" stroke="#a8afb5" stroke-width="2"/>'+mark+'</svg><span>'+label+'</span>'+(active&&reveal?'<div class="abo-gel-result">'+escText(value)+'</div>':'')+'</div>';
+}
+function xmGelIncubatorUnit(){
+  return '<div class="xm-device xm-heatblock"><svg viewBox="0 0 160 120" role="img" aria-label="Gel card in 37 degree Celsius incubator"><rect x="18" y="39" width="124" height="72" rx="10" fill="#d9e5ec" stroke="#8ca7b7" stroke-width="3"/><rect x="28" y="44" width="104" height="33" rx="5" fill="#edf4fa" stroke="#829eb7" stroke-width="2"/>'+[0,1,2,3,4,5].map(function(i){return '<rect x="'+(36+i*15)+'" y="48" width="10" height="25" rx="3" fill="'+(i<3?'#dcecf5':'#f7fbfe')+'" stroke="#5c87a8"/>';}).join('')+'<rect x="47" y="86" width="65" height="16" rx="3" fill="#314958"/><text x="80" y="98" text-anchor="middle" fill="#adf5ce" font-family="Arial" font-size="12" font-weight="700">37°C</text></svg><strong>Gel card incubator · 15 min</strong><small>Three wells prepared</small></div>';
+}
+function xmGelCentrifugeUnit(running){
+  return '<div class="xm-device xm-centrifuge-unit"><svg viewBox="0 0 160 128" role="img" aria-label="Gel card loaded in card centrifuge"><path d="M17 37 Q19 11 80 9 Q141 11 143 37" fill="#d9e7f1" stroke="#849fb4" stroke-width="3"/><path d="M22 39 H138 L144 91 Q139 114 124 116 H36 Q21 114 16 91Z" fill="#c6d8e6" stroke="#7794a9" stroke-width="3"/><ellipse cx="80" cy="55" rx="55" ry="30" fill="#536d83" stroke="#e8f1f5" stroke-width="4"/><g class="xm-rotor'+(running?' is-spinning':'')+'"><rect x="39" y="43" width="82" height="24" rx="4" fill="#edf4fa" stroke="#8da3ca" stroke-width="3"/>'+[0,1,2,3,4,5].map(function(i){return '<rect x="'+(47+i*12)+'" y="47" width="8" height="16" rx="2" fill="'+(i<3?'#dcecf5':'#fff')+'" stroke="#3f7196"/>';}).join('')+'</g><rect x="54" y="97" width="52" height="9" rx="3" fill="#346da4"/><circle cx="118" cy="101" r="5" fill="'+(running?'#27a668':'#e9ae34')+'"/></svg><strong>Gel card centrifuge · 10 min</strong><small>'+(running?'Card spinning':'Card loaded')+'</small></div>';
+}
+function renderScreenLab(area,screenHTML){
+  var gel=xmScreenMethod==='gel';
+  var tabs='<div class="xm-screen-subtabs" role="tablist" aria-label="Screen method"><button class="btn btn-ghost btn-sm" type="button" role="tab" aria-selected="'+(!gel)+'" onclick="selectXmScreenMethod(\'tube\')">Tube Method</button><button class="btn btn-ghost btn-sm" type="button" role="tab" aria-selected="'+gel+'" onclick="selectXmScreenMethod(\'gel\')">Gel Method</button></div>';
+  var content='';
+  if(gel){
+    var titles=['Add 0.8% screen cells','Add patient plasma','Incubate at 37°C','Spin gel card','Read screen'];
+    var copy=['Add 50 µL of 0.8% screen RBCs to each of wells 1–3.','Add 25 µL of patient plasma to each of the same three wells.','Incubate the card at 37°C for 15 minutes.','Centrifuge the gel card for 10 minutes.','Read the three screen-cell reactions below.'];
+    var action=['Add screen RBCs','Add patient plasma','Incubate at 37°C · 15 min','Gel card centrifuge · 10 min',''][xmGelStep];
+    var wells=Array.from({length:6},function(_,i){return xmGelScreenWell(i,i<3,xmGelStep===4)}).join('');
+    var equipment=xmGelStep===2?xmGelIncubatorUnit():xmGelStep>=3?xmGelCentrifugeUnit(xmGelRunning):'';
+    var values=[0,1,2].map(function(i){return String(getSimResult(i,xmSelectedDonor.compat,xmSelectedDonor.reason).ahg||'0')});
+    var reactive=values.some(function(value){return value!==''&&value!=='0'&&value!=='NT'});
+    content='<div class="xm-gel-step">Step '+(xmGelStep+1)+' of 5 · '+titles[xmGelStep]+'</div><p class="phase-instr">'+copy[xmGelStep]+'</p><div class="xm-screen-gel-card">'+wells+'</div>'+
+      (equipment?'<div class="xm-device-row">'+equipment+'</div>':'')+
+      (action?'<div class="xm-gel-action"><button class="btn btn-primary" onclick="advanceXmGel()" '+(xmGelRunning?'disabled':'')+'>'+(xmGelRunning?'Running…':action)+'</button></div>':'')+
+      (xmGelStep===4?'<div class="sys-card"><div class="sec-label">Gel results</div><table class="screen-table" aria-label="Gel antibody screen results"><thead><tr><th>SC I</th><th>SC II</th><th>SC III</th></tr></thead><tbody><tr>'+values.map(function(value){return '<td>'+escText(value)+'</td>'}).join('')+'</tr></tbody></table><div class="xm-feedback '+(reactive?'bad':'good')+'">Screen '+(reactive?'positive':'negative')+'</div></div>':'');
+  }else{
+    content=(xmStep>=1&&xmStep<=4?buildScreenTubeStep():'')+
+      '<div class="sys-card"><div class="sec-label">Screen cell results</div><table class="screen-table" aria-label="Tube antibody screen results"><thead><tr><th>Cell</th><th>IS</th><th>37°C</th><th>AHG</th><th>CC</th></tr></thead><tbody>'+screenHTML+'</tbody></table></div>'+
+      (xmStep>=6?'<div class="xm-feedback '+(xmSelectedDonor.compat?'good':'bad')+'">Screen '+(xmSelectedDonor.compat?'negative':'positive')+'</div>':'');
+  }
+  area.innerHTML='<div class="xm-screen-unified">'+tabs+'<div class="sec-label">Selected screen cells · Patient plasma + reagent cells I, II, III</div>'+content+
+    '<div class="xm-gel-action">'+((gel?xmGelStep===4:xmStep>=6)?'<button class="btn btn-primary" onclick="nextXm()">Next Case</button>':'')+' <button class="btn btn-ghost btn-sm" onclick="resetXm2()">Reset</button></div></div>'+
+    '<div class="xm-admin-panel"><div class="sec-label">Admin: Manage Crossmatch Cases</div><div id="xmCaseEditor"></div><button class="btn btn-ghost btn-sm" onclick="addXmCase2()">+ Add Case</button><button class="btn btn-primary btn-sm" onclick="saveXmCases2()">Save Cases</button></div>';
+  if(isAdmin)renderXmEditor2();
+}
 function spinXmScreenPhase(phase){
   const expected=xmStep===1?'is':xmStep===2?'t37':xmStep===3?'wash':xmStep===4?(xmScreenSpinDone.ahg?'cc':'ahg'):'';
   if(xmMode!=='screen'||phase!==expected||xmSpinRunning||xmScreenSpinDone[phase])return;
@@ -9809,7 +9905,11 @@ function showChromDetail(n) {
   if (!data) return;
   var html = '<div style="font-size:22px;margin-bottom:4px"></div>';
   html += '<h3 style="color:var(--wine);margin-bottom:8px">' + data.title + '</h3>';
-  data.systems.forEach(function(sys) {
+  if(data.systems.length>1){
+    html += '<div class="chrom-system-tabs" role="tablist" aria-label="Blood group systems on chromosome '+n+'">'+data.systems.map(function(sys,index){return '<button type="button" role="tab" aria-selected="'+(index===0)+'" onclick="selectChromSystemTab('+index+')">'+escText(sys.name)+'</button>';}).join('')+'</div>';
+  }
+  data.systems.forEach(function(sys,index) {
+    html += '<div class="chrom-system-panel" data-chrom-system="'+index+'" '+(index?'hidden':'')+'>';
     html += '<div style="background:var(--blush);border-left:4px solid ' + sys.color + ';border-radius:var(--r-sm);padding:14px;margin-bottom:14px">';
     html += '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px">';
     html += '<div style="font-size:16px;font-weight:700;color:' + sys.color + '">' + sys.name + '</div>';
@@ -9828,9 +9928,15 @@ function showChromDetail(n) {
     });
     html += '</div>';
     html += '</div>';
+    html += '</div>';
   });
   document.getElementById('chromModalContent').innerHTML = html;
   document.getElementById('chromModal').classList.add('visible');
+}
+
+function selectChromSystemTab(index){
+  document.querySelectorAll('#chromModalContent .chrom-system-tabs [role="tab"]').forEach(function(button,i){button.setAttribute('aria-selected',String(i===index));});
+  document.querySelectorAll('#chromModalContent .chrom-system-panel').forEach(function(panel,i){panel.hidden=i!==index;});
 }
 
 // ────────────────────────────────────────────────────────────────
@@ -9964,6 +10070,11 @@ function shakeAboTube(id) {
   renderABOsim();
 }
 
+function shakeAllAboTubes() {
+  revealAllAboTubes();
+  renderABOsim();
+}
+
 function revealAllAboTubes() {
   getAboTubeIds(currentABO).forEach(function(id) { aboShaken[id] = true; });
 }
@@ -10005,7 +10116,7 @@ function renderABOsim() {
   area.innerHTML =
     // Typing rack
     '<div class="sys-card" style="padding:16px;margin-bottom:12px">' +
-    '<div class="sec-label" style="margin-bottom:10px">ABO / Rh typing</div>' +
+    '<div class="abo-sim-heading"><div class="sec-label">ABO / Rh typing</div><button type="button" class="btn btn-primary btn-sm" onclick="shakeAllAboTubes()">Shake all tubes</button></div>' +
     '<div class="abo-methods"><div class="abo-method"><h3>Tube Method</h3><div class="abo-rack-row">' +
       '<div><div class="abo-rack-title">Forward: patient RBCs + antisera</div><div class="abo-rack-group">' +
         aboTube('fwdA','Anti-A', cs.fwd.antiA, '#c0173d') +
