@@ -106,6 +106,7 @@ html,body{max-width:100%;overflow-x:hidden}
 #charts .micro-flow-link-control{min-width:110px}
 .micro-flow-graph .micro-flow-branch:before,.micro-flow-graph .micro-flow-branch:after{display:none!important}
 .micro-flow-tree-path{fill:none;stroke:#1a7a5e;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;opacity:.72}
+.micro-flow-tree-path.selected{stroke:#c47a00;stroke-width:4;opacity:1}
 .micro-flow-tree-stage{transition:none}
 #charts .micro-flow-canvas.manual-mode{background-color:#fff;background-image:linear-gradient(rgba(26,122,94,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(26,122,94,.06) 1px,transparent 1px);background-size:24px 24px}
 #charts .micro-flow-canvas.manual-mode .micro-flow-node{cursor:grab;touch-action:none;outline:1px dashed rgba(26,122,94,.4);outline-offset:3px}
@@ -839,13 +840,18 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var links=Array.isArray(chart.links)?chart.links.map(function(link){
       return {id:link.id||uid('link'),from:String(link.from||''),to:String(link.to||''),label:String(link.label==null?'Link':link.label),fromPort:String(link.fromPort||'auto'),toPort:String(link.toPort||'auto')};
     }).filter(function(link){return link.from&&link.to&&link.from!==link.to}):[];
+    var treeEdges={};
+    Object.keys(chart.treeEdges||{}).forEach(function(key){
+      var edge=chart.treeEdges[key]||{};
+      treeEdges[key]={label:String(edge.label||''),fromPort:String(edge.fromPort||'auto'),toPort:String(edge.toPort||'auto')};
+    });
     var nodeOffsets={};
     Object.keys(chart.nodeOffsets||{}).forEach(function(key){
       var position=chart.nodeOffsets[key]||{};
       var x=Number(position.x),y=Number(position.y);
       if(Number.isFinite(x)&&Number.isFinite(y))nodeOffsets[key]={x:Math.round(x),y:Math.round(y)};
     });
-    return {id:chart.id||uid('simple'),title:chart.title||('Flowchart '+((index||0)+1)),root:root,note:chart.note||'',font:normalizeSimpleFont(chart.font),paths:paths,colors:Object.assign({},chart.colors||{}),nodeStyles:nodeStyles,nodeNotes:nodeNotes,links:links,nodeOffsets:nodeOffsets,organismImages:organismImages,organismStickers:organismStickers,linkedSiteWorkupId:chart.linkedSiteWorkupId||chart.siteWorkupId||''};
+    return {id:chart.id||uid('simple'),title:chart.title||('Flowchart '+((index||0)+1)),root:root,note:chart.note||'',font:normalizeSimpleFont(chart.font),paths:paths,colors:Object.assign({},chart.colors||{}),nodeStyles:nodeStyles,nodeNotes:nodeNotes,links:links,treeEdges:treeEdges,nodeOffsets:nodeOffsets,organismImages:organismImages,organismStickers:organismStickers,linkedSiteWorkupId:chart.linkedSiteWorkupId||chart.siteWorkupId||''};
   }
   function ensureSpecimenBankItem(item,index){
     item=item||{};
@@ -2280,6 +2286,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     simpleRewriteKeyPrefix(chart.colors,[oldRoot],[root]);
     simpleRewriteKeyPrefix(chart.nodeStyles,[oldRoot],[root]);
     simpleRewriteKeyPrefix(chart.nodeOffsets,[oldRoot],[root]);
+    simpleRewriteKeyPrefix(chart.treeEdges,[oldRoot],[root]);
     simpleRewriteLinksPrefix(chart,[oldRoot],[root]);
     if(simpleFlowSelectedPathKey){
       var selectedParts=simplePathParts(simpleFlowSelectedPathKey);
@@ -2733,7 +2740,10 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function simpleEnsureSelection(chart){
     var rows=simpleFlattenTree(chart);
-    if(simpleFlowSelectedLinkId&&!(chart.links||[]).some(function(link){return link.id===simpleFlowSelectedLinkId}))simpleFlowSelectedLinkId=null;
+    if(simpleFlowSelectedLinkId){
+      var treeSelected=simpleFlowSelectedLinkId.slice(0,5)==='tree:'&&rows.some(function(row){return row.depth>0&&row.pathKey===simpleFlowSelectedLinkId.slice(5)});
+      if(!treeSelected&&!(chart.links||[]).some(function(link){return link.id===simpleFlowSelectedLinkId}))simpleFlowSelectedLinkId=null;
+    }
     if(simpleFlowSelectedLinkId)return;
     if(!simpleFlowSelectedPathKey||!rows.some(function(row){return row.pathKey===simpleFlowSelectedPathKey})){
       simpleFlowSelectedPathKey=rows[0]?rows[0].pathKey:null;
@@ -2817,6 +2827,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     simpleRewriteKeyPrefix(chart.colors,prefix,newPrefix);
     simpleRewriteKeyPrefix(chart.nodeStyles,prefix,newPrefix);
     simpleRewriteKeyPrefix(chart.nodeOffsets,prefix,newPrefix);
+    simpleRewriteKeyPrefix(chart.treeEdges,prefix,newPrefix);
     simpleRewriteKeyPrefix(chart.nodeNotes,prefix,newPrefix);
     simpleRewriteLinksPrefix(chart,prefix,newPrefix);
     if(simpleFlowSelectedPathKey===pathKey)simpleFlowSelectedPathKey=simplePathKey(newPrefix);
@@ -2917,6 +2928,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(chart.colors)delete chart.colors[pathKey];
     if(chart.nodeStyles)delete chart.nodeStyles[pathKey];
     if(chart.nodeOffsets)delete chart.nodeOffsets[pathKey];
+    if(chart.treeEdges)Object.keys(chart.treeEdges).forEach(function(key){if(simplePrefixMatches(simplePathParts(key),prefix))delete chart.treeEdges[key]});
     if(chart.nodeNotes)delete chart.nodeNotes[pathKey];
     chart.links=(chart.links||[]).filter(function(link){
       return !simplePrefixMatches(simplePathParts(link.from),prefix)&&!simplePrefixMatches(simplePathParts(link.to),prefix);
@@ -3007,14 +3019,21 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     function drawTreeEdges(node){
       var fromEl=simpleNodeElementByPath(graph,simplePathKey(node.pathParts));
       (node.children||[]).forEach(function(child){
-        var toEl=simpleNodeElementByPath(graph,simplePathKey(child.pathParts));
+        var childKey=simplePathKey(child.pathParts);
+        var toEl=simpleNodeElementByPath(graph,childKey);
         if(fromEl&&toEl){
-          var start=simplePortPoint(fromEl.getBoundingClientRect(),graphRect,'bottom');
-          var end=simplePortPoint(toEl.getBoundingClientRect(),graphRect,'top');
+          var edge=(chart.treeEdges&&chart.treeEdges[childKey])||{};
+          var fromPort=edge.fromPort&&edge.fromPort!=='auto'?edge.fromPort:'bottom';
+          var toPort=edge.toPort&&edge.toPort!=='auto'?edge.toPort:'top';
+          var start=simplePortPoint(fromEl.getBoundingClientRect(),graphRect,fromPort);
+          var end=simplePortPoint(toEl.getBoundingClientRect(),graphRect,toPort);
           var middleY=(start.y+end.y)/2;
-          var points=Math.abs(start.x-end.x)<1?[start,end]:[start,{x:start.x,y:middleY},{x:end.x,y:middleY},end];
+          var points=fromPort==='bottom'&&toPort==='top'?(Math.abs(start.x-end.x)<1?[start,end]:[start,{x:start.x,y:middleY},{x:end.x,y:middleY},end]):simpleOrthogonalPoints(start,end,fromPort,toPort);
           var d=points.map(function(point,index){return (index?' L ':'M ')+point.x.toFixed(1)+' '+point.y.toFixed(1)}).join('');
-          paths.push('<path class="micro-flow-tree-path" d="'+d+'"/>');
+          var selected=(scope===document||!scope)&&simpleFlowSelectedLinkId==='tree:'+childKey;
+          paths.push('<path class="micro-flow-tree-path'+(selected?' selected':'')+'" d="'+d+'"/>');
+          if(edge.label){var labelPoint=points[Math.floor(points.length/2)];paths.push('<text class="micro-flow-link-label" x="'+labelPoint.x.toFixed(1)+'" y="'+(labelPoint.y-5).toFixed(1)+'" text-anchor="middle">'+escapeHtml(edge.label)+'</text>');}
+          if(scope===document||!scope)simpleFlowLinkClickTargets.push({chartId:chart.id,linkId:'tree:'+childKey,points:points});
         }
         drawTreeEdges(child);
       });
@@ -3257,6 +3276,23 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     simpleEnsureSelection(chart);
     var history=simpleHistoryFor(chart.id);
     if(simpleFlowSelectedLinkId){
+      if(simpleFlowSelectedLinkId.slice(0,5)==='tree:'){
+        var childKey=simpleFlowSelectedLinkId.slice(5);
+        var child=simpleNodeByPathKey(chart,childKey);
+        if(child&&child.depth>0){
+          var parentKey=simplePathKey(simplePathParts(childKey).slice(0,-1));
+          var parent=simpleNodeByPathKey(chart,parentKey);
+          var edge=(chart.treeEdges&&chart.treeEdges[childKey])||{};
+          var treePorts=['auto','top','left','bottom','right'];
+          var treePortLabels=['Automatic','1 · Top','2 · Left','3 · Bottom','4 · Right'];
+          return '<div class="micro-flow-selection-panel">'+
+            '<div class="micro-flow-selected-title">Current selected<strong>Line: '+escapeHtml(parent?parent.node.label:'Box')+' -> '+escapeHtml(child.node.label)+'</strong></div>'+
+            '<label class="micro-flow-control micro-flow-link-control">Label<input class="micro-flow-select" data-action="simple-link-label" data-chart="'+chart.id+'" data-link="'+escapeHtml(simpleFlowSelectedLinkId)+'" value="'+escapeHtml(edge.label||'')+'" placeholder="Yes / No / test"></label>'+
+            '<label class="micro-flow-control micro-flow-link-control">Leaves from<select class="micro-flow-select" data-action="simple-link-from-port" data-chart="'+chart.id+'" data-link="'+escapeHtml(simpleFlowSelectedLinkId)+'">'+simpleOptionHtml(treePorts,treePortLabels,edge.fromPort||'auto')+'</select></label>'+
+            '<label class="micro-flow-control micro-flow-link-control">Enters at<select class="micro-flow-select" data-action="simple-link-to-port" data-chart="'+chart.id+'" data-link="'+escapeHtml(simpleFlowSelectedLinkId)+'">'+simpleOptionHtml(treePorts,treePortLabels,edge.toPort||'auto')+'</select></label>'+
+            '<div class="micro-flow-action-group"><button type="button" class="micro-flow-tool-btn" data-action="simple-clear-selection" data-chart="'+chart.id+'">Cancel</button><button type="button" class="micro-flow-tool-btn" data-action="simple-undo-chart" data-chart="'+chart.id+'" '+(history.undo.length?'':'disabled')+'>Undo</button><button type="button" class="micro-flow-tool-btn" data-action="simple-redo-chart" data-chart="'+chart.id+'" '+(history.redo.length?'':'disabled')+'>Redo</button></div></div>';
+        }
+      }
       var link=(chart.links||[]).find(function(item){return item.id===simpleFlowSelectedLinkId});
       var from=link&&simpleNodeByPathKey(chart,link.from);
       var to=link&&simpleNodeByPathKey(chart,link.to);
@@ -4180,6 +4216,19 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(input.dataset.action==='simple-link-label'||input.dataset.action==='simple-link-from-port'||input.dataset.action==='simple-link-to-port'){
       if(!isAdmin||!editMode)return;
       var linkChart=simpleChartById(input.dataset.chart);
+      if(linkChart&&input.dataset.link.slice(0,5)==='tree:'){
+        var edgeKey=input.dataset.link.slice(5);
+        if(!simpleNodeByPathKey(linkChart,edgeKey))return;
+        simpleRememberBefore(linkChart);
+        linkChart.treeEdges=linkChart.treeEdges||{};
+        var treeEdge=linkChart.treeEdges[edgeKey]||{label:'',fromPort:'auto',toPort:'auto'};
+        if(input.dataset.action==='simple-link-label')treeEdge.label=input.value.trim();
+        if(input.dataset.action==='simple-link-from-port')treeEdge.fromPort=input.value;
+        if(input.dataset.action==='simple-link-to-port')treeEdge.toPort=input.value;
+        linkChart.treeEdges[edgeKey]=treeEdge;
+        simpleFlowSelectedLinkId='tree:'+edgeKey;
+        saveDraft();renderCharts();return;
+      }
       var linkRecord=linkChart&&(linkChart.links||[]).find(function(item){return item.id===input.dataset.link});
       if(linkRecord){
         simpleRememberBefore(linkChart);
