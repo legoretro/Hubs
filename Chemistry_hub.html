@@ -45,6 +45,12 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
 @media print{body.printing{background:#fff!important}body.printing .site-header,body.printing .wrap,body.printing .modal-overlay,body.printing .save-indicator{display:none!important}body.printing #printArea{display:block!important}.print-page{width:11in;height:8.5in;overflow:hidden;background:#fff;color:#0b3558;padding:.25in}.print-page h1{font-size:17pt;line-height:1;margin-bottom:.08in;color:#0b3558}.print-page .flowchart{border:0!important;padding:.03in!important;overflow:hidden!important;display:flex;justify-content:center;align-items:flex-start;max-height:none!important}.print-page .flow-root{zoom:var(--chem-print-scale,.58)!important;transform:none!important;transform-origin:top center;min-width:max-content;gap:.07in}.print-page .flow-branch{gap:.045in}.print-page .flow-children{gap:.08in!important;padding-top:.12in!important}.print-page .flow-children:before{border-top-color:#0b3558!important;border-top-width:1.5px!important;width:calc(100% - 1.05in)!important}.print-page .flow-children>.flow-branch:before{top:-.12in!important;height:.12in!important;border-left-color:#0b3558!important;border-left-width:1.5px!important}.print-page .flow-node{box-shadow:none!important;background:#fff!important;min-width:.95in!important;max-width:1.55in!important;border-width:1.5px!important;border-left-width:4px!important;border-radius:.08in!important;font-size:7.5pt!important;line-height:1.05!important;padding:.035in .055in!important}.print-page .flow-node.organ{font-size:8pt!important}.print-page .flow-node-note{font-size:6pt!important;margin-top:.025in!important}.print-page .flow-node-image{width:.42in!important;height:.42in!important;margin-top:.035in!important;border-radius:.05in!important}.print-page .flow-node.has-image{display:grid!important;grid-template-columns:minmax(0,1fr) .4in!important;gap:.015in .04in!important;text-align:left!important}.print-page .flow-node.has-image .flow-node-image{grid-column:2!important;grid-row:1/span 2!important;width:.4in!important;height:.4in!important;margin:0!important}.print-page .flow-link-layer path{stroke-width:1.1!important}.print-page .flow-link-layer text{font-size:6pt!important;stroke-width:2.6px!important}}
 @media print{body.chem-resources-printing #printArea .resource-print-page{width:11in;height:8.5in;padding:.22in;color:var(--ink);background:#fff}body.chem-resources-printing.chem-resource-export-portrait #printArea .resource-print-page{width:8.5in;height:11in;padding:.2in}body.chem-resources-printing #printArea .resource-print-inner{zoom:var(--chem-resource-print-scale,1)}body.chem-resources-printing #printArea .resource-print-table th{font-size:7.4pt;padding:.045in .055in}body.chem-resources-printing #printArea .resource-print-table td{font-size:8pt;line-height:1.12;padding:.045in .055in}body.chem-resources-printing.chem-resource-export-portrait #printArea .resource-print-table th{font-size:6.8pt}body.chem-resources-printing.chem-resource-export-portrait #printArea .resource-print-table td{font-size:7pt;line-height:1.08}.hub-pdf-modal{display:none!important}}
 @media(max-width:760px){.site-header{align-items:flex-start}.nav-tabs{width:100%}.hormone-admin,.flow-admin{grid-template-columns:1fr}.flowchart{padding:12px}.flow-children{gap:10px}}
+
+/* Flowcharts follows the Blood Bank editor's diagram bar, tool tray and scrolling canvas. */
+#sec-flowcharts.active{max-width:none}.chem-flow-diagrams{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 7px;padding:8px;border:1px solid var(--line);border-radius:14px;background:#fff;color:var(--deep);font-size:12px;font-weight:900}.chem-flow-diagrams select{min-width:180px;max-width:100%;padding:7px 10px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--deep)}.chem-flow-diagrams #chemChartCount{color:var(--muted);margin-right:auto}.chem-chart-tabs{display:none}.chem-flow-builder-card{padding:8px;margin:0}.chem-flow-editor-tray{position:relative;top:auto;padding:7px;margin:0 0 7px}.chem-flow-preview-head{margin-bottom:4px}.chem-flow-toolbar{gap:5px}.chem-flow-tool-btn{padding:6px 9px}.chem-flow-canvas{height:80dvh;min-height:520px;max-height:none;padding:12px}.chem-flow-selection-panel{margin:5px 0 0}
+.cobas-card{margin-bottom:18px;padding:16px;border:1px solid var(--line);border-top:5px solid var(--blue);border-radius:16px;background:#fff;box-shadow:var(--shadow)}.cobas-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px}.cobas-head h2{font-size:23px;color:var(--deep)}.cobas-head p,.cobas-note{font-size:12px;line-height:1.5;color:var(--muted)}.cobas-note{margin-top:10px}.cobas-sample{width:min(520px,100%);margin:0 auto;padding:13px 18px;border:2px solid var(--deep);border-radius:10px;background:var(--pale);color:var(--deep);font-size:16px;font-weight:900;text-align:center;box-shadow:inset 0 0 0 5px #fff}.cobas-branches{display:block;width:100%;height:54px;color:var(--blue)}.cobas-branches path{fill:none;stroke:currentColor;stroke-width:2;vector-effect:non-scaling-stroke}.cobas-branches .branch-mobile{display:none}.cobas-swipe{display:none}.cobas-lines{display:grid;grid-template-columns:1fr 1fr;gap:14px}.cobas-line{min-width:0;border:1px solid var(--line);border-radius:12px;background:var(--ice);padding:12px}.cobas-line h3{text-align:center;color:var(--deep);font-size:18px;margin-bottom:10px}.cobas-modules{display:grid;grid-template-columns:repeat(var(--modules),minmax(0,1fr));gap:7px}.cobas-module{min-width:0}.cobas-machine{min-height:72px;display:flex;align-items:center;justify-content:center;position:relative;border:2px solid var(--deep);border-radius:8px;background:linear-gradient(180deg,#fff,var(--sky));color:var(--deep);font-size:14px;font-weight:900;text-align:center;padding:7px 4px;box-shadow:inset 0 7px 0 rgba(31,116,168,.12)}.cobas-machine::after{content:"";position:absolute;left:25%;right:25%;bottom:-6px;height:5px;border:1px solid var(--deep);border-radius:0 0 4px 4px;background:var(--sky)}.cobas-machine svg{position:absolute;top:9px;right:7px;width:23px;height:12px;opacity:.4}.cobas-test-list{margin-top:12px;padding:9px 7px;border:1px solid var(--line);border-radius:8px;background:#fff;min-height:95px}.cobas-test-list small{display:block;color:var(--muted);font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}.cobas-edit{white-space:pre-line;overflow-wrap:anywhere;font-size:12px;line-height:1.4;color:var(--ink);min-height:1em}.admin-mode .cobas-edit{border:1px dashed var(--blue);border-radius:5px;padding:3px;cursor:text}.cobas-edit:focus{outline:2px solid var(--gold);background:#fff}.cobas-section-title{margin:0 0 12px;color:var(--deep);font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}
+@media(max-width:1000px){.cobas-lines{grid-template-columns:1fr}.cobas-branches{height:35px}}
+@media(max-width:760px){.cobas-branches .branch-desktop{display:none}.cobas-branches .branch-mobile{display:block}.cobas-swipe{display:block;color:var(--muted);font-size:11px;margin:0 0 8px;text-align:center}.cobas-card{padding:11px}.cobas-branches{height:35px}.cobas-lines{grid-template-columns:1fr}.cobas-line{overflow-x:auto}.cobas-modules{min-width:610px}.cobas-line[data-line="cobas4"] .cobas-modules{min-width:470px}.chem-flow-canvas{height:76dvh;min-height:420px}.chem-flow-diagrams select{flex:1;min-width:130px}.chem-flow-diagrams #chemChartCount{margin-right:0}}
 </style>
 </head>
 <body class="intro-active">
@@ -67,7 +73,7 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
   <span class="admin-pill" id="adminBadge">Admin</span>
   <nav class="nav-tabs" aria-label="Clinical Chemistry sections">
     <button type="button" class="nav-tab active" data-section="general">General</button>
-    <button type="button" class="nav-tab" data-section="flowcharts">Hormone Flowcharts</button>
+    <button type="button" class="nav-tab" data-section="flowcharts">Flowcharts</button>
     <button type="button" class="nav-tab" data-section="tables">Tables</button>
     <button type="button" class="nav-tab" data-section="simulation">Simulation</button>
     <button type="button" class="nav-tab" data-section="resources">Resources</button>
@@ -79,7 +85,7 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
 <div class="modal-overlay" id="adminModal">
   <div class="modal-box">
     <h3>Admin Login</h3>
-    <p>Unlock editing for Chemistry flowcharts and hormone map.</p>
+    <p>Unlock editing for Chemistry flowcharts and the cobas schematic.</p>
     <input class="modal-input" type="password" id="adminPwInput" placeholder="password" autocomplete="off" maxlength="30">
     <div class="modal-error" id="adminErr"></div>
     <div style="display:flex;gap:8px;justify-content:center">
@@ -91,14 +97,13 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
 
 <main class="wrap">
   <section class="section active" id="sec-general">
-    <div class="hero"><h1>Clinical Chemistry</h1><p>A blue CC workspace for hormone feedback flowcharts, tables, and study organization.</p></div>
+    <div class="hero"><h1>Clinical Chemistry</h1><p>A blue CC workspace for flowcharts, tables, and study organization.</p></div>
     <div class="panel coming-soon"><div><strong>Coming Soon</strong><span>General chemistry notes will live here after the core flowchart tools are stable.</span></div></div>
   </section>
   <section class="section" id="sec-flowcharts">
-    <div class="hero"><h1>Hormone Flowcharts</h1><p>Start with the stimulus or gland, then branch through release, target, effect, and feedback.</p></div>
-    <div class="flow-toolbar admin-only">
-      <button type="button" class="mini-btn" data-action="add-chart">Add Hormone Flowchart</button>
-    </div>
+    <div class="hero"><h1>Flowcharts</h1><p>Build your own diagrams and edit the cobas 8000 example below.</p></div>
+    <div id="cobasSchematic"></div>
+    <div class="chem-flow-diagrams"><label for="chemChartSelect">Diagram</label><select id="chemChartSelect" data-action="select-chart-menu"></select><span id="chemChartCount"></span><button type="button" class="mini-btn admin-only" data-action="add-chart">+ New diagram</button><button type="button" class="mini-btn admin-only" data-action="duplicate-chart">Duplicate chart</button><button type="button" class="mini-btn admin-only" data-action="save-chart">Save diagram</button></div>
     <div id="flowcharts"></div>
   </section>
   <section class="section" id="sec-tables">
@@ -406,77 +411,10 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       return Object.keys(row.cells||{}).some(function(key){return plainCellText(row.cells[key]);});
     });
   }
-  function starterHormoneFlowcharts(){
-    return [
-      {id:'gonadal-axis',title:'Gonadal',organ:'Hypothalamus',note:'GnRH drives FSH/LH; gonadal steroids and inhibin can be added as feedback lines when needed.',nodeMeta:{},paths:[
-        'Hypothalamus > GnRH (peptide) > Anterior pituitary > Gonadotroph cell > FSH (glycoprotein) > Ovary: follicle cells > Estrogen / estradiol (steroid)',
-        'Hypothalamus > GnRH (peptide) > Anterior pituitary > Gonadotroph cell > FSH (glycoprotein) > Testes: Sertoli cells > Inhibin (peptide)',
-        'Hypothalamus > GnRH (peptide) > Anterior pituitary > Gonadotroph cell > LH (glycoprotein) > Ovary: corpus luteum > Progesterone (steroid)',
-        'Hypothalamus > GnRH (peptide) > Anterior pituitary > Gonadotroph cell > LH (glycoprotein) > Testes: Leydig cells > Testosterone (steroid)'
-      ],links:[]},
-      {id:'thyroid-axis',title:'Thyroid',organ:'Hypothalamus',note:'TRH stimulates thyrotroph cells; TSH stimulates thyroid follicular cells; T3/T4 feedback can be added as an inhibit line.',nodeMeta:{},paths:[
-        'Hypothalamus > TRH (peptide) > Anterior pituitary > Thyrotroph cell > TSH (glycoprotein) > Thyroid follicular cells > T3/T4 (amine) > Target tissues'
-      ],links:[]},
-      {id:'adrenal-cortisol-axis',title:'Adrenal Cortisol',organ:'Hypothalamus',note:'CRH stimulates corticotroph cells; ACTH stimulates zona fasciculata; cortisol feedback can be added as an inhibit line.',nodeMeta:{},paths:[
-        'Hypothalamus > CRH (peptide) > Anterior pituitary > Corticotroph cell > ACTH (peptide) > Adrenal glands > Zona fasciculata > Cortisol (steroid) > Target tissues'
-      ],links:[]},
-      {id:'growth-hormone-axis',title:'Growth Hormone',organ:'Hypothalamus',note:'GHRH stimulates GH release; somatostatin inhibits GH release.',nodeMeta:{},paths:[
-        'Hypothalamus > GHRH (peptide) > Anterior pituitary > Somatotroph cell > Growth hormone / GH (peptide) > Liver > IGF-1 (peptide) > Bone and tissue growth',
-        'Hypothalamus > Somatostatin (peptide) > Anterior pituitary > Somatotroph cell > Growth hormone / GH (peptide)'
-      ],links:[]},
-      {id:'prolactin-axis',title:'Prolactin',organ:'Hypothalamus',note:'Dopamine inhibits lactotroph PRL; TRH can stimulate PRL; PRL targets breast/lactation.',nodeMeta:{},paths:[
-        'Hypothalamus > Dopamine (amine) > Anterior pituitary > Lactotroph cell > Prolactin / PRL (peptide) > Breast > Lactation',
-        'Hypothalamus > TRH (peptide) > Anterior pituitary > Lactotroph cell > Prolactin / PRL (peptide) > Breast > Lactation'
-      ],links:[]},
-      {id:'adh-axis',title:'AVP / ADH',organ:'Osmoreceptors and vascular baroreceptors',note:'Posterior pituitary pathway to AVP/ADH release and kidney water retention.',nodeMeta:{
-        'Osmoreceptors and vascular baroreceptors > Posterior pituitary':{note:'Via hypothalamus nerve impulses',color:'#1f74a8'},
-        'Decreased blood pressure or blood volume > Posterior pituitary':{note:'Via hypothalamus nerve impulses',color:'#1f74a8'}
-      },paths:[
-        'Osmoreceptors and vascular baroreceptors > Posterior pituitary > AVP / ADH / vasopressin (peptide) > Kidneys > Water reabsorption',
-        'Decreased blood pressure or blood volume > Posterior pituitary > AVP / ADH / vasopressin (peptide) > Kidneys > Water reabsorption'
-      ],links:[]},
-      {id:'oxytocin-axis',title:'Oxytocin',organ:'Uterine contractions propagate',note:'Uterine contraction and suckling stimuli trigger posterior pituitary oxytocin release.',nodeMeta:{
-        'Uterine contractions propagate > Posterior pituitary':{note:'Via hypothalamus nerve impulses',color:'#1f74a8'},
-        'Suckling stimulus > Posterior pituitary':{note:'Via hypothalamus nerve impulses',color:'#1f74a8'}
-      },paths:[
-        'Uterine contractions propagate > Posterior pituitary > Oxytocin (peptide) > Uterus > More uterine contractions',
-        'Suckling stimulus > Posterior pituitary > Oxytocin (peptide) > Breast > Milk letdown'
-      ],links:[]},
-      {id:'raas-aldosterone-axis',title:'RAAS / Aldosterone',organ:'Low blood pressure or low blood volume',note:'Low pressure/volume triggers renin, angiotensin II, zona glomerulosa aldosterone, then kidney retention.',nodeMeta:{},paths:[
-        'Low blood pressure or low blood volume > Kidneys > Renin (peptide) > Angiotensinogen > Angiotensin I > ACE: lungs and vascular endothelium > Angiotensin II > Adrenal glands > Zona glomerulosa > Aldosterone (steroid) > Kidneys > Sodium and water retention',
-        'Low blood pressure or low blood volume > Kidneys > Renin (peptide) > Angiotensinogen > Angiotensin I > ACE: lungs and vascular endothelium > Angiotensin II > Direct effector: vasoconstriction'
-      ],links:[]},
-      {id:'adrenal-androgens-axis',title:'Adrenal Androgens',organ:'Hypothalamus',note:'ACTH also stimulates zona reticularis DHEA/androgens; the PDF lists testosterone contribution by sex.',nodeMeta:{},paths:[
-        'Hypothalamus > CRH (peptide) > Anterior pituitary > Corticotroph cell > ACTH (peptide) > Adrenal glands > Zona reticularis > DHEA / androgens (steroid) > Testosterone contribution',
-        'Hypothalamus > CRH (peptide) > Anterior pituitary > Corticotroph cell > ACTH (peptide) > Adrenal glands > Zona reticularis > DHEA / androgens (steroid) > Testosterone: <5% men',
-        'Hypothalamus > CRH (peptide) > Anterior pituitary > Corticotroph cell > ACTH (peptide) > Adrenal glands > Zona reticularis > DHEA / androgens (steroid) > Testosterone: 40-65% women'
-      ],links:[]}
-    ];
-  }
-  function starterHormoneChartIds(){return starterHormoneFlowcharts().map(function(chart){return chart.id})}
-  function mergeStarterHormoneCharts(incoming){
-    var starters=starterHormoneFlowcharts();
-    var starterMap={};
-    starters.forEach(function(chart){starterMap[chart.id]=chart});
-    var incomingCharts=Array.isArray(incoming&&incoming.charts)?incoming.charts:[];
-    if(!incomingCharts.length){
-      if(incoming&&incoming.charts&&incoming.starter!==defaultState().starter)needsStarterSync=true;
-      return starters;
-    }
-    if((incoming&&incoming.starter)!==defaultState().starter){
-      needsStarterSync=true;
-      var custom=incomingCharts.filter(function(chart){return !starterMap[chart&&chart.id]});
-      return starters.concat(custom);
-    }
-    var byId={},customCharts=[];
-    incomingCharts.forEach(function(chart){
-      if(chart&&starterMap[chart.id]&&!byId[chart.id])byId[chart.id]=chart;
-      else customCharts.push(chart);
-    });
-    starters.forEach(function(chart){if(!byId[chart.id])needsStarterSync=true});
-    return starters.map(function(chart){return byId[chart.id]||chart}).concat(customCharts);
-  }
-  function defaultState(){return{version:11,starter:'hormone-flowcharts-v6',updatedAt:Date.now(),charts:starterHormoneFlowcharts(),hormones:[],resourceTables:starterResourceTables()}}
+  var OLD_HORMONE_IDS=['gonadal-axis','thyroid-axis','adrenal-cortisol-axis','growth-hormone-axis','prolactin-axis','adh-axis','oxytocin-axis','raas-aldosterone-axis','adrenal-androgens-axis'];
+  function defaultSchematic(){return {sample:'cobas 8000 Sample Handling',cobas2:[{name:'ISE',tests:'Sodium (Na)\nPotassium (K)\nChloride (Cl)'},{name:'c 702 C1',tests:'Glucose\nBUN\nCreatinine'},{name:'c 702 C2',tests:'Amylase\nLipase\nCholesterol'},{name:'e 801',tests:'TSH\nFree T4\nhCG'}],cobas4:[{name:'ISE',tests:'Sodium (Na)\nPotassium (K)\nChloride (Cl)'},{name:'c 702',tests:'Glucose\nBUN\nCreatinine'},{name:'e 801',tests:'TSH\nFree T4\nhCG'}]}}
+  function normalizeSchematic(value){var base=defaultSchematic();if(!value||typeof value!=='object')return base;var out={sample:String(value.sample||base.sample).slice(0,100)};['cobas2','cobas4'].forEach(function(line){out[line]=base[line].map(function(item,i){var incoming=Array.isArray(value[line])?value[line][i]:null;return{name:String(incoming&&incoming.name||item.name).slice(0,60),tests:String(incoming&&incoming.tests||item.tests).slice(0,1500)}})});return out}
+  function defaultState(){return{version:12,starter:'flowcharts-v1',updatedAt:Date.now(),charts:[],hormones:[],schematic:defaultSchematic(),resourceTables:starterResourceTables()}}
   function looksLikeMinimalLiverStarter(data){
     var charts=data&&Array.isArray(data.charts)?data.charts:[];
     if(charts.length!==1)return false;
@@ -549,13 +487,13 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function normalize(data){
     var base=defaultState(),incoming=data&&typeof data==='object'?data:{};
-    if(incoming.starter!==base.starter&&(looksLikeOldStarter(incoming)||looksLikeMinimalLiverStarter(incoming))){needsStarterSync=true;return base}
-    var sourceCharts=mergeStarterHormoneCharts(incoming);
+    var sourceCharts=Array.isArray(incoming.charts)?incoming.charts.filter(function(chart){return chart&&!OLD_HORMONE_IDS.includes(chart.id)}):[];
+    if(sourceCharts.length!==(incoming.charts||[]).length||incoming.starter!==base.starter)needsStarterSync=true;
     var charts=sourceCharts.map(function(chart){
       var copy=Object.assign({},chart);
       copy.id=copy.id||uid('chart');
-      copy.title=copy.title||copy.organ||'Hormone Flowchart';
-      copy.organ=copy.organ||copy.title||'Hormone';
+      copy.title=copy.title||copy.organ||'Flowchart';
+      copy.organ=copy.organ||copy.title||'Flowchart';
       copy.note=copy.note||'';
       copy.font=normalizeChemFont(copy.font);
       copy.nodeMeta=copy.nodeMeta&&typeof copy.nodeMeta==='object'?copy.nodeMeta:{};
@@ -563,7 +501,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       copy.paths=Array.isArray(copy.paths)&&copy.paths.length?copy.paths:[copy.organ+' > New branch'];
       return copy;
     });
-    return {version:11,starter:base.starter,updatedAt:incoming.updatedAt||Date.now(),charts:charts,hormones:Array.isArray(incoming.hormones)?incoming.hormones:base.hormones,resourceTables:normalizeResourceTables(incoming.resourceTables||base.resourceTables,{upgradeStarters:Number(incoming.version||0)<5})};
+    return {version:12,starter:base.starter,updatedAt:incoming.updatedAt||Date.now(),charts:charts,hormones:[],schematic:normalizeSchematic(incoming.schematic),resourceTables:normalizeResourceTables(incoming.resourceTables||base.resourceTables,{upgradeStarters:Number(incoming.version||0)<5})};
   }
   function saveLocal(){try{localStorage.setItem('chemistryHubState',JSON.stringify(state))}catch(e){}}
   function markDirty(){state.updatedAt=Date.now();saveLocal();if(safeDoc)safeDoc.scheduleSave(4000,'auto')}
@@ -1100,9 +1038,17 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   function editorOpenAttr(chartId){
     return editorOpenByChart[chartId]===false ? '' : ' open';
   }
+  function renderSchematic(){
+    var data=normalizeSchematic(state.schematic);state.schematic=data;
+    function edit(value,line,index,field){return '<span class="cobas-edit" data-schematic-line="'+line+'" data-schematic-index="'+index+'" data-schematic-field="'+field+'" contenteditable="'+(isAdmin?'true':'false')+'" spellcheck="false">'+escapeHtml(value)+'</span>'}
+    function group(line,title){return '<section class="cobas-line" data-line="'+line+'"><h3>'+title+'</h3><div class="cobas-modules" style="--modules:'+data[line].length+'">'+data[line].map(function(module,i){return '<div class="cobas-module"><div class="cobas-machine"><svg viewBox="0 0 24 12" aria-hidden="true"><path d="M1 2h22M1 6h22M1 10h22" stroke="currentColor" fill="none"/></svg>'+edit(module.name,line,i,'name')+'</div><div class="cobas-test-list"><small>Example tests</small>'+edit(module.tests,line,i,'tests')+'</div></div>'}).join('')+'</div></section>'}
+    document.getElementById('cobasSchematic').innerHTML='<article class="cobas-card"><div class="cobas-head"><div><div class="cobas-section-title">Editable top-view schematic</div><h2>Roche cobas 8000</h2><p>Sample handling and two example module lines</p></div></div><div class="cobas-sample">'+edit(data.sample,'sample',0,'sample')+'</div><svg class="cobas-branches" viewBox="0 0 1000 54" preserveAspectRatio="none" aria-hidden="true"><path class="branch-desktop" d="M500 0V22 M250 22H750 M250 22V54 M750 22V54"/><path class="branch-mobile" d="M500 0V54"/></svg><p class="cobas-swipe">Swipe each module row to see all modules and example lists.</p><div class="cobas-lines">'+group('cobas2','cobas 2 · 4 modules')+group('cobas4','cobas 4 · 3 modules')+'</div><p class="cobas-note">Example test lists for layout only. These are not verified laboratory menus or assignments. Admin can edit the module labels and test lists.</p></article>';
+  }
   function renderFlowcharts(){
     var charts=state.charts||[];
-    if(!charts.length){document.getElementById('flowcharts').innerHTML='<div class="panel">No hormone flowcharts yet.</div>';return}
+    document.getElementById('chemChartSelect').innerHTML=charts.map(function(chart){return '<option value="'+escapeHtml(chart.id)+'" '+(chart.id===activeChartId?'selected':'')+'>'+escapeHtml(chart.title||'Flowchart')+'</option>'}).join('');
+    document.getElementById('chemChartCount').textContent=charts.length+' diagram'+(charts.length===1?'':'s');
+    if(!charts.length){document.getElementById('flowcharts').innerHTML='<div class="panel">No diagrams yet. Unlock Admin and choose + New diagram to create one.</div>';return}
     if(!activeChartId||!charts.some(function(chart){return chart.id===activeChartId}))activeChartId=charts[0].id;
     var chart=charts.find(function(item){return item.id===activeChartId})||charts[0];
     var paths=(chart.paths||[]).join('\n');
@@ -1307,15 +1253,15 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     setChemFlowZoom(scale*.98);
     return true;
   }
-  function renderAll(){renderFlowcharts();renderHormones();renderResources();renderTables();document.body.classList.toggle('admin-mode',isAdmin)}
+  function renderAll(){document.body.classList.toggle('admin-mode',isAdmin);renderSchematic();renderFlowcharts();renderResources();renderTables()}
   function chartPrintHtml(chart){
-    var exportTitle=(chart&&chart.title)||'Hormone Flowchart';
+    var exportTitle=(chart&&chart.title)||'Flowchart';
     return '<div class="print-page"><h1>'+escapeHtml(exportTitle)+'</h1>'+flowHtml(chart,null,'__all__')+'</div>';
   }
   function exportChart(chart){
     if(!chart)return;
     var area=document.getElementById('printArea');
-    var exportTitle=chart.title||'Hormone Flowchart';
+    var exportTitle=chart.title||'Flowchart';
     area.innerHTML=chartPrintHtml(chart);
     area.style.display='block';
     area.style.position='fixed';
@@ -1439,6 +1385,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(ui==='close-admin'){closeAdmin();return}
     if(act==='export-chart'){exportChart(findChart(action.dataset.chart));return}
     if(act==='export-tables'||act==='export-resources'){exportResources();return}
+    if(act==='select-chart-menu'){activeChartId=action.value||activeChartId;localStorage.setItem('chemistryActiveChart',activeChartId);renderAll();return}
     if(act==='select-chart'){
       activeChartId=action.dataset.chart||activeChartId;
       localStorage.setItem('chemistryActiveChart',activeChartId);
@@ -1532,7 +1479,9 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(act==='move-resource-subsection'){moveResourceSubsection(findResourceTable(action.dataset.table),action.dataset.row,Number(action.dataset.dir)||0);renderAll();markDirty();return}
     if(act==='delete-resource-row'){deleteResourceRow(findResourceTable(action.dataset.table),action.dataset.row);renderAll();markDirty();return}
     if(act==='clear-resource-image'){var imgTable=findResourceTable(action.dataset.table),imgRow=findResourceRow(imgTable,action.dataset.row);if(imgRow&&imgRow.cells){imgRow.cells[action.dataset.col]='';renderAll();markDirty()}return}
-    if(act==='add-chart'){var newChart={id:uid('chart'),title:'New Hormone Flowchart',organ:'New Hormone Flowchart',note:'',nodeMeta:{},links:[],paths:['New Hormone Flowchart > Stimulus > Source organ > Hormone > Target organ > Effect']};state.charts.push(newChart);activeChartId=newChart.id;localStorage.setItem('chemistryActiveChart',activeChartId);renderAll();markDirty()}
+    if(act==='add-chart'){var newChart={id:uid('chart'),title:'New Flowchart',organ:'New Flowchart',note:'',nodeMeta:{},links:[],paths:['New Flowchart > First step']};state.charts.push(newChart);activeChartId=newChart.id;localStorage.setItem('chemistryActiveChart',activeChartId);renderAll();markDirty()}
+    if(act==='duplicate-chart'){var original=findChart(activeChartId);if(original){var copy=clone(original);copy.id=uid('chart');copy.title=(copy.title||'Flowchart')+' copy';state.charts.push(copy);activeChartId=copy.id;renderAll();markDirty()}return}
+    if(act==='save-chart'){saveLocal();if(safeDoc)safeDoc.saveNow({reason:'manual'}).then(function(){showToast('Diagram saved')}).catch(function(e){showToast('Save failed: '+e.message,true)});return}
     if(act==='delete-chart'){state.charts=state.charts.filter(function(chart){return chart.id!==action.dataset.chart});if(activeChartId===action.dataset.chart)activeChartId=(state.charts[0]&&state.charts[0].id)||'';localStorage.setItem('chemistryActiveChart',activeChartId);renderAll();markDirty()}
     if(act==='selected-add-child'||act==='selected-add-sibling'){
       var addSelectedChart=findChart(action.dataset.chart);
@@ -1659,13 +1608,14 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         markDirty();
       }
     }
-    if(act==='hormone-field'){var item=findHormone(el.dataset.id);if(item){item[el.dataset.field]=el.value;markDirty()}}
+
     if(act==='resource-table-title'){var titleTable=findResourceTable(el.dataset.table);if(titleTable){titleTable.title=plainCellText(el.value)||'Chemistry Table';markDirty()}}
     if(act==='resource-col-label'){var labelTable=findResourceTable(el.dataset.table);if(labelTable){var labelCol=(labelTable.columns||[]).find(function(col){return col.id===el.dataset.col});if(labelCol){labelCol.label=plainCellText(el.value)||'Column';markDirty()}}}
     if(act==='resource-cell'){var cellTable=findResourceTable(el.dataset.table),cellRow=findResourceRow(cellTable,el.dataset.row);if(cellRow&&cellRow.cells){cellRow.cells[el.dataset.col]=plainCellText(el.innerHTML);markDirty()}}
     if(act==='resource-subsection'){var subRowTable=findResourceTable(el.dataset.table),subRow=findResourceRow(subRowTable,el.dataset.row);if(subRow){subRow.title=plainCellText(el.innerHTML)||'New Subsection';markDirty()}}
   });
   document.addEventListener('change',function(event){
+    if(event.target.dataset.action==='select-chart-menu'){activeChartId=event.target.value;localStorage.setItem('chemistryActiveChart',activeChartId);renderAll();return}
     if(!isAdmin)return;
     if(event.target.dataset.action==='selected-link-kind'){
       chemLinkMode=normalizeLinkKind(event.target.value,'');
@@ -1749,6 +1699,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   });
   document.addEventListener('blur',function(event){
     if(!isAdmin)return;
+    if(event.target.matches&&event.target.matches('[data-schematic-field]')){var target=event.target,line=target.dataset.schematicLine,index=Number(target.dataset.schematicIndex),field=target.dataset.schematicField,value=plainCellText(target.innerHTML);if(line==='sample')state.schematic.sample=value;else if(state.schematic[line]&&state.schematic[line][index])state.schematic[line][index][field]=value;markDirty();return}
     if(event.target&&event.target.dataset&&event.target.dataset.action)chemEditSessionKey='';
     var title=event.target.closest&&event.target.closest('[data-direct-node-title]');
     if(!title)return;
