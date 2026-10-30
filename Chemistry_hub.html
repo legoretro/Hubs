@@ -67,6 +67,7 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
 .cobas-color-key{margin-top:16px;padding:12px;border:1px solid var(--line);border-radius:10px}.cobas-color-key h3{font-size:13px;color:var(--deep);margin:0 0 8px}.cobas-key-items{display:flex;flex-wrap:wrap;gap:8px}.cobas-key-chip{display:inline-flex;align-items:center;gap:5px}.cobas-key-chip mark,.cobas-test-column mark{padding:1px 3px;border-radius:3px;color:var(--ink)}.cobas-key-chip input{width:26px;height:24px;padding:0;border:0}.cobas-key-builder{display:none;gap:6px;align-items:center;flex-wrap:wrap;margin-top:9px}.admin-mode .cobas-key-builder{display:flex}.cobas-key-builder input[type=text]{min-width:180px;max-width:100%;padding:7px;border:1px solid var(--line);border-radius:7px}.cobas-key-builder input[type=color]{width:34px;height:30px;padding:0}.cobas-remove-module{position:absolute;right:4px;bottom:0;padding:3px 7px;font-size:10px}.cobas-add-module{margin-top:4px}.cobas-edit:empty::before{content:attr(data-placeholder);color:var(--muted)}
 @media(max-width:900px){.cobas-lines{grid-template-columns:1fr}.cobas-branches .branch-desktop{display:none}.cobas-branches .branch-mobile{display:block}}
 @media(max-width:760px){.cobas-line{overflow:visible}.cobas-modules{min-width:0!important}.cobas-module{grid-template-columns:1fr;gap:8px}.cobas-module .cobas-machine{width:120px;margin-inline:auto}.cobas-module:not(:last-child)::after{top:auto;left:50%;height:22px}.cobas-branches{height:35px}.chem-flow-diagrams .chem-chart-tabs{flex-basis:100%}.chem-flow-diagrams .chem-flow-spacer{display:none}}
+@media print{body.instrument-printing #printArea .instrument-print-page{width:7.7in;max-width:100%;margin:0 auto;color:var(--ink);background:#fff}body.instrument-printing #printArea .cobas-card{max-width:none;margin:0;padding:0;border:0;border-radius:0;box-shadow:none}body.instrument-printing #printArea .cobas-lines{grid-template-columns:1fr!important;gap:14px}body.instrument-printing #printArea .cobas-branches{height:32px}body.instrument-printing #printArea .cobas-branches .branch-desktop{display:none}body.instrument-printing #printArea .cobas-branches .branch-mobile{display:block}body.instrument-printing #printArea .cobas-line,body.instrument-printing #printArea .cobas-module,body.instrument-printing #printArea .cobas-color-key{break-inside:avoid-page}body.instrument-printing #printArea .cobas-edit{border:0!important;outline:0!important;padding:0!important}body.instrument-printing #printArea .admin-only{display:none!important}body.instrument-printing #printArea .cobas-key-builder{display:none!important}body.instrument-printing #printArea .cobas-machine,body.instrument-printing #printArea .cobas-sample,body.instrument-printing #printArea mark{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
 </style>
 
 </head>
@@ -120,7 +121,7 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
   <section class="section" id="sec-flowcharts">
     <div class="hero"><h1>Flowcharts</h1></div>
     <div class="chem-flow-modes" role="tablist" aria-label="Flowchart type"><button type="button" data-action="flow-mode" data-mode="instrument" role="tab">Instrument flowcharts</button><button type="button" data-action="flow-mode" data-mode="regular" role="tab">Regular flowcharts</button></div>
-    <div id="instrumentFlowchartPane" role="tabpanel"><div class="chem-flow-diagrams"><div id="instrumentChartTabs" class="chem-chart-tabs"></div><div class="chem-flow-spacer"></div><button type="button" class="mini-btn admin-only" data-action="add-instrument">+ New instrument</button><button type="button" class="mini-btn admin-only" data-action="duplicate-instrument">Duplicate</button><button type="button" class="mini-btn admin-only" data-action="save-instrument">Save</button></div><div id="cobasSchematic"></div></div>
+    <div id="instrumentFlowchartPane" role="tabpanel"><div class="chem-flow-diagrams"><div id="instrumentChartTabs" class="chem-chart-tabs"></div><div class="chem-flow-spacer"></div><button type="button" class="mini-btn admin-only" data-action="add-instrument">+ New instrument</button><button type="button" class="mini-btn admin-only" data-action="duplicate-instrument">Duplicate</button><button type="button" class="mini-btn admin-only" data-action="save-instrument">Save</button><button type="button" class="mini-btn" data-action="export-instrument">Export</button></div><div id="cobasSchematic"></div></div>
     <div id="regularFlowchartPane" role="tabpanel" hidden><div class="chem-flow-diagrams"><div id="regularChartTabs" class="chem-chart-tabs"></div><div class="chem-flow-spacer"></div><button type="button" class="mini-btn admin-only" data-action="add-chart">+ New flowchart</button><button type="button" class="mini-btn admin-only" data-action="duplicate-chart">Duplicate</button><button type="button" class="mini-btn admin-only" data-action="save-chart">Save</button></div><div id="flowcharts"></div></div>
   </section>
   <section class="section" id="sec-tables">
@@ -1134,7 +1135,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     }
     function group(branch){return '<section class="cobas-line"><h3>'+edit(branch.title,'branch-title',branch.id)+'</h3><div class="cobas-modules">'+branch.modules.map(function(module){return '<div class="cobas-module"><div class="cobas-machine" style="--module-fill:'+sanitizeColor(module.fill,'#ffffff')+'">'+edit(module.name,'module-name',branch.id,module.id)+'<label class="cobas-color-control admin-only">Color <input type="color" data-action="instrument-module-color" data-branch="'+escapeHtml(branch.id)+'" data-module="'+escapeHtml(module.id)+'" value="'+sanitizeColor(module.fill,'#ffffff')+'"></label></div><div class="cobas-test-list"><small>Test List</small>'+testColumns(module,branch)+'</div><button type="button" class="mini-btn danger admin-only cobas-remove-module" data-action="remove-instrument-module" data-branch="'+escapeHtml(branch.id)+'" data-module="'+escapeHtml(module.id)+'">Remove</button></div>'}).join('')+'</div><button type="button" class="mini-btn admin-only cobas-add-module" data-action="add-instrument-module" data-branch="'+escapeHtml(branch.id)+'">+ Module</button></section>'}
     var keyHtml='<div class="cobas-color-key"><h3>Color Key</h3><div class="cobas-key-items">'+(data.colorKey||[]).map(function(item){return '<span class="cobas-key-chip"><mark style="background:'+sanitizeColor(item.color,'#fff0a8')+'">'+escapeHtml(item.text)+'</mark><input type="color" class="admin-only" data-action="instrument-key-color" data-key="'+escapeHtml(item.id)+'" value="'+sanitizeColor(item.color,'#fff0a8')+'" aria-label="Color for '+escapeHtml(item.text)+'"><button type="button" class="mini-btn danger admin-only" data-action="delete-instrument-highlight" data-key="'+escapeHtml(item.id)+'" aria-label="Remove '+escapeHtml(item.text)+' from key">×</button></span>'}).join('')+'</div><div class="cobas-key-builder admin-only"><input type="text" data-highlight-text placeholder="Word or phrase" aria-label="Word or phrase to highlight"><input type="color" data-highlight-color value="#fff0a8" aria-label="Highlight color"><button type="button" class="mini-btn" data-action="add-instrument-highlight">Add highlight</button></div></div>';
-    host.innerHTML='<article class="cobas-card"><div class="cobas-head"><div><div class="cobas-section-title">Analyzer flowchart</div><h2>'+edit(data.title,'title')+'</h2></div><button type="button" class="mini-btn danger admin-only" data-action="delete-instrument">Delete flowchart</button></div><div class="cobas-sample" style="--sample-fill:'+sanitizeColor(data.sampleColor,'#f4fbff')+'"><strong class="cobas-instrument-title">'+edit(data.instrumentTitle,'instrument-title')+'</strong>'+edit(data.sample,'sample')+'<label class="cobas-sample-color admin-only">Color <input type="color" data-action="instrument-sample-color" value="'+sanitizeColor(data.sampleColor,'#f4fbff')+'"></label></div><svg class="cobas-branches" viewBox="0 0 1000 54" preserveAspectRatio="none" aria-hidden="true"><path class="branch-desktop" d="M500 0V22 M250 22H750 M250 22V54 M750 22V54"/><path class="branch-mobile" d="M500 0V54"/></svg><div class="cobas-lines">'+data.branches.map(group).join('')+'</div>'+keyHtml+'<p class="cobas-note">Test lists are not verified laboratory menus.</p></article>';
+    host.innerHTML='<article class="cobas-card"><div class="cobas-head"><div><div class="cobas-section-title">Analyzer flowchart</div><h2>'+edit(data.title,'title')+'</h2></div><button type="button" class="mini-btn danger admin-only" data-action="delete-instrument">Delete flowchart</button></div><div class="cobas-sample" style="--sample-fill:'+sanitizeColor(data.sampleColor,'#f4fbff')+'"><strong class="cobas-instrument-title">'+edit(data.instrumentTitle,'instrument-title')+'</strong>'+edit(data.sample,'sample')+'<label class="cobas-sample-color admin-only">Color <input type="color" data-action="instrument-sample-color" value="'+sanitizeColor(data.sampleColor,'#f4fbff')+'"></label></div><svg class="cobas-branches" viewBox="0 0 1000 54" preserveAspectRatio="none" aria-hidden="true"><path class="branch-desktop" d="M500 0V22 M250 22H750 M250 22V54 M750 22V54"/><path class="branch-mobile" d="M500 0V54"/></svg><div class="cobas-lines">'+data.branches.map(group).join('')+'</div>'+keyHtml+'</article>';
   }
   function renderFlowcharts(){
     var charts=state.charts||[];
@@ -1337,6 +1338,35 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     return true;
   }
   function renderAll(){document.body.classList.toggle('admin-mode',isAdmin);renderFlowMode();renderSchematic();renderFlowcharts();renderResources();renderTables()}
+  function exportInstrumentChart(){
+    var source=document.querySelector('#cobasSchematic .cobas-card');
+    if(!source){showToast('Choose an instrument flowchart to export',true);return}
+    var area=document.getElementById('printArea');
+    var copy=source.cloneNode(true);
+    copy.querySelectorAll('.admin-only').forEach(function(node){node.remove()});
+    copy.querySelectorAll('[contenteditable]').forEach(function(node){node.removeAttribute('contenteditable')});
+    var printHtml='<div class="instrument-print-page">'+copy.outerHTML+'</div>';
+    if(window.HubPdfExport){
+      window.HubPdfExport.open({
+        title:(findInstrument(activeInstrumentId)||{}).title||'Instrument flowchart',
+        modalTitle:'Export instrument flowchart',
+        orientation:'portrait',
+        hideScaleControls:true,
+        defaultScale:1,
+        printArea:area,
+        bodyClass:['printing','instrument-printing'],
+        pageMargin:'.3in',
+        hint:'Choose Save as PDF in the print dialog. Long test lists continue onto additional pages.',
+        beforePrint:function(scale,printArea){printArea.innerHTML=printHtml}
+      });
+      return;
+    }
+    area.innerHTML=printHtml;
+    document.body.classList.add('printing','instrument-printing');
+    showToast('Opening instrument flowchart export');
+    window.print();
+    setTimeout(function(){document.body.classList.remove('printing','instrument-printing');area.innerHTML=''},1200);
+  }
   function chartPrintHtml(chart){
     var exportTitle=(chart&&chart.title)||'Flowchart';
     return '<div class="print-page"><h1>'+escapeHtml(exportTitle)+'</h1>'+flowHtml(chart,null,'__all__')+'</div>';
@@ -1466,6 +1496,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(ui==='admin-unlock'){attemptLogin();return}
     if(ui==='close-admin'){closeAdmin();return}
     if(act==='export-chart'){exportChart(findChart(action.dataset.chart));return}
+    if(act==='export-instrument'){exportInstrumentChart();return}
     if(act==='export-tables'||act==='export-resources'){exportResources();return}
     if(act==='flow-mode'){flowMode=action.dataset.mode==='regular'?'regular':'instrument';localStorage.setItem('chemistryFlowMode',flowMode);renderAll();return}
     if(isAdmin&&act==='add-instrument-highlight'){var currentInstrument=findInstrument(activeInstrumentId),builder=action.closest('.cobas-key-builder'),word=builder&&builder.querySelector('[data-highlight-text]'),color=builder&&builder.querySelector('[data-highlight-color]'),phrase=String(word&&word.value||selectedInstrumentText||'').trim().slice(0,80);if(currentInstrument&&phrase){var existing=(currentInstrument.colorKey||[]).find(function(item){return item.text.toLowerCase()===phrase.toLowerCase()});if(existing)existing.color=sanitizeColor(color&&color.value,'#fff0a8');else currentInstrument.colorKey.push({id:uid('highlight'),text:phrase,color:sanitizeColor(color&&color.value,'#fff0a8')});selectedInstrumentText='';renderAll();markDirty()}else showToast('Select or enter text',true);return}
