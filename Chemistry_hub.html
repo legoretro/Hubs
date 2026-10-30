@@ -52,6 +52,23 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
 @media(max-width:1000px){.cobas-lines{grid-template-columns:1fr}.cobas-branches{height:35px}}
 @media(max-width:760px){.cobas-branches .branch-desktop{display:none}.cobas-branches .branch-mobile{display:block}.cobas-swipe{display:block;color:var(--muted);font-size:11px;margin:0 0 8px;text-align:center}.cobas-card{padding:11px}.cobas-branches{height:35px}.cobas-lines{grid-template-columns:1fr}.cobas-line{overflow-x:auto}.cobas-modules{min-width:610px}.cobas-line[data-line="cobas4"] .cobas-modules{min-width:470px}.chem-flow-canvas{height:76dvh;min-height:420px}.chem-flow-diagrams select{flex:1;min-width:130px}.chem-flow-diagrams #chemChartCount{margin-right:0}}
 </style>
+
+<style>
+#sec-flowcharts [hidden]{display:none!important}
+.chem-flow-modes{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px;border-bottom:1px solid var(--line);padding-bottom:8px}
+.chem-flow-modes button{border:1px solid var(--line);border-radius:10px 10px 0 0;background:#fff;color:var(--deep);font-weight:900;padding:10px 16px;cursor:pointer}
+.chem-flow-modes button.active{background:var(--blue);border-color:var(--blue);color:#fff}
+.chem-flow-diagrams{margin-bottom:12px}.chem-flow-spacer{flex:1}.chem-flow-diagrams .chem-chart-tabs{display:flex;margin:0;flex:1 1 300px}
+.cobas-card{max-width:1300px;margin-inline:auto}.cobas-head h2{font-size:24px}.cobas-sample{max-width:480px}.cobas-lines{align-items:start;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.cobas-line{overflow:visible;padding:16px}.cobas-line h3{margin:0 0 14px}.cobas-modules{display:grid;grid-template-columns:1fr;gap:0;min-width:0!important}
+.cobas-module{position:relative;display:grid;grid-template-columns:minmax(100px,170px) minmax(0,1fr);align-items:stretch;gap:12px;padding-bottom:22px}
+.cobas-module:not(:last-child)::after{content:"";position:absolute;left:min(85px,calc((100% - 12px)/4));bottom:0;height:22px;border-left:2px solid var(--blue)}
+.cobas-machine{min-height:82px;padding:8px}.cobas-test-list{margin:0;min-height:82px;padding:8px 10px}.cobas-test-list .cobas-edit{display:block;min-height:40px}
+.cobas-remove-module{position:absolute;right:4px;bottom:0;padding:3px 7px;font-size:10px}.cobas-add-module{margin-top:4px}.cobas-edit:empty::before{content:attr(data-placeholder);color:var(--muted)}
+@media(max-width:900px){.cobas-lines{grid-template-columns:1fr}.cobas-branches .branch-desktop{display:none}.cobas-branches .branch-mobile{display:block}}
+@media(max-width:760px){.cobas-line{overflow:visible}.cobas-modules{min-width:0!important}.cobas-module{grid-template-columns:minmax(100px,38%) minmax(0,1fr)}.cobas-branches{height:35px}.chem-flow-diagrams .chem-chart-tabs{flex-basis:100%}.chem-flow-diagrams .chem-flow-spacer{display:none}}
+</style>
+
 </head>
 <body class="intro-active">
 <div id="intro">
@@ -85,7 +102,7 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
 <div class="modal-overlay" id="adminModal">
   <div class="modal-box">
     <h3>Admin Login</h3>
-    <p>Unlock editing for Chemistry flowcharts and the cobas schematic.</p>
+    <p>Unlock editing for Chemistry flowcharts.</p>
     <input class="modal-input" type="password" id="adminPwInput" placeholder="password" autocomplete="off" maxlength="30">
     <div class="modal-error" id="adminErr"></div>
     <div style="display:flex;gap:8px;justify-content:center">
@@ -101,10 +118,10 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
     <div class="panel coming-soon"><div><strong>Coming Soon</strong><span>General chemistry notes will live here after the core flowchart tools are stable.</span></div></div>
   </section>
   <section class="section" id="sec-flowcharts">
-    <div class="hero"><h1>Flowcharts</h1><p>Build your own diagrams and edit the cobas 8000 example below.</p></div>
-    <div id="cobasSchematic"></div>
-    <div class="chem-flow-diagrams"><label for="chemChartSelect">Diagram</label><select id="chemChartSelect" data-action="select-chart-menu"></select><span id="chemChartCount"></span><button type="button" class="mini-btn admin-only" data-action="add-chart">+ New diagram</button><button type="button" class="mini-btn admin-only" data-action="duplicate-chart">Duplicate chart</button><button type="button" class="mini-btn admin-only" data-action="save-chart">Save diagram</button></div>
-    <div id="flowcharts"></div>
+    <div class="hero"><h1>Flowcharts</h1></div>
+    <div class="chem-flow-modes" role="tablist" aria-label="Flowchart type"><button type="button" data-action="flow-mode" data-mode="instrument" role="tab">Instrument flowcharts</button><button type="button" data-action="flow-mode" data-mode="regular" role="tab">Regular flowcharts</button></div>
+    <div id="instrumentFlowchartPane" role="tabpanel"><div class="chem-flow-diagrams"><div id="instrumentChartTabs" class="chem-chart-tabs"></div><div class="chem-flow-spacer"></div><button type="button" class="mini-btn admin-only" data-action="add-instrument">+ New instrument</button><button type="button" class="mini-btn admin-only" data-action="duplicate-instrument">Duplicate</button><button type="button" class="mini-btn admin-only" data-action="save-instrument">Save</button></div><div id="cobasSchematic"></div></div>
+    <div id="regularFlowchartPane" role="tabpanel" hidden><div class="chem-flow-diagrams"><div id="regularChartTabs" class="chem-chart-tabs"></div><div class="chem-flow-spacer"></div><button type="button" class="mini-btn admin-only" data-action="add-chart">+ New flowchart</button><button type="button" class="mini-btn admin-only" data-action="duplicate-chart">Duplicate</button><button type="button" class="mini-btn admin-only" data-action="save-chart">Save</button></div><div id="flowcharts"></div></div>
   </section>
   <section class="section" id="sec-tables">
     <div class="hero"><h1>Tables</h1><p>Editable student note tables for Chemistry topics, chart summaries, and study organization.</p></div>
@@ -141,6 +158,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   var isAdmin=false,state=defaultState(),safeDoc=null,syncPresence=null,needsStarterSync=false;
   var chemFlowZoom=Number(localStorage.getItem('chemistryFlowZoom5')||0.78);
   var activeChartId=localStorage.getItem('chemistryActiveChart')||'';
+  var activeInstrumentId=localStorage.getItem('chemistryActiveInstrument')||'';
+  var flowMode=localStorage.getItem('chemistryFlowMode')||'instrument';
   var activeResourceTableId=localStorage.getItem('chemistryActiveResourceTable')||'';
   var activeBranchByChart={};
   try{activeBranchByChart=JSON.parse(localStorage.getItem('chemistryActiveBranches')||'{}')||{}}catch(e){activeBranchByChart={}}
@@ -412,9 +431,11 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     });
   }
   var OLD_HORMONE_IDS=['gonadal-axis','thyroid-axis','adrenal-cortisol-axis','growth-hormone-axis','prolactin-axis','adh-axis','oxytocin-axis','raas-aldosterone-axis','adrenal-androgens-axis'];
-  function defaultSchematic(){return {sample:'cobas 8000 Sample Handling',cobas2:[{name:'ISE',tests:'Sodium (Na)\nPotassium (K)\nChloride (Cl)'},{name:'c 702 C1',tests:'Glucose\nBUN\nCreatinine'},{name:'c 702 C2',tests:'Amylase\nLipase\nCholesterol'},{name:'e 801',tests:'TSH\nFree T4\nhCG'}],cobas4:[{name:'ISE',tests:'Sodium (Na)\nPotassium (K)\nChloride (Cl)'},{name:'c 702',tests:'Glucose\nBUN\nCreatinine'},{name:'e 801',tests:'TSH\nFree T4\nhCG'}]}}
-  function normalizeSchematic(value){var base=defaultSchematic();if(!value||typeof value!=='object')return base;var out={sample:String(typeof value.sample==='string'?value.sample:base.sample).slice(0,100)};['cobas2','cobas4'].forEach(function(line){out[line]=base[line].map(function(item,i){var incoming=Array.isArray(value[line])?value[line][i]:null;return{name:String(incoming&&typeof incoming.name==='string'?incoming.name:item.name).slice(0,60),tests:String(incoming&&typeof incoming.tests==='string'?incoming.tests:item.tests).slice(0,1500)}})});return out}
-  function defaultState(){return{version:12,starter:'flowcharts-v1',updatedAt:Date.now(),charts:[],hormones:[],schematic:defaultSchematic(),resourceTables:starterResourceTables()}}
+  function blankInstrumentChart(){return {id:uid('instrument'),title:'Instrument Flowchart',sample:'Sample Handling',branches:[{id:'left',title:'Title',modules:[{id:uid('module'),name:'ISE',tests:''},{id:uid('module'),name:'c 702',tests:''},{id:uid('module'),name:'e 801',tests:''}]},{id:'right',title:'Title',modules:[{id:uid('module'),name:'ISE',tests:''},{id:uid('module'),name:'c 702 C1',tests:''},{id:uid('module'),name:'c 702 C2',tests:''},{id:uid('module'),name:'e 801',tests:''}]}]}}
+  function defaultInstrumentChart(){var chart=blankInstrumentChart();chart.id='instrument-default';chart.title='Analyzer Flowchart';return chart}
+  function migrateSchematic(old){var chart=defaultInstrumentChart();if(!old||typeof old!=='object')return chart;chart.sample=String(old.sample||chart.sample).replace(/^cobas 8000\s*/i,'').slice(0,100)||'Sample Handling';[['cobas4',0],['cobas2',1]].forEach(function(pair){var modules=old[pair[0]];if(Array.isArray(modules))chart.branches[pair[1]].modules=modules.map(function(item){return{id:uid('module'),name:String(item.name||'Module').slice(0,60),tests:String(item.tests||'').slice(0,1500)}})});return chart}
+  function normalizeInstrumentChart(value,index){var base=defaultInstrumentChart();if(!value||typeof value!=='object')return base;return {id:String(value.id||uid('instrument')).slice(0,80),title:String(value.title||'Instrument Flowchart').slice(0,100),sample:String(value.sample||'Sample Handling').slice(0,100),branches:(Array.isArray(value.branches)&&value.branches.length?value.branches:base.branches).slice(0,6).map(function(branch,i){return{id:String(branch.id||uid('branch')).slice(0,80),title:String(branch.title||'Title').slice(0,100),modules:(Array.isArray(branch.modules)?branch.modules:base.branches[i%2].modules).slice(0,20).map(function(module){return{id:String(module.id||uid('module')).slice(0,80),name:String(module.name||'Module').slice(0,60),tests:String(module.tests||'').slice(0,1500)}})}})}}
+  function defaultState(){return{version:13,starter:'flowcharts-v2',updatedAt:Date.now(),charts:[],instrumentCharts:[defaultInstrumentChart()],resourceTables:starterResourceTables()}}
   function looksLikeMinimalLiverStarter(data){
     var charts=data&&Array.isArray(data.charts)?data.charts:[];
     if(charts.length!==1)return false;
@@ -501,7 +522,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       copy.paths=Array.isArray(copy.paths)&&copy.paths.length?copy.paths:[copy.organ+' > New branch'];
       return copy;
     });
-    return {version:12,starter:base.starter,updatedAt:incoming.updatedAt||Date.now(),charts:charts,hormones:[],schematic:normalizeSchematic(incoming.schematic),resourceTables:normalizeResourceTables(incoming.resourceTables||base.resourceTables,{upgradeStarters:Number(incoming.version||0)<5})};
+    var instrumentSource=Array.isArray(incoming.instrumentCharts)?incoming.instrumentCharts:(incoming.schematic?[migrateSchematic(incoming.schematic)]:base.instrumentCharts);
+    return {version:13,starter:base.starter,updatedAt:incoming.updatedAt||Date.now(),charts:charts,instrumentCharts:instrumentSource.map(normalizeInstrumentChart),resourceTables:normalizeResourceTables(incoming.resourceTables||base.resourceTables,{upgradeStarters:Number(incoming.version||0)<5})};
   }
   function saveLocal(){try{localStorage.setItem('chemistryHubState',JSON.stringify(state))}catch(e){}}
   function markDirty(){state.updatedAt=Date.now();saveLocal();if(safeDoc)safeDoc.scheduleSave(4000,'auto')}
@@ -1059,19 +1081,28 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   function editorOpenAttr(chartId){
     return editorOpenByChart[chartId]===false ? '' : ' open';
   }
+  function findInstrument(id){return (state.instrumentCharts||[]).find(function(chart){return chart.id===id})}
+  function renderFlowMode(){
+    document.getElementById('instrumentFlowchartPane').hidden=flowMode!=='instrument';
+    document.getElementById('regularFlowchartPane').hidden=flowMode!=='regular';
+    document.querySelectorAll('.chem-flow-modes button').forEach(function(button){var active=button.dataset.mode===flowMode;button.classList.toggle('active',active);button.setAttribute('aria-selected',active?'true':'false')});
+  }
   function renderSchematic(){
-    var data=normalizeSchematic(state.schematic);state.schematic=data;
-    function edit(value,line,index,field){return '<span class="cobas-edit" data-schematic-line="'+line+'" data-schematic-index="'+index+'" data-schematic-field="'+field+'" contenteditable="'+(isAdmin?'true':'false')+'" spellcheck="false">'+escapeHtml(value)+'</span>'}
-    function group(line,title){return '<section class="cobas-line" data-line="'+line+'"><h3>'+title+'</h3><div class="cobas-modules" style="--modules:'+data[line].length+'">'+data[line].map(function(module,i){return '<div class="cobas-module"><div class="cobas-machine"><svg viewBox="0 0 24 12" aria-hidden="true"><path d="M1 2h22M1 6h22M1 10h22" stroke="currentColor" fill="none"/></svg>'+edit(module.name,line,i,'name')+'</div><div class="cobas-test-list"><small>Example tests</small>'+edit(module.tests,line,i,'tests')+'</div></div>'}).join('')+'</div></section>'}
-    document.getElementById('cobasSchematic').innerHTML='<article class="cobas-card"><div class="cobas-head"><div><div class="cobas-section-title">Editable top-view schematic</div><h2>Roche cobas 8000</h2><p>Sample handling and two example module lines</p></div></div><div class="cobas-sample">'+edit(data.sample,'sample',0,'sample')+'</div><svg class="cobas-branches" viewBox="0 0 1000 54" preserveAspectRatio="none" aria-hidden="true"><path class="branch-desktop" d="M500 0V22 M250 22H750 M250 22V54 M750 22V54"/><path class="branch-mobile" d="M500 0V54"/></svg><p class="cobas-swipe">Swipe each module row to see all modules and example lists.</p><div class="cobas-lines">'+group('cobas2','cobas 2 · 4 modules')+group('cobas4','cobas 4 · 3 modules')+'</div><p class="cobas-note">Example test lists for layout only. These are not verified laboratory menus or assignments. Admin can edit the module labels and test lists.</p></article>';
+    var charts=state.instrumentCharts||[];
+    if(charts.length&&!findInstrument(activeInstrumentId))activeInstrumentId=charts[0].id;
+    document.getElementById('instrumentChartTabs').innerHTML=charts.map(function(chart){return '<button type="button" class="chem-chart-tab '+(chart.id===activeInstrumentId?'active':'')+'" data-action="select-instrument" data-instrument="'+escapeHtml(chart.id)+'">'+escapeHtml(chart.title||'Instrument Flowchart')+'</button>'}).join('');
+    var data=findInstrument(activeInstrumentId),host=document.getElementById('cobasSchematic');
+    if(!data){host.innerHTML='';return}
+    function edit(value,field,branch,module){return '<span class="cobas-edit" data-instrument-id="'+escapeHtml(data.id)+'" data-instrument-field="'+field+'" data-branch="'+(branch||'')+'" data-module="'+(module||'')+'" contenteditable="'+(isAdmin?'true':'false')+'" spellcheck="false" data-placeholder="'+(field==='tests'?'List':'Title')+'">'+escapeHtml(value)+'</span>'}
+    function group(branch){return '<section class="cobas-line"><h3>'+edit(branch.title,'branch-title',branch.id)+'</h3><div class="cobas-modules">'+branch.modules.map(function(module){return '<div class="cobas-module"><div class="cobas-machine"><svg viewBox="0 0 24 12" aria-hidden="true"><path d="M1 2h22M1 6h22M1 10h22" stroke="currentColor" fill="none"/></svg>'+edit(module.name,'module-name',branch.id,module.id)+'</div><div class="cobas-test-list"><small>Example test list</small>'+edit(module.tests,'tests',branch.id,module.id)+'</div><button type="button" class="mini-btn danger admin-only cobas-remove-module" data-action="remove-instrument-module" data-branch="'+escapeHtml(branch.id)+'" data-module="'+escapeHtml(module.id)+'">Remove</button></div>'}).join('')+'</div><button type="button" class="mini-btn admin-only cobas-add-module" data-action="add-instrument-module" data-branch="'+escapeHtml(branch.id)+'">+ Module</button></section>'}
+    host.innerHTML='<article class="cobas-card"><div class="cobas-head"><div><div class="cobas-section-title">Analyzer flowchart</div><h2>'+edit(data.title,'title')+'</h2></div><button type="button" class="mini-btn danger admin-only" data-action="delete-instrument">Delete flowchart</button></div><div class="cobas-sample">'+edit(data.sample,'sample')+'</div><svg class="cobas-branches" viewBox="0 0 1000 54" preserveAspectRatio="none" aria-hidden="true"><path class="branch-desktop" d="M500 0V22 M250 22H750 M250 22V54 M750 22V54"/><path class="branch-mobile" d="M500 0V54"/></svg><div class="cobas-lines">'+data.branches.map(group).join('')+'</div><p class="cobas-note">Example test lists are for layout only; they are not verified laboratory menus or assignments.</p></article>';
   }
   function renderFlowcharts(){
     var charts=state.charts||[];
-    document.getElementById('chemChartSelect').innerHTML=charts.map(function(chart){return '<option value="'+escapeHtml(chart.id)+'" '+(chart.id===activeChartId?'selected':'')+'>'+escapeHtml(chart.title||'Flowchart')+'</option>'}).join('');
-    document.getElementById('chemChartCount').textContent=charts.length+' diagram'+(charts.length===1?'':'s');
-    if(!charts.length){document.getElementById('flowcharts').innerHTML='<div class="panel">No diagrams yet. Unlock Admin and choose + New diagram to create one.</div>';return}
+    if(!charts.length){document.getElementById('regularChartTabs').innerHTML='';document.getElementById('flowcharts').innerHTML='';return}
     if(!activeChartId||!charts.some(function(chart){return chart.id===activeChartId}))activeChartId=charts[0].id;
     var chart=charts.find(function(item){return item.id===activeChartId})||charts[0];
+    document.getElementById('regularChartTabs').innerHTML=chartTabsHtml();
     var paths=(chart.paths||[]).join('\n');
     var note=chart.note?'<p>'+escapeHtml(chart.note)+'</p>':'';
     var nodeCount=flatChartNodes(chart).length,linkCount=normalizeLinks(chart.links).length;
@@ -1079,17 +1110,9 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var tray='<div class="chem-flow-editor-tray"><div class="chem-flow-preview-head"><div class="chem-flow-title-row"><h2>'+escapeHtml(chart.title||'Untitled Flowchart')+'</h2>'+note+'<div class="chem-flow-meta">'+escapeHtml(meta)+'</div></div><div class="chem-flow-toolbar"><button type="button" class="chem-flow-tool-btn" data-action="flow-zoom" data-dir="-1">Zoom out</button><span class="chem-flow-zoom-pill">'+Math.round(chemFlowZoom*100)+'%</span><button type="button" class="chem-flow-tool-btn" data-action="flow-zoom" data-dir="1">Zoom in</button><button type="button" class="chem-flow-tool-btn" data-action="flow-zoom-reset">Fit</button><button type="button" class="chem-flow-tool-btn" data-action="chem-page-fit" data-chart="'+escapeHtml(chart.id)+'">Page fit</button><button type="button" class="chem-flow-tool-btn admin-only'+(chemMoveMode?' active':'')+'" data-action="chem-move-mode" aria-pressed="'+chemMoveMode+'">Move Mode</button><button type="button" class="chem-flow-tool-btn admin-only" data-action="chem-auto-arrange" data-chart="'+escapeHtml(chart.id)+'">Auto arrange</button><button type="button" class="chem-flow-tool-btn admin-only" data-action="selected-add-sibling" data-chart="'+escapeHtml(chart.id)+'" data-path="'+escapeHtml((selectedChemNode(chart)||{}).path||'')+'">+ Branch</button><button type="button" class="chem-flow-tool-btn primary" data-action="export-chart" data-chart="'+escapeHtml(chart.id)+'">Export</button></div></div>'+(isAdmin?selectedNodePanelHtml(chart):'')+'<details class="chem-chart-settings admin-only"><summary>Chart settings</summary><div class="chem-chart-settings-grid"><label>Title<input data-action="chart-field" data-chart="'+escapeHtml(chart.id)+'" data-field="title" value="'+escapeHtml(chart.title||'')+'"></label><label>Optional note<input data-action="chart-field" data-chart="'+escapeHtml(chart.id)+'" data-field="note" value="'+escapeHtml(chart.note||'')+'"></label><button type="button" class="mini-btn danger" data-action="delete-chart" data-chart="'+escapeHtml(chart.id)+'">Delete chart</button></div></details></div>';
     var advanced=isAdmin?'<details class="chem-advanced-outline"><summary>Advanced outline editor</summary><div class="branch-builder outline-builder">'+branchOutlineHtml(chart)+'</div></details><details class="advanced-paths"><summary>Advanced: edit full paths</summary><textarea data-action="chart-paths" data-chart="'+escapeHtml(chart.id)+'">'+escapeHtml(paths)+'</textarea></details><div class="chem-hidden-link-builder">'+linkBuilderHtml(chart)+'</div>':'';
     var preview='<div class="chem-flow-canvas">'+flowHtml(chart,chemFlowZoom,'__all__')+'</div>';
-    var html=chartTabsHtml()+'<article class="flow-card chem-flow-builder-card" data-chart="'+escapeHtml(chart.id)+'">'+tray+preview+advanced+'</article>';
+    var html='<article class="flow-card chem-flow-builder-card" data-chart="'+escapeHtml(chart.id)+'">'+tray+preview+advanced+'</article>';
     document.getElementById('flowcharts').innerHTML=html;
     scheduleChemFlowLinks(document.getElementById('flowcharts'));
-  }
-  function renderHormones(){
-    var target=document.getElementById('hormoneMap');
-    if(!target)return;
-    var rows=(state.hormones||[]).map(function(item){
-      return '<div class="hormone-card" data-hormone="'+escapeHtml(item.id)+'"><div class="hormone-source">'+escapeHtml(item.source||'Source')+'</div><div class="hormone-name">'+escapeHtml(item.hormone||'Hormone')+'</div><div class="hormone-target">'+escapeHtml(item.target||'Target')+'</div><div class="hormone-action">'+escapeHtml(item.action||'')+'</div><div class="hormone-admin"><label>Source<input data-action="hormone-field" data-id="'+escapeHtml(item.id)+'" data-field="source" value="'+escapeHtml(item.source||'')+'"></label><label>Hormone<input data-action="hormone-field" data-id="'+escapeHtml(item.id)+'" data-field="hormone" value="'+escapeHtml(item.hormone||'')+'"></label><label>Target<input data-action="hormone-field" data-id="'+escapeHtml(item.id)+'" data-field="target" value="'+escapeHtml(item.target||'')+'"></label><label>Action<input data-action="hormone-field" data-id="'+escapeHtml(item.id)+'" data-field="action" value="'+escapeHtml(item.action||'')+'"></label><button type="button" class="mini-btn danger" data-action="delete-hormone" data-id="'+escapeHtml(item.id)+'">Delete</button></div></div>';
-    }).join('');
-    target.innerHTML=rows?'<div class="hormone-grid">'+rows+'</div>':'<div class="coming-soon" style="min-height:220px"><div><strong>Start Your Map</strong><span>Admin can add the first hormone card when you are ready.</span></div></div>';
   }
   function findResourceTable(id){return (state.resourceTables||[]).find(function(table){return table.id===id})}
   function findResourceRow(table,rowId){return table&&Array.isArray(table.rows)?table.rows.find(function(row){return row.id===rowId}):null}
@@ -1274,7 +1297,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     setChemFlowZoom(scale*.98);
     return true;
   }
-  function renderAll(){document.body.classList.toggle('admin-mode',isAdmin);renderSchematic();renderFlowcharts();renderResources();renderTables()}
+  function renderAll(){document.body.classList.toggle('admin-mode',isAdmin);renderFlowMode();renderSchematic();renderFlowcharts();renderResources();renderTables()}
   function chartPrintHtml(chart){
     var exportTitle=(chart&&chart.title)||'Flowchart';
     return '<div class="print-page"><h1>'+escapeHtml(exportTitle)+'</h1>'+flowHtml(chart,null,'__all__')+'</div>';
@@ -1369,7 +1392,6 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     });
   }
   function findChart(id){return (state.charts||[]).find(function(chart){return chart.id===id})}
-  function findHormone(id){return (state.hormones||[]).find(function(item){return item.id===id})}
   document.addEventListener('click',function(event){
     var nav=event.target.closest('.nav-tab');if(nav){showSection(nav.dataset.section);return}
     var action=event.target.closest('[data-ui-action],[data-action]');
@@ -1406,7 +1428,14 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(ui==='close-admin'){closeAdmin();return}
     if(act==='export-chart'){exportChart(findChart(action.dataset.chart));return}
     if(act==='export-tables'||act==='export-resources'){exportResources();return}
-    if(act==='select-chart-menu'){activeChartId=action.value||activeChartId;localStorage.setItem('chemistryActiveChart',activeChartId);renderAll();return}
+    if(act==='flow-mode'){flowMode=action.dataset.mode==='regular'?'regular':'instrument';localStorage.setItem('chemistryFlowMode',flowMode);renderAll();return}
+    if(act==='select-instrument'){activeInstrumentId=action.dataset.instrument;localStorage.setItem('chemistryActiveInstrument',activeInstrumentId);renderAll();return}
+    if(isAdmin&&act==='add-instrument'){var fresh=blankInstrumentChart();state.instrumentCharts.push(fresh);activeInstrumentId=fresh.id;localStorage.setItem('chemistryActiveInstrument',activeInstrumentId);renderAll();markDirty();return}
+    if(isAdmin&&act==='duplicate-instrument'){var originalInstrument=findInstrument(activeInstrumentId);if(originalInstrument){var copyInstrument=clone(originalInstrument);copyInstrument.id=uid('instrument');copyInstrument.title=(copyInstrument.title||'Instrument Flowchart')+' copy';state.instrumentCharts.push(copyInstrument);activeInstrumentId=copyInstrument.id;localStorage.setItem('chemistryActiveInstrument',activeInstrumentId);renderAll();markDirty()}return}
+    if(isAdmin&&act==='delete-instrument'){state.instrumentCharts=state.instrumentCharts.filter(function(chart){return chart.id!==activeInstrumentId});activeInstrumentId=(state.instrumentCharts[0]&&state.instrumentCharts[0].id)||'';localStorage.setItem('chemistryActiveInstrument',activeInstrumentId);renderAll();markDirty();return}
+    if(isAdmin&&act==='add-instrument-module'){var addInstrument=findInstrument(activeInstrumentId),addBranch=addInstrument&&addInstrument.branches.find(function(branch){return branch.id===action.dataset.branch});if(addBranch){addBranch.modules.push({id:uid('module'),name:'Module',tests:''});renderAll();markDirty()}return}
+    if(isAdmin&&act==='remove-instrument-module'){var removeInstrument=findInstrument(activeInstrumentId),removeBranch=removeInstrument&&removeInstrument.branches.find(function(branch){return branch.id===action.dataset.branch});if(removeBranch){removeBranch.modules=removeBranch.modules.filter(function(module){return module.id!==action.dataset.module});renderAll();markDirty()}return}
+    if(isAdmin&&act==='save-instrument'){saveLocal();if(safeDoc)safeDoc.saveNow({reason:'manual'}).then(function(){showToast('Flowchart saved')}).catch(function(e){showToast('Save failed: '+e.message,true)});return}
     if(act==='select-chart'){
       activeChartId=action.dataset.chart||activeChartId;
       localStorage.setItem('chemistryActiveChart',activeChartId);
@@ -1582,8 +1611,6 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         applyOutlineRows(outlineChart,outlineRows);renderAll();markDirty();
       }
     }
-    if(act==='add-hormone'){state.hormones.push({id:uid('hormone'),source:'Source organ',hormone:'Hormone',target:'Target',action:'Action'});renderAll();markDirty()}
-    if(act==='delete-hormone'){state.hormones=state.hormones.filter(function(item){return item.id!==action.dataset.id});renderAll();markDirty()}
   });
   document.addEventListener('pointerdown',function(event){
     if(!isAdmin||!chemMoveMode||event.button!==0||event.target.closest('button,[contenteditable="true"],input,textarea,select'))return;
@@ -1739,11 +1766,11 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       }
       return;
     }
-    if(event.target.dataset.action==='chart-field'||event.target.dataset.action==='chart-paths'||event.target.dataset.action==='chart-links'||event.target.dataset.action==='branch-field'||event.target.dataset.action==='outline-field'||event.target.dataset.action==='outline-note'||event.target.dataset.action==='outline-color'||event.target.dataset.action==='hormone-field')renderAll();
+    if(event.target.dataset.action==='chart-field'||event.target.dataset.action==='chart-paths'||event.target.dataset.action==='chart-links'||event.target.dataset.action==='branch-field'||event.target.dataset.action==='outline-field'||event.target.dataset.action==='outline-note'||event.target.dataset.action==='outline-color')renderAll();
   });
   document.addEventListener('blur',function(event){
     if(!isAdmin)return;
-    if(event.target.matches&&event.target.matches('[data-schematic-field]')){var target=event.target,line=target.dataset.schematicLine,index=Number(target.dataset.schematicIndex),field=target.dataset.schematicField,value=plainCellText(target.innerHTML);if(line==='sample')state.schematic.sample=value;else if(state.schematic[line]&&state.schematic[line][index])state.schematic[line][index][field]=value;markDirty();return}
+    if(event.target.matches&&event.target.matches('[data-instrument-field]')){var target=event.target,instrument=findInstrument(target.dataset.instrumentId),field=target.dataset.instrumentField,value=plainCellText(target.innerHTML);if(!instrument)return;if(field==='title'||field==='sample')instrument[field]=value||'Title';else{var branch=instrument.branches.find(function(item){return item.id===target.dataset.branch});if(branch){if(field==='branch-title')branch.title=value||'Title';else{var module=branch.modules.find(function(item){return item.id===target.dataset.module});if(module)module[field==='module-name'?'name':'tests']=value}}}renderAll();markDirty();return}
     if(event.target&&event.target.dataset&&event.target.dataset.action)chemEditSessionKey='';
     var title=event.target.closest&&event.target.closest('[data-direct-node-title]');
     if(!title)return;
