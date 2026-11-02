@@ -51,6 +51,16 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
 .cobas-card{margin-bottom:18px;padding:16px;border:1px solid var(--line);border-top:5px solid var(--blue);border-radius:16px;background:#fff;box-shadow:var(--shadow)}.cobas-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px}.cobas-head h2{font-size:23px;color:var(--deep)}.cobas-head p,.cobas-note{font-size:12px;line-height:1.5;color:var(--muted)}.cobas-note{margin-top:10px}.cobas-sample{width:min(520px,100%);margin:0 auto;padding:13px 18px;border:2px solid var(--deep);border-radius:10px;background:var(--pale);color:var(--deep);font-size:16px;font-weight:900;text-align:center;box-shadow:none}.cobas-branches{display:block;width:100%;height:54px;color:var(--blue)}.cobas-branches path{fill:none;stroke:currentColor;stroke-width:2;vector-effect:non-scaling-stroke}.cobas-branches .branch-mobile{display:none}.cobas-swipe{display:none}.cobas-lines{display:grid;grid-template-columns:1fr 1fr;gap:14px}.cobas-line{min-width:0;border:1px solid var(--line);border-radius:12px;background:var(--ice);padding:12px}.cobas-line h3{text-align:center;color:var(--deep);font-size:18px;margin-bottom:10px}.cobas-modules{display:grid;grid-template-columns:repeat(var(--modules),minmax(0,1fr));gap:7px}.cobas-module{min-width:0}.cobas-machine{min-height:72px;display:flex;align-items:center;justify-content:center;position:relative;border:2px solid var(--deep);border-radius:8px;background:#fff;color:var(--deep);font-size:14px;font-weight:900;text-align:center;padding:7px 4px;box-shadow:none}.cobas-machine::after{content:"";position:absolute;left:25%;right:25%;bottom:-6px;height:5px;border:1px solid var(--deep);border-radius:0 0 4px 4px;background:var(--sky)}.cobas-machine svg{position:absolute;top:9px;right:7px;width:23px;height:12px;opacity:.4}.cobas-test-list{margin-top:12px;padding:9px 7px;border:1px solid var(--line);border-radius:8px;background:#fff;min-height:95px}.cobas-test-list small{display:block;color:var(--muted);font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}.cobas-edit{white-space:pre-line;overflow-wrap:anywhere;font-size:12px;line-height:1.4;color:var(--ink);min-height:1em}.admin-mode .cobas-edit{border:1px dashed var(--blue);border-radius:5px;padding:3px;cursor:text}.cobas-edit:focus{outline:2px solid var(--gold);background:#fff}.cobas-section-title{margin:0 0 12px;color:var(--deep);font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}
 @media(max-width:1000px){.cobas-lines{grid-template-columns:1fr}.cobas-branches{height:35px}}
 @media(max-width:760px){.cobas-branches .branch-desktop{display:none}.cobas-branches .branch-mobile{display:block}.cobas-swipe{display:block;color:var(--muted);font-size:11px;margin:0 0 8px;text-align:center}.cobas-card{padding:11px}.cobas-branches{height:35px}.cobas-lines{grid-template-columns:1fr}.cobas-line{overflow-x:auto}.cobas-modules{min-width:610px}.cobas-line[data-line="cobas4"] .cobas-modules{min-width:470px}.chem-flow-canvas{height:76dvh;min-height:420px}.chem-flow-diagrams select{flex:1;min-width:130px}.chem-flow-diagrams #chemChartCount{margin-right:0}}
+
+/* Compact, editable assay tables and centered single-instrument charts. */
+.resource-tabs{display:flex!important;flex-wrap:nowrap;overflow-x:auto;gap:5px;margin-bottom:8px;padding-bottom:4px;scrollbar-width:thin}.resource-tabs .chem-chart-tab{flex:none;padding:6px 10px}
+.resource-table-card{padding:11px}.resource-table-head{margin-bottom:7px}.resource-title-display{font-size:20px}
+.assay-table{min-width:0}.assay-table th:first-child,.assay-table td:first-child{width:38%}.assay-table th{padding:7px 9px}.assay-table td{padding:5px 8px;line-height:1.2}.assay-table .cell-text{min-height:0}
+.admin-mode .assay-table .cell-text{padding:4px 6px}.resource-table-wrap{border-radius:8px}
+.cobas-lines.single-branch{grid-template-columns:minmax(0,1fr);max-width:800px;margin-inline:auto}
+.instrument-print-page.single-instrument .instrument-print-inner{width:820px;margin-left:-410px}
+.instrument-print-page .cobas-lines.single-branch{grid-template-columns:minmax(0,1fr)!important;max-width:760px;margin-inline:auto}
+@media(max-width:760px){.assay-table{min-width:0}.assay-table th:first-child,.assay-table td:first-child{width:55%}.assay-table td{font-size:12px;padding:5px 6px}.resource-tabs{flex-wrap:nowrap;overflow-x:auto;padding-bottom:5px}.resource-tabs .chem-chart-tab{flex:none}}
 </style>
 
 <style>
@@ -78,6 +88,7 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
 .instrument-print-page .cobas-module{grid-template-columns:100px minmax(0,1fr)!important;gap:8px!important;padding-bottom:6px}.instrument-print-page .cobas-machine{width:auto!important;height:64px;min-height:64px;margin:0!important;font-size:15px}.instrument-print-page .cobas-module:not(:last-child)::after{top:64px;left:50px;bottom:0;height:auto}
 .instrument-print-page .cobas-test-list{min-height:0;padding:5px 6px}.instrument-print-page .cobas-test-list small{margin-bottom:2px;font-size:11px}.instrument-print-page .cobas-test-columns{grid-template-columns:repeat(var(--test-columns,1),minmax(0,1fr))!important;gap:4px}.instrument-print-page .cobas-test-column:nth-child(odd):not(:first-child){border-left:1px solid var(--line);padding-left:5px}
 .instrument-print-page .cobas-edit{min-height:0!important;border:0!important;outline:0!important;padding:0!important;font-size:13px;line-height:1.15}.instrument-print-page .cobas-test-columns[data-columns="4"] .cobas-edit,.instrument-print-page .cobas-test-columns[data-columns="5"] .cobas-edit{font-size:12.5px;line-height:1.15}.instrument-print-page .admin-only,.instrument-print-page .cobas-key-builder{display:none!important}
+.instrument-print-page.single-instrument .cobas-test-column.cobas-edit{font-size:15px;line-height:1.17}
 @media print{body.instrument-printing #printArea .instrument-print-page{break-after:avoid;page-break-after:avoid}body.instrument-printing #printArea .cobas-machine,body.instrument-printing #printArea .cobas-sample,body.instrument-printing #printArea mark{-webkit-print-color-adjust:exact;print-color-adjust:exact}.hub-pdf-modal{display:none!important}}
 </style>
 
@@ -136,12 +147,12 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
     <div id="regularFlowchartPane" role="tabpanel" hidden><div class="chem-flow-diagrams"><div id="regularChartTabs" class="chem-chart-tabs"></div><div class="chem-flow-spacer"></div><button type="button" class="mini-btn admin-only" data-action="add-chart">+ New flowchart</button><button type="button" class="mini-btn admin-only" data-action="duplicate-chart">Duplicate</button><button type="button" class="mini-btn admin-only" data-action="save-chart">Save</button></div><div id="flowcharts"></div></div>
   </section>
   <section class="section" id="sec-tables">
-    <div class="hero"><h1>Tables</h1><p>Editable student note tables for Chemistry topics, chart summaries, and study organization.</p></div>
+    <div class="hero"><h1>Tables</h1><p>Assays organized by topic, with space for your notes.</p></div>
     <div class="section-actions">
       <button type="button" class="btn" data-action="export-tables">Print / Save Current Table PDF</button>
     </div>
     <div class="resource-table-actions admin-only">
-      <button type="button" class="mini-btn" data-action="add-resource-table">Add Table</button>
+      <button type="button" class="mini-btn" data-action="add-resource-table">+ Assay tab</button>
     </div>
     <div id="resourceTables" class="resource-shell"></div>
   </section>
@@ -301,95 +312,20 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     }
     return normalizeResourceTable(table,0);
   }
+  var ASSAY_GROUPS=[
+    ['Liver',['Alanine aminotransferase','Albumin','Alkaline phosphatase','Ammonia','Aspartate aminotransferase','Direct bilirubin','Lactate dehydrogenase','Total bilirubin','Total protein']],
+    ['Kidney & Electrolytes',['Blood urea nitrogen','Calcium','Chloride','Creatinine','Magnesium','Phosphorus','Potassium','Sodium','Total carbon dioxide','Uric acid','Urine calcium','Urine chloride','Urine creatinine','Urine phosphate','Urine potassium','Urine protein','Urine sodium','Urine urea nitrogen','Urine uric acid']],
+    ['Cardiac & Muscle',['Creatine kinase','Creatine kinase myocardial band isoenzyme','Lactate dehydrogenase','N-terminal pro-B-type natriuretic peptide','Troponin T, fifth generation']],
+    ['Glucose & Lipids',['Beta-hydroxybutyrate','Glucose','High-density lipoprotein cholesterol','Lactate','Total cholesterol','Triglycerides']],
+    ['Thyroid & Hormones',['Cortisol','Free thyroxine','Parathyroid hormone','Quantitative human chorionic gonadotropin','Thyroid-stimulating hormone','Total thyroxine','Triiodothyronine uptake']],
+    ['Pancreas',['Amylase','Lipase']],
+    ['Infection & Inflammation',['C-reactive protein','Hepatitis B surface antigen','Procalcitonin','Syphilis screening']],
+    ['Therapeutic Drugs',['Carbamazepine','Digoxin','Free phenytoin','Gentamicin','Lithium','Methotrexate','Phenobarbital','Phenytoin','Theophylline','Tobramycin','Valproic acid','Vancomycin']],
+    ['Toxicology',['Acetaminophen','Amphetamines screen','Barbiturates screen','Benzodiazepines screen','Cannabinoids screen','Cocaine metabolite screen','Ethanol','Fentanyl screen','Methadone screen','Opiates screen','Oxycodone screen','Salicylate','Tricyclic antidepressants screen']],
+    ['Body Fluids & Nutrition',['Cerebrospinal fluid glucose','Cerebrospinal fluid lactate','Cerebrospinal fluid protein','Transthyretin (prealbumin)']]
+  ];
   function starterResourceTables(){
-    return [
-      makeResourceTable('Heme, Porphyrins, And Iron',['Topic','Notes'],[
-        {type:'subsection',title:'Hemoglobin And Myoglobin'},
-        ['Hemoglobin','carries oxygen to tissues\ncarries carbon dioxide back to lungs\nmajor buffering system\nadult hemoglobin has two alpha and two beta chains\nhemoglobin A is adult\nhemoglobin F is fetal'],
-        ['Defects','hemoglobinopathy means structure problem\nhemoglobinopathy is qualitative\nthalassemia means production amount problem\nthalassemia is quantitative'],
-        ['Synthesis','made in immature red blood cells in bone marrow\nheme made in mitochondria\nglobin made in cytoplasm\nneeds enough iron'],
-        ['Degradation','in blood vessels is intravascular hemolysis\noutside blood vessels is extravascular hemolysis\nspleen liver and bone marrow are main sites\nheme becomes bilirubin and urobilinogen\niron is reclaimed and stored'],
-        ['Myoglobin','oxygen carrier in skeletal and cardiac muscle\none polypeptide and one heme group\nmuscle injury raises serum and urine myoglobin\nhigh myoglobin can damage kidneys\nurine myoglobin can make blood pad positive'],
-        {type:'subsection',title:'Heme'},
-        ['Heme','not a protein\nprosthetic group bound to proteins\nflat cyclic tetrapyrrole\ncentral ferrous iron atom'],
-        {type:'subsection',title:'Porphyrins And Porphyrias'},
-        ['Porphyrins','intermediates in heme pathway\ndark red color\norange red fluorescence\ncauses photosensitivity\nprotect specimens from light'],
-        ['Solubility','uroporphyrin has most water solubility\nuroporphyrin is found in urine\ncoproporphyrin has middle solubility\ncoproporphyrin can be in blood urine and feces\nlow solubility porphyrins show more in feces or blood'],
-        ['Porphyria groups','erythropoietic means red cell related\nhepatic means liver related\nneuropsychiatric has abdominal and nervous system symptoms\ncutaneous has photosensitivity and skin changes\nneurocutaneous has both'],
-        ['Acute disease','acute types have neurologic attacks\nacute intermittent porphyria is most common acute type\nmany people with acute intermittent porphyria have no symptoms\nnon acute types are chronic skin types\nporphyria cutanea tarda is most common non acute type'],
-        ['Secondary porphyrinuria','acquired increase in urinary porphyrins\nnot inherited heme synthesis defect\nliver disease can cause it\nlead poisoning can cause it'],
-        ['Testing','acute porphyria starts with urine porphobilinogen\ncutaneous porphyria starts with urine porphyrins\nerythropoietic protoporphyria uses plasma or whole blood\nkeep urine blood and feces protected from light'],
-        {type:'subsection',title:'Iron'},
-        ['Iron','trace element in body\nferrous iron is iron two plus\nferric iron is iron three plus\niron three plus must be reduced before absorption\nabsorbed in intestine\nlost through cells urine feces blood loss and menstruation'],
-        ['Iron tests','serum iron measures iron bound to transferrin\nearly morning sample is preferred\nhemolysis falsely increases serum iron\ntransferrin transports iron\ntotal iron binding capacity shows possible binding\npercent saturation compares serum iron to binding capacity\nferritin is storage and best early deficiency marker']
-      ]),
-      makeResourceTable('Metals, Vitamins, And Nutrition',['Topic','Notes'],[
-        {type:'subsection',title:'Trace And Toxic Elements'},
-        ['Definitions','essential element is needed for normal function\nreplacement fixes impairment if truly essential\ntrace elements are needed in tiny amounts\nultratrace elements are needed in even smaller amounts\nnonessential elements matter because many are toxic'],
-        ['Collection','contamination is the big issue\ntube stopper additive cups pipettes and water can contaminate\nroyal blue top is typical\nspecial handling is needed for trace testing'],
-        ['Methods','atomic emission measures emitted radiation\natomic absorption measures absorbed light\nmass spectrometry measures mass to charge\nno method is best for everything\nchoice depends on sensitivity cost speed and coverage'],
-        ['Chromium','used in stainless steel and industry\nchromium three plus is essential\nchromium three plus helps insulin action\nchromium six plus is easier to absorb\nchromium six plus is more toxic\nchromium six plus is linked to lung cancer risk'],
-        ['Copper','important cofactor\nhelps reduce iron\ntransported mainly bound to albumin\nmost copper leaves in bile\ntoxicity can damage liver kidney and nervous system\nWilson disease has copper rings in eyes\nMenkes disease is severe copper metabolism problem'],
-        ['Manganese','used in steel production\nstored mostly in fat and bone\nleaves mainly in bile\ndeficiency can cause clotting issues and dermatitis\ntoxicity can cause nausea headache anxiety and confusion\nmanganese madness can cause random laughing or crying\nchronic toxicity can look like Parkinson disease'],
-        ['Selenium','used in supplements and industry\nwell absorbed from food\nleaves mostly in urine\nimportant antioxidant\nneeded for thyroid hormone synthesis\ndeficiency can cause cardiomyopathy\ntoxicity can cause stomach heart rate and nervous system symptoms'],
-        ['Zinc','mostly in muscle and bone\nimportant for many enzymes\nhelps DNA RNA proteins glucose and insulin function\nleaves mostly in feces\ntoo much zinc can lower copper absorption\nzinc can be used for Wilson disease\ndeficiency can affect growth and development'],
-        {type:'subsection',title:'Vitamins'},
-        ['Definitions','deficiency means not enough due to diet absorption or organisms\ninsufficiency means body needs more than usual\ntoxicity means too much intake causing harm\ntoxicity can affect liver or kidneys'],
-        ['Fat soluble','vitamins A D E K\nneed fat and bile acids for absorption\ncarried by lipoproteins\nstored in intestine liver and fat tissue\nhigher toxicity risk because they are stored'],
-        ['Water soluble','vitamin C and B vitamins\nnot stored much\nremoved in urine and feces\nneed regular resupply\ntoxicity risk is lower unless kidney function is poor'],
-        ['B vitamins','B1 thiamine affects energy metabolism\nB1 deficiency causes beriberi\nB6 helps amino acid metabolism and heme synthesis\nB7 biotin deficiency can cause hair loss and depression\nB12 affects blood cell formation\nB12 deficiency causes megaloblastic anemia'],
-        ['Folate','most common vitamin deficiency\nneeded for one carbon transfer\ndeficiency causes megaloblastic anemia\nlow folate in pregnancy increases neural tube defect risk\nfolate and B12 must be separated as anemia causes'],
-        ['Vitamin B12','also called cobalamin\nabsorption needs intrinsic factor\nlow intake or malabsorption can cause deficiency\npernicious anemia is a cause\ndeficiency causes megaloblastic anemia'],
-        ['Vitamin C','also called ascorbic acid\nneeded for collagen\ndeficiency causes scurvy\nsigns include bleeding gums petechiae and bruising'],
-        ['Vitamin A','important for vision\nalso helps growth and immune function\ndeficiency can cause night blindness'],
-        ['Vitamin D','few foods naturally contain it\nimportant for calcium and phosphorus metabolism\nused to assess parathyroid and bone problems\ndeficiency can cause rickets or osteomalacia\nchronic kidney disease can affect vitamin D'],
-        ['Vitamin E','antioxidant\nprotects cell integrity\ndeficiency can affect nerves muscles eyes and red cells'],
-        ['Vitamin K','needed for clotting factors\ndeficiency causes easy bruising and bleeding\ncan cause abnormal clotting screen\nnewborn shot prevents serious bleeding'],
-        ['Absorption','small intestine is main absorption site\nlarge intestine handles vitamin B12 and vitamin K metabolism\ncommon assays are folate B12 and vitamin D'],
-        {type:'subsection',title:'Nutrition'},
-        ['Malnutrition','marasmus means low protein and low calories\nmarasmus causes general wasting\nkwashiorkor means enough calories but low protein\nkwashiorkor causes low albumin and swollen belly'],
-        ['Causes','eating disorders\nlimited diets\ncancer cachexia\npoor digestion\npoor absorption\nloss of appetite from disease or therapy\nsurgery effects\ndrug interactions'],
-        ['Outcomes','higher illness and death risk\npoor wound healing\nmore infections\nlonger hospital stay\nweakness and poor body function'],
-        ['Assessment','history and weight loss\nsigns and symptoms\nheight and weight\nskinfold thickness\narm and wrist measurements\nmuscle strength\nbody composition'],
-        ['Lab tools','protein markers are most useful\nblood counts can drop\nimmune function can decrease\nvitamin B12 folate vitamin A and vitamin D may be checked\nfecal fat can show malabsorption\nelectrolytes and trace elements may be checked'],
-        ['Protein markers','transferrin\ntransthyretin also called prealbumin\nretinol binding protein\nalbumin\namino acids\ninsulin like growth factor one\nleptin'],
-        ['Limits','no single test proves nutrition status\ninflammation changes protein markers\nliver disease changes results\nrecent food intake matters\nhydration changes concentration'],
-        ['Protein status','normal C reactive protein with low prealbumin suggests protein malnutrition\nhigh C reactive protein can falsely lower prealbumin\nfalling C reactive protein with rising prealbumin suggests improvement'],
-        ['Nutrition support','enteral means through the gut\nparenteral means through a vein\nused when patient cannot eat enough\nmay be needed after weight loss or long illness'],
-        ['Total parenteral nutrition','custom nutrition through a central line\ncan help restore weight\ncan support healing bowel\nrisks include sepsis glucose problems kidney issues and bone issues\ncan cause fluid electrolyte acid base vitamin and mineral problems\nlabs monitor glucose electrolytes kidney liver minerals and proteins']
-      ]),
-      makeResourceTable('Pediatric And Geriatric Clinical Chemistry',['Topic','Notes'],[
-        {type:'subsection',title:'Geriatric Clinical Chemistry'},
-        ['Definitions','gerontology is study of aging\ngeriatrics is care of older adults\nolder adults are not just older versions of young adults'],
-        ['Muscle','muscle mass decreases with age\ncreatinine depends on muscle mass\ncreatinine can look normal even when kidney function is worse'],
-        ['Bone','bone density decreases with age\nrisk is higher after menopause\nosteoporosis increases fracture risk\ncalcium and vitamin D matter\nalkaline phosphatase can rise with bone activity'],
-        ['Gastrointestinal','gastric acid can decrease\nmalnutrition risk increases\nB12 calcium iron and albumin can be affected'],
-        ['Kidney','functional glomeruli decrease\nkidney size and weight can decrease\nfiltration decreases with age\nwater electrolyte and acid base control gets weaker'],
-        ['Immune','thymus shrinks\nimmune response decreases\ninfection risk increases\nshingles risk increases'],
-        ['Endocrine','growth hormone decreases\nmelatonin can decrease\nsex hormones decrease\ninsulin sensitivity decreases\ntype two diabetes risk increases'],
-        ['Lab interpretation','reference ranges are harder in older adults\nmany older adults have chronic conditions\npatient history and trends matter a lot\nbaseline labs are helpful'],
-        ['Collection','fragile skin\nrolling veins\nbruising is more common\ntape can tear skin\nsmall needles can increase hemolysis risk'],
-        ['Disease patterns','hypertension is very common\nhigh cholesterol is common\nmultiple chronic diseases often occur together\nheart attack may show shortness of breath instead of chest pain\nurinary tract infection can cause confusion or delirium'],
-        ['Drug metabolism','absorption can slow\ndehydration affects distribution\nlower liver blood flow affects metabolism\nlower kidney function slows excretion\npolypharmacy is common'],
-        ['Health support','exercise improves strength and balance\nexercise lowers fall risk\nnutrition helps quality of life\nbeing active earlier helps later aging'],
-        {type:'subsection',title:'Neonate And Pediatric Clinical Chemistry'},
-        ['Birth transition','baby switches from placenta to breathing air\nlungs need surfactant to expand\nlung expansion increases pulmonary blood flow\nmany changes happen quickly after birth'],
-        ['Growth','some weight loss after birth is normal\nbody weight doubles around four to six months\npremature babies grow slower\nsmall for gestational age means below tenth percentile'],
-        ['Prematurity','organs are not fully mature at birth\nkidneys and liver need time to mature\nearlier gestation has higher risk\nblood volume is very small'],
-        ['Collection','small volume is very important\ntoo much blood draw can cause anemia\nheel sticks are common in babies\nheel sticks stop around six months\nheel sticks risk hemolysis and tissue fluid contamination\nsmall tubes can evaporate after opening\nclots are common in small samples'],
-        ['Point of care','needs less sample\ngives faster results\nglucose testing is common\nblood gas testing can be done near bedside\nwhole blood testing cannot always show hemolysis'],
-        ['Blood gases','type one pneumocytes do gas exchange\ntype two pneumocytes make surfactant\nlow surfactant can cause respiratory distress\nrespiratory distress can cause respiratory acidosis\ncarbon dioxide rises when lungs cannot remove it'],
-        ['Acid base','respiratory acidosis is most common in neonates\nmetabolic acidosis can come from poor perfusion or kidney issues\nalkalosis is less common\npyloric stenosis can cause metabolic alkalosis'],
-        ['Electrolytes','sodium balance is important\nhigh sodium can come from water loss\nlow sodium can come from too much water\ndiluted formula can cause low sodium and seizures\npotassium can rise after transfusion'],
-        ['Kidney','filtration is low at birth\nkidneys develop rapidly near thirty five weeks\nkidney function takes about two years to mature\nnewborn creatinine is lower because muscle mass is low'],
-        ['Liver','newborn liver does not handle bilirubin well yet\nbilirubin can require phototherapy\nliver helps glucose control\nliver makes albumin and clotting factors\nammonia is higher in newborns'],
-        ['Bone','bone growth needs calcium phosphate and magnesium\nvitamin D parathyroid hormone and calcitonin regulate bone\nlow vitamin D can cause rickets\nmost body calcium is in bone\nlow calcium can cause twitching irritability or seizures'],
-        ['Endocrine','growth hormones control childhood growth\npuberty starts when suppression is removed\nfollicle stimulating hormone and luteinizing hormone increase at puberty\nsex hormones rise during puberty'],
-        ['Immune','newborn immune system is immature\nbabies receive passive protection\nimmunoglobulin G crosses placenta\nimmunoglobulin A is in secretions and breast milk\nsevere combined immune deficiency affects both immune pathways'],
-        ['Genetic disease','cystic fibrosis is autosomal recessive\nnewborn screen is more than just phenylketonuria\nscreening varies by state\nlarge molecule storage disease accumulates big compounds\nsmall molecule disease makes smaller compounds easier to excrete'],
-        ['Drug and toxicology','children have different therapeutic and toxic ranges\ndrug absorption distribution metabolism and clearance matter\nsome drugs act differently in neonates\naccidental ingestion is a major concern']
-      ])
-    ];
+    return ASSAY_GROUPS.map(function(group){return makeResourceTable(group[0],['Assay','Your notes'],group[1].map(function(name){return [name,'']}))});
   }
   function normalizeResourceTable(table,index){
     table=table&&typeof table==='object'?table:{};
@@ -410,9 +346,6 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       });
       return {id:row.id||uid('row'),type:'data',cells:cells};
     });
-    if(!rows.length){
-      rows=[{id:uid('subsection'),type:'subsection',title:'Student Notes'},{id:uid('row'),type:'data',cells:{}},{id:uid('row'),type:'data',cells:{}}];
-    }
     rows.forEach(function(row){
       if(row.type!=='data')return;
       row.cells=row.cells||{};
@@ -425,13 +358,12 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function normalizeResourceTables(tables,options){
     var starter=starterResourceTables();
-    if(!Array.isArray(tables)||!tables.length)return starter;
+    if(!Array.isArray(tables))return starter;
     var normalized=tables.map(normalizeResourceTable);
     if(options&&options.upgradeStarters){
       var custom=normalized.filter(function(table){return !starterResourceTitle(table.title)});
       return starter.concat(custom);
     }
-    if(isBlankOldResourceStarter(normalized))return starter;
     return normalized;
   }
   function isBlankOldResourceStarter(tables){
@@ -458,16 +390,18 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       ['CARB (TEGR)','DIG','GENTR','THEO','TOBT','TSH','VANR','CKMB','PBNP','TNT GEN 5','PCT','CORTI','BHCGQ','TU','FT4','T4','PTH','CPK','SYPH','HBSAG']
     ]
   ];
-  function fillCobasQcLists(chart){chart.branches.slice(0,2).forEach(function(branch,bi){(COBAS_QC_LISTS[bi]||[]).forEach(function(list,mi){if(branch.modules[mi])branch.modules[mi].tests=list.join('\n')})});chart.testListsRevision='qc-2025-v1';return chart}
-  function defaultInstrumentChart(){var chart=blankInstrumentChart();chart.id='instrument-default';chart.title='Analyzer Flowchart';chart.instrumentTitle='Cobas 8000';return fillCobasQcLists(chart)}
+  function alphabetizeTests(value){return String(value||'').split(/\r?\n/).map(function(item){return item.trim()}).filter(Boolean).sort(function(a,b){return a.localeCompare(b,'en',{sensitivity:'base',numeric:true})}).join('\n')}
+  function fillCobasQcLists(chart){chart.branches.slice(0,2).forEach(function(branch,bi){(COBAS_QC_LISTS[bi]||[]).forEach(function(list,mi){if(branch.modules[mi])branch.modules[mi].tests=alphabetizeTests(list.join('\n'))})});chart.testListsRevision='qc-2025-v1';return chart}
+  function defaultInstrumentChart(){var chart=blankInstrumentChart();chart.id='instrument-default';chart.title='Main Lab';chart.instrumentTitle='Cobas 8000';return fillCobasQcLists(chart)}
+  function rlInstrumentChart(main){var source=main||defaultInstrumentChart(),branch=source.branches[1]||defaultInstrumentChart().branches[1],copy=JSON.parse(JSON.stringify(source));copy.id='instrument-rl';copy.title='RL';copy.branches=[JSON.parse(JSON.stringify(branch))];copy.branches[0].id='rl-cobas3';copy.branches[0].title='Cobas 3';copy.branches[0].modules.forEach(function(module){module.id=uid('module');module.tests=alphabetizeTests(module.tests)});return copy}
   function migrateSchematic(old){var chart=defaultInstrumentChart();if(!old||typeof old!=='object')return chart;chart.testListsRevision='';chart.sample=String(old.sample||chart.sample).replace(/^cobas 8000\s*/i,'').slice(0,100)||'Sample Handling';[['cobas4',0],['cobas2',1]].forEach(function(pair){var modules=old[pair[0]];if(Array.isArray(modules))chart.branches[pair[1]].modules=modules.map(function(item){return{id:uid('module'),name:String(item.name||'Module').slice(0,60),tests:String(item.tests||'').slice(0,1500)}})});return chart}
   function normalizeInstrumentChart(value,index){
     var base=defaultInstrumentChart();if(!value||typeof value!=='object')return base;
-    var out={id:String(value.id||uid('instrument')).slice(0,80),title:String(value.title||'Instrument Flowchart').slice(0,100),instrumentTitle:String(value.instrumentTitle|| (value.id==='instrument-default'?'Cobas 8000':'Title')).slice(0,100),sample:String(value.sample||'Sample Handling').slice(0,100),sampleColor:sanitizeColor(value.sampleColor,'#f4fbff'),colorKey:(Array.isArray(value.colorKey)?value.colorKey:[]).slice(0,30).map(function(item){return{id:String(item.id||uid('highlight')).slice(0,80),text:String(item.text||'').slice(0,80),color:sanitizeColor(item.color,'#fff0a8')}}).filter(function(item){return item.text}),testListsRevision:String(value.testListsRevision||''),branches:(Array.isArray(value.branches)&&value.branches.length?value.branches:base.branches).slice(0,6).map(function(branch,i){return{id:String(branch.id||uid('branch')).slice(0,80),title:String(branch.title||'Title').slice(0,100),modules:(Array.isArray(branch.modules)?branch.modules:base.branches[i%2].modules).slice(0,20).map(function(module){return{id:String(module.id||uid('module')).slice(0,80),name:String(module.name||'Module').slice(0,60),fill:sanitizeColor(module.fill,'#ffffff'),tests:String(module.tests||'').slice(0,2500)}})}})};
+    var out={id:String(value.id||uid('instrument')).slice(0,80),title:String(value.title||'Instrument Flowchart').slice(0,100),instrumentTitle:String(value.instrumentTitle|| (value.id==='instrument-default'?'Cobas 8000':'Title')).slice(0,100),sample:String(value.sample||'Sample Handling').slice(0,100),sampleColor:sanitizeColor(value.sampleColor,'#f4fbff'),colorKey:(Array.isArray(value.colorKey)?value.colorKey:[]).slice(0,30).map(function(item){return{id:String(item.id||uid('highlight')).slice(0,80),text:String(item.text||'').slice(0,80),color:sanitizeColor(item.color,'#fff0a8')}}).filter(function(item){return item.text}),testListsRevision:String(value.testListsRevision||''),branches:(Array.isArray(value.branches)&&value.branches.length?value.branches:base.branches).slice(0,6).map(function(branch,i){return{id:String(branch.id||uid('branch')).slice(0,80),title:String(branch.title||'Title').slice(0,100),modules:(Array.isArray(branch.modules)?branch.modules:base.branches[i%2].modules).slice(0,20).map(function(module){return{id:String(module.id||uid('module')).slice(0,80),name:String(module.name||'Module').slice(0,60),fill:sanitizeColor(module.fill,'#ffffff'),tests:alphabetizeTests(String(module.tests||'').slice(0,2500))}})}})};
     if(out.id==='instrument-default'&&out.testListsRevision!=='qc-2025-v1'){fillCobasQcLists(out);needsStarterSync=true}
     return out;
   }
-  function defaultState(){return{version:14,starter:'flowcharts-v3',updatedAt:Date.now(),charts:[],instrumentCharts:[defaultInstrumentChart()],resourceTables:starterResourceTables()}}
+  function defaultState(){var main=defaultInstrumentChart();return{version:15,starter:'assay-tables-v1',updatedAt:Date.now(),charts:[],instrumentCharts:[main,rlInstrumentChart(main)],resourceTables:starterResourceTables()}}
   state=defaultState();
   function looksLikeMinimalLiverStarter(data){
     var charts=data&&Array.isArray(data.charts)?data.charts:[];
@@ -556,7 +490,13 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       return copy;
     });
     var instrumentSource=Array.isArray(incoming.instrumentCharts)?incoming.instrumentCharts:(incoming.schematic?[migrateSchematic(incoming.schematic)]:base.instrumentCharts);
-    return {version:14,starter:base.starter,updatedAt:incoming.updatedAt||Date.now(),charts:charts,instrumentCharts:instrumentSource.map(normalizeInstrumentChart),resourceTables:normalizeResourceTables(incoming.resourceTables||base.resourceTables,{upgradeStarters:Number(incoming.version||0)<5})};
+    var instrumentCharts=instrumentSource.map(normalizeInstrumentChart);
+    if(Number(incoming.version||0)<15){
+      var main=instrumentCharts.find(function(chart){return chart.id==='instrument-default'})||instrumentCharts[0];
+      if(main){main.title='Main Lab';if(!instrumentCharts.some(function(chart){return chart.id==='instrument-rl'}))instrumentCharts.push(rlInstrumentChart(main))}
+      needsStarterSync=true;
+    }
+    return {version:15,starter:base.starter,updatedAt:incoming.updatedAt||Date.now(),charts:charts,instrumentCharts:instrumentCharts,resourceTables:normalizeResourceTables(incoming.resourceTables===undefined?base.resourceTables:incoming.resourceTables,{upgradeStarters:Number(incoming.version||0)<15})};
   }
   function saveLocal(){try{localStorage.setItem('chemistryHubState',JSON.stringify(state))}catch(e){}}
   function markDirty(){state.updatedAt=Date.now();saveLocal();if(safeDoc)safeDoc.scheduleSave(4000,'auto')}
@@ -1146,7 +1086,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     }
     function group(branch){return '<section class="cobas-line"><h3>'+edit(branch.title,'branch-title',branch.id)+'</h3><div class="cobas-modules">'+branch.modules.map(function(module){return '<div class="cobas-module"><div class="cobas-machine" style="--module-fill:'+sanitizeColor(module.fill,'#ffffff')+'">'+edit(module.name,'module-name',branch.id,module.id)+'<label class="cobas-color-control admin-only">Color <input type="color" data-action="instrument-module-color" data-branch="'+escapeHtml(branch.id)+'" data-module="'+escapeHtml(module.id)+'" value="'+sanitizeColor(module.fill,'#ffffff')+'"></label></div><div class="cobas-test-list"><small>Test List</small>'+testColumns(module,branch)+'</div><button type="button" class="mini-btn danger admin-only cobas-remove-module" data-action="remove-instrument-module" data-branch="'+escapeHtml(branch.id)+'" data-module="'+escapeHtml(module.id)+'">Remove</button></div>'}).join('')+'</div><button type="button" class="mini-btn admin-only cobas-add-module" data-action="add-instrument-module" data-branch="'+escapeHtml(branch.id)+'">+ Module</button></section>'}
     var keyHtml='<div class="cobas-color-key"><h3>Color Key</h3><div class="cobas-key-items">'+(data.colorKey||[]).map(function(item){return '<span class="cobas-key-chip"><mark style="background:'+sanitizeColor(item.color,'#fff0a8')+'">'+escapeHtml(item.text)+'</mark><input type="color" class="admin-only" data-action="instrument-key-color" data-key="'+escapeHtml(item.id)+'" value="'+sanitizeColor(item.color,'#fff0a8')+'" aria-label="Color for '+escapeHtml(item.text)+'"><button type="button" class="mini-btn danger admin-only" data-action="delete-instrument-highlight" data-key="'+escapeHtml(item.id)+'" aria-label="Remove '+escapeHtml(item.text)+' from key">×</button></span>'}).join('')+'</div><div class="cobas-key-builder admin-only"><input type="text" data-highlight-text placeholder="Word or phrase" aria-label="Word or phrase to highlight"><input type="color" data-highlight-color value="#fff0a8" aria-label="Highlight color"><button type="button" class="mini-btn" data-action="add-instrument-highlight">Add highlight</button></div></div>';
-    host.innerHTML='<article class="cobas-card"><div class="cobas-head"><div><div class="cobas-section-title">Analyzer flowchart</div><h2>'+edit(data.title,'title')+'</h2></div><button type="button" class="mini-btn danger admin-only" data-action="delete-instrument">Delete flowchart</button></div><div class="cobas-sample" style="--sample-fill:'+sanitizeColor(data.sampleColor,'#f4fbff')+'"><strong class="cobas-instrument-title">'+edit(data.instrumentTitle,'instrument-title')+'</strong>'+edit(data.sample,'sample')+'<label class="cobas-sample-color admin-only">Color <input type="color" data-action="instrument-sample-color" value="'+sanitizeColor(data.sampleColor,'#f4fbff')+'"></label></div><svg class="cobas-branches" viewBox="0 0 1000 54" preserveAspectRatio="none" aria-hidden="true"><path class="branch-desktop" d="M500 0V22 M250 22H750 M250 22V54 M750 22V54"/><path class="branch-mobile" d="M500 0V54"/></svg><div class="cobas-lines">'+data.branches.map(group).join('')+'</div>'+keyHtml+'</article>';
+    host.innerHTML='<article class="cobas-card"><div class="cobas-head"><div><div class="cobas-section-title">Analyzer flowchart</div><h2>'+edit(data.title,'title')+'</h2></div><button type="button" class="mini-btn danger admin-only" data-action="delete-instrument">Delete flowchart</button></div><div class="cobas-sample" style="--sample-fill:'+sanitizeColor(data.sampleColor,'#f4fbff')+'"><strong class="cobas-instrument-title">'+edit(data.instrumentTitle,'instrument-title')+'</strong>'+edit(data.sample,'sample')+'<label class="cobas-sample-color admin-only">Color <input type="color" data-action="instrument-sample-color" value="'+sanitizeColor(data.sampleColor,'#f4fbff')+'"></label></div><svg class="cobas-branches" viewBox="0 0 1000 54" preserveAspectRatio="none" aria-hidden="true"><path class="branch-desktop" d="'+(data.branches.length===1?'M500 0V54':'M500 0V22 M250 22H750 M250 22V54 M750 22V54')+'"/><path class="branch-mobile" d="M500 0V54"/></svg><div class="cobas-lines '+(data.branches.length===1?'single-branch':'')+'">'+data.branches.map(group).join('')+'</div>'+keyHtml+'</article>';
   }
   function renderFlowcharts(){
     var charts=state.charts||[];
@@ -1210,7 +1150,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       }
       return '<tr>'+table.columns.map(function(col){return resourceCell(table,row,col)}).join('')+resourceRowControls(table,row,rowIndex)+'</tr>';
     }).join('');
-    return '<article class="resource-table-card" data-resource-table="'+escapeHtml(table.id)+'"><div class="resource-table-head"><div><h2 class="resource-title-display">'+escapeHtml(table.title||'Chemistry Table')+'</h2>'+(isAdmin?'<input class="resource-title-input" data-action="resource-table-title" data-table="'+escapeHtml(table.id)+'" value="'+escapeHtml(table.title||'')+'">':'')+'</div>'+(isAdmin?'<div class="resource-table-tools"><button type="button" class="mini-btn" data-action="add-resource-row" data-table="'+escapeHtml(table.id)+'">Add Row</button><button type="button" class="mini-btn" data-action="add-resource-column" data-table="'+escapeHtml(table.id)+'">Add Column</button><button type="button" class="mini-btn" data-action="add-resource-image-column" data-table="'+escapeHtml(table.id)+'">Add Image Column</button><button type="button" class="mini-btn" data-action="add-resource-subsection" data-table="'+escapeHtml(table.id)+'">Add Subsection</button><button type="button" class="mini-btn" data-action="move-resource-table" data-table="'+escapeHtml(table.id)+'" data-dir="-1" '+(tableIndex>0?'':'disabled')+'>Move Table Up</button><button type="button" class="mini-btn" data-action="move-resource-table" data-table="'+escapeHtml(table.id)+'" data-dir="1" '+(tableIndex<(state.resourceTables||[]).length-1?'':'disabled')+'>Move Table Down</button><button type="button" class="mini-btn danger" data-action="delete-resource-table" data-table="'+escapeHtml(table.id)+'">Delete Table</button></div>':'')+'</div><div class="resource-table-wrap"><table class="resource-table">'+head+'<tbody>'+body+'</tbody></table></div></article>';
+    return '<article class="resource-table-card" data-resource-table="'+escapeHtml(table.id)+'"><div class="resource-table-head"><div><h2 class="resource-title-display">'+escapeHtml(table.title||'Chemistry Table')+'</h2>'+(isAdmin?'<input class="resource-title-input" data-action="resource-table-title" data-table="'+escapeHtml(table.id)+'" value="'+escapeHtml(table.title||'')+'">':'')+'</div>'+(isAdmin?'<div class="resource-table-tools"><button type="button" class="mini-btn" data-action="add-resource-row" data-table="'+escapeHtml(table.id)+'">+ Assay</button><button type="button" class="mini-btn" data-action="add-resource-column" data-table="'+escapeHtml(table.id)+'">Add Column</button><button type="button" class="mini-btn" data-action="add-resource-image-column" data-table="'+escapeHtml(table.id)+'">Add Image Column</button><button type="button" class="mini-btn" data-action="add-resource-subsection" data-table="'+escapeHtml(table.id)+'">Add Subsection</button><button type="button" class="mini-btn" data-action="move-resource-table" data-table="'+escapeHtml(table.id)+'" data-dir="-1" '+(tableIndex>0?'':'disabled')+'>Move Table Up</button><button type="button" class="mini-btn" data-action="move-resource-table" data-table="'+escapeHtml(table.id)+'" data-dir="1" '+(tableIndex<(state.resourceTables||[]).length-1?'':'disabled')+'>Move Table Down</button><button type="button" class="mini-btn danger" data-action="delete-resource-table" data-table="'+escapeHtml(table.id)+'">Delete Table</button></div>':'')+'</div><div class="resource-table-wrap"><table class="resource-table assay-table">'+head+'<tbody>'+body+'</tbody></table></div></article>';
   }
   function activeResourceTable(){
     state.resourceTables=normalizeResourceTables(state.resourceTables);
@@ -1360,7 +1300,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var chartHead=copy.querySelector('.cobas-head'),colorKey=copy.querySelector('.cobas-color-key');
     if(chartHead)chartHead.remove();
     if(colorKey)colorKey.remove();
-    var printHtml='<div class="instrument-print-page"><div class="instrument-print-inner"><h1 class="instrument-print-title">'+escapeHtml(chartTitle)+'</h1>'+copy.outerHTML+'</div></div>';
+    var singleBranch=!!copy.querySelector('.cobas-lines.single-branch');
+    var printHtml='<div class="instrument-print-page '+(singleBranch?'single-instrument':'')+'"><div class="instrument-print-inner"><h1 class="instrument-print-title">'+escapeHtml(chartTitle)+'</h1>'+copy.outerHTML+'</div></div>';
     area.innerHTML=printHtml;
     area.style.display='block';
     area.style.position='fixed';
@@ -1368,7 +1309,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     area.style.top='0';
     area.style.visibility='hidden';
     var inner=area.querySelector('.instrument-print-inner');
-    var naturalWidth=Math.max(1100,inner.scrollWidth);
+    var naturalWidth=Math.max(singleBranch?820:1100,inner.scrollWidth);
     var naturalHeight=Math.max(1,inner.scrollHeight);
     var scale=Math.min(1,(10.55*96)/naturalWidth,(8.05*96)/naturalHeight)*.98;
     area.style.display='';
@@ -1604,11 +1545,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     }
     if(act==='add-resource-table'){
       state.resourceTables=normalizeResourceTables(state.resourceTables);
-      var newResourceTable=makeResourceTable('New Chemistry Table',['Topic','Notes'],[
-        ['',''],
-        ['',''],
-        ['','']
-      ]);
+      var newResourceTable=makeResourceTable('New Assay Table',['Assay','Your notes'],[['','']]);
       state.resourceTables.push(newResourceTable);
       activeResourceTableId=newResourceTable.id;
       localStorage.setItem('chemistryActiveResourceTable',activeResourceTableId);
@@ -1885,7 +1822,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   });
   document.addEventListener('blur',function(event){
     if(!isAdmin)return;
-    if(event.target.matches&&event.target.matches('[data-instrument-field]')){var target=event.target,instrument=findInstrument(target.dataset.instrumentId),field=target.dataset.instrumentField,value=plainCellText(target.innerHTML);if(!instrument)return;if(field==='title'||field==='sample'||field==='instrument-title')instrument[field==='instrument-title'?'instrumentTitle':field]=value||'Title';else{var branch=instrument.branches.find(function(item){return item.id===target.dataset.branch});if(branch){if(field==='branch-title')branch.title=value||'Title';else{var module=branch.modules.find(function(item){return item.id===target.dataset.module});if(module){if(field==='module-name')module.name=value;else{var chunks=String(module.tests||'').split(/\r?\n/).map(function(item){return item.trim()}).filter(Boolean),groups=[];for(var i=0;i<chunks.length;i+=10)groups.push(chunks.slice(i,i+10));var column=Number(target.dataset.testColumn)||0;while(groups.length<=column)groups.push([]);groups[column]=value.split(/\r?\n/).map(function(item){return item.trim()}).filter(Boolean);module.tests=groups.reduce(function(all,part){return all.concat(part)},[]).join('\n')}}}}}renderAll();markDirty();return}
+    if(event.target.matches&&event.target.matches('[data-instrument-field]')){var target=event.target,instrument=findInstrument(target.dataset.instrumentId),field=target.dataset.instrumentField,value=plainCellText(target.innerHTML);if(!instrument)return;if(field==='title'||field==='sample'||field==='instrument-title')instrument[field==='instrument-title'?'instrumentTitle':field]=value||'Title';else{var branch=instrument.branches.find(function(item){return item.id===target.dataset.branch});if(branch){if(field==='branch-title')branch.title=value||'Title';else{var module=branch.modules.find(function(item){return item.id===target.dataset.module});if(module){if(field==='module-name')module.name=value;else{var chunks=String(module.tests||'').split(/\r?\n/).map(function(item){return item.trim()}).filter(Boolean),groups=[];for(var i=0;i<chunks.length;i+=10)groups.push(chunks.slice(i,i+10));var column=Number(target.dataset.testColumn)||0;while(groups.length<=column)groups.push([]);groups[column]=value.split(/\r?\n/).map(function(item){return item.trim()}).filter(Boolean);module.tests=alphabetizeTests(groups.reduce(function(all,part){return all.concat(part)},[]).join('\n'))}}}}}renderAll();markDirty();return}
     if(event.target&&event.target.dataset&&event.target.dataset.action)chemEditSessionKey='';
     var title=event.target.closest&&event.target.closest('[data-direct-node-title]');
     if(!title)return;
