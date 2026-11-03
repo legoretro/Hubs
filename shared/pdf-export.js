@@ -292,6 +292,8 @@
     modal.className='hub-pdf-modal'+(options.modalClass?' '+String(options.modalClass):'');
     if(scaleRow)scaleRow.classList.toggle('hub-pdf-hidden',hideScaleControls);
     if(scalePresets)scalePresets.classList.toggle('hub-pdf-hidden',hideScaleControls);
+    var tinyPreset=modal.querySelector('[data-pdf-preset="0.55"]');
+    if(tinyPreset)tinyPreset.classList.toggle('hub-pdf-hidden',!!options.hideTinyPreset);
     if(custom){
       custom.innerHTML=options.controlsHtml||'';
       custom.classList.toggle('visible',!!options.controlsHtml);

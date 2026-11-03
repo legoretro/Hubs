@@ -100,7 +100,7 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
 .sim-layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(300px,.85fr);gap:14px;align-items:stretch}
 .sim-stage,.sim-panel{border:1px solid var(--line);border-top:5px solid var(--blue);border-radius:14px;background:#fff;box-shadow:var(--shadow)}
 .sim-stage{position:relative;min-height:430px;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px 22px;perspective:1200px;background:var(--ice)}
-.sim-model{position:relative;width:min(100%,790px);transform-style:preserve-3d;transform:rotateX(9deg) rotateY(var(--sim-angle,-12deg));transition:transform .25s ease;z-index:1}
+.sim-model{position:relative;width:min(100%,790px);z-index:1}
 .sim-sampler{position:relative;width:86%;height:78px;margin:0 auto 35px;border:2px solid var(--deep);border-radius:4px;background:#e7f2f8;box-shadow:12px 12px 0 #c0d3df;display:flex;align-items:center;justify-content:center;flex-direction:column;color:var(--deep);font-weight:900;text-align:center}
 .sim-sampler::before{content:"";position:absolute;left:0;right:0;top:-22px;height:20px;background:#f3f8fb;border:2px solid var(--deep);border-bottom:0;transform:skewX(-26deg);transform-origin:bottom}
 .sim-sampler small{font-size:11px;text-transform:uppercase;letter-spacing:.07em}
@@ -115,8 +115,6 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
 .sim-unit-label{font-size:15px;font-weight:900;line-height:1.1}
 .sim-unit-light{position:absolute;right:12px;bottom:12px;width:8px;height:8px;border-radius:50%;background:#0f7b61;border:1px solid var(--deep)}
 .sim-unit[aria-pressed="true"] .sim-unit-front{outline:4px solid var(--blue);outline-offset:3px}
-.sim-angle{position:relative;z-index:1;display:flex;gap:8px;align-items:center;margin-top:28px;color:var(--muted);font-size:12px;font-weight:800}
-.sim-angle input{width:160px;accent-color:var(--blue)}
 .sim-panel{padding:18px}
 .sim-panel h2{font-size:22px;color:var(--deep);margin:0 0 5px}
 .sim-panel h3{font-size:18px;color:var(--deep);margin:18px 0 6px}
@@ -154,6 +152,13 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
 .chem-flow-modes button,.chem-flow-diagrams .chem-chart-tab,#instrumentFlowchartPane .mini-btn{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-weight:650;border-radius:5px}
 @media(max-width:760px){.cobas-card{padding:9px}.cobas-line{padding:7px}.cobas-module{grid-template-columns:1fr;gap:4px;padding-bottom:8px}.cobas-module .cobas-machine{width:100%;height:auto;min-height:45px}.cobas-module:not(:last-child)::after{left:50%;height:8px}.cobas-test-columns[data-columns] .cobas-edit{font-size:13px;line-height:1.22}.cobas-branches{height:28px}}
 .instrument-print-page .cobas-card{max-width:none}.instrument-print-page .cobas-machine{height:100%;min-height:0}.instrument-print-page .cobas-module:not(:last-child)::after{top:auto;bottom:0;height:5px}
+.sim-layout{grid-template-columns:minmax(0,1.55fr) minmax(300px,.8fr);align-items:stretch}.sim-stage{min-height:360px;perspective:none;padding:26px 20px;background:#f5f9fb}.sim-model{transform:none;transform-style:flat;transition:none}.sim-sampler{box-shadow:none;margin-bottom:28px}.sim-sampler::before{display:none}.sim-rail{top:83px}.sim-unit{height:145px;filter:none}.sim-unit-top,.sim-unit-side{display:none}.sim-unit-front{top:0;right:0;bottom:0;border-color:#7898aa;background:color-mix(in srgb,var(--sim-fill,#f4fbff) 25%,#edf4f8);gap:10px}.sim-unit-screen{height:25px;width:54%;border-color:#45647a;box-shadow:none}.sim-unit[aria-pressed="true"] .sim-unit-front{outline:3px solid var(--blue);outline-offset:2px}.sim-panel{grid-column:1/-1;padding:18px 22px}.sim-panel .sim-steps{grid-template-columns:repeat(3,minmax(0,1fr))}
+.sim-workstation{min-height:360px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;border:1px solid var(--line);border-top:5px solid var(--blue);border-radius:14px;background:#fff;box-shadow:var(--shadow);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.sim-computer-monitor{width:min(100%,370px);height:252px;padding:10px;border:9px solid #344b5b;border-radius:9px;background:#344b5b;box-shadow:0 8px 16px rgba(16,40,58,.13)}.sim-computer-screen{height:100%;overflow:auto;border-radius:3px;background:#f2f7fa;color:#18384d}.sim-computer-bar{padding:8px 10px;background:#1d4c69;color:#fff;font-size:12px;font-weight:750}.sim-computer-content{display:grid;gap:5px;padding:12px;font-size:12px}.sim-computer-content>span{color:#607989;text-transform:uppercase;letter-spacing:.06em;font-size:10px;font-weight:750}.sim-computer-content>strong{font-size:14px}.sim-computer-task-list{display:grid;gap:4px;margin-top:4px;border-top:1px solid #cbdce5;padding-top:7px}.sim-computer-task-list>div{display:flex;align-items:center;gap:6px;line-height:1.2}.sim-computer-dot{width:8px;height:8px;flex:none;border:1px solid #7793a3;border-radius:50%;background:#fff}.sim-computer-dot.done{background:#1b7b69;border-color:#1b7b69}.sim-computer-stand{height:24px;width:40px;background:#7a929e}.sim-computer-keyboard{width:min(85%,300px);height:14px;border:1px solid #8da4b0;border-radius:3px;background:repeating-linear-gradient(90deg,#e0e9ed 0 8px,#b9cbd3 8px 9px)}
+@media(max-width:900px){.sim-layout{grid-template-columns:1fr}.sim-panel{grid-column:auto}.sim-panel .sim-steps{grid-template-columns:1fr}.sim-stage,.sim-workstation{min-height:310px}}@media(max-width:560px){.sim-unit{height:125px}.sim-unit-label{font-size:11px}.sim-sampler{height:65px}.sim-computer-monitor{height:230px}}
+.chem-export-table-picker{border:1px solid var(--line);border-radius:8px;margin:12px 0;padding:10px;color:var(--deep)}.chem-export-table-picker legend{font-weight:800;font-size:13px}.chem-export-table-actions{display:flex;gap:6px;margin-bottom:7px}.chem-export-table-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;max-height:170px;overflow:auto}.chem-export-table-list label{display:flex;align-items:center;gap:6px;min-width:0;font:600 12px/1.2 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.chem-export-table-list input{accent-color:var(--blue)}.chem-export-table-list span{overflow-wrap:anywhere}
+.resource-print-table{break-inside:auto;page-break-inside:auto}.resource-print-table th{overflow-wrap:anywhere;word-break:break-word;hyphens:auto;letter-spacing:0;line-height:1.12}.resource-print-table thead{display:table-header-group}.resource-print-table tr{break-inside:avoid;page-break-inside:avoid}.resource-print-title{break-after:avoid;page-break-after:avoid}
+.hub-pdf-preview-content.chem-resource-print-preview{height:auto!important;overflow:visible!important}.hub-pdf-preview-page:has(.chem-resource-print-preview){height:auto;min-height:816px;overflow:visible}.hub-pdf-preview-content.chem-resource-print-preview .resource-print-page{height:auto!important;min-height:816px;overflow:visible!important}
+@media print{body.chem-resources-printing #printArea .resource-print-page{width:auto;height:auto;min-height:0;padding:0;overflow:visible}body.chem-resources-printing #printArea .resource-print-inner{zoom:var(--chem-resource-print-scale,1)}body.chem-resources-printing #printArea .resource-print-section{break-inside:auto;page-break-inside:auto}body.chem-resources-printing #printArea .resource-print-table th{white-space:normal;overflow-wrap:anywhere;word-break:break-word;font-size:7.8pt;line-height:1.12;padding:.04in}body.chem-resources-printing #printArea .resource-print-table td{font-size:8.4pt;line-height:1.14;padding:.04in}}
 </style>
 
 </head>
@@ -213,7 +218,7 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
   <section class="section" id="sec-tables">
     <div class="hero"><h1>Tables</h1></div>
     <div class="section-actions">
-      <button type="button" class="btn" data-action="export-tables">Print / Save Current Table PDF</button>
+      <button type="button" class="btn" data-action="export-tables">Export Tables PDF</button>
     </div>
     <div class="resource-table-actions admin-only">
       <button type="button" class="mini-btn" data-action="add-resource-table">+ Assay tab</button>
@@ -233,7 +238,7 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
 <div id="printArea" aria-hidden="true"></div>
 <div class="save-indicator" id="saveIndicator">Saved</div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="shared/pdf-export.js"></script>
+<script src="shared/pdf-export.js?v=20261102b"></script>
 <script src="safe-supabase-sync.js"></script>
 <script>
 const SUPABASE_URL='https://rbdvjwipedbxfbedjgoa.supabase.co';
@@ -251,7 +256,6 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   var activeResourceTableId=localStorage.getItem('chemistryActiveResourceTable')||'';
   var activeSimulationId=localStorage.getItem('chemistryActiveSimulation')||'';
   var selectedSimulationModule=Number(localStorage.getItem('chemistrySimulationModule')||0);
-  var simulationAngle=Number(localStorage.getItem('chemistrySimulationAngle')||-12);
   var simulationProgress={};
   try{simulationProgress=JSON.parse(localStorage.getItem('chemistrySimulationProgress')||'{}')||{}}catch(e){simulationProgress={}}
   var activeBranchByChart={};
@@ -475,7 +479,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     'Valproic acid':'VALP',
     'Vancomycin':'VANR'
   };
-  var RESOURCE_ASSAY_COLUMNS=['Assay','Purpose','Sample Type','Stability','Tube Type','Critical Levels','Measurement Range','Reference Range','Rejection Criteria','Interferences','Other Notes'];
+  var RESOURCE_ASSAY_COLUMNS=['Assay','Sample Type','Stability','Tube Type','Critical Levels','Measurement Range','Reference Range','Rejection Criteria','Interferences','Other Notes'];
   function assayLabel(name){return ASSAY_CODES[name]?name+' ('+ASSAY_CODES[name]+')':name}
   function upgradeAssayLabels(tables){var titles=ASSAY_GROUPS.map(function(group){return group[0]});tables.forEach(function(table){if(!titles.includes(table.title)||!table.columns.length)return;var first=table.columns[0].id;(table.rows||[]).forEach(function(row){if(row.type!=='data'||!row.cells)return;var name=plainCellText(row.cells[first]||'');if(ASSAY_CODES[name])row.cells[first]=assayLabel(name)})});return tables}
   function starterResourceTables(){
@@ -483,7 +487,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function upgradeResourceColumns(tables){
     tables.forEach(function(table){
-      var old=table.columns||[];
+      var old=(table.columns||[]).filter(function(col){return !/^purpose$/i.test(String(col.label||'').trim())});
       var assay=old.find(function(col){return /^assay$/i.test(col.label)})||old[0];
       var ordered=[];
       RESOURCE_ASSAY_COLUMNS.forEach(function(label){
@@ -499,11 +503,13 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function normalizeResourceTable(table,index){
     table=table&&typeof table==='object'?table:{};
-    var columns=Array.isArray(table.columns)&&table.columns.length?table.columns:resourceColumns(['Topic','Notes']);
-    columns=columns.map(function(col,colIndex){
+    var rawColumns=Array.isArray(table.columns)&&table.columns.length?table.columns:resourceColumns(['Topic','Notes']);
+    var columnPositions=[];
+    var columns=rawColumns.filter(function(col,index){if(/^purpose$/i.test(String(col&&col.label||'').trim()))return false;columnPositions.push(index);return true}).map(function(col,colIndex){
       col=col&&typeof col==='object'?col:{};
       return {id:col.id||uid('col'),label:plainCellText(col.label||('Column '+(colIndex+1)))||('Column '+(colIndex+1)),type:col.type==='image'?'image':'text'};
     });
+    if(!columns.length){columns=resourceColumns(['Assay']);columnPositions=[-1]}
     var rows=Array.isArray(table.rows)?table.rows:[];
     rows=rows.map(function(row){
       row=row&&typeof row==='object'?row:{};
@@ -511,7 +517,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       var source=row.cells&&typeof row.cells==='object'?row.cells:{};
       var cells={};
       columns.forEach(function(col,colIndex){
-        var value=Array.isArray(row.cells)?row.cells[colIndex]:source[col.id];
+        var value=Array.isArray(row.cells)?row.cells[columnPositions[colIndex]]:source[col.id];
         cells[col.id]=col.type==='image'?String(value||''):plainCellText(value||'');
       });
       return {id:row.id||uid('row'),type:'data',cells:cells};
@@ -581,7 +587,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(out.id==='instrument-default'&&out.testListsRevision!=='qc-2025-v1'){fillCobasQcLists(out);needsStarterSync=true}
     return out;
   }
-  function defaultState(){var main=defaultInstrumentChart();return{version:17,starter:'maintenance-sim-v1',updatedAt:Date.now(),charts:[],instrumentCharts:[main,rlInstrumentChart(main)],resourceTables:starterResourceTables(),simulations:[defaultMaintenanceSimulation()]}}
+  function defaultState(){var main=defaultInstrumentChart();return{version:18,starter:'maintenance-sim-v1',updatedAt:Date.now(),charts:[],instrumentCharts:[main,rlInstrumentChart(main)],resourceTables:starterResourceTables(),simulations:[defaultMaintenanceSimulation()]}}
   state=defaultState();
   function looksLikeMinimalLiverStarter(data){
     var charts=data&&Array.isArray(data.charts)?data.charts:[];
@@ -679,8 +685,9 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var resourceTables=incoming.resourceTables===undefined?base.resourceTables:normalizeResourceTables(incoming.resourceTables,{upgradeStarters:Number(incoming.version||0)<15});
     if(Number(incoming.version||0)<16){upgradeAssayLabels(resourceTables);needsStarterSync=true}
     if(Number(incoming.version||0)<17){upgradeResourceColumns(resourceTables);needsStarterSync=true}
+    if(Number(incoming.version||0)<18)needsStarterSync=true;
     var simulations=(Array.isArray(incoming.simulations)?incoming.simulations:base.simulations).map(normalizeMaintenanceSimulation);
-    return {version:17,starter:base.starter,updatedAt:incoming.updatedAt||Date.now(),charts:charts,instrumentCharts:instrumentCharts,resourceTables:resourceTables,simulations:simulations};
+    return {version:18,starter:base.starter,updatedAt:incoming.updatedAt||Date.now(),charts:charts,instrumentCharts:instrumentCharts,resourceTables:resourceTables,simulations:simulations};
   }
   function saveLocal(){try{localStorage.setItem('chemistryHubState',JSON.stringify(state))}catch(e){}}
   function markDirty(){state.updatedAt=Date.now();saveLocal();if(safeDoc)safeDoc.scheduleSave(4000,'auto')}
@@ -1395,12 +1402,13 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var steps=simulation.moduleSteps[selectedSimulationModule]||[];
     var prefix=simulation.id+':'+selectedSimulationModule+':';
     var completed=steps.filter(function(step){return !!simulationProgress[prefix+step.id]}).length;
-    var model='<div class="sim-stage"><div class="sim-model" style="--sim-angle:'+simulationAngle+'deg;--sim-modules:'+Math.max(1,modules.length)+'"><div class="sim-sampler"><small>'+escapeHtml(source.chart.sample||'Sample handling')+'</small><strong>'+escapeHtml(source.chart.instrumentTitle||'Cobas 8000')+'</strong></div><div class="sim-rail"></div><div class="sim-units">'+modules.map(function(item,index){return '<button type="button" class="sim-unit" data-action="sim-module" data-index="'+index+'" aria-pressed="'+(index===selectedSimulationModule)+'" aria-label="Select '+escapeHtml(item.name)+'"><span class="sim-unit-top"></span><span class="sim-unit-side"></span><span class="sim-unit-front" style="--sim-fill:'+sanitizeColor(item.fill,'#f4fbff')+'"><span class="sim-unit-screen"></span><span class="sim-unit-label">'+escapeHtml(item.name)+'</span><span class="sim-unit-light"></span></span></button>'}).join('')+'</div></div><label class="sim-angle">View angle <input type="range" min="-22" max="22" value="'+simulationAngle+'" data-action="sim-angle" aria-label="Rotate instrument view"></label></div>';
+    var model='<div class="sim-stage"><div class="sim-model" style="--sim-modules:'+Math.max(1,modules.length)+'"><div class="sim-sampler"><small>'+escapeHtml(source.chart.sample||'Sample handling')+'</small><strong>'+escapeHtml(source.chart.instrumentTitle||'Cobas 8000')+'</strong></div><div class="sim-rail"></div><div class="sim-units">'+modules.map(function(item,index){return '<button type="button" class="sim-unit" data-action="sim-module" data-index="'+index+'" aria-pressed="'+(index===selectedSimulationModule)+'" aria-label="Select '+escapeHtml(item.name)+'"><span class="sim-unit-front" style="--sim-fill:'+sanitizeColor(item.fill,'#f4fbff')+'"><span class="sim-unit-screen"></span><span class="sim-unit-label">'+escapeHtml(item.name)+'</span><span class="sim-unit-light"></span></span></button>'}).join('')+'</div></div></div>';
+    var computer='<div class="sim-workstation" aria-label="Instrument computer"><div class="sim-computer-monitor"><div class="sim-computer-screen"><div class="sim-computer-bar">'+escapeHtml(source.chart.instrumentTitle||'Cobas 8000')+' · Workstation</div><div class="sim-computer-content"><span>Selected module</span><strong>'+escapeHtml(module.name)+'</strong><span>Maintenance practice</span><strong>'+completed+' / '+steps.length+' tasks complete</strong><div class="sim-computer-task-list">'+steps.map(function(step){return '<div><span class="sim-computer-dot '+(simulationProgress[prefix+step.id]?'done':'')+'"></span>'+escapeHtml(step.title)+'</div>'}).join('')+'</div></div></div></div><div class="sim-computer-stand"></div><div class="sim-computer-keyboard" aria-hidden="true"></div></div>';
     var stepHtml=steps.map(function(step){var checked=!!simulationProgress[prefix+step.id];return '<button type="button" class="sim-step" data-action="sim-step" data-step="'+escapeHtml(step.id)+'" aria-pressed="'+checked+'"><span class="sim-step-check">'+(checked?'✓':'')+'</span><span class="sim-step-label">'+escapeHtml(step.title)+'</span></button>'}).join('');
     var sourceOptions=(state.instrumentCharts||[]).map(function(chart){return (chart.branches||[]).map(function(branch,index){var selected=chart.id===source.chart.id&&index===source.index;return '<option value="'+escapeHtml(chart.id)+':'+index+'" '+(selected?'selected':'')+'>'+escapeHtml(chart.title+' · '+simulationBranchName(chart,index))+'</option>'}).join('')}).join('');
     var admin='<div class="sim-edit-panel admin-only"><label>Simulation title<input type="text" maxlength="100" data-action="sim-title" data-simulation="'+escapeHtml(simulation.id)+'" value="'+escapeHtml(simulation.title)+'"></label><label>Instrument<select data-action="sim-source" data-simulation="'+escapeHtml(simulation.id)+'">'+sourceOptions+'</select></label><h3>Edit '+escapeHtml(module.name)+' tasks</h3>'+steps.map(function(step){return '<div class="sim-edit-row"><input type="text" maxlength="160" data-action="sim-step-title" data-step="'+escapeHtml(step.id)+'" value="'+escapeHtml(step.title)+'"><button type="button" class="mini-btn danger" data-action="sim-remove-step" data-step="'+escapeHtml(step.id)+'" aria-label="Remove task">×</button></div>'}).join('')+'<div class="sim-edit-actions"><button type="button" class="mini-btn" data-action="sim-add-step">+ Task</button><button type="button" class="mini-btn danger" data-action="sim-delete">Delete simulation</button></div></div>';
     var panel='<aside class="sim-panel"><div class="sim-example-banner"><strong>Example only</strong>Follow your laboratory SOP for all instrument maintenance.</div><h2>'+escapeHtml(simulation.title)+'</h2><div>'+escapeHtml(simulationBranchName(source.chart,source.index))+' · '+escapeHtml(module.name)+'</div><h3>Maintenance practice</h3><div class="sim-steps">'+stepHtml+'</div><div class="sim-progress">'+completed+' of '+steps.length+' tasks marked complete</div><div class="sim-edit-actions"><button type="button" class="mini-btn" data-action="sim-reset">Reset practice</button></div>'+admin+'</aside>';
-    host.innerHTML='<div class="sim-shell">'+toolbar+'<div class="sim-layout">'+model+panel+'</div></div>';
+    host.innerHTML='<div class="sim-shell">'+toolbar+'<div class="sim-layout">'+model+computer+panel+'</div></div>';
   }
   function renderResources(){
     var target=document.getElementById('chemResources');
@@ -1455,45 +1463,53 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function resourceTablePrintHtml(table,index){
     table=normalizeResourceTable(table,index);
+    var count=table.columns.length,firstWidth=count>1?(table.columns[0].label==='Assay'?20:Math.min(35,Math.round(100/count))):100,otherWidth=count>1?(100-firstWidth)/(count-1):0;
+    var widths='<colgroup>'+table.columns.map(function(col,i){return '<col style="width:'+(i===0?firstWidth:otherWidth).toFixed(3)+'%">'}).join('')+'</colgroup>';
     var head='<thead><tr>'+table.columns.map(function(col){return '<th>'+escapeHtml(col.label||'Column')+'</th>'}).join('')+'</tr></thead>';
     var body=table.rows.map(function(row){
       if(row.type==='subsection')return '<tr class="print-subsection-row"><td colspan="'+table.columns.length+'">'+cellDisplayHtml(row.title||'Subsection')+'</td></tr>';
       return '<tr>'+table.columns.map(function(col){return '<td>'+resourcePrintCell((row.cells&&row.cells[col.id])||'',col)+'</td>'}).join('')+'</tr>';
     }).join('');
-    return '<section class="resource-print-section"><h2 class="resource-print-title">'+escapeHtml(table.title||'Chemistry Table')+'</h2><table class="resource-print-table '+(table.columns[0]&&table.columns[0].label==='Assay'?'assay-print-table':'')+'">'+head+'<tbody>'+body+'</tbody></table></section>';
+    return '<section class="resource-print-section"><h2 class="resource-print-title">'+escapeHtml(table.title||'Chemistry Table')+'</h2><table class="resource-print-table '+(table.columns[0]&&table.columns[0].label==='Assay'?'assay-print-table':'')+'">'+widths+head+'<tbody>'+body+'</tbody></table></section>';
   }
-  function resourcesPrintHtml(scale,orientation){
-    var active=activeResourceTable();
-    var tables=active?[active]:normalizeResourceTables(state.resourceTables);
-    var cls=orientation==='portrait'?' portrait':' landscape';
-    return '<div class="print-page resource-print-page'+cls+'"><h1>Chemistry Tables</h1><div class="resource-print-inner">'+tables.map(resourceTablePrintHtml).join('')+'</div></div>';
+  function resourcesPrintHtml(scale,orientation,selectedIds){
+    var tables=normalizeResourceTables(state.resourceTables).filter(function(table){return selectedIds.includes(table.id)});
+    return '<div class="print-page resource-print-page landscape"><h1>Chemistry Tables</h1><div class="resource-print-inner">'+tables.map(resourceTablePrintHtml).join('')+'</div></div>';
   }
   function exportResources(){
     state.resourceTables=normalizeResourceTables(state.resourceTables);
     saveLocal();
     var area=document.getElementById('printArea');
+    var tables=state.resourceTables;
+    if(!tables.length){showToast('There are no tables to export yet',true);return}
+    var current=activeResourceTable();
+    var selectedIds=[(current&&current.id)||tables[0].id];
+    var choices='<fieldset class="chem-export-table-picker"><legend>Tables to include</legend><div class="chem-export-table-actions"><button type="button" class="mini-btn" data-chem-export-all>Select all</button><button type="button" class="mini-btn" data-chem-export-current>Current only</button></div><div class="chem-export-table-list">'+tables.map(function(table){return '<label><input type="checkbox" data-chem-export-table="'+escapeHtml(table.id)+'" '+(selectedIds.includes(table.id)?'checked':'')+'><span>'+escapeHtml(table.title)+'</span></label>'}).join('')+'</div></fieldset>';
     if(window.HubPdfExport){
       window.HubPdfExport.open({
-        title:(activeResourceTable()&&activeResourceTable().title)||'Chemistry Tables',
+        title:'Chemistry Tables',
         orientation:'landscape',
-        allowOrientationToggle:true,
-        rememberOrientation:false,
+        allowOrientationToggle:false,
         orientationClassPrefix:'chem-resource-export',
-        defaultScale:.92,
-        minScale:.45,
-        maxScale:1.15,
+        defaultScale:1,
+        minScale:.75,
+        maxScale:1,
         step:.01,
+        hideTinyPreset:true,
         persistKey:'chemistry-tables-export-scale',
         printArea:area,
-        buildContent:resourcesPrintHtml,
+        controlsHtml:choices,
+        onControlsChange:function(modal){var checked=Array.from(modal.querySelectorAll('[data-chem-export-table]:checked')).map(function(input){return input.dataset.chemExportTable});selectedIds=checked.length?checked:[(current&&current.id)||tables[0].id]},
+        onControlsClick:function(event,modal){var all=event.target.closest('[data-chem-export-all]'),one=event.target.closest('[data-chem-export-current]');if(!all&&!one)return false;modal.querySelectorAll('[data-chem-export-table]').forEach(function(input){input.checked=!!all||input.dataset.chemExportTable===((current&&current.id)||tables[0].id)});return true},
+        buildContent:function(scale,orientation){return resourcesPrintHtml(scale,orientation,selectedIds)},
         previewClass:'chem-resource-print-preview',
         bodyClass:['printing','chem-resources-printing'],
         scaleVar:'--chem-resource-print-scale',
-        hint:'Use Landscape for wider tables. This exports only the selected table tab.'
+        hint:'Selected tables print together on landscape pages.'
       });
       return;
     }
-    area.innerHTML=resourcesPrintHtml(.92,'landscape');
+    area.innerHTML=resourcesPrintHtml(1,'landscape',selectedIds);
     document.body.classList.add('printing','chem-resources-printing','chem-resource-export-landscape');
     window.print();
     setTimeout(function(){document.body.classList.remove('printing','chem-resources-printing','chem-resource-export-landscape');area.innerHTML=''},1200);
@@ -1924,7 +1940,6 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     }
   },true);
   document.addEventListener('input',function(event){
-    if(event.target.dataset.action==='sim-angle'){simulationAngle=Math.max(-22,Math.min(22,Number(event.target.value)||0));localStorage.setItem('chemistrySimulationAngle',String(simulationAngle));var model=document.querySelector('.sim-model');if(model)model.style.setProperty('--sim-angle',simulationAngle+'deg');return}
     if(!isAdmin)return;
     var el=event.target,act=el.dataset.action;
     if(act==='sim-title'){var titleSimulation=findSimulation(el.dataset.simulation);if(titleSimulation){titleSimulation.title=plainCellText(el.value)||'Simulation';markDirty()}return}
