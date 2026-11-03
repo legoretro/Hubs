@@ -151,7 +151,7 @@
     }
 
     function rpcSave(data, expectedVersion, reason) {
-      return fetchJson(url + '/rest/v1/rpc/mls_safe_save_doc', {
+      return fetchJson(url + '/rest/v1/rpc/' + encodeURIComponent(options.saveRpc || 'mls_safe_save_doc'), {
         method:'POST',
         headers:headers,
         body:JSON.stringify({
@@ -167,6 +167,7 @@
     }
 
     function markSaved(data, result, apply) {
+      doc.missingRemote = false;
       doc.version = Number(result.version || doc.version || 0);
       doc.updatedAt = result.updated_at || null;
       doc.baseData = normalize(result.data || data);
@@ -246,12 +247,13 @@
         headers:{ apikey:key, Authorization:'Bearer ' + key }
       }).then(function(rows) {
         var row = rows && rows[0];
+        doc.missingRemote = !row;
         doc.version = Number((row && row.version) || 0);
         doc.updatedAt = row && row.updated_at || null;
         doc.baseData = normalize(row ? row.data : null);
         doc.blocked = false;
         doc.lastConflict = null;
-        applyLocal(doc.baseData, 'load');
+        if (row || !options.preserveLocalOnMissing) applyLocal(doc.baseData, 'load');
         return clone(doc.baseData);
       }).catch(function(error) {
         if (/version|updated_at|last_client_id/i.test(error.message || '')) return loadLegacyWithoutVersion();
@@ -275,7 +277,7 @@
       if (doc.saveInFlight) return doc.saveInFlight.then(function(){ return doc.saveNow(reason); });
       var data = localData();
       var dirty = dirtyAgainstBase(data);
-      if (!dirty.length) return Promise.resolve(true);
+      if (!dirty.length && !doc.missingRemote) return Promise.resolve(true);
       doc.saveInFlight = saveAttempt(data, doc.version, false, reason).catch(function(error) {
         if (missingSafeSaveRpc(error)) {
           return legacyDirectSave(data).catch(function(legacyError) {
