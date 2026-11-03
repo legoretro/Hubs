@@ -137,12 +137,12 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
 .sim-edit-actions{display:flex;gap:5px;flex-wrap:wrap;margin-top:9px}
 @media(max-width:900px){.sim-layout{grid-template-columns:1fr}.sim-stage{min-height:380px}}
 @media(max-width:600px){.sim-stage{min-height:340px;padding:28px 12px 18px}.sim-model{width:100%}.sim-sampler{height:60px;margin-bottom:25px}.sim-sampler strong{font-size:15px}.sim-sampler small{font-size:9px}.sim-rail{top:73px}.sim-unit{height:130px}.sim-unit-top{height:22px;right:12px}.sim-unit-side{top:22px;width:12px}.sim-unit-front{top:22px;right:12px;gap:7px}.sim-unit-screen{height:20px;box-shadow:inset 0 0 0 3px #bed7e6}.sim-unit-label{font-size:10px}.sim-unit-light{width:6px;height:6px;right:5px;bottom:6px}.sim-angle{margin-top:20px}.sim-panel{padding:12px}}
-/* Keep list rows and columns close to their content across both instrument charts. */
-.cobas-line{padding:10px}.cobas-line h3{margin-bottom:8px}.cobas-module{padding-bottom:8px}.cobas-machine{height:70px;min-height:70px}.cobas-module:not(:last-child)::after{top:70px}.cobas-test-list{min-height:0;padding:6px 8px}.cobas-test-list .cobas-edit{min-height:0}
-.assay-table th:first-child,.assay-table td:first-child{width:58%}.assay-table td{padding:4px 7px}.assay-table .cell-text{line-height:1.15}
-.assay-table th{font-size:11px;letter-spacing:.02em;white-space:nowrap;padding:6px 7px}
-.resource-print-table.assay-print-table th:first-child,.resource-print-table.assay-print-table td:first-child{width:58%}
-@media(max-width:760px){.assay-table th:first-child,.assay-table td:first-child{width:68%}.cobas-module:not(:last-child)::after{top:auto}}
+/* Compact instrument rows while keeping the editable module lists legible. */
+.cobas-card{padding:12px}.cobas-line{padding:8px}.cobas-line h3{margin-bottom:6px}.cobas-module{grid-template-columns:minmax(88px,112px) minmax(0,1fr);gap:7px;padding-bottom:5px}.cobas-machine{height:60px;min-height:60px;font-size:15px}.cobas-module:not(:last-child)::after{top:60px;left:56px}.cobas-test-list{min-height:0;padding:4px 6px}.cobas-test-list .cobas-edit{min-height:0;font-size:14px;line-height:1.16}.cobas-test-columns{gap:4px}.cobas-test-column:not(:first-child){padding-left:5px}.cobas-test-columns[data-columns="4"] .cobas-edit,.cobas-test-columns[data-columns="5"] .cobas-edit{font-size:12.5px;line-height:1.14}.cobas-color-key{margin-top:9px;padding:8px}
+/* Eleven editable fields: keep the assay visible as the table scrolls horizontally. */
+.resource-table-card{padding:10px}.resource-table-head{margin-bottom:6px}.resource-table-wrap{border-radius:8px;max-width:100%}.assay-table{width:100%;min-width:1850px;table-layout:fixed}.assay-table th{font-size:13px;line-height:1.15;letter-spacing:0;padding:7px 8px;white-space:normal}.assay-table td{font-size:16px;line-height:1.16;padding:4px 7px}.assay-table .cell-text{min-height:0;line-height:1.16}.assay-table th:first-child,.assay-table td:first-child{width:240px;position:sticky;left:0;border-right:2px solid var(--blue)}.assay-table th:first-child{z-index:3;background:var(--blue)}.assay-table td:first-child{z-index:1;background:#e3f3fc;color:var(--deep);font-weight:850}.assay-table tr:nth-child(even) td:first-child{background:#d5ecfa}.admin-mode .assay-table .cell-text{padding:4px 5px}.resource-print-table.assay-print-table th:first-child,.resource-print-table.assay-print-table td:first-child{width:18%;background:#e3f3fc!important;color:var(--deep);font-weight:800}.resource-print-table.assay-print-table th:first-child{background:var(--blue)!important;color:#fff}
+@media(max-width:760px){.cobas-module{grid-template-columns:1fr;gap:5px}.cobas-module .cobas-machine{height:58px;min-height:58px}.cobas-module:not(:last-child)::after{top:auto}.cobas-test-columns[data-columns] .cobas-edit{font-size:14px;line-height:1.18}.assay-table{min-width:1720px}.assay-table th:first-child,.assay-table td:first-child{width:210px}}
+@media print{body.chem-resources-printing #printArea .resource-print-table.assay-print-table th{white-space:normal;font-size:7pt}body.chem-resources-printing #printArea .resource-print-table.assay-print-table td{font-size:7.5pt;padding:.035in .045in}}
 </style>
 
 </head>
@@ -200,7 +200,7 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
     <div id="regularFlowchartPane" role="tabpanel" hidden><div class="chem-flow-diagrams"><div id="regularChartTabs" class="chem-chart-tabs"></div><div class="chem-flow-spacer"></div><button type="button" class="mini-btn admin-only" data-action="add-chart">+ New flowchart</button><button type="button" class="mini-btn admin-only" data-action="duplicate-chart">Duplicate</button><button type="button" class="mini-btn admin-only" data-action="save-chart">Save</button></div><div id="flowcharts"></div></div>
   </section>
   <section class="section" id="sec-tables">
-    <div class="hero"><h1>Tables</h1><p>Assays organized by topic, with space for your notes.</p></div>
+    <div class="hero"><h1>Tables</h1></div>
     <div class="section-actions">
       <button type="button" class="btn" data-action="export-tables">Print / Save Current Table PDF</button>
     </div>
@@ -464,10 +464,27 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     'Valproic acid':'VALP',
     'Vancomycin':'VANR'
   };
+  var RESOURCE_ASSAY_COLUMNS=['Assay','Purpose','Sample Type','Stability','Tube Type','Critical Levels','Measurement Range','Reference Range','Rejection Criteria','Interferences','Other Notes'];
   function assayLabel(name){return ASSAY_CODES[name]?name+' ('+ASSAY_CODES[name]+')':name}
   function upgradeAssayLabels(tables){var titles=ASSAY_GROUPS.map(function(group){return group[0]});tables.forEach(function(table){if(!titles.includes(table.title)||!table.columns.length)return;var first=table.columns[0].id;(table.rows||[]).forEach(function(row){if(row.type!=='data'||!row.cells)return;var name=plainCellText(row.cells[first]||'');if(ASSAY_CODES[name])row.cells[first]=assayLabel(name)})});return tables}
   function starterResourceTables(){
-    return ASSAY_GROUPS.map(function(group){return makeResourceTable(group[0],['Assay','Your notes'],group[1].map(function(name){return [assayLabel(name),'']}))});
+    return ASSAY_GROUPS.map(function(group){return makeResourceTable(group[0],RESOURCE_ASSAY_COLUMNS,group[1].map(function(name){return [assayLabel(name)]}))});
+  }
+  function upgradeResourceColumns(tables){
+    tables.forEach(function(table){
+      var old=table.columns||[];
+      var assay=old.find(function(col){return /^assay$/i.test(col.label)})||old[0];
+      var ordered=[];
+      RESOURCE_ASSAY_COLUMNS.forEach(function(label){
+        var found=label==='Assay'?assay:old.find(function(col){return col!==assay&&((col.label||'').toLowerCase()===label.toLowerCase()||(label==='Other Notes'&&/^your notes$/i.test(col.label||'')))});
+        if(found){found.label=label;ordered.push(found)}
+        else ordered.push({id:uid('col'),label:label,type:'text'});
+      });
+      old.forEach(function(col){if(!ordered.includes(col))ordered.push(col)});
+      table.columns=ordered;
+      (table.rows||[]).forEach(function(row){if(row.type!=='data')return;row.cells=row.cells||{};ordered.forEach(function(col){if(row.cells[col.id]==null)row.cells[col.id]=''})});
+    });
+    return tables;
   }
   function normalizeResourceTable(table,index){
     table=table&&typeof table==='object'?table:{};
@@ -553,7 +570,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(out.id==='instrument-default'&&out.testListsRevision!=='qc-2025-v1'){fillCobasQcLists(out);needsStarterSync=true}
     return out;
   }
-  function defaultState(){var main=defaultInstrumentChart();return{version:16,starter:'maintenance-sim-v1',updatedAt:Date.now(),charts:[],instrumentCharts:[main,rlInstrumentChart(main)],resourceTables:starterResourceTables(),simulations:[defaultMaintenanceSimulation()]}}
+  function defaultState(){var main=defaultInstrumentChart();return{version:17,starter:'maintenance-sim-v1',updatedAt:Date.now(),charts:[],instrumentCharts:[main,rlInstrumentChart(main)],resourceTables:starterResourceTables(),simulations:[defaultMaintenanceSimulation()]}}
   state=defaultState();
   function looksLikeMinimalLiverStarter(data){
     var charts=data&&Array.isArray(data.charts)?data.charts:[];
@@ -650,8 +667,9 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     }
     var resourceTables=incoming.resourceTables===undefined?base.resourceTables:normalizeResourceTables(incoming.resourceTables,{upgradeStarters:Number(incoming.version||0)<15});
     if(Number(incoming.version||0)<16){upgradeAssayLabels(resourceTables);needsStarterSync=true}
+    if(Number(incoming.version||0)<17){upgradeResourceColumns(resourceTables);needsStarterSync=true}
     var simulations=(Array.isArray(incoming.simulations)?incoming.simulations:base.simulations).map(normalizeMaintenanceSimulation);
-    return {version:16,starter:base.starter,updatedAt:incoming.updatedAt||Date.now(),charts:charts,instrumentCharts:instrumentCharts,resourceTables:resourceTables,simulations:simulations};
+    return {version:17,starter:base.starter,updatedAt:incoming.updatedAt||Date.now(),charts:charts,instrumentCharts:instrumentCharts,resourceTables:resourceTables,simulations:simulations};
   }
   function saveLocal(){try{localStorage.setItem('chemistryHubState',JSON.stringify(state))}catch(e){}}
   function markDirty(){state.updatedAt=Date.now();saveLocal();if(safeDoc)safeDoc.scheduleSave(4000,'auto')}
@@ -1239,7 +1257,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       if(!groups.length)groups=[[]];
       return '<div class="cobas-test-columns" data-columns="'+groups.length+'" style="--test-columns:'+groups.length+'">'+groups.map(function(group,i){return '<span class="cobas-edit cobas-test-column" data-instrument-id="'+escapeHtml(data.id)+'" data-instrument-field="tests" data-branch="'+escapeHtml(branch.id)+'" data-module="'+escapeHtml(module.id)+'" data-test-column="'+i+'" contenteditable="'+(isAdmin?'true':'false')+'" spellcheck="false" data-placeholder="List">'+group.map(highlightLine).join('\n')+'</span>'}).join('')+'</div>';
     }
-    function group(branch){return '<section class="cobas-line"><h3>'+edit(branch.title,'branch-title',branch.id)+'</h3><div class="cobas-modules">'+branch.modules.map(function(module){return '<div class="cobas-module"><div class="cobas-machine" style="--module-fill:'+sanitizeColor(module.fill,'#ffffff')+'">'+edit(module.name,'module-name',branch.id,module.id)+'<label class="cobas-color-control admin-only">Color <input type="color" data-action="instrument-module-color" data-branch="'+escapeHtml(branch.id)+'" data-module="'+escapeHtml(module.id)+'" value="'+sanitizeColor(module.fill,'#ffffff')+'"></label></div><div class="cobas-test-list"><small>Test List</small>'+testColumns(module,branch)+'</div><button type="button" class="mini-btn danger admin-only cobas-remove-module" data-action="remove-instrument-module" data-branch="'+escapeHtml(branch.id)+'" data-module="'+escapeHtml(module.id)+'">Remove</button></div>'}).join('')+'</div><button type="button" class="mini-btn admin-only cobas-add-module" data-action="add-instrument-module" data-branch="'+escapeHtml(branch.id)+'">+ Module</button></section>'}
+    function group(branch){return '<section class="cobas-line"><h3>'+edit(branch.title,'branch-title',branch.id)+'</h3><div class="cobas-modules">'+branch.modules.map(function(module){return '<div class="cobas-module"><div class="cobas-machine" style="--module-fill:'+sanitizeColor(module.fill,'#ffffff')+'">'+edit(module.name,'module-name',branch.id,module.id)+'<label class="cobas-color-control admin-only">Color <input type="color" data-action="instrument-module-color" data-branch="'+escapeHtml(branch.id)+'" data-module="'+escapeHtml(module.id)+'" value="'+sanitizeColor(module.fill,'#ffffff')+'"></label></div><div class="cobas-test-list">'+testColumns(module,branch)+'</div><button type="button" class="mini-btn danger admin-only cobas-remove-module" data-action="remove-instrument-module" data-branch="'+escapeHtml(branch.id)+'" data-module="'+escapeHtml(module.id)+'">Remove</button></div>'}).join('')+'</div><button type="button" class="mini-btn admin-only cobas-add-module" data-action="add-instrument-module" data-branch="'+escapeHtml(branch.id)+'">+ Module</button></section>'}
     var keyHtml='<div class="cobas-color-key"><h3>Color Key</h3><div class="cobas-key-items">'+(data.colorKey||[]).map(function(item){return '<span class="cobas-key-chip"><mark style="background:'+sanitizeColor(item.color,'#fff0a8')+'">'+escapeHtml(item.text)+'</mark><input type="color" class="admin-only" data-action="instrument-key-color" data-key="'+escapeHtml(item.id)+'" value="'+sanitizeColor(item.color,'#fff0a8')+'" aria-label="Color for '+escapeHtml(item.text)+'"><button type="button" class="mini-btn danger admin-only" data-action="delete-instrument-highlight" data-key="'+escapeHtml(item.id)+'" aria-label="Remove '+escapeHtml(item.text)+' from key">×</button></span>'}).join('')+'</div><div class="cobas-key-builder admin-only"><input type="text" data-highlight-text placeholder="Word or phrase" aria-label="Word or phrase to highlight"><input type="color" data-highlight-color value="#fff0a8" aria-label="Highlight color"><button type="button" class="mini-btn" data-action="add-instrument-highlight">Add highlight</button></div></div>';
     host.innerHTML='<article class="cobas-card"><div class="cobas-head"><div><div class="cobas-section-title">Analyzer flowchart</div><h2>'+edit(data.title,'title')+'</h2></div><button type="button" class="mini-btn danger admin-only" data-action="delete-instrument">Delete flowchart</button></div><div class="cobas-sample" style="--sample-fill:'+sanitizeColor(data.sampleColor,'#f4fbff')+'"><strong class="cobas-instrument-title">'+edit(data.instrumentTitle,'instrument-title')+'</strong>'+edit(data.sample,'sample')+'<label class="cobas-sample-color admin-only">Color <input type="color" data-action="instrument-sample-color" value="'+sanitizeColor(data.sampleColor,'#f4fbff')+'"></label></div><svg class="cobas-branches" viewBox="0 0 1000 54" preserveAspectRatio="none" aria-hidden="true"><path class="branch-desktop" d="'+(data.branches.length===1?'M500 0V54':'M500 0V22 M250 22H750 M250 22V54 M750 22V54')+'"/><path class="branch-mobile" d="M500 0V54"/></svg><div class="cobas-lines '+(data.branches.length===1?'single-branch':'')+'">'+data.branches.map(group).join('')+'</div>'+keyHtml+'</article>';
   }
@@ -1748,7 +1766,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     }
     if(act==='add-resource-table'){
       state.resourceTables=normalizeResourceTables(state.resourceTables);
-      var newResourceTable=makeResourceTable('New Assay Table',['Assay','Your notes'],[['','']]);
+      var newResourceTable=makeResourceTable('New Assay Table',RESOURCE_ASSAY_COLUMNS,[['']]);
       state.resourceTables.push(newResourceTable);
       activeResourceTableId=newResourceTable.id;
       localStorage.setItem('chemistryActiveResourceTable',activeResourceTableId);
