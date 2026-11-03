@@ -91,6 +91,59 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
 .instrument-print-page.single-instrument .cobas-test-column.cobas-edit{font-size:15px;line-height:1.17}
 @media print{body.instrument-printing #printArea .instrument-print-page{break-after:avoid;page-break-after:avoid}body.instrument-printing #printArea .cobas-machine,body.instrument-printing #printArea .cobas-sample,body.instrument-printing #printArea mark{-webkit-print-color-adjust:exact;print-color-adjust:exact}.hub-pdf-modal{display:none!important}}
 </style>
+<style>
+/* Chemistry instrument maintenance practice. The machine is built from editable HTML and CSS faces. */
+#sec-simulation.active{max-width:none}
+.sim-shell{max-width:1280px;margin:0 auto}
+.sim-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.sim-toolbar .chem-chart-tabs{display:flex;margin:0;flex:1}
+.sim-layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(300px,.85fr);gap:14px;align-items:stretch}
+.sim-stage,.sim-panel{border:1px solid var(--line);border-top:5px solid var(--blue);border-radius:14px;background:#fff;box-shadow:var(--shadow)}
+.sim-stage{position:relative;min-height:430px;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px 22px;perspective:1200px;background:var(--ice)}
+.sim-model{position:relative;width:min(100%,790px);transform-style:preserve-3d;transform:rotateX(9deg) rotateY(var(--sim-angle,-12deg));transition:transform .25s ease;z-index:1}
+.sim-sampler{position:relative;width:86%;height:78px;margin:0 auto 35px;border:2px solid var(--deep);border-radius:4px;background:#e7f2f8;box-shadow:12px 12px 0 #c0d3df;display:flex;align-items:center;justify-content:center;flex-direction:column;color:var(--deep);font-weight:900;text-align:center}
+.sim-sampler::before{content:"";position:absolute;left:0;right:0;top:-22px;height:20px;background:#f3f8fb;border:2px solid var(--deep);border-bottom:0;transform:skewX(-26deg);transform-origin:bottom}
+.sim-sampler small{font-size:11px;text-transform:uppercase;letter-spacing:.07em}
+.sim-sampler strong{font-size:19px}
+.sim-rail{position:absolute;left:10%;right:10%;top:92px;height:8px;background:#aec9d9;border:2px solid var(--deep);border-radius:2px}
+.sim-units{display:grid;grid-template-columns:repeat(var(--sim-modules,4),minmax(0,1fr));gap:7px}
+.sim-unit{position:relative;min-width:0;height:181px;padding:0;border:0;background:transparent;color:var(--deep);cursor:pointer;text-align:center;filter:drop-shadow(7px 10px 4px rgba(10,47,72,.2))}
+.sim-unit-top{position:absolute;top:0;left:5px;right:22px;height:31px;background:#e7f2f8;clip-path:polygon(19px 0,100% 0,100% 100%,0 100%);border-top:2px solid var(--deep)}
+.sim-unit-side{position:absolute;top:30px;right:0;bottom:0;width:22px;background:#adc6d5;border:2px solid var(--deep);border-left:0;clip-path:polygon(0 0,100% -20px,100% 100%,0 100%)}
+.sim-unit-front{position:absolute;top:30px;left:0;right:22px;bottom:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;border:2px solid var(--deep);border-radius:3px;background:var(--sim-fill,#f4fbff)}
+.sim-unit-screen{width:57%;height:35px;border:2px solid var(--deep);border-radius:3px;background:#163f5d;box-shadow:inset 0 0 0 5px #bed7e6}
+.sim-unit-label{font-size:15px;font-weight:900;line-height:1.1}
+.sim-unit-light{position:absolute;right:12px;bottom:12px;width:8px;height:8px;border-radius:50%;background:#0f7b61;border:1px solid var(--deep)}
+.sim-unit[aria-pressed="true"] .sim-unit-front{outline:4px solid var(--blue);outline-offset:3px}
+.sim-angle{position:relative;z-index:1;display:flex;gap:8px;align-items:center;margin-top:28px;color:var(--muted);font-size:12px;font-weight:800}
+.sim-angle input{width:160px;accent-color:var(--blue)}
+.sim-panel{padding:18px}
+.sim-panel h2{font-size:22px;color:var(--deep);margin:0 0 5px}
+.sim-panel h3{font-size:18px;color:var(--deep);margin:18px 0 6px}
+.sim-example-banner{border:1px solid #cda646;border-radius:9px;background:#fff8df;padding:10px 12px;margin:0 0 15px;color:#5c480c;font-size:13px;line-height:1.4}
+.sim-example-banner strong{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.07em}
+.sim-steps{display:grid;gap:7px}
+.sim-step{display:flex;width:100%;align-items:center;gap:9px;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--pale);color:var(--ink);text-align:left;font-size:13px;font-weight:700;cursor:pointer}
+.sim-step-check{display:grid;place-items:center;flex:none;width:22px;height:22px;border:2px solid var(--blue);border-radius:5px;background:#fff;color:#fff}
+.sim-step[aria-pressed="true"] .sim-step-check{background:var(--blue)}
+.sim-step[aria-pressed="true"] .sim-step-label{text-decoration:line-through;color:var(--muted)}
+.sim-progress{color:var(--muted);font-size:12px;margin-top:10px}
+.sim-edit-panel{margin-top:16px;border-top:1px solid var(--line);padding-top:12px}
+.admin-mode .sim-edit-panel.admin-only{display:block}
+.sim-edit-panel input,.sim-edit-panel select{width:100%;min-width:0;padding:7px 9px;border:1px solid var(--line);border-radius:7px;background:#fff;color:var(--deep)}
+.sim-edit-panel label{display:block;color:var(--deep);font-size:12px;font-weight:900;margin-bottom:8px}
+.sim-edit-row{display:flex;gap:5px;align-items:center;margin:5px 0}
+.sim-edit-row input{flex:1}
+.sim-edit-actions{display:flex;gap:5px;flex-wrap:wrap;margin-top:9px}
+@media(max-width:900px){.sim-layout{grid-template-columns:1fr}.sim-stage{min-height:380px}}
+@media(max-width:600px){.sim-stage{min-height:340px;padding:28px 12px 18px}.sim-model{width:100%}.sim-sampler{height:60px;margin-bottom:25px}.sim-sampler strong{font-size:15px}.sim-sampler small{font-size:9px}.sim-rail{top:73px}.sim-unit{height:130px}.sim-unit-top{height:22px;right:12px}.sim-unit-side{top:22px;width:12px}.sim-unit-front{top:22px;right:12px;gap:7px}.sim-unit-screen{height:20px;box-shadow:inset 0 0 0 3px #bed7e6}.sim-unit-label{font-size:10px}.sim-unit-light{width:6px;height:6px;right:5px;bottom:6px}.sim-angle{margin-top:20px}.sim-panel{padding:12px}}
+/* Keep list rows and columns close to their content across both instrument charts. */
+.cobas-line{padding:10px}.cobas-line h3{margin-bottom:8px}.cobas-module{padding-bottom:8px}.cobas-machine{height:70px;min-height:70px}.cobas-module:not(:last-child)::after{top:70px}.cobas-test-list{min-height:0;padding:6px 8px}.cobas-test-list .cobas-edit{min-height:0}
+.assay-table th:first-child,.assay-table td:first-child{width:58%}.assay-table td{padding:4px 7px}.assay-table .cell-text{line-height:1.15}
+.assay-table th{font-size:11px;letter-spacing:.02em;white-space:nowrap;padding:6px 7px}
+.resource-print-table.assay-print-table th:first-child,.resource-print-table.assay-print-table td:first-child{width:58%}
+@media(max-width:760px){.assay-table th:first-child,.assay-table td:first-child{width:68%}.cobas-module:not(:last-child)::after{top:auto}}
+</style>
 
 </head>
 <body class="intro-active">
@@ -157,8 +210,8 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
     <div id="resourceTables" class="resource-shell"></div>
   </section>
   <section class="section" id="sec-simulation">
-    <div class="hero"><h1>Simulation</h1><p>Case practice will come after the organ maps are ready.</p></div>
-    <div class="panel coming-soon"><div><strong>Coming Soon</strong><span>Clinical Chemistry simulation lab is reserved for future cases.</span></div></div>
+    <div class="hero"><h1>Instrument Maintenance</h1></div>
+    <div id="chemMaintenanceSimulation"></div>
   </section>
   <section class="section" id="sec-resources">
     <div class="hero"><h1>Resources</h1><p>Student-built chemistry notes based on course resources and references.</p></div>
@@ -185,6 +238,11 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   var selectedInstrumentText='';
   var flowMode=localStorage.getItem('chemistryFlowMode')||'instrument';
   var activeResourceTableId=localStorage.getItem('chemistryActiveResourceTable')||'';
+  var activeSimulationId=localStorage.getItem('chemistryActiveSimulation')||'';
+  var selectedSimulationModule=Number(localStorage.getItem('chemistrySimulationModule')||0);
+  var simulationAngle=Number(localStorage.getItem('chemistrySimulationAngle')||-12);
+  var simulationProgress={};
+  try{simulationProgress=JSON.parse(localStorage.getItem('chemistrySimulationProgress')||'{}')||{}}catch(e){simulationProgress={}}
   var activeBranchByChart={};
   try{activeBranchByChart=JSON.parse(localStorage.getItem('chemistryActiveBranches')||'{}')||{}}catch(e){activeBranchByChart={}}
   var editorOpenByChart={};
@@ -324,8 +382,92 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     ['Toxicology',['Acetaminophen','Amphetamines screen','Barbiturates screen','Benzodiazepines screen','Cannabinoids screen','Cocaine metabolite screen','Ethanol','Fentanyl screen','Methadone screen','Opiates screen','Oxycodone screen','Salicylate','Tricyclic antidepressants screen']],
     ['Body Fluids & Nutrition',['Cerebrospinal fluid glucose','Cerebrospinal fluid lactate','Cerebrospinal fluid protein','Transthyretin (prealbumin)']]
   ];
+  var ASSAY_CODES={
+    'Acetaminophen':'ACET / ACETA',
+    'Alanine aminotransferase':'ALT',
+    'Albumin':'ALB',
+    'Alkaline phosphatase':'ALKP',
+    'Ammonia':'NH3',
+    'Amphetamines screen':'AMPH / AMP300',
+    'Amylase':'AMY',
+    'Aspartate aminotransferase':'AST',
+    'Barbiturates screen':'BARB',
+    'Benzodiazepines screen':'BENZ2 / BENZ100',
+    'Beta-hydroxybutyrate':'BHB',
+    'Blood urea nitrogen':'BUN',
+    'C-reactive protein':'CRP',
+    'Calcium':'CA',
+    'Cannabinoids screen':'CANNS / TCH20',
+    'Carbamazepine':'CARB / TEGR',
+    'Cerebrospinal fluid glucose':'CFGLU',
+    'Cerebrospinal fluid lactate':'CFLA',
+    'Cerebrospinal fluid protein':'CFPRO',
+    'Chloride':'CL',
+    'Cocaine metabolite screen':'COCAS',
+    'Cortisol':'CORTI',
+    'Creatine kinase':'CPK',
+    'Creatine kinase myocardial band isoenzyme':'CKMB',
+    'Creatinine':'CREAT',
+    'Digoxin':'DIG',
+    'Direct bilirubin':'DBIL',
+    'Ethanol':'ALC',
+    'Fentanyl screen':'FEN',
+    'Free phenytoin':'FREE DILAN',
+    'Free thyroxine':'FT4',
+    'Gentamicin':'GENTR',
+    'Glucose':'GLU',
+    'Hepatitis B surface antigen':'HBSAG',
+    'High-density lipoprotein cholesterol':'HDL',
+    'Lactate':'LA',
+    'Lactate dehydrogenase':'LDH',
+    'Lipase':'LIPAS',
+    'Lithium':'LITH',
+    'Magnesium':'MG',
+    'Methadone screen':'METHA',
+    'Methotrexate':'MTHTX',
+    'N-terminal pro-B-type natriuretic peptide':'PBNP',
+    'Opiates screen':'OP300',
+    'Oxycodone screen':'OXY',
+    'Parathyroid hormone':'PTH',
+    'Phenobarbital':'PHENO',
+    'Phenytoin':'PHENY / DILAN',
+    'Phosphorus':'PHOS',
+    'Potassium':'K',
+    'Procalcitonin':'PCT',
+    'Quantitative human chorionic gonadotropin':'BHCGQ',
+    'Salicylate':'SALIC',
+    'Sodium':'NA',
+    'Syphilis screening':'SYPH',
+    'Theophylline':'THEO',
+    'Thyroid-stimulating hormone':'TSH',
+    'Tobramycin':'TOBT',
+    'Total bilirubin':'TBIL',
+    'Total carbon dioxide':'CO2',
+    'Total cholesterol':'CHOL',
+    'Total protein':'TPRO',
+    'Total thyroxine':'T4',
+    'Transthyretin (prealbumin)':'PAB',
+    'Tricyclic antidepressants screen':'TCA',
+    'Triglycerides':'TRIG',
+    'Triiodothyronine uptake':'TU',
+    'Troponin T, fifth generation':'TNT GEN 5',
+    'Uric acid':'UA',
+    'Urine calcium':'UCAR',
+    'Urine chloride':'UCLR',
+    'Urine creatinine':'UCRER',
+    'Urine phosphate':'UPO4R',
+    'Urine potassium':'UKR',
+    'Urine protein':'UPROR',
+    'Urine sodium':'UNAR',
+    'Urine urea nitrogen':'UUNR',
+    'Urine uric acid':'UUAR',
+    'Valproic acid':'VALP',
+    'Vancomycin':'VANR'
+  };
+  function assayLabel(name){return ASSAY_CODES[name]?name+' ('+ASSAY_CODES[name]+')':name}
+  function upgradeAssayLabels(tables){var titles=ASSAY_GROUPS.map(function(group){return group[0]});tables.forEach(function(table){if(!titles.includes(table.title)||!table.columns.length)return;var first=table.columns[0].id;(table.rows||[]).forEach(function(row){if(row.type!=='data'||!row.cells)return;var name=plainCellText(row.cells[first]||'');if(ASSAY_CODES[name])row.cells[first]=assayLabel(name)})});return tables}
   function starterResourceTables(){
-    return ASSAY_GROUPS.map(function(group){return makeResourceTable(group[0],['Assay','Your notes'],group[1].map(function(name){return [name,'']}))});
+    return ASSAY_GROUPS.map(function(group){return makeResourceTable(group[0],['Assay','Your notes'],group[1].map(function(name){return [assayLabel(name),'']}))});
   }
   function normalizeResourceTable(table,index){
     table=table&&typeof table==='object'?table:{};
@@ -394,6 +536,16 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   function fillCobasQcLists(chart){chart.branches.slice(0,2).forEach(function(branch,bi){(COBAS_QC_LISTS[bi]||[]).forEach(function(list,mi){if(branch.modules[mi])branch.modules[mi].tests=alphabetizeTests(list.join('\n'))})});chart.testListsRevision='qc-2025-v1';return chart}
   function defaultInstrumentChart(){var chart=blankInstrumentChart();chart.id='instrument-default';chart.title='Main Lab';chart.instrumentTitle='Cobas 8000';return fillCobasQcLists(chart)}
   function rlInstrumentChart(main){var source=main||defaultInstrumentChart(),branch=source.branches[1]||defaultInstrumentChart().branches[1],copy=JSON.parse(JSON.stringify(source));copy.id='instrument-rl';copy.title='RL';copy.branches=[JSON.parse(JSON.stringify(branch))];copy.branches[0].id='rl-cobas3';copy.branches[0].title='Cobas 3';copy.branches[0].modules.forEach(function(module){module.id=uid('module');module.tests=alphabetizeTests(module.tests)});return copy}
+  function defaultMaintenanceSimulation(){
+    var steps=function(){return [{id:'status',title:'Check module status'},{id:'sop',title:'Review approved SOP'},{id:'record',title:'Record completion'}]};
+    return {id:'simulation-cobas2',title:'Main Lab · Cobas 2',sourceChartId:'instrument-default',branchIndex:1,moduleSteps:[steps(),steps(),steps(),steps()]};
+  }
+  function normalizeMaintenanceSimulation(value,index){
+    value=value&&typeof value==='object'?value:{};
+    var fallback=defaultMaintenanceSimulation();
+    var moduleSteps=Array.isArray(value.moduleSteps)?value.moduleSteps:fallback.moduleSteps;
+    return {id:String(value.id||uid('simulation')).slice(0,80),title:plainCellText(value.title||('Simulation '+(index+1))).slice(0,100),sourceChartId:String(value.sourceChartId||'instrument-default').slice(0,80),branchIndex:Math.max(0,Math.min(5,Number(value.branchIndex)||0)),moduleSteps:moduleSteps.slice(0,20).map(function(steps){return (Array.isArray(steps)?steps:[]).slice(0,30).map(function(step){return {id:String(step.id||uid('step')).slice(0,80),title:plainCellText(step.title||'New task').slice(0,160)}})})};
+  }
   function migrateSchematic(old){var chart=defaultInstrumentChart();if(!old||typeof old!=='object')return chart;chart.testListsRevision='';chart.sample=String(old.sample||chart.sample).replace(/^cobas 8000\s*/i,'').slice(0,100)||'Sample Handling';[['cobas4',0],['cobas2',1]].forEach(function(pair){var modules=old[pair[0]];if(Array.isArray(modules))chart.branches[pair[1]].modules=modules.map(function(item){return{id:uid('module'),name:String(item.name||'Module').slice(0,60),tests:String(item.tests||'').slice(0,1500)}})});return chart}
   function normalizeInstrumentChart(value,index){
     var base=defaultInstrumentChart();if(!value||typeof value!=='object')return base;
@@ -401,7 +553,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(out.id==='instrument-default'&&out.testListsRevision!=='qc-2025-v1'){fillCobasQcLists(out);needsStarterSync=true}
     return out;
   }
-  function defaultState(){var main=defaultInstrumentChart();return{version:15,starter:'assay-tables-v1',updatedAt:Date.now(),charts:[],instrumentCharts:[main,rlInstrumentChart(main)],resourceTables:starterResourceTables()}}
+  function defaultState(){var main=defaultInstrumentChart();return{version:16,starter:'maintenance-sim-v1',updatedAt:Date.now(),charts:[],instrumentCharts:[main,rlInstrumentChart(main)],resourceTables:starterResourceTables(),simulations:[defaultMaintenanceSimulation()]}}
   state=defaultState();
   function looksLikeMinimalLiverStarter(data){
     var charts=data&&Array.isArray(data.charts)?data.charts:[];
@@ -496,7 +648,10 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       if(main){main.title='Main Lab';if(!instrumentCharts.some(function(chart){return chart.id==='instrument-rl'}))instrumentCharts.push(rlInstrumentChart(main))}
       needsStarterSync=true;
     }
-    return {version:15,starter:base.starter,updatedAt:incoming.updatedAt||Date.now(),charts:charts,instrumentCharts:instrumentCharts,resourceTables:normalizeResourceTables(incoming.resourceTables===undefined?base.resourceTables:incoming.resourceTables,{upgradeStarters:Number(incoming.version||0)<15})};
+    var resourceTables=incoming.resourceTables===undefined?base.resourceTables:normalizeResourceTables(incoming.resourceTables,{upgradeStarters:Number(incoming.version||0)<15});
+    if(Number(incoming.version||0)<16){upgradeAssayLabels(resourceTables);needsStarterSync=true}
+    var simulations=(Array.isArray(incoming.simulations)?incoming.simulations:base.simulations).map(normalizeMaintenanceSimulation);
+    return {version:16,starter:base.starter,updatedAt:incoming.updatedAt||Date.now(),charts:charts,instrumentCharts:instrumentCharts,resourceTables:resourceTables,simulations:simulations};
   }
   function saveLocal(){try{localStorage.setItem('chemistryHubState',JSON.stringify(state))}catch(e){}}
   function markDirty(){state.updatedAt=Date.now();saveLocal();if(safeDoc)safeDoc.scheduleSave(4000,'auto')}
@@ -1080,7 +1235,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     }
     function testColumns(module,branch){
       var items=String(module.tests||'').split(/\r?\n/).map(function(item){return item.trim()}).filter(Boolean),groups=[];
-      for(var i=0;i<items.length;i+=10)groups.push(items.slice(i,i+10));
+      var columnCount=Math.max(1,Math.ceil(items.length/10)),columnSize=Math.ceil(items.length/columnCount);for(var i=0;i<items.length;i+=columnSize)groups.push(items.slice(i,i+columnSize));
       if(!groups.length)groups=[[]];
       return '<div class="cobas-test-columns" data-columns="'+groups.length+'" style="--test-columns:'+groups.length+'">'+groups.map(function(group,i){return '<span class="cobas-edit cobas-test-column" data-instrument-id="'+escapeHtml(data.id)+'" data-instrument-field="tests" data-branch="'+escapeHtml(branch.id)+'" data-module="'+escapeHtml(module.id)+'" data-test-column="'+i+'" contenteditable="'+(isAdmin?'true':'false')+'" spellcheck="false" data-placeholder="List">'+group.map(highlightLine).join('\n')+'</span>'}).join('')+'</div>';
     }
@@ -1176,6 +1331,44 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var index=(state.resourceTables||[]).findIndex(function(item){return item.id===table.id});
     target.innerHTML=resourceTableTabsHtml()+resourceTableHtml(table,index);
   }
+  function findSimulation(id){return (state.simulations||[]).find(function(item){return item.id===id})}
+  function simulationBranchName(chart,index){
+    if(chart.id==='instrument-default')return index===1?'Cobas 2':'Cobas 4';
+    if(chart.id==='instrument-rl')return 'Cobas 3';
+    var branch=chart.branches[index];
+    return branch&&branch.title&&branch.title!=='Title'?branch.title:'Instrument '+(index+1);
+  }
+  function simulationSource(simulation){
+    var chart=findInstrument(simulation.sourceChartId)||findInstrument('instrument-default')||(state.instrumentCharts||[])[0];
+    if(!chart)return null;
+    var index=Math.min(simulation.branchIndex,chart.branches.length-1);
+    return {chart:chart,index:index,branch:chart.branches[index]};
+  }
+  function saveSimulationProgress(){try{localStorage.setItem('chemistrySimulationProgress',JSON.stringify(simulationProgress))}catch(e){}}
+  function renderSimulation(){
+    var host=document.getElementById('chemMaintenanceSimulation');
+    if(!host)return;
+    var simulations=state.simulations||[];
+    if(simulations.length&&!findSimulation(activeSimulationId))activeSimulationId=simulations[0].id;
+    var simulation=findSimulation(activeSimulationId);
+    var tabs=simulations.map(function(item){return '<button type="button" class="chem-chart-tab '+(item.id===activeSimulationId?'active':'')+'" data-action="sim-select" data-simulation="'+escapeHtml(item.id)+'">'+escapeHtml(item.title)+'</button>'}).join('');
+    var toolbar='<div class="sim-toolbar"><div class="chem-chart-tabs">'+tabs+'</div><button type="button" class="mini-btn admin-only" data-action="sim-add">+ Simulation</button></div>';
+    if(!simulation){host.innerHTML='<div class="sim-shell">'+toolbar+'<div class="resource-empty">No simulations yet.</div></div>';return}
+    var source=simulationSource(simulation);
+    if(!source||!source.branch){host.innerHTML='<div class="sim-shell">'+toolbar+'<div class="resource-empty">Choose an instrument for this simulation.</div></div>';return}
+    var modules=source.branch.modules||[];
+    selectedSimulationModule=Math.max(0,Math.min(selectedSimulationModule,modules.length-1));
+    var module=modules[selectedSimulationModule]||{name:'Module'};
+    var steps=simulation.moduleSteps[selectedSimulationModule]||[];
+    var prefix=simulation.id+':'+selectedSimulationModule+':';
+    var completed=steps.filter(function(step){return !!simulationProgress[prefix+step.id]}).length;
+    var model='<div class="sim-stage"><div class="sim-model" style="--sim-angle:'+simulationAngle+'deg;--sim-modules:'+Math.max(1,modules.length)+'"><div class="sim-sampler"><small>'+escapeHtml(source.chart.sample||'Sample handling')+'</small><strong>'+escapeHtml(source.chart.instrumentTitle||'Cobas 8000')+'</strong></div><div class="sim-rail"></div><div class="sim-units">'+modules.map(function(item,index){return '<button type="button" class="sim-unit" data-action="sim-module" data-index="'+index+'" aria-pressed="'+(index===selectedSimulationModule)+'" aria-label="Select '+escapeHtml(item.name)+'"><span class="sim-unit-top"></span><span class="sim-unit-side"></span><span class="sim-unit-front" style="--sim-fill:'+sanitizeColor(item.fill,'#f4fbff')+'"><span class="sim-unit-screen"></span><span class="sim-unit-label">'+escapeHtml(item.name)+'</span><span class="sim-unit-light"></span></span></button>'}).join('')+'</div></div><label class="sim-angle">View angle <input type="range" min="-22" max="22" value="'+simulationAngle+'" data-action="sim-angle" aria-label="Rotate instrument view"></label></div>';
+    var stepHtml=steps.map(function(step){var checked=!!simulationProgress[prefix+step.id];return '<button type="button" class="sim-step" data-action="sim-step" data-step="'+escapeHtml(step.id)+'" aria-pressed="'+checked+'"><span class="sim-step-check">'+(checked?'✓':'')+'</span><span class="sim-step-label">'+escapeHtml(step.title)+'</span></button>'}).join('');
+    var sourceOptions=(state.instrumentCharts||[]).map(function(chart){return (chart.branches||[]).map(function(branch,index){var selected=chart.id===source.chart.id&&index===source.index;return '<option value="'+escapeHtml(chart.id)+':'+index+'" '+(selected?'selected':'')+'>'+escapeHtml(chart.title+' · '+simulationBranchName(chart,index))+'</option>'}).join('')}).join('');
+    var admin='<div class="sim-edit-panel admin-only"><label>Simulation title<input type="text" maxlength="100" data-action="sim-title" data-simulation="'+escapeHtml(simulation.id)+'" value="'+escapeHtml(simulation.title)+'"></label><label>Instrument<select data-action="sim-source" data-simulation="'+escapeHtml(simulation.id)+'">'+sourceOptions+'</select></label><h3>Edit '+escapeHtml(module.name)+' tasks</h3>'+steps.map(function(step){return '<div class="sim-edit-row"><input type="text" maxlength="160" data-action="sim-step-title" data-step="'+escapeHtml(step.id)+'" value="'+escapeHtml(step.title)+'"><button type="button" class="mini-btn danger" data-action="sim-remove-step" data-step="'+escapeHtml(step.id)+'" aria-label="Remove task">×</button></div>'}).join('')+'<div class="sim-edit-actions"><button type="button" class="mini-btn" data-action="sim-add-step">+ Task</button><button type="button" class="mini-btn danger" data-action="sim-delete">Delete simulation</button></div></div>';
+    var panel='<aside class="sim-panel"><div class="sim-example-banner"><strong>Example only</strong>Follow your laboratory SOP for all instrument maintenance.</div><h2>'+escapeHtml(simulation.title)+'</h2><div>'+escapeHtml(simulationBranchName(source.chart,source.index))+' · '+escapeHtml(module.name)+'</div><h3>Maintenance practice</h3><div class="sim-steps">'+stepHtml+'</div><div class="sim-progress">'+completed+' of '+steps.length+' tasks marked complete</div><div class="sim-edit-actions"><button type="button" class="mini-btn" data-action="sim-reset">Reset practice</button></div>'+admin+'</aside>';
+    host.innerHTML='<div class="sim-shell">'+toolbar+'<div class="sim-layout">'+model+panel+'</div></div>';
+  }
   function renderResources(){
     var target=document.getElementById('chemResources');
     if(!target)return;
@@ -1234,7 +1427,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       if(row.type==='subsection')return '<tr class="print-subsection-row"><td colspan="'+table.columns.length+'">'+cellDisplayHtml(row.title||'Subsection')+'</td></tr>';
       return '<tr>'+table.columns.map(function(col){return '<td>'+resourcePrintCell((row.cells&&row.cells[col.id])||'',col)+'</td>'}).join('')+'</tr>';
     }).join('');
-    return '<section class="resource-print-section"><h2 class="resource-print-title">'+escapeHtml(table.title||'Chemistry Table')+'</h2><table class="resource-print-table">'+head+'<tbody>'+body+'</tbody></table></section>';
+    return '<section class="resource-print-section"><h2 class="resource-print-title">'+escapeHtml(table.title||'Chemistry Table')+'</h2><table class="resource-print-table '+(table.columns[0]&&table.columns[0].label==='Assay'?'assay-print-table':'')+'">'+head+'<tbody>'+body+'</tbody></table></section>';
   }
   function resourcesPrintHtml(scale,orientation){
     var active=activeResourceTable();
@@ -1288,7 +1481,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     setChemFlowZoom(scale*.98);
     return true;
   }
-  function renderAll(){document.body.classList.toggle('admin-mode',isAdmin);renderFlowMode();renderSchematic();renderFlowcharts();renderResources();renderTables()}
+  function renderAll(){document.body.classList.toggle('admin-mode',isAdmin);renderFlowMode();renderSchematic();renderFlowcharts();renderResources();renderTables();renderSimulation()}
   function exportInstrumentChart(){
     var source=document.querySelector('#cobasSchematic .cobas-card');
     if(!source){showToast('Choose an instrument flowchart to export',true);return}
@@ -1312,6 +1505,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var naturalWidth=Math.max(singleBranch?820:1100,inner.scrollWidth);
     var naturalHeight=Math.max(1,inner.scrollHeight);
     var scale=Math.min(1,(10.55*96)/naturalWidth,(8.05*96)/naturalHeight)*.98;
+    var topOffset=Math.max(0,((8.05*96)-naturalHeight*scale)/2);
+    printHtml=printHtml.replace('class="instrument-print-inner"','class="instrument-print-inner" style="top:'+topOffset.toFixed(1)+'px"');
     area.style.display='';
     area.style.position='';
     area.style.left='';
@@ -1500,6 +1695,10 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       renderAll();
       return;
     }
+    if(act==='sim-select'){activeSimulationId=action.dataset.simulation;selectedSimulationModule=0;localStorage.setItem('chemistryActiveSimulation',activeSimulationId);renderSimulation();return}
+    if(act==='sim-module'){selectedSimulationModule=Number(action.dataset.index)||0;localStorage.setItem('chemistrySimulationModule',String(selectedSimulationModule));renderSimulation();return}
+    if(act==='sim-step'){var practice=findSimulation(activeSimulationId);if(practice){var progressKey=practice.id+':'+selectedSimulationModule+':'+action.dataset.step;simulationProgress[progressKey]=!simulationProgress[progressKey];saveSimulationProgress();renderSimulation()}return}
+    if(act==='sim-reset'){var resetSimulation=findSimulation(activeSimulationId);if(resetSimulation){var resetPrefix=resetSimulation.id+':'+selectedSimulationModule+':';Object.keys(simulationProgress).forEach(function(key){if(key.indexOf(resetPrefix)===0)delete simulationProgress[key]});saveSimulationProgress();renderSimulation()}return}
     if(act==='select-branch'){
       activeBranchByChart[action.dataset.chart]=action.dataset.branch||'__all__';
       try{localStorage.setItem('chemistryActiveBranches',JSON.stringify(activeBranchByChart))}catch(e){}
@@ -1519,6 +1718,10 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       return;
     }
     if(!isAdmin)return;
+    if(act==='sim-add'){var newSimulation=defaultMaintenanceSimulation();newSimulation.id=uid('simulation');newSimulation.title='New simulation';state.simulations.push(newSimulation);activeSimulationId=newSimulation.id;selectedSimulationModule=0;localStorage.setItem('chemistryActiveSimulation',activeSimulationId);renderAll();markDirty();return}
+    if(act==='sim-delete'){state.simulations=(state.simulations||[]).filter(function(item){return item.id!==activeSimulationId});activeSimulationId=(state.simulations[0]&&state.simulations[0].id)||'';localStorage.setItem('chemistryActiveSimulation',activeSimulationId);renderAll();markDirty();return}
+    if(act==='sim-add-step'){var addSim=findSimulation(activeSimulationId);if(addSim){while(addSim.moduleSteps.length<=selectedSimulationModule)addSim.moduleSteps.push([]);addSim.moduleSteps[selectedSimulationModule].push({id:uid('step'),title:'New task'});renderSimulation();markDirty()}return}
+    if(act==='sim-remove-step'){var removeSim=findSimulation(activeSimulationId);if(removeSim){removeSim.moduleSteps[selectedSimulationModule]=((removeSim.moduleSteps[selectedSimulationModule])||[]).filter(function(step){return step.id!==action.dataset.step});renderSimulation();markDirty()}return}
     if(act==='chem-move-mode'){chemMoveMode=!chemMoveMode;renderAll();return}
     if(act==='chem-auto-arrange'){var arrangeChart=findChart(action.dataset.chart);if(arrangeChart){pushChemHistory(arrangeChart);Object.values(arrangeChart.nodeMeta||{}).forEach(function(meta){if(meta){delete meta.offsetX;delete meta.offsetY}});chemMoveMode=false;renderAll();markDirty()}return}
     if(act==='chem-start-link'){
@@ -1688,8 +1891,11 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     }
   },true);
   document.addEventListener('input',function(event){
+    if(event.target.dataset.action==='sim-angle'){simulationAngle=Math.max(-22,Math.min(22,Number(event.target.value)||0));localStorage.setItem('chemistrySimulationAngle',String(simulationAngle));var model=document.querySelector('.sim-model');if(model)model.style.setProperty('--sim-angle',simulationAngle+'deg');return}
     if(!isAdmin)return;
     var el=event.target,act=el.dataset.action;
+    if(act==='sim-title'){var titleSimulation=findSimulation(el.dataset.simulation);if(titleSimulation){titleSimulation.title=plainCellText(el.value)||'Simulation';markDirty()}return}
+    if(act==='sim-step-title'){var taskSimulation=findSimulation(activeSimulationId),taskList=taskSimulation&&taskSimulation.moduleSteps[selectedSimulationModule],task=taskList&&taskList.find(function(item){return item.id===el.dataset.step});if(task){task.title=plainCellText(el.value)||'New task';markDirty()}return}
     if(act==='chart-field'){var chart=findChart(el.dataset.chart);if(chart){beginChemEdit(chart,el);if(el.dataset.field==='organ')setChartOrgan(chart,el.value);else chart[el.dataset.field]=el.value;markDirty()}}
     if(act==='chart-paths'){var pathChart=findChart(el.dataset.chart);if(pathChart){pathChart.paths=el.value.split(/\n+/).map(function(line){return line.trim()}).filter(Boolean);var first=splitPath(pathChart.paths[0]||'')[0];if(first)pathChart.organ=first;markDirty()}}
     if(act==='chart-links'){var linkChart=findChart(el.dataset.chart);if(linkChart){linkChart.links=parseLinksText(el.value);markDirty();scheduleChemFlowLinks(document.getElementById('flowcharts'))}}
@@ -1737,6 +1943,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   document.addEventListener('change',function(event){
     if(event.target.dataset.action==='select-chart-menu'){activeChartId=event.target.value;localStorage.setItem('chemistryActiveChart',activeChartId);renderAll();return}
     if(!isAdmin)return;
+    if(event.target.dataset.action==='sim-source'){var sourceSimulation=findSimulation(event.target.dataset.simulation),parts=String(event.target.value||'').split(':');if(sourceSimulation){sourceSimulation.sourceChartId=parts[0]||'instrument-default';sourceSimulation.branchIndex=Number(parts[1])||0;selectedSimulationModule=0;renderSimulation();markDirty()}return}
+    if(event.target.dataset.action==='sim-title'||event.target.dataset.action==='sim-step-title'){renderSimulation();return}
     if(event.target.dataset.action==='instrument-module-color'){var colorInstrument=findInstrument(activeInstrumentId),colorBranch=colorInstrument&&colorInstrument.branches.find(function(item){return item.id===event.target.dataset.branch}),colorModule=colorBranch&&colorBranch.modules.find(function(item){return item.id===event.target.dataset.module});if(colorModule){colorModule.fill=sanitizeColor(event.target.value,'#ffffff');renderAll();markDirty()}return}
     if(event.target.dataset.action==='instrument-sample-color'){var sampleInstrument=findInstrument(activeInstrumentId);if(sampleInstrument){sampleInstrument.sampleColor=sanitizeColor(event.target.value,'#f4fbff');renderAll();markDirty()}return}
     if(event.target.dataset.action==='instrument-key-color'){var keyChart=findInstrument(activeInstrumentId),keyItem=keyChart&&(keyChart.colorKey||[]).find(function(item){return item.id===event.target.dataset.key});if(keyItem){keyItem.color=sanitizeColor(event.target.value,'#fff0a8');renderAll();markDirty()}return}
@@ -1822,7 +2030,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   });
   document.addEventListener('blur',function(event){
     if(!isAdmin)return;
-    if(event.target.matches&&event.target.matches('[data-instrument-field]')){var target=event.target,instrument=findInstrument(target.dataset.instrumentId),field=target.dataset.instrumentField,value=plainCellText(target.innerHTML);if(!instrument)return;if(field==='title'||field==='sample'||field==='instrument-title')instrument[field==='instrument-title'?'instrumentTitle':field]=value||'Title';else{var branch=instrument.branches.find(function(item){return item.id===target.dataset.branch});if(branch){if(field==='branch-title')branch.title=value||'Title';else{var module=branch.modules.find(function(item){return item.id===target.dataset.module});if(module){if(field==='module-name')module.name=value;else{var chunks=String(module.tests||'').split(/\r?\n/).map(function(item){return item.trim()}).filter(Boolean),groups=[];for(var i=0;i<chunks.length;i+=10)groups.push(chunks.slice(i,i+10));var column=Number(target.dataset.testColumn)||0;while(groups.length<=column)groups.push([]);groups[column]=value.split(/\r?\n/).map(function(item){return item.trim()}).filter(Boolean);module.tests=alphabetizeTests(groups.reduce(function(all,part){return all.concat(part)},[]).join('\n'))}}}}}renderAll();markDirty();return}
+    if(event.target.matches&&event.target.matches('[data-instrument-field]')){var target=event.target,instrument=findInstrument(target.dataset.instrumentId),field=target.dataset.instrumentField,value=plainCellText(target.innerHTML);if(!instrument)return;if(field==='title'||field==='sample'||field==='instrument-title')instrument[field==='instrument-title'?'instrumentTitle':field]=value||'Title';else{var branch=instrument.branches.find(function(item){return item.id===target.dataset.branch});if(branch){if(field==='branch-title')branch.title=value||'Title';else{var module=branch.modules.find(function(item){return item.id===target.dataset.module});if(module){if(field==='module-name')module.name=value;else{var chunks=String(module.tests||'').split(/\r?\n/).map(function(item){return item.trim()}).filter(Boolean),groups=[];var columnCount=Math.max(1,Math.ceil(chunks.length/10)),columnSize=Math.ceil(chunks.length/columnCount);for(var i=0;i<chunks.length;i+=columnSize)groups.push(chunks.slice(i,i+columnSize));var column=Number(target.dataset.testColumn)||0;while(groups.length<=column)groups.push([]);groups[column]=value.split(/\r?\n/).map(function(item){return item.trim()}).filter(Boolean);module.tests=alphabetizeTests(groups.reduce(function(all,part){return all.concat(part)},[]).join('\n'))}}}}}renderAll();markDirty();return}
     if(event.target&&event.target.dataset&&event.target.dataset.action)chemEditSessionKey='';
     var title=event.target.closest&&event.target.closest('[data-direct-node-title]');
     if(!title)return;
