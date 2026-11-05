@@ -1324,6 +1324,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   function resourceRowControls(table,row,index){
     if(!isAdmin)return '';
     return '<td class="row-action-cell"><div class="row-actions">'+
+      '<button type="button" class="mini-btn" data-action="insert-resource-row" data-table="'+escapeHtml(table.id)+'" data-row="'+escapeHtml(row.id)+'">Add Row Below</button>'+
       '<button type="button" class="mini-btn" data-action="move-resource-row" data-table="'+escapeHtml(table.id)+'" data-row="'+escapeHtml(row.id)+'" data-dir="-1" '+(index>0?'':'disabled')+'>Move Up</button>'+
       '<button type="button" class="mini-btn" data-action="move-resource-row" data-table="'+escapeHtml(table.id)+'" data-row="'+escapeHtml(row.id)+'" data-dir="1" '+(index<table.rows.length-1?'':'disabled')+'>Move Down</button>'+
       '<button type="button" class="mini-btn danger" data-action="delete-resource-row" data-table="'+escapeHtml(table.id)+'" data-row="'+escapeHtml(row.id)+'">Delete Row</button>'+
@@ -1360,7 +1361,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       return '<tr>'+table.columns.map(function(col){return resourceCell(table,row,col)}).join('')+resourceRowControls(table,row,rowIndex)+'</tr>';
     }).join('');
     var minWidth=Math.max(720,240+(table.columns.length-1)*155);
-    return '<article class="resource-table-card" data-resource-table="'+escapeHtml(table.id)+'"><div class="resource-table-head"><div><h2 class="resource-title-display">'+escapeHtml(table.title||'Chemistry Table')+'</h2>'+(isAdmin?'<input class="resource-title-input" data-action="resource-table-title" data-table="'+escapeHtml(table.id)+'" value="'+escapeHtml(table.title||'')+'">':'')+'</div>'+(isAdmin?'<div class="resource-table-tools"><button type="button" class="mini-btn" data-action="add-resource-row" data-table="'+escapeHtml(table.id)+'">+ Assay</button><button type="button" class="mini-btn" data-action="add-resource-column" data-table="'+escapeHtml(table.id)+'">Add Column</button><button type="button" class="mini-btn" data-action="add-resource-image-column" data-table="'+escapeHtml(table.id)+'">Add Image Column</button><button type="button" class="mini-btn" data-action="add-resource-subsection" data-table="'+escapeHtml(table.id)+'">Add Subsection</button><button type="button" class="mini-btn" data-action="move-resource-table" data-table="'+escapeHtml(table.id)+'" data-dir="-1" '+(tableIndex>0?'':'disabled')+'>Move Table Up</button><button type="button" class="mini-btn" data-action="move-resource-table" data-table="'+escapeHtml(table.id)+'" data-dir="1" '+(tableIndex<(state.resourceTables||[]).length-1?'':'disabled')+'>Move Table Down</button><button type="button" class="mini-btn danger" data-action="delete-resource-table" data-table="'+escapeHtml(table.id)+'">Delete Table</button></div>':'')+'</div><div class="resource-table-wrap"><table class="resource-table assay-table" data-columns="'+table.columns.length+'" style="--chem-table-min-width:'+minWidth+'px">'+head+'<tbody>'+body+'</tbody></table></div></article>';
+    return '<article class="resource-table-card" data-resource-table="'+escapeHtml(table.id)+'"><div class="resource-table-head"><div><h2 class="resource-title-display">'+escapeHtml(table.title||'Chemistry Table')+'</h2>'+(isAdmin?'<input class="resource-title-input" data-action="resource-table-title" data-table="'+escapeHtml(table.id)+'" value="'+escapeHtml(table.title||'')+'">':'')+'</div>'+(isAdmin?'<div class="resource-table-tools"><button type="button" class="mini-btn" data-action="add-resource-row" data-table="'+escapeHtml(table.id)+'">Add Row</button><button type="button" class="mini-btn" data-action="add-resource-column" data-table="'+escapeHtml(table.id)+'">Add Column</button><button type="button" class="mini-btn" data-action="add-resource-image-column" data-table="'+escapeHtml(table.id)+'">Add Image Column</button><button type="button" class="mini-btn" data-action="add-resource-subsection" data-table="'+escapeHtml(table.id)+'">Add Subsection</button><button type="button" class="mini-btn" data-action="move-resource-table" data-table="'+escapeHtml(table.id)+'" data-dir="-1" '+(tableIndex>0?'':'disabled')+'>Move Table Up</button><button type="button" class="mini-btn" data-action="move-resource-table" data-table="'+escapeHtml(table.id)+'" data-dir="1" '+(tableIndex<(state.resourceTables||[]).length-1?'':'disabled')+'>Move Table Down</button><button type="button" class="mini-btn danger" data-action="delete-resource-table" data-table="'+escapeHtml(table.id)+'">Delete Table</button></div>':'')+'</div><div class="resource-table-wrap"><table class="resource-table assay-table" data-columns="'+table.columns.length+'" style="--chem-table-min-width:'+minWidth+'px">'+head+'<tbody>'+body+'</tbody></table></div></article>';
   }
   function activeResourceTable(){
     state.resourceTables=normalizeResourceTables(state.resourceTables);
@@ -1830,7 +1831,18 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     }
     if(act==='move-resource-table'){moveResourceTable(action.dataset.table,Number(action.dataset.dir)||0);activeResourceTableId=action.dataset.table||activeResourceTableId;localStorage.setItem('chemistryActiveResourceTable',activeResourceTableId);renderAll();markDirty();return}
     if(act==='delete-resource-table'){state.resourceTables=(state.resourceTables||[]).filter(function(table){return table.id!==action.dataset.table});if(activeResourceTableId===action.dataset.table)activeResourceTableId=(state.resourceTables[0]&&state.resourceTables[0].id)||'';localStorage.setItem('chemistryActiveResourceTable',activeResourceTableId);renderAll();markDirty();return}
-    if(act==='add-resource-row'){var addRowTable=findResourceTable(action.dataset.table);if(addRowTable){addRowTable.rows.push({id:uid('row'),type:'data',cells:blankCells(addRowTable)});renderAll();markDirty()}return}
+    if(act==='add-resource-row'||act==='insert-resource-row'){
+      var addRowTable=findResourceTable(action.dataset.table);
+      if(addRowTable){
+        var newRow={id:uid('row'),type:'data',cells:blankCells(addRowTable)};
+        var afterIndex=act==='insert-resource-row'?addRowTable.rows.findIndex(function(row){return row.id===action.dataset.row}):-1;
+        addRowTable.rows.splice(afterIndex>=0?afterIndex+1:addRowTable.rows.length,0,newRow);
+        renderAll();markDirty();
+        var firstCell=Array.from(document.querySelectorAll('[data-action="resource-cell"]')).find(function(cell){return cell.dataset.table===addRowTable.id&&cell.dataset.row===newRow.id});
+        if(firstCell){firstCell.focus();firstCell.scrollIntoView({block:'nearest'});}
+      }
+      return;
+    }
     if(act==='add-resource-column'||act==='add-resource-image-column'){
       var addColTable=findResourceTable(action.dataset.table);
       if(addColTable){
