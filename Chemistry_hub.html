@@ -607,7 +607,54 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       return Object.keys(row.cells||{}).some(function(key){return plainCellText(row.cells[key]);});
     });
   }
-  var OLD_HORMONE_IDS=['gonadal-axis','thyroid-axis','adrenal-cortisol-axis','growth-hormone-axis','prolactin-axis','adh-axis','oxytocin-axis','raas-aldosterone-axis','adrenal-androgens-axis'];
+  // Restored from the site's earlier Regular Flowcharts starter set.
+  function restoredRegularFlowcharts(){
+    return [
+      {id:'gonadal-axis',title:'Gonadal',organ:'Hypothalamus',note:'GnRH drives FSH/LH; gonadal steroids and inhibin can be added as feedback lines when needed.',nodeMeta:{},paths:[
+        'Hypothalamus > GnRH (peptide) > Anterior pituitary > Gonadotroph cell > FSH (glycoprotein) > Ovary: follicle cells > Estrogen / estradiol (steroid)',
+        'Hypothalamus > GnRH (peptide) > Anterior pituitary > Gonadotroph cell > FSH (glycoprotein) > Testes: Sertoli cells > Inhibin (peptide)',
+        'Hypothalamus > GnRH (peptide) > Anterior pituitary > Gonadotroph cell > LH (glycoprotein) > Ovary: corpus luteum > Progesterone (steroid)',
+        'Hypothalamus > GnRH (peptide) > Anterior pituitary > Gonadotroph cell > LH (glycoprotein) > Testes: Leydig cells > Testosterone (steroid)'
+      ],links:[]},
+      {id:'thyroid-axis',title:'Thyroid',organ:'Hypothalamus',note:'TRH stimulates thyrotroph cells; TSH stimulates thyroid follicular cells; T3/T4 feedback can be added as an inhibit line.',nodeMeta:{},paths:[
+        'Hypothalamus > TRH (peptide) > Anterior pituitary > Thyrotroph cell > TSH (glycoprotein) > Thyroid follicular cells > T3/T4 (amine) > Target tissues'
+      ],links:[]},
+      {id:'adrenal-cortisol-axis',title:'Adrenal Cortisol',organ:'Hypothalamus',note:'CRH stimulates corticotroph cells; ACTH stimulates zona fasciculata; cortisol feedback can be added as an inhibit line.',nodeMeta:{},paths:[
+        'Hypothalamus > CRH (peptide) > Anterior pituitary > Corticotroph cell > ACTH (peptide) > Adrenal glands > Zona fasciculata > Cortisol (steroid) > Target tissues'
+      ],links:[]},
+      {id:'growth-hormone-axis',title:'Growth Hormone',organ:'Hypothalamus',note:'GHRH stimulates GH release; somatostatin inhibits GH release.',nodeMeta:{},paths:[
+        'Hypothalamus > GHRH (peptide) > Anterior pituitary > Somatotroph cell > Growth hormone / GH (peptide) > Liver > IGF-1 (peptide) > Bone and tissue growth',
+        'Hypothalamus > Somatostatin (peptide) > Anterior pituitary > Somatotroph cell > Growth hormone / GH (peptide)'
+      ],links:[]},
+      {id:'prolactin-axis',title:'Prolactin',organ:'Hypothalamus',note:'Dopamine inhibits lactotroph PRL; TRH can stimulate PRL; PRL targets breast/lactation.',nodeMeta:{},paths:[
+        'Hypothalamus > Dopamine (amine) > Anterior pituitary > Lactotroph cell > Prolactin / PRL (peptide) > Breast > Lactation',
+        'Hypothalamus > TRH (peptide) > Anterior pituitary > Lactotroph cell > Prolactin / PRL (peptide) > Breast > Lactation'
+      ],links:[]},
+      {id:'adh-axis',title:'AVP / ADH',organ:'Osmoreceptors and vascular baroreceptors',note:'Posterior pituitary pathway to AVP/ADH release and kidney water retention.',nodeMeta:{
+        'Osmoreceptors and vascular baroreceptors > Posterior pituitary':{note:'Via hypothalamus nerve impulses',color:'#1f74a8'},
+        'Decreased blood pressure or blood volume > Posterior pituitary':{note:'Via hypothalamus nerve impulses',color:'#1f74a8'}
+      },paths:[
+        'Osmoreceptors and vascular baroreceptors > Posterior pituitary > AVP / ADH / vasopressin (peptide) > Kidneys > Water reabsorption',
+        'Decreased blood pressure or blood volume > Posterior pituitary > AVP / ADH / vasopressin (peptide) > Kidneys > Water reabsorption'
+      ],links:[]},
+      {id:'oxytocin-axis',title:'Oxytocin',organ:'Uterine contractions propagate',note:'Uterine contraction and suckling stimuli trigger posterior pituitary oxytocin release.',nodeMeta:{
+        'Uterine contractions propagate > Posterior pituitary':{note:'Via hypothalamus nerve impulses',color:'#1f74a8'},
+        'Suckling stimulus > Posterior pituitary':{note:'Via hypothalamus nerve impulses',color:'#1f74a8'}
+      },paths:[
+        'Uterine contractions propagate > Posterior pituitary > Oxytocin (peptide) > Uterus > More uterine contractions',
+        'Suckling stimulus > Posterior pituitary > Oxytocin (peptide) > Breast > Milk letdown'
+      ],links:[]},
+      {id:'raas-aldosterone-axis',title:'RAAS / Aldosterone',organ:'Low blood pressure or low blood volume',note:'Low pressure/volume triggers renin, angiotensin II, zona glomerulosa aldosterone, then kidney retention.',nodeMeta:{},paths:[
+        'Low blood pressure or low blood volume > Kidneys > Renin (peptide) > Angiotensinogen > Angiotensin I > ACE: lungs and vascular endothelium > Angiotensin II > Adrenal glands > Zona glomerulosa > Aldosterone (steroid) > Kidneys > Sodium and water retention',
+        'Low blood pressure or low blood volume > Kidneys > Renin (peptide) > Angiotensinogen > Angiotensin I > ACE: lungs and vascular endothelium > Angiotensin II > Direct effector: vasoconstriction'
+      ],links:[]},
+      {id:'adrenal-androgens-axis',title:'Adrenal Androgens',organ:'Hypothalamus',note:'ACTH also stimulates zona reticularis DHEA/androgens; the PDF lists testosterone contribution by sex.',nodeMeta:{},paths:[
+        'Hypothalamus > CRH (peptide) > Anterior pituitary > Corticotroph cell > ACTH (peptide) > Adrenal glands > Zona reticularis > DHEA / androgens (steroid) > Testosterone contribution',
+        'Hypothalamus > CRH (peptide) > Anterior pituitary > Corticotroph cell > ACTH (peptide) > Adrenal glands > Zona reticularis > DHEA / androgens (steroid) > Testosterone: <5% men',
+        'Hypothalamus > CRH (peptide) > Anterior pituitary > Corticotroph cell > ACTH (peptide) > Adrenal glands > Zona reticularis > DHEA / androgens (steroid) > Testosterone: 40-65% women'
+      ],links:[]}
+    ];
+  }
   function blankInstrumentChart(){return {id:uid('instrument'),title:'Instrument Flowchart',instrumentTitle:'Title',sample:'Sample Handling',sampleColor:'#f4fbff',colorKey:[],branches:[{id:'left',title:'Title',modules:[{id:uid('module'),name:'ISE',tests:''},{id:uid('module'),name:'c 702',tests:''},{id:uid('module'),name:'e 801',tests:''}]},{id:'right',title:'Title',modules:[{id:uid('module'),name:'ISE',tests:''},{id:uid('module'),name:'c 702 C1',tests:''},{id:uid('module'),name:'c 702 C2',tests:''},{id:uid('module'),name:'e 801',tests:''}]}]}}
   var COBAS_QC_LISTS=[
     [
@@ -750,7 +797,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(out.id==='instrument-default'&&out.testListsRevision!=='qc-2025-v1'){fillCobasQcLists(out);needsStarterSync=true}
     return out;
   }
-  function defaultState(){var main=defaultInstrumentChart();return{version:22,starter:'maintenance-sim-v1',updatedAt:Date.now(),charts:[],instrumentCharts:[main,rlInstrumentChart()],resourceTables:starterResourceTables(),simulations:[defaultMaintenanceSimulation()]}}
+  function defaultState(){var main=defaultInstrumentChart();return{version:23,starter:'maintenance-sim-v1',updatedAt:Date.now(),charts:restoredRegularFlowcharts(),instrumentCharts:[main,rlInstrumentChart()],resourceTables:starterResourceTables(),simulations:[defaultMaintenanceSimulation()]}}
   state=defaultState();
   function looksLikeMinimalLiverStarter(data){
     var charts=data&&Array.isArray(data.charts)?data.charts:[];
@@ -824,8 +871,13 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function normalize(data){
     var base=defaultState(),incoming=data&&typeof data==='object'?data:{};
-    var sourceCharts=Array.isArray(incoming.charts)?incoming.charts.filter(function(chart){return chart&&!OLD_HORMONE_IDS.includes(chart.id)}):[];
-    if(sourceCharts.length!==(incoming.charts||[]).length||incoming.starter!==base.starter)needsStarterSync=true;
+    var sourceCharts=Array.isArray(incoming.charts)?incoming.charts.filter(Boolean):[];
+    if(Number(incoming.version||0)<23){
+      var existingIds=new Set(sourceCharts.map(function(chart){return chart.id}));
+      base.charts.forEach(function(chart){if(!existingIds.has(chart.id))sourceCharts.push(chart)});
+      needsStarterSync=true;
+    }
+    if(incoming.starter!==base.starter)needsStarterSync=true;
     var charts=sourceCharts.map(function(chart){
       var copy=Object.assign({},chart);
       copy.id=copy.id||uid('chart');
@@ -854,7 +906,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(Number(incoming.version||0)<19){var refreshed=defaultMaintenanceSimulation();simulations.forEach(function(simulation){if(simulation.id!=='simulation-cobas2')return;simulation.moduleSteps.forEach(function(steps,index){if(steps.length===3&&steps.map(function(step){return step.id}).join(',')==='status,sop,record')simulation.moduleSteps[index]=refreshed.moduleSteps[index]||refreshed.moduleSteps[0]})});needsStarterSync=true}
     if(Number(incoming.version||0)<21){var photoRl=rlInstrumentChart(),rlIndex=instrumentCharts.findIndex(function(chart){return chart.id==='instrument-rl'});if(rlIndex<0)instrumentCharts.push(photoRl);else instrumentCharts[rlIndex]=photoRl;upgradeQcInfoTable(resourceTables);needsStarterSync=true}
     if(Number(incoming.version||0)<22){upgradeRegionalLabTables(resourceTables,instrumentCharts.find(function(chart){return chart.id==='instrument-rl'}));needsStarterSync=true}
-    return {version:22,starter:base.starter,updatedAt:incoming.updatedAt||Date.now(),charts:charts,instrumentCharts:instrumentCharts,resourceTables:resourceTables,simulations:simulations};
+    return {version:23,starter:base.starter,updatedAt:incoming.updatedAt||Date.now(),charts:charts,instrumentCharts:instrumentCharts,resourceTables:resourceTables,simulations:simulations};
   }
   function saveLocal(){try{localStorage.setItem('chemistryHubState',JSON.stringify(state))}catch(e){}}
   function markDirty(){state.updatedAt=Date.now();saveLocal();if(safeDoc)safeDoc.scheduleSave(4000,'auto')}
