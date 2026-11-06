@@ -1720,8 +1720,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(colorKey)colorKey.remove();
     var isRl=activeInstrumentId==='instrument-rl';
     if(isRl)copy.querySelectorAll('.rl-difference-key,.rl-difference-summary').forEach(function(node){node.remove()});
-    var legendText=isRl?'listed only on this Cobas':'differs between Cobas 4 and Cobas 2';
-    copy.insertAdjacentHTML('beforeend','<aside class="instrument-print-legend" aria-label="Bold underlined notation"><strong>Key:</strong> <strong><u>Marked test</u></strong> = '+escapeHtml(legendText)+'</aside>');
+    copy.insertAdjacentHTML('beforeend','<aside class="instrument-print-legend" aria-label="Bold underlined notation"><strong>Key:</strong> <strong><u>Marked assay</u></strong> = runs only on the Cobas shown</aside>');
     var singleBranch=!!copy.querySelector('.cobas-lines.single-branch');
     var printHtml='<div class="instrument-print-page '+(singleBranch?'single-instrument':'')+'"><div class="instrument-print-inner">'+copy.outerHTML+'</div></div>';
     var monochrome=true;
