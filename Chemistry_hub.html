@@ -210,6 +210,24 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
 .rl-difference-key{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0 2px;font:700 13px/1.2 Arial,sans-serif}.rl-difference-key span{padding:5px 8px;border:1px solid #7b8993;border-radius:4px}.rl-cobas1-only{background:#fff0a8!important;color:#111!important}.rl-cobas3-only{background:#cde9ff!important;color:#111!important}
 .rl-difference-summary{margin-top:12px;padding:10px;border:1px solid #8b9ba6;border-radius:5px;background:#fff}.rl-difference-summary h3{font:700 15px/1.2 Arial,sans-serif;margin:0 0 7px}.rl-difference-summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.rl-difference-summary p{font:13px/1.4 Arial,sans-serif;white-space:pre-wrap}
 @media(max-width:760px){.resource-table-card[data-qc-info] .assay-table{min-width:0!important}.resource-table-card[data-qc-info] .assay-table th,.resource-table-card[data-qc-info] .assay-table td{overflow-wrap:anywhere}.resource-table-card[data-qc-info] .assay-table th:first-child,.resource-table-card[data-qc-info] .assay-table td:first-child{min-width:0!important}.rl-difference-summary-grid{grid-template-columns:1fr}}
+/* Regular Flowcharts use the Blood Bank diagram's aligned-box structure. */
+#regularFlowchartPane .chem-flow-canvas{height:auto;min-height:0;max-height:78dvh;padding:10px;overflow-x:hidden;overflow-y:auto;background:#fff}
+#regularFlowchartPane .flowchart.regular-layout{width:100%;min-width:0;max-height:none;overflow:visible;position:relative;padding:0;margin:0 auto;background:#fff}
+#regularFlowchartPane .flow-root.regular-stage{position:relative;display:block;min-width:0;max-width:none;gap:0;margin:0 auto;zoom:var(--chem-view-scale,1)}
+.regular-node-wrap{position:absolute;width:230px;z-index:1}
+.regular-node-wrap .flow-node{display:block;width:100%;max-width:none;min-width:0;min-height:54px;border-width:2px;border-left-width:2px;border-radius:7px;padding:8px 10px;color:var(--deep);font-family:var(--chem-flow-font-family,Arial,Helvetica,sans-serif);font-size:17px;line-height:1.18;font-weight:700;overflow-wrap:anywhere;box-shadow:0 2px 5px rgba(11,53,88,.08)}
+.regular-node-wrap .flow-node.organ{font-size:18px}.regular-node-wrap .flow-node-note{font-size:12px;line-height:1.2}
+.regular-node-wrap .flow-node.shape-oval{border-radius:999px}.regular-node-wrap .flow-node.shape-question{border-radius:7px}
+.regular-tree-link{display:none}.regular-layout .flow-link-layer .regular-tree-path{stroke:var(--blue);stroke-width:2.2;fill:none}
+.admin-mode #regularFlowchartPane .regular-node-wrap .flow-node.selected{outline:4px solid #ffcf00;outline-offset:3px;box-shadow:none}
+.regular-parent-label{display:none}
+@media(max-width:760px){#regularFlowchartPane .chem-flow-canvas{max-height:none;overflow:visible;padding:8px}#regularFlowchartPane .flowchart.regular-layout{overflow:visible}#regularFlowchartPane .regular-node-wrap .flow-node{font-size:16px;min-height:48px}#regularFlowchartPane .regular-node-wrap .flow-node.organ{font-size:17px}.regular-parent-label{display:block;color:var(--muted);font:700 11px/1.2 Arial,sans-serif;margin:0 0 5px;overflow-wrap:anywhere}}
+.print-page .flowchart.regular-layout{position:relative;overflow:hidden!important}
+.print-page .flow-root.regular-stage{position:relative;display:block;min-width:0!important;gap:0!important}
+.print-page .regular-node-wrap{position:absolute;width:230px}
+.print-page .regular-parent-label{display:none}
+.print-page .regular-node-wrap .flow-node{display:block;width:100%;max-width:none!important;min-width:0!important;min-height:54px;border-width:2px!important;border-left-width:2px!important;border-radius:7px!important;padding:7px 9px!important;font:700 16px/1.15 Arial,Helvetica,sans-serif!important;white-space:normal;overflow-wrap:anywhere;box-shadow:none!important}
+.print-page .regular-tree-path{stroke:#111!important;stroke-width:2!important}
 </style>
 
 </head>
@@ -299,7 +317,7 @@ const CHEM_ROW_ID='chemistry_hub';
 const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c675';
 (function(){
   var isAdmin=false,state=null,safeDoc=null,syncPresence=null,needsStarterSync=false;
-  var chemFlowZoom=Number(localStorage.getItem('chemistryFlowZoom5')||0.78);
+  var chemFlowZoom=Number(localStorage.getItem('chemistryFlowZoom6')||1);
   var activeChartId=localStorage.getItem('chemistryActiveChart')||'';
   var activeInstrumentId=localStorage.getItem('chemistryActiveInstrument')||'';
   var selectedInstrumentText='';
@@ -959,20 +977,21 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       return '<span class="chem-flow-link-marker" data-from="'+escapeHtml(link.from)+'" data-to="'+escapeHtml(link.to)+'" data-label="'+escapeHtml(linkDisplayLabel(link))+'" data-kind="'+escapeHtml(kind)+'"></span>';
     }).join('');
   }
-  function nodeHtml(node,depth,chart){
+  function nodeHtml(node,depth,chart,flat,parentLabel){
     var cls=depth===0?'organ':(node.children.length?'branch':'endpoint');
     var meta=chemNodeMeta(chart,node.path);
     var shape=normalizeChemShape(meta.shape);
     var note=meta.note?'<span class="flow-node-note">'+escapeHtml(meta.note)+'</span>':'';
     var image=meta.image?'<img class="flow-node-image" src="'+escapeHtml(meta.image)+'" alt="">':'';
-    var children=node.children.length?'<div class="flow-children">'+node.children.map(function(child){return nodeHtml(child,depth+1,chart)}).join('')+'</div>':'';
+    var children=!flat&&node.children.length?'<div class="flow-children">'+node.children.map(function(child){return nodeHtml(child,depth+1,chart)}).join('')+'</div>':'';
     var selected=chemSelectedNodeByChart[chart.id]===node.path?' selected':'';
     var connectTarget=chemLinkFrom&&chemLinkFrom.chart===chart.id&&chemLinkFrom.path!==node.path?' connect-target':'';
     var editTitle=isAdmin&&!chemMoveMode?' contenteditable="true" spellcheck="false" data-direct-node-title="1" data-chart="'+escapeHtml(chart.id)+'" data-path="'+escapeHtml(node.path)+'"':'';
     var addButton=isAdmin?'<button type="button" class="chem-node-plus" title="Add next box" data-action="selected-add-child" data-chart="'+escapeHtml(chart.id)+'" data-path="'+escapeHtml(node.path)+'">+</button>':'';
     var ox=Math.max(-400,Math.min(400,Number(meta.offsetX)||0)),oy=Math.max(-400,Math.min(400,Number(meta.offsetY)||0));
     var offsetStyle=ox||oy?'transform:translate('+ox+'px,'+oy+'px);':'';
-    return '<div class="flow-branch '+(node.children.length?'has-children':'')+'"><div class="flow-node '+cls+' shape-'+shape+(meta.image?' has-image':'')+selected+connectTarget+'" data-flow-node-path="'+escapeHtml(node.path)+'" style="'+chemNodeStyle(chart,node,depth)+offsetStyle+'"><span class="flow-node-title"'+editTitle+'>'+escapeHtml(node.label)+'</span>'+note+image+addButton+'</div>'+children+'</div>';
+    var box='<div class="flow-node '+cls+' shape-'+shape+(meta.image?' has-image':'')+selected+connectTarget+'" data-flow-node-path="'+escapeHtml(node.path)+'" style="'+chemNodeStyle(chart,node,depth)+offsetStyle+'"><span class="flow-node-title"'+editTitle+'>'+escapeHtml(node.label)+'</span>'+note+image+addButton+'</div>';
+    return flat?'<div class="regular-node-wrap" data-depth="'+depth+'">'+(parentLabel?'<span class="regular-parent-label">From '+escapeHtml(parentLabel)+'</span>':'')+box+'</div>':'<div class="flow-branch '+(node.children.length?'has-children':'')+'">'+box+children+'</div>';
   }
   function flowHtml(chart,viewScale,branchPath){
     var tree=focusedTree(chart,branchPath);
@@ -981,13 +1000,76 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(Number(viewScale))styles.push('--chem-view-scale:'+Number(viewScale).toFixed(2));
     var linking=chemLinkFrom&&chart&&chemLinkFrom.chart===chart.id?' chem-flow-linking':'';
     var moved=Object.values(chart.nodeMeta||{}).some(function(meta){return meta&&(Number(meta.offsetX)||Number(meta.offsetY))});
-    return '<div class="flowchart'+linking+(moved?' manual-layout':'')+'" style="'+styles.join(';')+'"><svg class="flow-link-layer" aria-hidden="true"></svg><div class="flow-root">'+tree.map(function(node){return nodeHtml(node,0,chart)}).join('')+'</div>'+linkMarkersHtml(chart)+'</div>';
+    var boxes=[],edges=[];
+    function flatten(node,depth,parent){
+      boxes.push(nodeHtml(node,depth,chart,true,parent&&parent.label));
+      if(parent)edges.push('<span class="regular-tree-link" data-from="'+escapeHtml(parent.path)+'" data-to="'+escapeHtml(node.path)+'"></span>');
+      node.children.forEach(function(child){flatten(child,depth+1,node)});
+    }
+    tree.forEach(function(node){flatten(node,0,null)});
+    return '<div class="flowchart regular-layout'+linking+(moved?' manual-layout':'')+'" style="'+styles.join(';')+'"><svg class="flow-link-layer" aria-hidden="true"></svg><div class="flow-root regular-stage">'+boxes.join('')+'</div>'+edges.join('')+linkMarkersHtml(chart)+'</div>';
+  }
+  function layoutRegularFlow(box){
+    if(!box.classList.contains('regular-layout'))return;
+    var stage=box.querySelector('.regular-stage'),wraps=Array.from(stage.querySelectorAll('.regular-node-wrap'));
+    if(!wraps.length)return;
+    var canvas=box.closest('.chem-flow-canvas'),mobile=!!canvas&&window.matchMedia('(max-width:760px)').matches;
+    var isPrint=!!box.closest('.print-page'),oldZoom=stage.style.zoom;
+    stage.style.zoom='1';
+    var byPath={},children={},parents={},heights=[];
+    wraps.forEach(function(wrap){var path=wrap.querySelector('.flow-node').dataset.flowNodePath;byPath[path]=wrap;children[path]=[];heights[Number(wrap.dataset.depth)||0]=Math.max(heights[Number(wrap.dataset.depth)||0]||0,wrap.offsetHeight)});
+    box.querySelectorAll('.regular-tree-link').forEach(function(link){if(byPath[link.dataset.from]&&byPath[link.dataset.to]){children[link.dataset.from].push(link.dataset.to);parents[link.dataset.to]=link.dataset.from}});
+    var side=22,nodeWidth=230,stageWidth=0,stageHeight=0;
+    if(mobile){
+      stageWidth=Math.max(260,canvas.clientWidth-28);
+      var top=14;
+      wraps.forEach(function(wrap){var depth=Number(wrap.dataset.depth)||0,x=18+Math.min(depth,3)*14;wrap.style.width=Math.max(180,stageWidth-x-18)+'px';wrap.style.left=x+'px';wrap.style.top=top+'px';top+=wrap.offsetHeight+31});
+      stageHeight=top-14;
+    }else{
+      wraps.forEach(function(wrap){wrap.style.width=nodeWidth+'px'});
+      var centers={},leaf=0;
+      function place(path){
+        if(centers[path]!==undefined)return centers[path];
+        var next=children[path]||[];
+        if(!next.length)return centers[path]=side+nodeWidth/2+leaf++*(nodeWidth+52);
+        var points=next.map(place);
+        return centers[path]=(points[0]+points[points.length-1])/2;
+      }
+      wraps.forEach(function(wrap){var path=wrap.querySelector('.flow-node').dataset.flowNodePath;if(!parents[path])place(path)});
+      var rowTops=[],y=16;
+      heights.forEach(function(height,depth){rowTops[depth]=y;y+=height+56});
+      wraps.forEach(function(wrap){var path=wrap.querySelector('.flow-node').dataset.flowNodePath,depth=Number(wrap.dataset.depth)||0;wrap.style.left=(centers[path]-nodeWidth/2)+'px';wrap.style.top=rowTops[depth]+'px'});
+      stageWidth=Math.max(2*side+nodeWidth,2*side+nodeWidth+(leaf-1)*(nodeWidth+52));
+      stageHeight=y-38;
+    }
+    var leftMost=Infinity,topMost=Infinity,rightMost=0,bottomMost=0;
+    wraps.forEach(function(wrap){
+      var node=wrap.querySelector('.flow-node'),move=(node.style.transform||'').match(/translate\((-?[\d.]+)px,\s*(-?[\d.]+)px\)/);
+      var dx=move?Number(move[1]):0,dy=move?Number(move[2]):0;
+      var left=(parseFloat(wrap.style.left)||0)+dx,top=(parseFloat(wrap.style.top)||0)+dy;
+      leftMost=Math.min(leftMost,left);topMost=Math.min(topMost,top);
+      rightMost=Math.max(rightMost,left+wrap.offsetWidth);bottomMost=Math.max(bottomMost,top+wrap.offsetHeight);
+    });
+    var shiftX=Math.max(0,side-leftMost),shiftY=Math.max(0,12-topMost);
+    if(shiftX||shiftY)wraps.forEach(function(wrap){wrap.style.left=((parseFloat(wrap.style.left)||0)+shiftX)+'px';wrap.style.top=((parseFloat(wrap.style.top)||0)+shiftY)+'px'});
+    stageWidth=Math.max(stageWidth,rightMost+shiftX+side);
+    stageHeight=Math.max(stageHeight,bottomMost+shiftY+16);
+    stage.style.width=stageWidth+'px';stage.style.height=stageHeight+'px';
+    stage.style.zoom=oldZoom;
+    if(!isPrint){
+      var available=(canvas?canvas.clientWidth:box.clientWidth)-26;
+      var scale=Math.max(.34,Math.min(chemFlowZoom,available/Math.max(stageWidth,1)));
+      stage.style.zoom=String(scale);
+      var pill=box.closest('article')&&box.closest('article').querySelector('.chem-flow-zoom-pill');
+      if(pill)pill.textContent=Math.round(scale*100)+'%';
+    }
   }
   function drawChemFlowLinks(scope){
     var rootScope=scope&&scope.querySelectorAll?scope:document;
     rootScope.querySelectorAll('.flowchart').forEach(function(box){
       var svg=box.querySelector('.flow-link-layer');
       if(!svg)return;
+      layoutRegularFlow(box);
       var markers=Array.from(box.querySelectorAll('.chem-flow-link-marker'));
       var nodes=Array.from(box.querySelectorAll('.flow-node[data-flow-node-path]'));
       var nodeByPath={};
@@ -1017,7 +1099,6 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
           });
         });
       }
-      if(!markers.length)return;
       var boxRect=box.getBoundingClientRect();
       function point(el,side){
         var rect=el.getBoundingClientRect();
@@ -1038,6 +1119,16 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         if(kind==='inhibit')return 'url(#chemFlowCapInhibit)';
         return 'url(#chemFlowArrowNeutral)';
       }
+      if(box.classList.contains('regular-layout')&&!(box.closest('.chem-flow-canvas')&&window.matchMedia('(max-width:760px)').matches)){
+        box.querySelectorAll('.regular-tree-link').forEach(function(link){
+          var from=nodeByPath[link.dataset.from],to=nodeByPath[link.dataset.to];
+          if(!from||!to)return;
+          var start=point(from,'bottom'),end=point(to,'top'),middle=(start.y+end.y)/2;
+          var d='M '+start.x.toFixed(1)+' '+start.y.toFixed(1)+' V '+middle.toFixed(1)+' H '+end.x.toFixed(1)+' V '+end.y.toFixed(1);
+          addSvg('path',{d:d,'class':'regular-tree-path','marker-end':'url(#chemFlowArrowNeutral)'},svg);
+        });
+      }
+      if(!markers.length)return;
       markers.forEach(function(marker,index){
         var from=nodeByPath[marker.dataset.from],to=nodeByPath[marker.dataset.to];
         if(!from||!to)return;
@@ -1746,9 +1837,9 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function setChemFlowZoom(value){
     chemFlowZoom=Math.max(.28,Math.min(1.08,Number(value)||.78));
-    localStorage.setItem('chemistryFlowZoom5',String(chemFlowZoom));
+    localStorage.setItem('chemistryFlowZoom6',String(chemFlowZoom));
   }
-  function fitChemFlowToCanvas(chartId){
+  function fitChemFlowToCanvas(chartId,pageFit){
     var article=document.querySelector('article[data-chart="'+chartId+'"]');
     if(!article)return false;
     var canvas=article.querySelector('.chem-flow-canvas'),root=article.querySelector('.flow-root');
@@ -1756,8 +1847,9 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var rect=root.getBoundingClientRect();
     var naturalWidth=Math.max(1,rect.width/Math.max(chemFlowZoom,.01));
     var naturalHeight=Math.max(1,rect.height/Math.max(chemFlowZoom,.01));
-    var scale=Math.min((canvas.clientWidth-42)/naturalWidth,(canvas.clientHeight-42)/naturalHeight);
-    setChemFlowZoom(scale*.98);
+    var scale=(canvas.clientWidth-42)/naturalWidth;
+    if(pageFit)scale=Math.min(scale,(canvas.clientHeight-42)/naturalHeight);
+    setChemFlowZoom(Math.min(1.08,scale*.98));
     return true;
   }
   function renderAll(){document.body.classList.toggle('admin-mode',isAdmin);renderFlowMode();renderSchematic();renderFlowcharts();renderResources();renderTables();renderSimulation()}
@@ -2001,13 +2093,13 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     }
     if(act==='flow-zoom'||act==='flow-zoom-reset'){
       if(act==='flow-zoom-reset'){
-        if(!fitChemFlowToCanvas(activeChartId))setChemFlowZoom(.78);
+        if(!fitChemFlowToCanvas(activeChartId,false))setChemFlowZoom(1);
       }else setChemFlowZoom(chemFlowZoom+(Number(action.dataset.dir)||0)*.08);
       renderAll();
       return;
     }
     if(act==='chem-page-fit'){
-      if(!fitChemFlowToCanvas(action.dataset.chart||activeChartId))setChemFlowZoom(.78);
+      if(!fitChemFlowToCanvas(action.dataset.chart||activeChartId,true))setChemFlowZoom(1);
       renderAll();
       return;
     }
