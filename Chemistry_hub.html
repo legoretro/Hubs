@@ -196,8 +196,11 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
 .chem-sop-mono.instrument-print-page .cobas-sample{background:#e8e8e8!important;color:#111!important;border-color:#111!important;box-shadow:none!important}
 .chem-sop-mono.instrument-print-page .cobas-line h3,.chem-sop-mono.instrument-print-page .cobas-test-list small,.chem-sop-mono.instrument-print-page .cobas-edit{color:#111!important}
 .chem-sop-mono.instrument-print-page .cobas-module:not(:last-child)::after{border-left-color:#111!important}
-.chem-sop-mono.instrument-print-page mark,.chem-sop-mono.print-page mark{background:#fff!important;color:#111!important;text-decoration:underline;text-decoration-color:#111}
+.chem-sop-mono.instrument-print-page mark,.chem-sop-mono.print-page mark{background:transparent!important;color:#111!important;font-weight:800!important;font-style:italic!important;text-decoration:none!important;padding:0!important}
 @media print{body.chem-resources-printing #printArea .chem-sop-mono.resource-print-page{padding:0!important}}
+.instrument-print-legend{display:none}
+.chem-sop-mono.instrument-print-page .instrument-print-legend{display:block;width:max-content;max-width:100%;margin:0 0 7px auto;padding:5px 8px;border:1px solid #111;background:#fff;color:#111;font:11px/1.2 Arial,Helvetica,sans-serif}
+.chem-sop-mono.instrument-print-page .instrument-print-legend strong{font-weight:800}
 .resource-table-card[data-qc-info] .assay-table th:first-child,.resource-table-card[data-qc-info] .assay-table td:first-child{width:12%!important;min-width:95px!important;position:static!important}
 .resource-table-card[data-qc-info] .assay-table th:nth-child(2),.resource-table-card[data-qc-info] .assay-table td:nth-child(2){width:18%}
 .resource-table-card[data-qc-info] .assay-table th:nth-child(3),.resource-table-card[data-qc-info] .assay-table td:nth-child(3){width:48%}
@@ -1655,11 +1658,15 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var chartHead=copy.querySelector('.cobas-head'),colorKey=copy.querySelector('.cobas-color-key');
     if(chartHead)chartHead.remove();
     if(colorKey)colorKey.remove();
+    var isRl=activeInstrumentId==='instrument-rl';
+    if(isRl)copy.querySelectorAll('.rl-difference-key,.rl-difference-summary').forEach(function(node){node.remove()});
+    var legendText=isRl?'Bold italic = assay listed on only one RL analyzer. The branch shows whether it is on Cobas 1 or Cobas 3.':'Bold italic = test or designation highlighted because it differs between the Cobas 4 and Cobas 2 lists. The branch and module show where it appears.';
+    copy.insertAdjacentHTML('afterbegin','<aside class="instrument-print-legend" aria-label="Bold italic notation"><strong>Key:</strong> '+escapeHtml(legendText)+'</aside>');
     var singleBranch=!!copy.querySelector('.cobas-lines.single-branch');
-    var printHtml='<div class="instrument-print-page '+(singleBranch?'single-instrument':'')+'"><div class="instrument-print-inner"><h1 class="instrument-print-title">'+escapeHtml(chartTitle)+'</h1>'+copy.outerHTML+'</div></div>';
+    var printHtml='<div class="instrument-print-page '+(singleBranch?'single-instrument':'')+'"><div class="instrument-print-inner">'+copy.outerHTML+'</div></div>';
     var monochrome=true;
     var exportHtml=function(){return monochrome?printHtml.replace('class="instrument-print-page ','class="instrument-print-page chem-sop-mono '):printHtml};
-    area.innerHTML=printHtml;
+    area.innerHTML=exportHtml();
     area.style.display='block';
     area.style.position='fixed';
     area.style.left='-10000px';
