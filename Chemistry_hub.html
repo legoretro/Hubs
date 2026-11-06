@@ -536,7 +536,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   function assayLabel(name){return ASSAY_CODES[name]?name+' ('+ASSAY_CODES[name]+')':name}
   function upgradeAssayLabels(tables){var titles=ASSAY_GROUPS.map(function(group){return group[0]});tables.forEach(function(table){if(!titles.includes(table.title)||!table.columns.length)return;var first=table.columns[0].id;(table.rows||[]).forEach(function(row){if(row.type!=='data'||!row.cells)return;var name=plainCellText(row.cells[first]||'');if(ASSAY_CODES[name])row.cells[first]=assayLabel(name)})});return tables}
   function starterResourceTables(){
-    return ASSAY_GROUPS.map(function(group){return makeResourceTable(group[0],RESOURCE_ASSAY_COLUMNS,group[1].map(function(name){return [assayLabel(name)]}))});
+    var tables=ASSAY_GROUPS.map(function(group){return makeResourceTable(group[0],RESOURCE_ASSAY_COLUMNS,group[1].map(function(name){return [assayLabel(name)]}))});
+    return upgradeRegionalLabTables(tables,rlInstrumentChart());
   }
   function upgradeResourceColumns(tables){
     tables.forEach(function(table){
@@ -645,6 +646,64 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var other=new Set((((chart.branches[1-branchIndex]||{}).modules||[]).reduce(function(list,module){return list.concat(String(module.tests||'').split(/\r?\n/))},[])).map(function(item){return item.trim().toLowerCase()}));
     return Array.from(new Set(own.filter(function(item){return !other.has(item.toLowerCase())}))).sort(function(a,b){return a.localeCompare(b,'en',{numeric:true})});
   }
+  // Full names for the distinct Regional Lab codes that were not already in the assay tables.
+  // Source codes remain visible in parentheses so each row can be matched to the RL diagram.
+  var RL_TABLE_ASSAYS=[
+    ['Kidney & Electrolytes','Urine albumin','ALBU2'],
+    ['Kidney & Electrolytes','Urine magnesium','UMGR'],
+    ['Liver','Gamma-glutamyl transferase','GGT'],
+    ['Glucose & Lipids','Hemoglobin A1c','HA1C / A1W3'],
+    ['Glucose & Lipids','Total hemoglobin for HbA1c','HBW3'],
+    ['Glucose & Lipids','Low-density lipoprotein cholesterol, direct','LDLCD'],
+    ['Thyroid & Hormones','Estradiol','ESTD'],
+    ['Thyroid & Hormones','Follicle-stimulating hormone','FSH'],
+    ['Thyroid & Hormones','Free triiodothyronine','FT3 / T3F'],
+    ['Thyroid & Hormones','Luteinizing hormone','LH'],
+    ['Thyroid & Hormones','Progesterone','PRGS'],
+    ['Thyroid & Hormones','Prolactin','PROLC'],
+    ['Thyroid & Hormones','Testosterone','TESTO'],
+    ['Thyroid & Hormones','Triiodothyronine uptake','TU / TUP'],
+    ['Body Fluids & Nutrition','Ferritin','FERIT'],
+    ['Body Fluids & Nutrition','Folate','FOL'],
+    ['Body Fluids & Nutrition','Iron','IRON'],
+    ['Body Fluids & Nutrition','Transferrin','TRFRN'],
+    ['Body Fluids & Nutrition','Vitamin B12','B12'],
+    ['Body Fluids & Nutrition','Vitamin D, total','VITAD'],
+    ['Infection & Inflammation','Complement C3','C3'],
+    ['Infection & Inflammation','Complement C4','C4'],
+    ['Infection & Inflammation','High-sensitivity C-reactive protein','hsCRP'],
+    ['Infection & Inflammation','Immunoglobulin A','IGA'],
+    ['Infection & Inflammation','Immunoglobulin G','IGG'],
+    ['Infection & Inflammation','Immunoglobulin M','IGM'],
+    ['Infection & Inflammation','Rheumatoid factor','RF'],
+    ['Infection & Inflammation','Hepatitis A virus IgM antibody','HAVM'],
+    ['Infection & Inflammation','Hepatitis B core IgM antibody','HBCA-IgM'],
+    ['Infection & Inflammation','Hepatitis B core total antibody','HBCT'],
+    ['Infection & Inflammation','Hepatitis B surface antibody','HBSAB'],
+    ['Infection & Inflammation','Hepatitis C virus antibody','HCV'],
+    ['Infection & Inflammation','Human immunodeficiency virus antigen','HIV-Ag'],
+    ['Infection & Inflammation','Human immunodeficiency virus antibody','HIV-Ab'],
+    ['Infection & Inflammation','Rubella IgG antibody','RUBEL'],
+    ['Tumor Markers','Cancer antigen 125','CA125'],
+    ['Tumor Markers','Carcinoembryonic antigen','CEA'],
+    ['Tumor Markers','Free prostate-specific antigen','PSAF'],
+    ['Cardiac & Muscle','Lactate dehydrogenase','LDH / LD']
+  ];
+  function upgradeRegionalLabTables(tables,chart){
+    if(!chart)return tables;
+    var activeCodes=new Set((chart.branches||[]).reduce(function(all,branch){return all.concat((branch.modules||[]).reduce(function(list,module){return list.concat(String(module.tests||'').split(/\r?\n/))},[]))},[]).map(function(code){return code.trim().toLowerCase()}).filter(Boolean));
+    RL_TABLE_ASSAYS.forEach(function(entry){
+      var title=entry[0],name=entry[1],codes=entry[2].split(/\s*\/\s*/);
+      if(!codes.some(function(code){return activeCodes.has(code.toLowerCase())}))return;
+      var matches=[];
+      tables.forEach(function(table){var first=table.columns[0];if(!first)return;(table.rows||[]).forEach(function(row){if(row.type!=='data')return;var text=plainCellText((row.cells||{})[first.id]||''),old=text.match(/^(.*?)\s*\(([^()]*)\)$/),listedCodes=old?old[2].toLowerCase().split(/[^a-z0-9-]+/):[];if(text.replace(/\s*\([^)]*\)\s*$/,'').toLowerCase()===name.toLowerCase()||codes.some(function(code){return listedCodes.includes(code.toLowerCase())}))matches.push({row:row,col:first.id,text:text})})});
+      if(matches.length){matches.forEach(function(match){var old=match.text.match(/^(.*?)\s*\(([^()]*)\)$/),listedCodes=old?old[2].toLowerCase().split(/[^a-z0-9-]+/):[],missing=codes.filter(function(code){return !listedCodes.includes(code.toLowerCase())});if(!missing.length)return;match.row.cells[match.col]=old?old[1]+' ('+old[2]+' / '+missing.join(' / ')+')':match.text+' ('+codes.join(' / ')+')'});return}
+      var table=tables.find(function(item){return item.title.toLowerCase()===title.toLowerCase()});
+      if(!table){table=makeResourceTable(title,RESOURCE_ASSAY_COLUMNS,[['']]);table.rows=[];tables.push(table)}
+      var cells={};table.columns.forEach(function(col){cells[col.id]=''});cells[table.columns[0].id]=name+' ('+codes.join(' / ')+')';table.rows.push({id:uid('row'),type:'data',cells:cells});
+    });
+    return tables;
+  }
   function upgradeQcInfoTable(tables){
     var table=tables.find(function(item){return /^Calibration and QC Info$/i.test(item.title)});
     if(!table)return;
@@ -689,7 +748,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(out.id==='instrument-default'&&out.testListsRevision!=='qc-2025-v1'){fillCobasQcLists(out);needsStarterSync=true}
     return out;
   }
-  function defaultState(){var main=defaultInstrumentChart();return{version:21,starter:'maintenance-sim-v1',updatedAt:Date.now(),charts:[],instrumentCharts:[main,rlInstrumentChart()],resourceTables:starterResourceTables(),simulations:[defaultMaintenanceSimulation()]}}
+  function defaultState(){var main=defaultInstrumentChart();return{version:22,starter:'maintenance-sim-v1',updatedAt:Date.now(),charts:[],instrumentCharts:[main,rlInstrumentChart()],resourceTables:starterResourceTables(),simulations:[defaultMaintenanceSimulation()]}}
   state=defaultState();
   function looksLikeMinimalLiverStarter(data){
     var charts=data&&Array.isArray(data.charts)?data.charts:[];
@@ -792,7 +851,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var simulations=(Array.isArray(incoming.simulations)?incoming.simulations:base.simulations).map(normalizeMaintenanceSimulation);
     if(Number(incoming.version||0)<19){var refreshed=defaultMaintenanceSimulation();simulations.forEach(function(simulation){if(simulation.id!=='simulation-cobas2')return;simulation.moduleSteps.forEach(function(steps,index){if(steps.length===3&&steps.map(function(step){return step.id}).join(',')==='status,sop,record')simulation.moduleSteps[index]=refreshed.moduleSteps[index]||refreshed.moduleSteps[0]})});needsStarterSync=true}
     if(Number(incoming.version||0)<21){var photoRl=rlInstrumentChart(),rlIndex=instrumentCharts.findIndex(function(chart){return chart.id==='instrument-rl'});if(rlIndex<0)instrumentCharts.push(photoRl);else instrumentCharts[rlIndex]=photoRl;upgradeQcInfoTable(resourceTables);needsStarterSync=true}
-    return {version:21,starter:base.starter,updatedAt:incoming.updatedAt||Date.now(),charts:charts,instrumentCharts:instrumentCharts,resourceTables:resourceTables,simulations:simulations};
+    if(Number(incoming.version||0)<22){upgradeRegionalLabTables(resourceTables,instrumentCharts.find(function(chart){return chart.id==='instrument-rl'}));needsStarterSync=true}
+    return {version:22,starter:base.starter,updatedAt:incoming.updatedAt||Date.now(),charts:charts,instrumentCharts:instrumentCharts,resourceTables:resourceTables,simulations:simulations};
   }
   function saveLocal(){try{localStorage.setItem('chemistryHubState',JSON.stringify(state))}catch(e){}}
   function markDirty(){state.updatedAt=Date.now();saveLocal();if(safeDoc)safeDoc.scheduleSave(4000,'auto')}
