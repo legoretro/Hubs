@@ -201,6 +201,8 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
 .instrument-print-legend{display:none}
 .chem-sop-mono.instrument-print-page .instrument-print-legend{display:block;width:max-content;max-width:100%;margin:7px auto 0;padding:5px 8px;border:1px solid #111;background:#fff;color:#111;text-align:center;font:11px/1.2 Arial,Helvetica,sans-serif}
 .chem-sop-mono.instrument-print-page .instrument-print-legend strong{font-weight:800}
+.chem-export-meta{display:grid;gap:7px;margin:10px 0}.chem-export-meta label{display:grid;gap:3px;color:#173c53;font:700 12px/1.2 Arial,Helvetica,sans-serif}.chem-export-meta input{width:100%;min-width:0;padding:7px 9px;border:1px solid #9ab2c0;border-radius:5px;background:#fff;color:#111;font:14px Arial,Helvetica,sans-serif}
+.instrument-print-heading{text-align:center;margin:0 0 9px}.instrument-print-heading .instrument-print-title{margin:0 0 3px;font-size:24px;line-height:1.1;overflow-wrap:anywhere}.instrument-print-author,.chem-export-author{color:#111;font:15px/1.2 Arial,Helvetica,sans-serif;text-align:center}.print-page .chem-export-author{margin:0 0 7px}
 .resource-table-card[data-qc-info] .assay-table th:first-child,.resource-table-card[data-qc-info] .assay-table td:first-child{width:12%!important;min-width:95px!important;position:static!important}
 .resource-table-card[data-qc-info] .assay-table th:nth-child(2),.resource-table-card[data-qc-info] .assay-table td:nth-child(2){width:18%}
 .resource-table-card[data-qc-info] .assay-table th:nth-child(3),.resource-table-card[data-qc-info] .assay-table td:nth-child(3){width:48%}
@@ -1707,6 +1709,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     return true;
   }
   function renderAll(){document.body.classList.toggle('admin-mode',isAdmin);renderFlowMode();renderSchematic();renderFlowcharts();renderResources();renderTables();renderSimulation()}
+  function exportMetaControls(title,author){return '<div class="chem-export-meta"><label>Assignment title<input type="text" maxlength="120" data-chem-export-title value="'+escapeHtml(title)+'" placeholder="Assignment title"></label><label>Your name<input type="text" maxlength="80" data-chem-export-author value="'+escapeHtml(author)+'" placeholder="Your name"></label></div>'}
   function exportInstrumentChart(){
     var source=document.querySelector('#cobasSchematic .cobas-card');
     if(!source){showToast('Choose an instrument flowchart to export',true);return}
@@ -1722,9 +1725,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(isRl)copy.querySelectorAll('.rl-difference-key,.rl-difference-summary').forEach(function(node){node.remove()});
     copy.insertAdjacentHTML('beforeend','<aside class="instrument-print-legend" aria-label="Bold underlined notation"><strong>Key:</strong> <strong><u>Marked assay</u></strong> = runs only on the Cobas shown</aside>');
     var singleBranch=!!copy.querySelector('.cobas-lines.single-branch');
-    var printHtml='<div class="instrument-print-page '+(singleBranch?'single-instrument':'')+'"><div class="instrument-print-inner">'+copy.outerHTML+'</div></div>';
-    var monochrome=true;
-    var exportHtml=function(){return monochrome?printHtml.replace('class="instrument-print-page ','class="instrument-print-page chem-sop-mono '):printHtml};
+    var monochrome=true,assignmentTitle=chartTitle,authorName=localStorage.getItem('chemistryExportAuthor')||'',topOffset=0;
+    var exportHtml=function(){return '<div class="instrument-print-page '+(monochrome?'chem-sop-mono ':'')+(singleBranch?'single-instrument':'')+'"><div class="instrument-print-inner" style="top:'+topOffset.toFixed(1)+'px"><header class="instrument-print-heading"><h1 class="instrument-print-title">'+escapeHtml(assignmentTitle||chartTitle)+'</h1><p class="instrument-print-author">By: '+(authorName?escapeHtml(authorName):'____________')+'</p></header>'+copy.outerHTML+'</div></div>'};
     area.innerHTML=exportHtml();
     area.style.display='block';
     area.style.position='fixed';
@@ -1736,7 +1738,6 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var naturalHeight=Math.max(1,inner.scrollHeight);
     var scale=Math.min(1,(10.55*96)/naturalWidth,(8.05*96)/naturalHeight)*.98;
     var topOffset=Math.max(0,((8.05*96)-naturalHeight*scale)/2);
-    printHtml=printHtml.replace('class="instrument-print-inner"','class="instrument-print-inner" style="top:'+topOffset.toFixed(1)+'px"');
     area.style.display='';
     area.style.position='';
     area.style.left='';
@@ -1757,8 +1758,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         pageMargin:'.22in',
         scaleVar:'--chem-instrument-print-scale',
         previewClass:'chem-instrument-print-preview',
-        controlsHtml:'<label class="chem-export-mono-option"><input type="checkbox" data-chem-export-mono checked> Black and white SOP style (black ink)</label>',
-        onControlsChange:function(modal){monochrome=!!modal.querySelector('[data-chem-export-mono]:checked')},
+        controlsHtml:exportMetaControls(assignmentTitle,authorName)+'<label class="chem-export-mono-option"><input type="checkbox" data-chem-export-mono checked> Black and white SOP style (black ink)</label>',
+        onControlsChange:function(modal){monochrome=!!modal.querySelector('[data-chem-export-mono]:checked');assignmentTitle=(modal.querySelector('[data-chem-export-title]')||{}).value||chartTitle;authorName=(modal.querySelector('[data-chem-export-author]')||{}).value||'';localStorage.setItem('chemistryExportAuthor',authorName)},
         buildContent:function(){return exportHtml()},
         hint:'The complete instrument flowchart fits on one landscape page. Choose Save as PDF in the print dialog.'
       });
@@ -1774,16 +1775,16 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     window.print();
     setTimeout(function(){document.body.classList.remove('printing','instrument-printing');area.innerHTML='';area.style.removeProperty('--chem-instrument-print-scale');fallbackPageStyle.remove()},1200);
   }
-  function chartPrintHtml(chart,monochrome){
-    var exportTitle=(chart&&chart.title)||'Flowchart';
-    return '<div class="print-page'+(monochrome?' chem-sop-mono':'')+'"><h1>'+escapeHtml(exportTitle)+'</h1>'+flowHtml(chart,null,'__all__')+'</div>';
+  function chartPrintHtml(chart,monochrome,assignmentTitle,authorName){
+    var exportTitle=assignmentTitle||(chart&&chart.title)||'Flowchart';
+    return '<div class="print-page'+(monochrome?' chem-sop-mono':'')+'"><h1>'+escapeHtml(exportTitle)+'</h1><p class="chem-export-author">By: '+(authorName?escapeHtml(authorName):'____________')+'</p>'+flowHtml(chart,null,'__all__')+'</div>';
   }
   function exportChart(chart){
     if(!chart)return;
     var area=document.getElementById('printArea');
     var exportTitle=chart.title||'Flowchart';
-    var monochrome=true;
-    area.innerHTML=chartPrintHtml(chart,monochrome);
+    var monochrome=true,assignmentTitle=exportTitle,authorName=localStorage.getItem('chemistryExportAuthor')||'';
+    area.innerHTML=chartPrintHtml(chart,monochrome,assignmentTitle,authorName);
     area.style.display='block';
     area.style.position='fixed';
     area.style.left='-10000px';
@@ -1792,7 +1793,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     drawChemFlowLinks(area);
     var root=area.querySelector('.flow-root'),scale=.58;
     if(root){
-      var pageWidth=10.05*96,pageHeight=7.42*96;
+      var pageWidth=10.05*96,pageHeight=7.10*96;
       var width=Math.max(root.scrollWidth,root.getBoundingClientRect().width,1);
       var height=Math.max(root.scrollHeight,root.getBoundingClientRect().height,1);
       scale=Math.min(.92,pageWidth/width,pageHeight/height)*.96;
@@ -1814,9 +1815,9 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         step:.01,
         persistKey:'chemistry-flowchart-scale',
         printArea:area,
-        controlsHtml:'<label class="chem-export-mono-option"><input type="checkbox" data-chem-export-mono checked> Black and white SOP style (black ink)</label>',
-        onControlsChange:function(modal){monochrome=!!modal.querySelector('[data-chem-export-mono]:checked')},
-        buildContent:function(){return chartPrintHtml(chart,monochrome)},
+        controlsHtml:exportMetaControls(assignmentTitle,authorName)+'<label class="chem-export-mono-option"><input type="checkbox" data-chem-export-mono checked> Black and white SOP style (black ink)</label>',
+        onControlsChange:function(modal){monochrome=!!modal.querySelector('[data-chem-export-mono]:checked');assignmentTitle=(modal.querySelector('[data-chem-export-title]')||{}).value||exportTitle;authorName=(modal.querySelector('[data-chem-export-author]')||{}).value||'';localStorage.setItem('chemistryExportAuthor',authorName)},
+        buildContent:function(){return chartPrintHtml(chart,monochrome,assignmentTitle,authorName)},
         bodyClass:'printing',
         scaleVar:'--chem-print-scale',
         previewClass:'chem-print-preview',
@@ -1827,7 +1828,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       });
       return;
     }
-    area.innerHTML=chartPrintHtml(chart,true);
+    area.innerHTML=chartPrintHtml(chart,true,assignmentTitle,authorName);
     area.style.setProperty('--chem-print-scale',scale.toFixed(3));
     drawChemFlowLinks(area);
     document.body.classList.add('printing');
