@@ -737,7 +737,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     return Array.from(new Set(own.filter(function(item){return !other.has(assayFullName(item).toLowerCase())}))).sort(function(a,b){return a.localeCompare(b,'en',{numeric:true})});
   }
   var EXTRA_ASSAY_NAMES={
-    'A1W3':'Hemoglobin A1c','HBW3':'Total hemoglobin for hemoglobin A1c','HA1C':'Hemoglobin A1c',
+    'A1W3':'Hemoglobin A1c assay','HBW3':'Total hemoglobin for hemoglobin A1c','HA1C':'Hemoglobin A1c',
     'ALBU2':'Urine albumin','UMGR':'Urine magnesium','GGT':'Gamma-glutamyl transferase',
     'ESTD':'Estradiol','FSH':'Follicle-stimulating hormone','FT3':'Free triiodothyronine','T3F':'Free triiodothyronine',
     'LH':'Luteinizing hormone','PRGS':'Progesterone','PROLC':'Prolactin','TESTO':'Testosterone',
