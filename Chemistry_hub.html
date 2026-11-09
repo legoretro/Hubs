@@ -733,8 +733,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function rlUniqueTests(chart,branchIndex){
     var own=((chart.branches[branchIndex]||{}).modules||[]).reduce(function(list,module){return list.concat(String(module.tests||'').split(/\r?\n/))},[]).map(function(item){return item.trim()}).filter(Boolean);
-    var other=new Set((((chart.branches[1-branchIndex]||{}).modules||[]).reduce(function(list,module){return list.concat(String(module.tests||'').split(/\r?\n/))},[])).map(function(item){return item.trim().toLowerCase()}));
-    return Array.from(new Set(own.filter(function(item){return !other.has(item.toLowerCase())}))).sort(function(a,b){return a.localeCompare(b,'en',{numeric:true})});
+    var other=new Set((((chart.branches[1-branchIndex]||{}).modules||[]).reduce(function(list,module){return list.concat(String(module.tests||'').split(/\r?\n/))},[])).map(function(item){return assayFullName(item.trim()).toLowerCase()}));
+    return Array.from(new Set(own.filter(function(item){return !other.has(assayFullName(item).toLowerCase())}))).sort(function(a,b){return a.localeCompare(b,'en',{numeric:true})});
   }
   var EXTRA_ASSAY_NAMES={
     'A1W3':'Hemoglobin A1c','HBW3':'Total hemoglobin for hemoglobin A1c','HA1C':'Hemoglobin A1c',
