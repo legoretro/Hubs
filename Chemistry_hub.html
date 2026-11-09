@@ -754,7 +754,9 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     'ACET':'Acetaminophen','ACETA':'Acetaminophen','DILAN (PHENY)':'Phenytoin','PHENY (DILAN)':'Phenytoin',
     'FREE DILAN':'Free phenytoin','CARB (TEGR)':'Carbamazepine','TEGR (CARB)':'Carbamazepine',
     'TNT GEN 5':'Troponin T, fifth generation','MTHTX (AS NEEDED)':'Methotrexate',
-    'OP300':'Opiates screen','AMP300':'Amphetamines screen','BENZ100':'Benzodiazepines screen','TCH20':'Cannabinoids screen'
+    'OP300':'Opiates screen','AMP300':'Amphetamines screen','BENZ100':'Benzodiazepines screen','TCH20':'Cannabinoids screen',
+    'PTH-STAT':'Parathyroid hormone, stat','PTH-REG':'Parathyroid hormone, routine','TACRO':'Tacrolimus',
+    'FREE DILAN (FDIL)':'Free phenytoin','TOBRA (TOBT)':'Tobramycin','UUAR (URICA)':'Urine uric acid'
   };
   function assayFullName(code){
     var key=String(code||'').trim().toUpperCase();
@@ -765,7 +767,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   function differenceSummaryHtml(chart){
     var names=chart.id==='instrument-default'?['Cobas 4','Cobas 2']:['Cobas 1','Cobas 3'];
     var first=rlUniqueTests(chart,0),second=rlUniqueTests(chart,1);
-    function fullList(items){return escapeHtml(Array.from(new Set(items.map(assayFullName))).join(', '))}
+    var sharedNames=new Set(first.map(assayFullName).filter(function(name){return second.map(assayFullName).includes(name)}));
+    function fullList(items){return escapeHtml(Array.from(new Set(items.map(function(code){var name=assayFullName(code);return sharedNames.has(name)?name+' ('+code+')':name}))).join(', '))}
     return '<div class="rl-difference-key"><span class="rl-cobas1-only">'+names[0]+' only</span><span class="rl-cobas3-only">'+names[1]+' only</span></div><section class="rl-difference-summary"><h3>'+names[0]+' vs '+names[1]+' · differences</h3><div class="rl-difference-summary-grid"><div><strong>'+names[0]+' only</strong><p>'+fullList(first)+'</p></div><div><strong>'+names[1]+' only</strong><p>'+fullList(second)+'</p></div></div></section>';
   }
   // Full names for the distinct Regional Lab codes that were not already in the assay tables.
@@ -870,7 +873,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(out.id==='instrument-default'&&out.testListsRevision!=='qc-2025-v1'){fillCobasQcLists(out);needsStarterSync=true}
     return out;
   }
-  function defaultState(){var main=defaultInstrumentChart();return{version:24,starter:'maintenance-sim-v1',updatedAt:Date.now(),charts:restoredRegularFlowcharts(),instrumentCharts:[main,rlInstrumentChart()],resourceTables:starterResourceTables(),simulations:[defaultMaintenanceSimulation()]}}
+  function defaultState(){var main=defaultInstrumentChart();return{version:25,starter:'maintenance-sim-v1',updatedAt:Date.now(),charts:restoredRegularFlowcharts(),instrumentCharts:[main,rlInstrumentChart()],resourceTables:starterResourceTables(),simulations:[defaultMaintenanceSimulation()]}}
   state=defaultState();
   function looksLikeMinimalLiverStarter(data){
     var charts=data&&Array.isArray(data.charts)?data.charts:[];
@@ -980,7 +983,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(Number(incoming.version||0)<21){var photoRl=rlInstrumentChart(),rlIndex=instrumentCharts.findIndex(function(chart){return chart.id==='instrument-rl'});if(rlIndex<0)instrumentCharts.push(photoRl);else instrumentCharts[rlIndex]=photoRl;upgradeQcInfoTable(resourceTables);needsStarterSync=true}
     if(Number(incoming.version||0)<22){upgradeRegionalLabTables(resourceTables,instrumentCharts.find(function(chart){return chart.id==='instrument-rl'}));needsStarterSync=true}
     if(Number(incoming.version||0)<24){var mainChart=instrumentCharts.find(function(chart){return chart.id==='instrument-default'});if(mainChart)(mainChart.branches||[]).forEach(function(branch,index){if(branch.title==='Title')branch.title=index===0?'Cobas 4':'Cobas 2'});var rl=instrumentCharts.find(function(chart){return chart.id==='instrument-rl'});if(rl)(rl.branches||[]).forEach(function(branch){var c=(branch.modules||[]).find(function(module){return /^c\s*702/i.test(module.name)}),e=(branch.modules||[]).find(function(module){return /^e\s*801/i.test(module.name)});if(!c)return;var added=['HA1C','HBW3','A1W3'],cItems=String(c.tests||'').split(/\r?\n/).filter(Boolean);added.forEach(function(code){if(!cItems.some(function(item){return item.toUpperCase()===code}))cItems.push(code)});c.tests=alphabetizeTests(cItems.join('\n'));delete c.testColumns;if(e)e.tests=String(e.tests||'').split(/\r?\n/).filter(function(code){return !added.includes(code.toUpperCase())}).join('\n')});needsStarterSync=true}
-    return {version:24,starter:base.starter,updatedAt:incoming.updatedAt||Date.now(),charts:charts,instrumentCharts:instrumentCharts,resourceTables:resourceTables,simulations:simulations};
+    if(Number(incoming.version||0)<25){var savedRl=instrumentCharts.find(function(chart){return chart.id==='instrument-rl'});if(savedRl)(savedRl.branches||[]).forEach(function(branch){var c=(branch.modules||[]).find(function(module){return /^c\s*\d+/i.test(module.name)}),e=(branch.modules||[]).find(function(module){return /^e\s*\d+/i.test(module.name)});if(!c)return;var added=['HA1C','HBW3','A1W3'],cGroups=instrumentTestColumns(c),cCodes=new Set(cGroups.reduce(function(all,group){return all.concat(group)},[]).map(function(code){return code.toUpperCase()}));added.forEach(function(code){if(!cCodes.has(code))cGroups[cGroups.length-1].push(code)});saveInstrumentTestColumns(c,cGroups);if(e){var eGroups=instrumentTestColumns(e).map(function(group){return group.filter(function(code){return !added.includes(code.toUpperCase())})});saveInstrumentTestColumns(e,eGroups)}});needsStarterSync=true}
+    return {version:25,starter:base.starter,updatedAt:incoming.updatedAt||Date.now(),charts:charts,instrumentCharts:instrumentCharts,resourceTables:resourceTables,simulations:simulations};
   }
   function saveLocal(){try{localStorage.setItem('chemistryHubState',JSON.stringify(state))}catch(e){}}
   function markDirty(){state.updatedAt=Date.now();saveLocal();if(safeDoc)safeDoc.scheduleSave(4000,'auto')}
