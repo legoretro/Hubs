@@ -263,6 +263,35 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
 .qc-tools .mini-btn{font:700 13px/1.2 Arial,sans-serif}
 .qc-remove{color:#9b1238}
 </style>
+<style>
+/* Instrument assays fit the page: columns wrap at spaces, never through words. */
+html,body{max-width:100%;overflow-x:clip}
+.cobas-card,.cobas-line,.cobas-test-list,.qc-chart,.qc-branch,.qc-table-wrap{max-width:100%;overflow-x:visible!important}
+.cobas-lines{grid-template-columns:minmax(0,1fr)!important}
+.cobas-module{grid-template-columns:minmax(70px,100px) minmax(0,1fr)!important}
+.cobas-test-columns{grid-template-columns:repeat(var(--test-columns,1),minmax(0,1fr))!important;width:100%!important;min-width:0!important}
+.cobas-test-column{white-space:pre-line;overflow-wrap:normal!important;word-break:normal!important;hyphens:none!important}
+.cobas-test-column-wrap{min-width:0}
+.resource-tabs{flex-wrap:wrap!important;overflow-x:visible!important}
+.qc-branches{grid-template-columns:minmax(0,1fr)!important}
+.qc-table-wrap{overflow:visible!important}
+.qc-table{width:100%!important;min-width:0!important;table-layout:fixed}
+.qc-table th,.qc-table td{min-width:0!important;overflow-wrap:break-word}
+.assay-table{width:100%;min-width:0!important;table-layout:fixed}
+.assay-table th,.assay-table td{overflow-wrap:break-word}
+@media(max-width:800px){.cobas-module{grid-template-columns:minmax(0,1fr)!important}.cobas-machine{height:auto;min-height:50px}.cobas-test-columns{grid-template-columns:repeat(2,minmax(0,1fr))!important}.cobas-test-column-wrap:nth-child(odd){border-left:0;padding-left:0}}
+@media(max-width:520px){.cobas-test-columns{grid-template-columns:minmax(0,1fr)!important}.cobas-test-column-wrap{border-left:0!important;padding-left:0!important}.qc-table{font-size:12px}}
+.instrument-print-page,.instrument-print-page.single-instrument{width:100%!important;height:auto!important;min-height:0!important;overflow:visible!important;margin:0!important}
+.instrument-print-inner,.instrument-print-page.single-instrument .instrument-print-inner{position:static!important;left:auto!important;width:100%!important;margin:0!important;transform:none!important;top:auto!important}
+.instrument-print-page .cobas-lines{grid-template-columns:minmax(0,1fr)!important;gap:10px}
+.instrument-print-page .cobas-module{grid-template-columns:70px minmax(0,1fr)!important}
+.instrument-print-page .cobas-test-columns{grid-template-columns:repeat(var(--test-columns,1),minmax(0,1fr))!important;width:100%!important}
+.instrument-print-page .cobas-test-column.cobas-edit,.instrument-print-page.single-instrument .cobas-test-column.cobas-edit{font-size:14px!important;line-height:1.18!important}
+.instrument-print-page .cobas-line,.instrument-print-page .cobas-module,.instrument-print-page .qc-branch,.instrument-print-page .qc-table tr{break-inside:avoid;page-break-inside:avoid}
+.instrument-print-page .qc-chart{max-width:none}
+.hub-pdf-preview-content.chem-instrument-print-preview,.hub-pdf-preview-page:has(.chem-instrument-print-preview){height:auto!important;min-height:0!important;overflow:visible!important}
+@media print{body.instrument-printing #printArea .instrument-print-page{break-after:auto!important;page-break-after:auto!important}body.instrument-printing #printArea .cobas-lines{display:block!important}body.instrument-printing #printArea .cobas-line{margin-bottom:10px}body.instrument-printing #printArea .qc-table th,body.instrument-printing #printArea .qc-table td{font-size:10pt;overflow-wrap:break-word}}
+</style>
 </head>
 <body class="intro-active">
 <div id="intro">
@@ -728,7 +757,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   function instrumentTestColumns(module,alphabetical){
     var items=assayLines(module.tests),groups=[];
     if(alphabetical)items=assayLines(sortInstrumentAssays(items.join('\n'),module.literalTests));
-    var count=Math.max(1,Math.ceil(items.length/10)),size=Math.max(1,Math.ceil(items.length/count));
+    var count=Math.max(1,Math.min(4,Math.ceil(items.length/10))),size=Math.max(1,Math.ceil(items.length/count));
     for(var i=0;i<items.length;i+=size)groups.push(items.slice(i,i+size));
     return groups.length?groups:[[]];
   }
@@ -1986,7 +2015,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   function renderAll(){document.body.classList.toggle('admin-mode',isAdmin);renderFlowMode();renderSchematic();renderFlowcharts();renderResources();renderTables();renderSimulation()}
   function exportMetaControls(title,author){return '<div class="chem-export-meta"><label>Assignment title<input type="text" maxlength="120" data-chem-export-title value="'+escapeHtml(title)+'" placeholder="Assignment title"></label><label>Your name<input type="text" maxlength="80" data-chem-export-author value="'+escapeHtml(author)+'" placeholder="Your name"></label></div>'}
   function exportInstrumentChart(){
-    var source=document.querySelector('#cobasSchematic .cobas-card');
+    var source=document.querySelector('#cobasSchematic .cobas-card, #cobasSchematic .qc-chart');
     if(!source){showToast('Choose an instrument flowchart to export',true);return}
     var area=document.getElementById('printArea');
     var copy=source.cloneNode(true);
@@ -1997,7 +2026,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(chartHead)chartHead.remove();
     if(colorKey)colorKey.remove();
     copy.querySelectorAll('.rl-difference-key,.rl-difference-summary').forEach(function(node){node.remove()});
-    copy.insertAdjacentHTML('beforeend','<aside class="instrument-print-legend" aria-label="Highlighted assay note"><strong><u>Highlighted assay</u></strong> = assay specific to the Cobas shown</aside>');
+    if(copy.classList.contains('cobas-card'))copy.insertAdjacentHTML('beforeend','<aside class="instrument-print-legend" aria-label="Highlighted assay note"><strong><u>Highlighted assay</u></strong> = assay specific to the Cobas shown</aside>');
     var singleBranch=!!copy.querySelector('.cobas-lines.single-branch');
     var monochrome=true,assignmentTitle=chartTitle,authorName=localStorage.getItem('chemistryExportAuthor')||'',topOffset=0;
     var exportHtml=function(){return '<div class="instrument-print-page '+(monochrome?'chem-sop-mono ':'')+(singleBranch?'single-instrument':'')+'"><div class="instrument-print-inner" style="top:'+topOffset.toFixed(1)+'px"><header class="instrument-print-heading"><h1 class="instrument-print-title">'+escapeHtml(assignmentTitle||chartTitle)+'</h1><p class="instrument-print-author">By: '+(authorName?escapeHtml(authorName):'____________')+'</p></header>'+copy.outerHTML+'</div></div>'};
@@ -2008,10 +2037,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     area.style.top='0';
     area.style.visibility='hidden';
     var inner=area.querySelector('.instrument-print-inner');
-    var naturalWidth=Math.max(singleBranch?820:1100,inner.scrollWidth);
-    var naturalHeight=Math.max(1,inner.scrollHeight);
-    var scale=Math.min(1,(10.55*96)/naturalWidth,(8.05*96)/naturalHeight)*.98;
-    var topOffset=Math.max(0,((8.05*96)-naturalHeight*scale)/2);
+    var scale=1;
+    topOffset=0;
     area.style.display='';
     area.style.position='';
     area.style.left='';
@@ -2035,7 +2062,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         controlsHtml:exportMetaControls(assignmentTitle,authorName)+'<label class="chem-export-mono-option"><input type="checkbox" data-chem-export-mono checked> Black and white SOP style (black ink)</label>',
         onControlsChange:function(modal){monochrome=!!modal.querySelector('[data-chem-export-mono]:checked');assignmentTitle=(modal.querySelector('[data-chem-export-title]')||{}).value||chartTitle;authorName=(modal.querySelector('[data-chem-export-author]')||{}).value||'';localStorage.setItem('chemistryExportAuthor',authorName)},
         buildContent:function(){return exportHtml()},
-        hint:'The complete instrument flowchart fits on one landscape page. Choose Save as PDF in the print dialog.'
+        hint:'The complete diagram prints across as many landscape pages as needed. Choose Save as PDF in the print dialog.'
       });
       return;
     }
