@@ -700,16 +700,21 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     ]
   ];
   function alphabetizeTests(value){return String(value||'').split(/\r?\n/).map(function(item){return item.trim()}).filter(Boolean).sort(function(a,b){return a.localeCompare(b,'en',{sensitivity:'base',numeric:true})}).join('\n')}
-  function instrumentTestColumns(module){
-    if(Array.isArray(module.testColumns)&&module.testColumns.length)return module.testColumns.map(function(group){return String(group||'').split(/\r?\n/).map(function(item){return item.trim()}).filter(Boolean)});
-    var items=String(module.tests||'').split(/\r?\n/).map(function(item){return item.trim()}).filter(Boolean),groups=[];
+  function assayLines(value){return String(value||'').split(/\r?\n/).map(function(item){return item.trim()}).filter(Boolean)}
+  function sortInstrumentAssays(value){
+    return assayLines(value).sort(function(a,b){return instrumentAssayName(a).localeCompare(instrumentAssayName(b),'en',{sensitivity:'base',numeric:true})||a.localeCompare(b,'en',{sensitivity:'base',numeric:true})}).join('\n');
+  }
+  function instrumentTestColumns(module,alphabetical){
+    var items=assayLines(module.tests),groups=[];
+    if(alphabetical)items=assayLines(sortInstrumentAssays(items.join('\n')));
     var count=Math.max(1,Math.ceil(items.length/10)),size=Math.max(1,Math.ceil(items.length/count));
     for(var i=0;i<items.length;i+=size)groups.push(items.slice(i,i+size));
     return groups.length?groups:[[]];
   }
-  function saveInstrumentTestColumns(module,groups){
-    module.testColumns=groups.map(function(group){return group.join('\n')});
-    module.tests=groups.reduce(function(all,group){return all.concat(group)},[]).join('\n');
+  function saveInstrumentTestColumns(module,groups,alphabetical){
+    var value=groups.reduce(function(all,group){return all.concat(group)},[]).join('\n');
+    module.tests=alphabetical?sortInstrumentAssays(value):value;
+    delete module.testColumns;
   }
   function fillCobasQcLists(chart){chart.branches.slice(0,2).forEach(function(branch,bi){(COBAS_QC_LISTS[bi]||[]).forEach(function(list,mi){if(branch.modules[mi]){branch.modules[mi].tests=alphabetizeTests(list.join('\n'));delete branch.modules[mi].testColumns}})});chart.testListsRevision='qc-2025-v1';return chart}
   function defaultInstrumentChart(){var chart=blankInstrumentChart();chart.id='instrument-default';chart.title='Main Lab';chart.instrumentTitle='Cobas 8000';chart.branches[0].title='Cobas 4';chart.branches[1].title='Cobas 2';return fillCobasQcLists(chart)}
@@ -733,8 +738,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function rlUniqueTests(chart,branchIndex){
     var own=((chart.branches[branchIndex]||{}).modules||[]).reduce(function(list,module){return list.concat(String(module.tests||'').split(/\r?\n/))},[]).map(function(item){return item.trim()}).filter(Boolean);
-    var other=new Set((((chart.branches[1-branchIndex]||{}).modules||[]).reduce(function(list,module){return list.concat(String(module.tests||'').split(/\r?\n/))},[])).map(function(item){return assayFullName(item.trim()).toLowerCase()}));
-    return Array.from(new Set(own.filter(function(item){return !other.has(assayFullName(item).toLowerCase())}))).sort(function(a,b){return a.localeCompare(b,'en',{numeric:true})});
+    var other=new Set((((chart.branches[1-branchIndex]||{}).modules||[]).reduce(function(list,module){return list.concat(String(module.tests||'').split(/\r?\n/))},[])).map(function(item){return instrumentAssayName(item.trim()).toLowerCase()}));
+    return Array.from(new Set(own.filter(function(item){return !other.has(instrumentAssayName(item).toLowerCase())}))).sort(function(a,b){return a.localeCompare(b,'en',{numeric:true})});
   }
   var EXTRA_ASSAY_NAMES={
     'A1W3':'Hemoglobin A1c assay','HBW3':'Total hemoglobin for hemoglobin A1c','HA1C':'Hemoglobin A1c',
@@ -765,11 +770,14 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var match=Object.keys(ASSAY_CODES).find(function(name){return ASSAY_CODES[name].split(/\s*\/\s*/).some(function(part){return part.toUpperCase()===key})});
     return match||code;
   }
+  function instrumentAssayName(code){
+    var key=String(code||'').trim().toUpperCase();
+    if(key==='AST'||key==='ALT')return key;
+    return assayFullName(code).replace(/\bimmunoglobulin\s+([a-z])\b/gi,function(_,letter){return 'Ig'+letter.toUpperCase()}).replace(/\bimmunoglobulin\b/gi,'Ig').replace(/\bhemoglobin\b/gi,'Hgb');
+  }
   function differenceSummaryHtml(chart){
     var names=chart.id==='instrument-default'?['Cobas 4','Cobas 2']:['Cobas 1','Cobas 3'];
-    var first=rlUniqueTests(chart,0),second=rlUniqueTests(chart,1);
-    function fullList(items){return escapeHtml(Array.from(new Set(items.map(assayFullName))).join(', '))}
-    return '<div class="rl-difference-key"><span class="rl-cobas1-only">'+names[0]+' only</span><span class="rl-cobas3-only">'+names[1]+' only</span></div><section class="rl-difference-summary"><h3>'+names[0]+' vs '+names[1]+' · differences</h3><div class="rl-difference-summary-grid"><div><strong>'+names[0]+' only</strong><p>'+fullList(first)+'</p></div><div><strong>'+names[1]+' only</strong><p>'+fullList(second)+'</p></div></div></section>';
+    return '<div class="rl-difference-key"><span class="rl-cobas1-only">'+names[0]+' only</span><span class="rl-cobas3-only">'+names[1]+' only</span></div>';
   }
   // Full names for the distinct Regional Lab codes that were not already in the assay tables.
   // Source codes remain visible in parentheses so each row can be matched to the RL diagram.
@@ -869,11 +877,17 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   function migrateSchematic(old){var chart=defaultInstrumentChart();if(!old||typeof old!=='object')return chart;chart.testListsRevision='';chart.sample=String(old.sample||chart.sample).replace(/^cobas 8000\s*/i,'').slice(0,100)||'Sample Handling';[['cobas4',0],['cobas2',1]].forEach(function(pair){var modules=old[pair[0]];if(Array.isArray(modules))chart.branches[pair[1]].modules=modules.map(function(item){return{id:uid('module'),name:String(item.name||'Module').slice(0,60),tests:String(item.tests||'').slice(0,1500)}})});return chart}
   function normalizeInstrumentChart(value,index){
     var base=defaultInstrumentChart();if(!value||typeof value!=='object')return base;
-    var out={id:String(value.id||uid('instrument')).slice(0,80),title:String(value.title||'Instrument Flowchart').slice(0,100),instrumentTitle:String(value.instrumentTitle|| (value.id==='instrument-default'?'Cobas 8000':'Title')).slice(0,100),sample:String(value.sample||'Sample Handling').slice(0,100),sampleColor:sanitizeColor(value.sampleColor,'#f4fbff'),colorKey:(Array.isArray(value.colorKey)?value.colorKey:[]).slice(0,30).map(function(item){return{id:String(item.id||uid('highlight')).slice(0,80),text:String(item.text||'').slice(0,80),color:sanitizeColor(item.color,'#fff0a8')}}).filter(function(item){return item.text}),testListsRevision:String(value.testListsRevision||''),branches:(Array.isArray(value.branches)&&value.branches.length?value.branches:base.branches).slice(0,6).map(function(branch,i){return{id:String(branch.id||uid('branch')).slice(0,80),title:String(branch.title||'Title').slice(0,100),modules:(Array.isArray(branch.modules)?branch.modules:base.branches[i%2].modules).slice(0,20).map(function(module){var groups=Array.isArray(module.testColumns)?module.testColumns.slice(0,20).map(function(group){return String(group||'').slice(0,2500)}):null;return{id:String(module.id||uid('module')).slice(0,80),name:String(module.name||'Module').slice(0,60),fill:sanitizeColor(module.fill,'#ffffff'),tests:groups?groups.join('\n'):alphabetizeTests(String(module.tests||'').slice(0,2500)),testColumns:groups}})}})};
-    if(out.id==='instrument-default'&&out.testListsRevision!=='qc-2025-v1'){fillCobasQcLists(out);needsStarterSync=true}
+    var id=String(value.id||uid('instrument')).slice(0,80),alphabetical=id==='instrument-default'||id==='instrument-rl';
+    var out={id:id,title:String(value.title==null?'Instrument Flowchart':value.title).slice(0,100),instrumentTitle:String(value.instrumentTitle==null?(id==='instrument-default'?'Cobas 8000':'Title'):value.instrumentTitle).slice(0,100),sample:String(value.sample==null?'Sample Handling':value.sample).slice(0,100),sampleColor:sanitizeColor(value.sampleColor,'#f4fbff'),colorKey:(Array.isArray(value.colorKey)?value.colorKey:[]).slice(0,30).map(function(item){return{id:String(item.id||uid('highlight')).slice(0,80),text:String(item.text||'').slice(0,80),color:sanitizeColor(item.color,'#fff0a8')}}).filter(function(item){return item.text}),testListsRevision:String(value.testListsRevision||''),branches:(Array.isArray(value.branches)&&value.branches.length?value.branches:base.branches).slice(0,12).map(function(branch,i){return{id:String(branch.id||uid('branch')).slice(0,80),title:String(branch.title==null?'Title':branch.title).slice(0,100),modules:(Array.isArray(branch.modules)?branch.modules:base.branches[i%2].modules).slice(0,60).map(function(module){var raw=Array.isArray(module.testColumns)&&module.testColumns.length?module.testColumns.join('\n'):String(module.tests||'');raw=raw.slice(0,20000);return{id:String(module.id||uid('module')).slice(0,80),name:String(module.name==null?'Module':module.name).slice(0,100),fill:sanitizeColor(module.fill,'#ffffff'),tests:alphabetical?sortInstrumentAssays(raw):assayLines(raw).join('\n')}})}})};
     return out;
   }
-  function defaultState(){var main=defaultInstrumentChart();return{version:26,starter:'maintenance-sim-v1',updatedAt:Date.now(),charts:restoredRegularFlowcharts(),instrumentCharts:[main,rlInstrumentChart()],resourceTables:starterResourceTables(),simulations:[defaultMaintenanceSimulation()]}}
+  function calibrationQcChart(){
+    return {id:'instrument-calibration-qc',title:'Calibration and QC',instrumentTitle:'Calibration and QC',sample:'Calibration and controls',sampleColor:'#f4fbff',colorKey:[],branches:[
+      {id:'calibration',title:'Calibration',modules:[{id:'calibration-notes',name:'Calibration',fill:'#ffffff',tests:''}]},
+      {id:'controls',title:'Controls',modules:[{id:'control-notes',name:'Controls',fill:'#ffffff',tests:''}]}
+    ]};
+  }
+  function defaultState(){var main=defaultInstrumentChart();return{version:27,starter:'maintenance-sim-v1',updatedAt:Date.now(),charts:restoredRegularFlowcharts(),instrumentCharts:[main,rlInstrumentChart(),calibrationQcChart()],resourceTables:starterResourceTables(),simulations:[defaultMaintenanceSimulation()]}}
   state=defaultState();
   function looksLikeMinimalLiverStarter(data){
     var charts=data&&Array.isArray(data.charts)?data.charts:[];
@@ -984,10 +998,27 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(Number(incoming.version||0)<22){upgradeRegionalLabTables(resourceTables,instrumentCharts.find(function(chart){return chart.id==='instrument-rl'}));needsStarterSync=true}
     if(Number(incoming.version||0)<24){var mainChart=instrumentCharts.find(function(chart){return chart.id==='instrument-default'});if(mainChart)(mainChart.branches||[]).forEach(function(branch,index){if(branch.title==='Title')branch.title=index===0?'Cobas 4':'Cobas 2'});var rl=instrumentCharts.find(function(chart){return chart.id==='instrument-rl'});if(rl)(rl.branches||[]).forEach(function(branch){var c=(branch.modules||[]).find(function(module){return /^c\s*702/i.test(module.name)}),e=(branch.modules||[]).find(function(module){return /^e\s*801/i.test(module.name)});if(!c)return;var added=['HA1C','HBW3','A1W3'],cItems=String(c.tests||'').split(/\r?\n/).filter(Boolean);added.forEach(function(code){if(!cItems.some(function(item){return item.toUpperCase()===code}))cItems.push(code)});c.tests=alphabetizeTests(cItems.join('\n'));delete c.testColumns;if(e)e.tests=String(e.tests||'').split(/\r?\n/).filter(function(code){return !added.includes(code.toUpperCase())}).join('\n')});needsStarterSync=true}
     if(Number(incoming.version||0)<26){var savedRl=instrumentCharts.find(function(chart){return chart.id==='instrument-rl'});if(savedRl)(savedRl.branches||[]).forEach(function(branch){var c=(branch.modules||[]).find(function(module){return /^c\s*\d+/i.test(module.name)}),e=(branch.modules||[]).find(function(module){return /^e\s*\d+/i.test(module.name)});if(!c)return;var added=['HA1C','HBW3','A1W3'],cGroups=instrumentTestColumns(c),cCodes=new Set(cGroups.reduce(function(all,group){return all.concat(group)},[]).map(function(code){return code.toUpperCase()}));added.forEach(function(code){if(!cCodes.has(code))cGroups[cGroups.length-1].push(code)});saveInstrumentTestColumns(c,cGroups);if(e){var eGroups=instrumentTestColumns(e).map(function(group){return group.filter(function(code){return !added.includes(code.toUpperCase())})});saveInstrumentTestColumns(e,eGroups)}});needsStarterSync=true}
-    return {version:26,starter:base.starter,updatedAt:incoming.updatedAt||Date.now(),charts:charts,instrumentCharts:instrumentCharts,resourceTables:resourceTables,simulations:simulations};
+    if(Number(incoming.version||0)<27){if(!instrumentCharts.some(function(chart){return chart.id==='instrument-calibration-qc'}))instrumentCharts.push(calibrationQcChart());needsStarterSync=true}
+    return {version:27,starter:base.starter,updatedAt:incoming.updatedAt||Date.now(),charts:charts,instrumentCharts:instrumentCharts,resourceTables:resourceTables,simulations:simulations};
   }
   function saveLocal(){try{localStorage.setItem('chemistryHubState',JSON.stringify(state))}catch(e){}}
-  function markDirty(){state.updatedAt=Date.now();saveLocal();if(safeDoc)safeDoc.scheduleSave(4000,'auto')}
+  var pendingEditTimer=null;
+  function pendingEditRecord(){try{return JSON.parse(localStorage.getItem('chemistryPendingEdit')||'null')}catch(e){return null}}
+  function flushPendingEdit(reason){
+    if(!safeDoc)return Promise.resolve(false);
+    var pending=pendingEditRecord();
+    return safeDoc.saveNow({reason:reason||'auto'}).then(function(saved){
+      if(saved&&pending&&pendingEditRecord()&&pendingEditRecord().token===pending.token)localStorage.removeItem('chemistryPendingEdit');
+      return saved;
+    });
+  }
+  function markDirty(){
+    state.updatedAt=Date.now();saveLocal();
+    try{localStorage.setItem('chemistryPendingEdit',JSON.stringify({token:uid('edit'),version:safeDoc?safeDoc.version:null,baseData:safeDoc?safeDoc.baseData:null,data:state}))}catch(e){}
+    clearTimeout(pendingEditTimer);
+    if(safeDoc)pendingEditTimer=setTimeout(function(){flushPendingEdit('auto')},700);
+  }
+  document.addEventListener('visibilitychange',function(){if(document.hidden&&safeDoc&&pendingEditRecord())flushPendingEdit('page-hidden')});
   function splitPath(path){return String(path||'').split('>').map(function(part){return part.trim()}).filter(Boolean)}
   function keyFor(label){return String(label||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim()}
   function addPath(nodes,parts,index,parentParts){
@@ -1644,8 +1675,9 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       return out;
     }
     function testColumns(module,branch){
-      var groups=instrumentTestColumns(module);
-      return '<div class="cobas-test-columns" data-columns="'+groups.length+'" style="--test-columns:'+groups.length+'">'+groups.map(function(group,i){return '<div class="cobas-test-column-wrap"><span class="cobas-edit cobas-test-column" data-instrument-id="'+escapeHtml(data.id)+'" data-instrument-field="tests" data-branch="'+escapeHtml(branch.id)+'" data-module="'+escapeHtml(module.id)+'" data-test-column="'+i+'" contenteditable="'+(isAdmin?'true':'false')+'" spellcheck="false" data-placeholder="List">'+group.map(function(line){return highlightLine(assayFullName(line),data.branches.indexOf(branch),line)}).join('\n')+'</span><div class="cobas-column-tools admin-only">'+(i?'<button type="button" class="mini-btn" data-action="shift-test-column" data-direction="left" data-branch="'+escapeHtml(branch.id)+'" data-module="'+escapeHtml(module.id)+'" data-column="'+i+'" title="Move the first assay to the previous column">← First</button>':'')+'<button type="button" class="mini-btn" data-action="shift-test-column" data-direction="right" data-branch="'+escapeHtml(branch.id)+'" data-module="'+escapeHtml(module.id)+'" data-column="'+i+'" title="Move the last assay to the next column">Last →</button></div></div>'}).join('')+'</div>';
+      var cobas=data.id==='instrument-default'||data.id==='instrument-rl',groups=instrumentTestColumns(module,cobas),branchIndex=data.branches.indexOf(branch);
+      var placeholder=data.id==='instrument-calibration-qc'?(isAdmin?(branch.id==='calibration'?'Add calibration details':'Add control details'):''):'List';
+      return '<div class="cobas-test-columns" data-columns="'+groups.length+'" style="--test-columns:'+groups.length+'">'+groups.map(function(group,i){return '<div class="cobas-test-column-wrap"><span class="cobas-edit cobas-test-column" data-instrument-id="'+escapeHtml(data.id)+'" data-instrument-field="tests" data-branch="'+escapeHtml(branch.id)+'" data-module="'+escapeHtml(module.id)+'" data-test-column="'+i+'" contenteditable="'+(isAdmin?'true':'false')+'" spellcheck="false" data-placeholder="'+escapeHtml(placeholder)+'">'+group.map(function(line){return highlightLine(cobas?instrumentAssayName(line):line,branchIndex,line)}).join('\n')+'</span></div>'}).join('')+'</div>';
     }
     function group(branch){return '<section class="cobas-line"><h3>'+edit(branch.title,'branch-title',branch.id)+'</h3><div class="cobas-modules">'+branch.modules.map(function(module){return '<div class="cobas-module"><div class="cobas-machine" style="--module-fill:'+sanitizeColor(module.fill,'#ffffff')+'">'+edit(module.name,'module-name',branch.id,module.id)+'<label class="cobas-color-control admin-only">Color <input type="color" data-action="instrument-module-color" data-branch="'+escapeHtml(branch.id)+'" data-module="'+escapeHtml(module.id)+'" value="'+sanitizeColor(module.fill,'#ffffff')+'"></label><button type="button" class="mini-btn danger admin-only cobas-remove-module" data-action="remove-instrument-module" data-branch="'+escapeHtml(branch.id)+'" data-module="'+escapeHtml(module.id)+'">Remove this module</button></div><div class="cobas-test-list">'+testColumns(module,branch)+'</div></div>'}).join('')+'</div><div class="cobas-module-actions admin-only"><button type="button" class="mini-btn cobas-add-module" data-action="add-instrument-module" data-branch="'+escapeHtml(branch.id)+'">+ Add module</button><button type="button" class="mini-btn danger" data-action="remove-last-instrument-module" data-branch="'+escapeHtml(branch.id)+'" '+(branch.modules.length?'':'disabled')+'>− Remove last module</button></div></section>'}
     var keyHtml='<div class="cobas-color-key"><h3>Color Key</h3><div class="cobas-key-items">'+(data.colorKey||[]).map(function(item){return '<span class="cobas-key-chip"><mark style="background:'+sanitizeColor(item.color,'#fff0a8')+'">'+escapeHtml(item.text)+'</mark><input type="color" class="admin-only" data-action="instrument-key-color" data-key="'+escapeHtml(item.id)+'" value="'+sanitizeColor(item.color,'#fff0a8')+'" aria-label="Color for '+escapeHtml(item.text)+'"><button type="button" class="mini-btn danger admin-only" data-action="delete-instrument-highlight" data-key="'+escapeHtml(item.id)+'" aria-label="Remove '+escapeHtml(item.text)+' from key">×</button></span>'}).join('')+'</div><div class="cobas-key-builder admin-only"><input type="text" data-highlight-text placeholder="Word or phrase" aria-label="Word or phrase to highlight"><input type="color" data-highlight-color value="#fff0a8" aria-label="Highlight color"><button type="button" class="mini-btn" data-action="add-instrument-highlight">Add highlight</button></div></div>';
@@ -1718,19 +1750,23 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       return '<tr>'+table.columns.map(function(col){return resourceCell(table,row,col)}).join('')+resourceRowControls(table,row,rowIndex)+'</tr>';
     }).join('');
     var minWidth=Math.max(720,240+(table.columns.length-1)*155);
-    return '<article class="resource-table-card" data-resource-table="'+escapeHtml(table.id)+'" '+(/^Calibration and QC Info$/i.test(table.title)?'data-qc-info="true"':'')+'><div class="resource-table-head"><div><h2 class="resource-title-display">'+escapeHtml(table.title||'Chemistry Table')+'</h2>'+(isAdmin?'<input class="resource-title-input" data-action="resource-table-title" data-table="'+escapeHtml(table.id)+'" value="'+escapeHtml(table.title||'')+'">':'')+'</div>'+(isAdmin?'<div class="resource-table-tools"><button type="button" class="mini-btn" data-action="add-resource-row" data-table="'+escapeHtml(table.id)+'">Add Row</button><button type="button" class="mini-btn" data-action="add-resource-column" data-table="'+escapeHtml(table.id)+'">Add Column</button><button type="button" class="mini-btn" data-action="add-resource-image-column" data-table="'+escapeHtml(table.id)+'">Add Image Column</button><button type="button" class="mini-btn" data-action="add-resource-subsection" data-table="'+escapeHtml(table.id)+'">Add Subsection</button><button type="button" class="mini-btn" data-action="move-resource-table" data-table="'+escapeHtml(table.id)+'" data-dir="-1" '+(tableIndex>0?'':'disabled')+'>Move Table Up</button><button type="button" class="mini-btn" data-action="move-resource-table" data-table="'+escapeHtml(table.id)+'" data-dir="1" '+(tableIndex<(state.resourceTables||[]).length-1?'':'disabled')+'>Move Table Down</button><button type="button" class="mini-btn danger" data-action="delete-resource-table" data-table="'+escapeHtml(table.id)+'">Delete Table</button></div>':'')+'</div><div class="resource-table-wrap"><table class="resource-table assay-table" data-columns="'+table.columns.length+'" style="--chem-table-min-width:'+minWidth+'px">'+head+'<tbody>'+body+'</tbody></table></div></article>';
+    return '<article class="resource-table-card" data-resource-table="'+escapeHtml(table.id)+'" '+(/^Calibration and QC Info$/i.test(table.title)?'data-qc-info="true"':'')+'><div class="resource-table-head"><div><h2 class="resource-title-display">'+escapeHtml(table.title||'Chemistry Table')+'</h2>'+(isAdmin?'<input class="resource-title-input" data-action="resource-table-title" data-table="'+escapeHtml(table.id)+'" value="'+escapeHtml(table.title||'')+'">':'')+'</div>'+(isAdmin?'<div class="resource-table-tools"><button type="button" class="mini-btn" data-action="add-resource-row" data-table="'+escapeHtml(table.id)+'">Add Row</button><button type="button" class="mini-btn" data-action="add-resource-column" data-table="'+escapeHtml(table.id)+'">Add Column</button><button type="button" class="mini-btn" data-action="add-resource-image-column" data-table="'+escapeHtml(table.id)+'">Add Image Column</button><button type="button" class="mini-btn" data-action="add-resource-subsection" data-table="'+escapeHtml(table.id)+'">Add Subsection</button><button type="button" class="mini-btn" data-action="move-resource-table" data-table="'+escapeHtml(table.id)+'" data-dir="-1" '+(tableIndex>0?'':'disabled')+'>Move Table Up</button><button type="button" class="mini-btn" data-action="move-resource-table" data-table="'+escapeHtml(table.id)+'" data-dir="1" '+(tableIndex<visibleResourceTables().length-1?'':'disabled')+'>Move Table Down</button><button type="button" class="mini-btn danger" data-action="delete-resource-table" data-table="'+escapeHtml(table.id)+'">Delete Table</button></div>':'')+'</div><div class="resource-table-wrap"><table class="resource-table assay-table" data-columns="'+table.columns.length+'" style="--chem-table-min-width:'+minWidth+'px">'+head+'<tbody>'+body+'</tbody></table></div></article>';
+  }
+  function visibleResourceTables(){
+    return (state.resourceTables||[]).filter(function(table){return !/^Calibration and QC Info$/i.test(String(table.title||'').trim())});
   }
   function activeResourceTable(){
     state.resourceTables=normalizeResourceTables(state.resourceTables);
-    if(!state.resourceTables.length)return null;
-    if(!activeResourceTableId||!state.resourceTables.some(function(table){return table.id===activeResourceTableId})){
-      activeResourceTableId=state.resourceTables[0].id;
+    var tables=visibleResourceTables();
+    if(!tables.length)return null;
+    if(!activeResourceTableId||!tables.some(function(table){return table.id===activeResourceTableId})){
+      activeResourceTableId=tables[0].id;
       localStorage.setItem('chemistryActiveResourceTable',activeResourceTableId);
     }
-    return state.resourceTables.find(function(table){return table.id===activeResourceTableId})||state.resourceTables[0];
+    return tables.find(function(table){return table.id===activeResourceTableId})||tables[0];
   }
   function resourceTableTabsHtml(){
-    var tables=state.resourceTables||[];
+    var tables=visibleResourceTables();
     if(!tables.length)return '';
     return '<div class="chem-chart-tabs resource-tabs">'+tables.map(function(table){
       return '<button type="button" class="chem-chart-tab '+(table.id===activeResourceTableId?'active':'')+'" data-action="select-resource-table" data-table="'+escapeHtml(table.id)+'">'+escapeHtml(table.title||'Chemistry Table')+'</button>';
@@ -1742,7 +1778,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var table=activeResourceTable();
     if(!table){target.innerHTML='<div class="resource-empty">No Chemistry tables yet.</div>';return}
     document.querySelector('.wrap').style.setProperty('--chem-table-page-width',Math.max(1220,Math.min(1940,400+table.columns.length*140))+'px');
-    var index=(state.resourceTables||[]).findIndex(function(item){return item.id===table.id});
+    var index=visibleResourceTables().findIndex(function(item){return item.id===table.id});
     target.innerHTML=resourceTableTabsHtml()+resourceTableHtml(table,index);
   }
   function findSimulation(id){return (state.simulations||[]).find(function(item){return item.id===id})}
@@ -1793,11 +1829,10 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     target.innerHTML='<div class="panel"><h2>Resources</h2><p style="color:var(--muted);font-size:14px;line-height:1.55;margin-top:8px">All chemistry table and chart notes are student-inputted from course resources, class notes, textbook references, and study materials. More resource entries can be added here later.</p></div>';
   }
   function moveResourceTable(tableId,dir){
-    var index=(state.resourceTables||[]).findIndex(function(table){return table.id===tableId});
-    var next=index+(Number(dir)||0);
-    if(index<0||next<0||next>=state.resourceTables.length)return;
-    var item=state.resourceTables.splice(index,1)[0];
-    state.resourceTables.splice(next,0,item);
+    var visible=visibleResourceTables(),index=visible.findIndex(function(table){return table.id===tableId}),next=index+(Number(dir)||0);
+    if(index<0||next<0||next>=visible.length)return;
+    var first=state.resourceTables.indexOf(visible[index]),second=state.resourceTables.indexOf(visible[next]);
+    var item=state.resourceTables[first];state.resourceTables[first]=state.resourceTables[second];state.resourceTables[second]=item;
   }
   function moveResourceRow(table,rowId,dir){
     if(!table)return;
@@ -1858,7 +1893,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     state.resourceTables=normalizeResourceTables(state.resourceTables);
     saveLocal();
     var area=document.getElementById('printArea');
-    var tables=state.resourceTables;
+    var tables=visibleResourceTables();
     if(!tables.length){showToast('There are no tables to export yet',true);return}
     var current=activeResourceTable();
     var selectedIds=[(current&&current.id)||tables[0].id];
@@ -2104,7 +2139,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     }
     var ui=action.dataset.uiAction,act=action.dataset.action;
     if(ui==='admin-login'){openAdmin();return}
-    if(ui==='exit-admin'){saveLocal();if(safeDoc)safeDoc.saveNow({reason:'admin-exit'}).then(function(saved){if(!saved)showToast('Saved on this device; cloud save unavailable',true)}).catch(function(e){showToast('Cloud save failed: '+e.message,true)});setAdmin(false);return}
+    if(ui==='exit-admin'){saveLocal();if(safeDoc)flushPendingEdit('admin-exit').then(function(saved){if(!saved)showToast('Saved on this device; cloud save unavailable',true)}).catch(function(e){showToast('Cloud save failed: '+e.message,true)});setAdmin(false);return}
     if(ui==='admin-unlock'){attemptLogin();return}
     if(ui==='close-admin'){closeAdmin();return}
     if(act==='export-chart'){exportChart(findChart(action.dataset.chart));return}
@@ -2114,17 +2149,13 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(isAdmin&&act==='add-instrument-highlight'){var currentInstrument=findInstrument(activeInstrumentId),builder=action.closest('.cobas-key-builder'),word=builder&&builder.querySelector('[data-highlight-text]'),color=builder&&builder.querySelector('[data-highlight-color]'),phrase=String(word&&word.value||selectedInstrumentText||'').trim().slice(0,80);if(currentInstrument&&phrase){var existing=(currentInstrument.colorKey||[]).find(function(item){return item.text.toLowerCase()===phrase.toLowerCase()});if(existing)existing.color=sanitizeColor(color&&color.value,'#fff0a8');else currentInstrument.colorKey.push({id:uid('highlight'),text:phrase,color:sanitizeColor(color&&color.value,'#fff0a8')});selectedInstrumentText='';renderAll();markDirty()}else showToast('Select or enter text',true);return}
     if(isAdmin&&act==='delete-instrument-highlight'){var keyInstrument=findInstrument(activeInstrumentId);if(keyInstrument){keyInstrument.colorKey=keyInstrument.colorKey.filter(function(item){return item.id!==action.dataset.key});renderAll();markDirty()}return}
     if(act==='select-instrument'){activeInstrumentId=action.dataset.instrument;localStorage.setItem('chemistryActiveInstrument',activeInstrumentId);renderAll();return}
-    if(isAdmin&&act==='shift-test-column'){
-      var shiftChart=findInstrument(activeInstrumentId),shiftBranch=shiftChart&&shiftChart.branches.find(function(branch){return branch.id===action.dataset.branch}),shiftModule=shiftBranch&&shiftBranch.modules.find(function(module){return module.id===action.dataset.module});
-      if(shiftModule){var groups=instrumentTestColumns(shiftModule),index=Number(action.dataset.column)||0;if(action.dataset.direction==='left'&&index>0&&groups[index]&&groups[index].length){groups[index-1].push(groups[index].shift())}else if(action.dataset.direction==='right'&&groups[index]&&groups[index].length){while(groups.length<=index+1)groups.push([]);groups[index+1].unshift(groups[index].pop())}saveInstrumentTestColumns(shiftModule,groups);renderAll();markDirty()}return;
-    }
     if(isAdmin&&act==='add-instrument'){var fresh=blankInstrumentChart();state.instrumentCharts.push(fresh);activeInstrumentId=fresh.id;localStorage.setItem('chemistryActiveInstrument',activeInstrumentId);renderAll();markDirty();return}
     if(isAdmin&&act==='duplicate-instrument'){var originalInstrument=findInstrument(activeInstrumentId);if(originalInstrument){var copyInstrument=clone(originalInstrument);copyInstrument.id=uid('instrument');copyInstrument.title=(copyInstrument.title||'Instrument Flowchart')+' copy';state.instrumentCharts.push(copyInstrument);activeInstrumentId=copyInstrument.id;localStorage.setItem('chemistryActiveInstrument',activeInstrumentId);renderAll();markDirty()}return}
     if(isAdmin&&act==='delete-instrument'){state.instrumentCharts=state.instrumentCharts.filter(function(chart){return chart.id!==activeInstrumentId});activeInstrumentId=(state.instrumentCharts[0]&&state.instrumentCharts[0].id)||'';localStorage.setItem('chemistryActiveInstrument',activeInstrumentId);renderAll();markDirty();return}
     if(isAdmin&&act==='add-instrument-module'){var addInstrument=findInstrument(activeInstrumentId),addBranch=addInstrument&&addInstrument.branches.find(function(branch){return branch.id===action.dataset.branch});if(addBranch){addBranch.modules.push({id:uid('module'),name:'Module',tests:''});renderAll();markDirty()}return}
     if(isAdmin&&act==='remove-last-instrument-module'){var lastInstrument=findInstrument(activeInstrumentId),lastBranch=lastInstrument&&lastInstrument.branches.find(function(branch){return branch.id===action.dataset.branch});if(lastBranch&&lastBranch.modules.length){lastBranch.modules.pop();renderAll();markDirty()}return}
     if(isAdmin&&act==='remove-instrument-module'){var removeInstrument=findInstrument(activeInstrumentId),removeBranch=removeInstrument&&removeInstrument.branches.find(function(branch){return branch.id===action.dataset.branch});if(removeBranch){removeBranch.modules=removeBranch.modules.filter(function(module){return module.id!==action.dataset.module});renderAll();markDirty()}return}
-    if(isAdmin&&act==='save-instrument'){saveLocal();if(safeDoc)safeDoc.saveNow({reason:'manual'}).then(function(saved){if(saved)showToast('Flowchart saved to Supabase');else showToast('Saved on this device; cloud save unavailable',true)}).catch(function(e){showToast('Cloud save failed: '+e.message,true)});else showToast('Saved on this device; cloud save unavailable',true);return}
+    if(isAdmin&&act==='save-instrument'){saveLocal();if(safeDoc)flushPendingEdit('manual').then(function(saved){if(saved)showToast('Flowchart saved to Supabase');else showToast('Saved on this device; cloud save unavailable',true)}).catch(function(e){showToast('Cloud save failed: '+e.message,true)});else showToast('Saved on this device; cloud save unavailable',true);return}
     if(act==='select-chart'){
       activeChartId=action.dataset.chart||activeChartId;
       localStorage.setItem('chemistryActiveChart',activeChartId);
@@ -2242,7 +2273,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(act==='clear-resource-image'){var imgTable=findResourceTable(action.dataset.table),imgRow=findResourceRow(imgTable,action.dataset.row);if(imgRow&&imgRow.cells){imgRow.cells[action.dataset.col]='';renderAll();markDirty()}return}
     if(act==='add-chart'){var newChart={id:uid('chart'),title:'New Flowchart',organ:'New Flowchart',note:'',nodeMeta:{},links:[],paths:['New Flowchart > First step']};state.charts.push(newChart);activeChartId=newChart.id;localStorage.setItem('chemistryActiveChart',activeChartId);renderAll();markDirty()}
     if(act==='duplicate-chart'){var original=findChart(activeChartId);if(original){var copy=clone(original);copy.id=uid('chart');copy.title=(copy.title||'Flowchart')+' copy';state.charts.push(copy);activeChartId=copy.id;localStorage.setItem('chemistryActiveChart',activeChartId);renderAll();markDirty()}return}
-    if(act==='save-chart'){saveLocal();if(safeDoc)safeDoc.saveNow({reason:'manual'}).then(function(saved){if(saved)showToast('Diagram saved to Supabase');else showToast('Saved on this device; cloud save unavailable',true)}).catch(function(e){showToast('Cloud save failed: '+e.message,true)});else showToast('Saved on this device; cloud save unavailable',true);return}
+    if(act==='save-chart'){saveLocal();if(safeDoc)flushPendingEdit('manual').then(function(saved){if(saved)showToast('Diagram saved to Supabase');else showToast('Saved on this device; cloud save unavailable',true)}).catch(function(e){showToast('Cloud save failed: '+e.message,true)});else showToast('Saved on this device; cloud save unavailable',true);return}
     if(act==='delete-chart'){state.charts=state.charts.filter(function(chart){return chart.id!==action.dataset.chart});if(activeChartId===action.dataset.chart)activeChartId=(state.charts[0]&&state.charts[0].id)||'';localStorage.setItem('chemistryActiveChart',activeChartId);renderAll();markDirty()}
     if(act==='selected-add-child'||act==='selected-add-sibling'){
       var addSelectedChart=findChart(action.dataset.chart);
@@ -2488,7 +2519,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   });
   document.addEventListener('blur',function(event){
     if(!isAdmin)return;
-    if(event.target.matches&&event.target.matches('[data-instrument-field]')){var target=event.target,instrument=findInstrument(target.dataset.instrumentId),field=target.dataset.instrumentField,value=plainCellText(target.innerHTML);if(!instrument)return;if(field==='title'||field==='sample'||field==='instrument-title')instrument[field==='instrument-title'?'instrumentTitle':field]=value||'Title';else{var branch=instrument.branches.find(function(item){return item.id===target.dataset.branch});if(branch){if(field==='branch-title')branch.title=value||'Title';else{var module=branch.modules.find(function(item){return item.id===target.dataset.module});if(module){if(field==='module-name')module.name=value;else{var groups=instrumentTestColumns(module),column=Number(target.dataset.testColumn)||0;while(groups.length<=column)groups.push([]);var shown=groups[column].map(assayFullName).join('\n');if(value!==shown){groups[column]=value.split(/\r?\n/).map(function(item){return item.trim()}).filter(Boolean);saveInstrumentTestColumns(module,groups)}}}}}}renderAll();markDirty();return}
+    if(event.target.matches&&event.target.matches('[data-instrument-field]')){var target=event.target,instrument=findInstrument(target.dataset.instrumentId),field=target.dataset.instrumentField,value=plainCellText(target.innerHTML);if(!instrument)return;if(field==='title'||field==='sample'||field==='instrument-title')instrument[field==='instrument-title'?'instrumentTitle':field]=value||'Title';else{var branch=instrument.branches.find(function(item){return item.id===target.dataset.branch});if(branch){if(field==='branch-title')branch.title=value||'Title';else{var module=branch.modules.find(function(item){return item.id===target.dataset.module});if(module){if(field==='module-name')module.name=value;else{var cobas=instrument.id==='instrument-default'||instrument.id==='instrument-rl',groups=instrumentTestColumns(module,cobas),column=Number(target.dataset.testColumn)||0;while(groups.length<=column)groups.push([]);var shown=groups[column].map(function(item){return cobas?instrumentAssayName(item):item}).join('\n');if(value!==shown){groups[column]=assayLines(value);saveInstrumentTestColumns(module,groups,cobas)}}}}}}renderAll();markDirty();return}
     if(event.target&&event.target.dataset&&event.target.dataset.action)chemEditSessionKey='';
     var title=event.target.closest&&event.target.closest('[data-direct-node-title]');
     if(!title)return;
@@ -2504,11 +2535,27 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   window.addEventListener('hashchange',function(){showSection(location.hash.replace(/^#/,''),true)});
   document.addEventListener('keydown',function(event){if(event.key==='Enter'&&event.target&&event.target.closest&&event.target.closest('[data-direct-node-title]')){event.preventDefault();event.target.blur();return}if(event.key==='Enter'&&document.getElementById('adminModal').classList.contains('visible'))attemptLogin();if(event.key==='Escape')closeAdmin()});
   async function init(){
-    var hadLocal=false;
+    var hadLocal=false,pendingAtStartup=pendingEditRecord();
     try{var local=localStorage.getItem('chemistryHubState');if(local){state=normalize(JSON.parse(local));hadLocal=true}}catch(e){}
     renderAll();
     safeDoc=createSafeSupabaseDoc({url:SUPABASE_URL,key:SUPABASE_KEY,table:TABLE_NAME,saveRpc:'chemistry_safe_save_doc',preserveLocalOnMissing:true,id:CHEM_ROW_ID,defaultData:defaultState,normalize:normalize,getLocal:function(){return state},setLocal:function(data){state=normalize(data);saveLocal();renderAll()},toast:showToast,onConflict:function(info){console.warn('Chemistry save conflict:',info.paths)}});
-    try{await safeDoc.load();if(safeDoc.missingRemote&&hadLocal){await safeDoc.saveNow({reason:'migration'});needsStarterSync=false}else if(needsStarterSync&&!safeDoc.missingRemote){state.updatedAt=Date.now();saveLocal();safeDoc.scheduleSave(1200,'starter-upgrade');needsStarterSync=false}safeDoc.subscribe()}catch(e){console.warn('Chemistry remote load failed:',e);renderAll()}
+    try{
+      await safeDoc.load();
+      if(pendingAtStartup&&pendingAtStartup.data){
+        if(pendingAtStartup.baseData)safeDoc.baseData=normalize(pendingAtStartup.baseData);
+        if(pendingAtStartup.version!=null&&Number.isFinite(Number(pendingAtStartup.version)))safeDoc.version=Number(pendingAtStartup.version);
+        state=normalize(pendingAtStartup.data);saveLocal();renderAll();
+        await flushPendingEdit('recover-pending');
+      }
+      if(safeDoc.missingRemote&&hadLocal){await flushPendingEdit('migration');needsStarterSync=false}
+      else if(needsStarterSync&&!safeDoc.missingRemote){
+        safeDoc.baseData.version=Math.min(Number(safeDoc.baseData.version)||26,26);
+        state.updatedAt=Date.now();saveLocal();
+        await flushPendingEdit('starter-upgrade');
+        needsStarterSync=false;
+      }
+      safeDoc.subscribe();
+    }catch(e){console.warn('Chemistry remote load failed:',e);renderAll()}
     if(window.createSafeSupabasePresence)syncPresence=createSafeSupabasePresence({url:SUPABASE_URL,key:SUPABASE_KEY,hubId:'chemistry',hubName:'Clinical Chemistry',getSection:function(){var active=document.querySelector('.section.active');return active?active.id.replace(/^sec-/,''):'chemistry'},toast:showToast});
     showSection(location.hash.replace(/^#/,''),true);
   }
