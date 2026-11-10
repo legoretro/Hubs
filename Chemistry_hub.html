@@ -772,7 +772,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function instrumentAssayName(code){
     var key=String(code||'').trim().toUpperCase();
-    if(key==='AST'||key==='ALT')return key;
+    if(key==='AST'||/^ASPARTATE AMINOTRANSFERASE(?:\s*\(AST\))?$/.test(key))return 'AST';
+    if(key==='ALT'||/^ALANINE AMINOTRANSFERASE(?:\s*\(ALT\))?$/.test(key))return 'ALT';
     return assayFullName(code).replace(/\bimmunoglobulin\s+([a-z])\b/gi,function(_,letter){return 'Ig'+letter.toUpperCase()}).replace(/\bimmunoglobulin\b/gi,'Ig').replace(/\bhemoglobin\b/gi,'Hgb');
   }
   function differenceSummaryHtml(chart){
