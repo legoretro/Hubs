@@ -242,6 +242,27 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
 .print-page .regular-tree-path{stroke:#111!important;stroke-width:2!important}
 </style>
 
+<style>
+/* Preserve whole assay words; wide lists can scroll horizontally. */
+.cobas-test-list{overflow-x:auto}
+.cobas-test-columns{grid-template-columns:repeat(var(--test-columns,1),minmax(175px,1fr));width:max-content;min-width:100%}
+.cobas-test-column{overflow-wrap:normal!important;word-break:normal!important;hyphens:none;white-space:pre-line}
+.qc-chart{max-width:1500px;margin:auto}
+.qc-chart-head{text-align:center;margin:0 0 18px}
+.qc-branches{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,480px),1fr));gap:16px;align-items:start}
+.qc-branch{border:1px solid #a8c0ce;border-radius:10px;background:#f8fbfd;padding:14px;min-width:0}
+.qc-branch h3{font-size:20px;text-align:center;margin-bottom:12px}
+.qc-table-wrap{overflow-x:auto;background:#fff;border:1px solid #b9cdd9;border-radius:7px}
+.qc-table{border-collapse:collapse;width:100%;min-width:500px;font:16px/1.35 Arial,sans-serif}
+.qc-table th,.qc-table td{border:1px solid #d1e0e8;padding:8px;min-width:125px;text-align:left;vertical-align:top}
+.qc-table th{background:#eaf5fb;color:#143c56}
+.qc-table [contenteditable=true]{display:block;min-height:1.4em;outline-offset:2px}
+.qc-table [contenteditable=true]:focus{outline:2px solid #c47a00;background:#fff}
+.qc-table [data-qc-cell]{white-space:pre-wrap;overflow-wrap:normal;word-break:normal}
+.qc-tools{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.qc-tools .mini-btn{font:700 13px/1.2 Arial,sans-serif}
+.qc-remove{color:#9b1238}
+</style>
 </head>
 <body class="intro-active">
 <div id="intro">
@@ -701,19 +722,19 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   ];
   function alphabetizeTests(value){return String(value||'').split(/\r?\n/).map(function(item){return item.trim()}).filter(Boolean).sort(function(a,b){return a.localeCompare(b,'en',{sensitivity:'base',numeric:true})}).join('\n')}
   function assayLines(value){return String(value||'').split(/\r?\n/).map(function(item){return item.trim()}).filter(Boolean)}
-  function sortInstrumentAssays(value){
-    return assayLines(value).sort(function(a,b){return instrumentAssayName(a).localeCompare(instrumentAssayName(b),'en',{sensitivity:'base',numeric:true})||a.localeCompare(b,'en',{sensitivity:'base',numeric:true})}).join('\n');
+  function sortInstrumentAssays(value,literal){
+    return assayLines(value).sort(function(a,b){var left=literal?a:instrumentAssayName(a),right=literal?b:instrumentAssayName(b);return left.localeCompare(right,'en',{sensitivity:'base',numeric:true})||a.localeCompare(b,'en',{sensitivity:'base',numeric:true})}).join('\n');
   }
   function instrumentTestColumns(module,alphabetical){
     var items=assayLines(module.tests),groups=[];
-    if(alphabetical)items=assayLines(sortInstrumentAssays(items.join('\n')));
+    if(alphabetical)items=assayLines(sortInstrumentAssays(items.join('\n'),module.literalTests));
     var count=Math.max(1,Math.ceil(items.length/10)),size=Math.max(1,Math.ceil(items.length/count));
     for(var i=0;i<items.length;i+=size)groups.push(items.slice(i,i+size));
     return groups.length?groups:[[]];
   }
   function saveInstrumentTestColumns(module,groups,alphabetical){
     var value=groups.reduce(function(all,group){return all.concat(group)},[]).join('\n');
-    module.tests=alphabetical?sortInstrumentAssays(value):value;
+    module.tests=alphabetical?sortInstrumentAssays(value,module.literalTests):value;
     delete module.testColumns;
   }
   function fillCobasQcLists(chart){chart.branches.slice(0,2).forEach(function(branch,bi){(COBAS_QC_LISTS[bi]||[]).forEach(function(list,mi){if(branch.modules[mi]){branch.modules[mi].tests=alphabetizeTests(list.join('\n'));delete branch.modules[mi].testColumns}})});chart.testListsRevision='qc-2025-v1';return chart}
@@ -774,6 +795,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var key=String(code||'').trim().toUpperCase();
     if(key==='AST'||/^ASPARTATE AMINOTRANSFERASE(?:\s*\(AST\))?$/.test(key))return 'AST';
     if(key==='ALT'||/^ALANINE AMINOTRANSFERASE(?:\s*\(ALT\))?$/.test(key))return 'ALT';
+    if(key==='BUN')return 'BUN';
     return assayFullName(code).replace(/\bimmunoglobulin\s+([a-z])\b/gi,function(_,letter){return 'Ig'+letter.toUpperCase()}).replace(/\bimmunoglobulin\b/gi,'Ig').replace(/\bhemoglobin\b/gi,'Hgb');
   }
   function differenceSummaryHtml(chart){
@@ -876,10 +898,16 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     return {id:String(value.id||uid('simulation')).slice(0,80),title:plainCellText(value.title||('Simulation '+(index+1))).slice(0,100),sourceChartId:String(value.sourceChartId||'instrument-default').slice(0,80),branchIndex:Math.max(0,Math.min(5,Number(value.branchIndex)||0)),moduleSteps:moduleSteps.slice(0,20).map(function(steps){return (Array.isArray(steps)?steps:[]).slice(0,30).map(function(step){return {id:String(step.id||uid('step')).slice(0,80),title:plainCellText(step.title||'New task').slice(0,160)}})})};
   }
   function migrateSchematic(old){var chart=defaultInstrumentChart();if(!old||typeof old!=='object')return chart;chart.testListsRevision='';chart.sample=String(old.sample||chart.sample).replace(/^cobas 8000\s*/i,'').slice(0,100)||'Sample Handling';[['cobas4',0],['cobas2',1]].forEach(function(pair){var modules=old[pair[0]];if(Array.isArray(modules))chart.branches[pair[1]].modules=modules.map(function(item){return{id:uid('module'),name:String(item.name||'Module').slice(0,60),tests:String(item.tests||'').slice(0,1500)}})});return chart}
+  function normalizeQcTable(table,modules){
+    var initial=(Array.isArray(modules)?modules:[]).reduce(function(lines,module){return lines.concat(assayLines(module.tests))},[]);
+    var cols=table&&Array.isArray(table.columns)&&table.columns.length?table.columns.slice(0,30).map(function(col){return{id:String(col.id||uid('qc-col')).slice(0,80),label:String(col.label==null?'Column':col.label).slice(0,100)}}):[{id:'assay',label:'Assay'},{id:'calibration',label:'Calibration'},{id:'qc',label:'QC used'}];
+    var rows=table&&Array.isArray(table.rows)?table.rows.slice(0,1000).map(function(row){var cells={};cols.forEach(function(col){cells[col.id]=String(row.cells&&row.cells[col.id]||'').slice(0,2000)});return{id:String(row.id||uid('qc-row')).slice(0,80),cells:cells}}):initial.map(function(line){var parts=line.split(/\s{2,}/),cells={};cells[cols[0].id]=parts.shift()||'';if(parts.length)cells[cols[2]?cols[2].id:cols[1].id]=parts.join('  ');return{id:uid('qc-row'),cells:cells}});
+    return{columns:cols,rows:rows};
+  }
   function normalizeInstrumentChart(value,index){
     var base=defaultInstrumentChart();if(!value||typeof value!=='object')return base;
     var id=String(value.id||uid('instrument')).slice(0,80),alphabetical=id==='instrument-default'||id==='instrument-rl';
-    var out={id:id,title:String(value.title==null?'Instrument Flowchart':value.title).slice(0,100),instrumentTitle:String(value.instrumentTitle==null?(id==='instrument-default'?'Cobas 8000':'Title'):value.instrumentTitle).slice(0,100),sample:String(value.sample==null?'Sample Handling':value.sample).slice(0,100),sampleColor:sanitizeColor(value.sampleColor,'#f4fbff'),colorKey:(Array.isArray(value.colorKey)?value.colorKey:[]).slice(0,30).map(function(item){return{id:String(item.id||uid('highlight')).slice(0,80),text:String(item.text||'').slice(0,80),color:sanitizeColor(item.color,'#fff0a8')}}).filter(function(item){return item.text}),testListsRevision:String(value.testListsRevision||''),branches:(Array.isArray(value.branches)&&value.branches.length?value.branches:base.branches).slice(0,12).map(function(branch,i){return{id:String(branch.id||uid('branch')).slice(0,80),title:String(branch.title==null?'Title':branch.title).slice(0,100),modules:(Array.isArray(branch.modules)?branch.modules:base.branches[i%2].modules).slice(0,60).map(function(module){var raw=Array.isArray(module.testColumns)&&module.testColumns.length?module.testColumns.join('\n'):String(module.tests||'');raw=raw.slice(0,20000);return{id:String(module.id||uid('module')).slice(0,80),name:String(module.name==null?'Module':module.name).slice(0,100),fill:sanitizeColor(module.fill,'#ffffff'),tests:alphabetical?sortInstrumentAssays(raw):assayLines(raw).join('\n')}})}})};
+    var out={id:id,title:String(value.title==null?'Instrument Flowchart':value.title).slice(0,100),instrumentTitle:String(value.instrumentTitle==null?(id==='instrument-default'?'Cobas 8000':'Title'):value.instrumentTitle).slice(0,100),sample:String(value.sample==null?'Sample Handling':value.sample).slice(0,100),sampleColor:sanitizeColor(value.sampleColor,'#f4fbff'),colorKey:(Array.isArray(value.colorKey)?value.colorKey:[]).slice(0,30).map(function(item){return{id:String(item.id||uid('highlight')).slice(0,80),text:String(item.text||'').slice(0,80),color:sanitizeColor(item.color,'#fff0a8')}}).filter(function(item){return item.text}),testListsRevision:String(value.testListsRevision||''),branches:(Array.isArray(value.branches)&&value.branches.length?value.branches:base.branches).slice(0,12).map(function(branch,i){return{id:String(branch.id||uid('branch')).slice(0,80),title:String(branch.title==null?'Title':branch.title).slice(0,100),qcTable:id==='instrument-calibration-qc'?normalizeQcTable(branch.qcTable,branch.modules):undefined,modules:(Array.isArray(branch.modules)?branch.modules:base.branches[i%2].modules).slice(0,60).map(function(module){var raw=Array.isArray(module.testColumns)&&module.testColumns.length?module.testColumns.join('\n'):String(module.tests||'');raw=raw.slice(0,20000);return{id:String(module.id||uid('module')).slice(0,80),name:String(module.name==null?'Module':module.name).slice(0,100),fill:sanitizeColor(module.fill,'#ffffff'),literalTests:!!module.literalTests,tests:alphabetical?sortInstrumentAssays(raw,!!module.literalTests):assayLines(raw).join('\n')}})}})};
     return out;
   }
   function calibrationQcChart(){
@@ -888,7 +916,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       {id:'controls',title:'Controls',modules:[{id:'control-notes',name:'Controls',fill:'#ffffff',tests:''}]}
     ]};
   }
-  function defaultState(){var main=defaultInstrumentChart();return{version:27,starter:'maintenance-sim-v1',updatedAt:Date.now(),charts:restoredRegularFlowcharts(),instrumentCharts:[main,rlInstrumentChart(),calibrationQcChart()],resourceTables:starterResourceTables(),simulations:[defaultMaintenanceSimulation()]}}
+  function defaultState(){var main=defaultInstrumentChart();return{version:28,starter:'maintenance-sim-v1',updatedAt:Date.now(),charts:restoredRegularFlowcharts(),instrumentCharts:[main,rlInstrumentChart(),calibrationQcChart()],resourceTables:starterResourceTables(),simulations:[defaultMaintenanceSimulation()]}}
   state=defaultState();
   function looksLikeMinimalLiverStarter(data){
     var charts=data&&Array.isArray(data.charts)?data.charts:[];
@@ -1000,7 +1028,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(Number(incoming.version||0)<24){var mainChart=instrumentCharts.find(function(chart){return chart.id==='instrument-default'});if(mainChart)(mainChart.branches||[]).forEach(function(branch,index){if(branch.title==='Title')branch.title=index===0?'Cobas 4':'Cobas 2'});var rl=instrumentCharts.find(function(chart){return chart.id==='instrument-rl'});if(rl)(rl.branches||[]).forEach(function(branch){var c=(branch.modules||[]).find(function(module){return /^c\s*702/i.test(module.name)}),e=(branch.modules||[]).find(function(module){return /^e\s*801/i.test(module.name)});if(!c)return;var added=['HA1C','HBW3','A1W3'],cItems=String(c.tests||'').split(/\r?\n/).filter(Boolean);added.forEach(function(code){if(!cItems.some(function(item){return item.toUpperCase()===code}))cItems.push(code)});c.tests=alphabetizeTests(cItems.join('\n'));delete c.testColumns;if(e)e.tests=String(e.tests||'').split(/\r?\n/).filter(function(code){return !added.includes(code.toUpperCase())}).join('\n')});needsStarterSync=true}
     if(Number(incoming.version||0)<26){var savedRl=instrumentCharts.find(function(chart){return chart.id==='instrument-rl'});if(savedRl)(savedRl.branches||[]).forEach(function(branch){var c=(branch.modules||[]).find(function(module){return /^c\s*\d+/i.test(module.name)}),e=(branch.modules||[]).find(function(module){return /^e\s*\d+/i.test(module.name)});if(!c)return;var added=['HA1C','HBW3','A1W3'],cGroups=instrumentTestColumns(c),cCodes=new Set(cGroups.reduce(function(all,group){return all.concat(group)},[]).map(function(code){return code.toUpperCase()}));added.forEach(function(code){if(!cCodes.has(code))cGroups[cGroups.length-1].push(code)});saveInstrumentTestColumns(c,cGroups);if(e){var eGroups=instrumentTestColumns(e).map(function(group){return group.filter(function(code){return !added.includes(code.toUpperCase())})});saveInstrumentTestColumns(e,eGroups)}});needsStarterSync=true}
     if(Number(incoming.version||0)<27){if(!instrumentCharts.some(function(chart){return chart.id==='instrument-calibration-qc'}))instrumentCharts.push(calibrationQcChart());needsStarterSync=true}
-    return {version:27,starter:base.starter,updatedAt:incoming.updatedAt||Date.now(),charts:charts,instrumentCharts:instrumentCharts,resourceTables:resourceTables,simulations:simulations};
+    if(Number(incoming.version||0)<28)needsStarterSync=true;
+    return {version:28,starter:base.starter,updatedAt:incoming.updatedAt||Date.now(),charts:charts,instrumentCharts:instrumentCharts,resourceTables:resourceTables,simulations:simulations};
   }
   function saveLocal(){try{localStorage.setItem('chemistryHubState',JSON.stringify(state))}catch(e){}}
   var pendingEditTimer=null;
@@ -1653,12 +1682,20 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     document.getElementById('regularFlowchartPane').hidden=flowMode!=='regular';
     document.querySelectorAll('.chem-flow-modes button').forEach(function(button){var active=button.dataset.mode===flowMode;button.classList.toggle('active',active);button.setAttribute('aria-selected',active?'true':'false')});
   }
+  function renderCalibrationQcChart(data,host){
+    function titleEdit(value,field,branch,module){return '<span class="cobas-edit" data-instrument-id="'+escapeHtml(data.id)+'" data-instrument-field="'+field+'" data-branch="'+escapeHtml(branch||'')+'" data-module="'+escapeHtml(module||'')+'" contenteditable="'+(isAdmin?'true':'false')+'" spellcheck="false">'+escapeHtml(value||'')+'</span>'}
+    host.innerHTML='<article class="qc-chart"><div class="qc-chart-head"><div class="cobas-section-title">Instrument diagram</div><h2>'+titleEdit(data.title,'title')+'</h2><div>'+titleEdit(data.instrumentTitle,'instrument-title')+'</div><div>'+titleEdit(data.sample,'sample')+'</div></div><div class="qc-branches">'+data.branches.map(function(branch){
+      var table=branch.qcTable||normalizeQcTable(null,branch.modules),module=branch.modules[0];
+      return '<section class="qc-branch" data-qc-branch="'+escapeHtml(branch.id)+'"><h3>'+titleEdit(branch.title,'branch-title',branch.id)+'</h3>'+(module?'<h4>'+titleEdit(module.name,'module-name',branch.id,module.id)+'</h4>':'')+'<div class="qc-table-wrap"><table class="qc-table"><thead><tr>'+table.columns.map(function(col){return '<th><span data-qc-header data-branch="'+escapeHtml(branch.id)+'" data-column="'+escapeHtml(col.id)+'" contenteditable="'+(isAdmin?'true':'false')+'" spellcheck="false">'+escapeHtml(col.label)+'</span><button type="button" class="mini-btn danger admin-only" data-action="qc-remove-column" data-branch="'+escapeHtml(branch.id)+'" data-column="'+escapeHtml(col.id)+'" aria-label="Remove column '+escapeHtml(col.label)+'">×</button></th>'}).join('')+(isAdmin?'<th>Row</th>':'')+'</tr></thead><tbody>'+table.rows.map(function(row){return '<tr>'+table.columns.map(function(col){return '<td><span data-qc-cell data-branch="'+escapeHtml(branch.id)+'" data-row="'+escapeHtml(row.id)+'" data-column="'+escapeHtml(col.id)+'" contenteditable="'+(isAdmin?'true':'false')+'" spellcheck="false">'+escapeHtml(row.cells[col.id]||'')+'</span></td>'}).join('')+(isAdmin?'<td><button type="button" class="mini-btn danger" data-action="qc-remove-row" data-branch="'+escapeHtml(branch.id)+'" data-row="'+escapeHtml(row.id)+'" aria-label="Remove row">×</button></td>':'')+'</tr>'}).join('')+'</tbody></table></div><div class="qc-tools admin-only"><button type="button" class="mini-btn" data-action="qc-add-row" data-branch="'+escapeHtml(branch.id)+'">+ Add row</button><button type="button" class="mini-btn" data-action="qc-add-column" data-branch="'+escapeHtml(branch.id)+'">+ Add column</button><button type="button" class="mini-btn danger" data-action="qc-remove-branch" data-branch="'+escapeHtml(branch.id)+'">Remove branch</button></div></section>'
+    }).join('')+'</div><div class="qc-tools admin-only"><button type="button" class="mini-btn" data-action="qc-add-branch">+ Add branch</button></div></article>';
+  }
   function renderSchematic(){
     var charts=state.instrumentCharts||[];
     if(charts.length&&!findInstrument(activeInstrumentId))activeInstrumentId=charts[0].id;
     document.getElementById('instrumentChartTabs').innerHTML=charts.map(function(chart){return '<button type="button" class="chem-chart-tab '+(chart.id===activeInstrumentId?'active':'')+'" data-action="select-instrument" data-instrument="'+escapeHtml(chart.id)+'">'+escapeHtml(chart.title||'Instrument Flowchart')+'</button>'}).join('');
     var data=findInstrument(activeInstrumentId),host=document.getElementById('cobasSchematic');
     if(!data){host.innerHTML='';return}
+    if(data.id==='instrument-calibration-qc'){renderCalibrationQcChart(data,host);return}
     function edit(value,field,branch,module){return '<span class="cobas-edit" data-instrument-id="'+escapeHtml(data.id)+'" data-instrument-field="'+field+'" data-branch="'+(branch||'')+'" data-module="'+(module||'')+'" contenteditable="'+(isAdmin?'true':'false')+'" spellcheck="false" data-placeholder="'+(field==='tests'?'List':'Title')+'">'+escapeHtml(value)+'</span>'}
     function highlightLine(line,branchIndex,code){
       if(data.id==='instrument-rl'||data.id==='instrument-default'){
@@ -1678,7 +1715,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     function testColumns(module,branch){
       var cobas=data.id==='instrument-default'||data.id==='instrument-rl',groups=instrumentTestColumns(module,cobas),branchIndex=data.branches.indexOf(branch);
       var placeholder=data.id==='instrument-calibration-qc'?(isAdmin?(branch.id==='calibration'?'Add calibration details':'Add control details'):''):'List';
-      return '<div class="cobas-test-columns" data-columns="'+groups.length+'" style="--test-columns:'+groups.length+'">'+groups.map(function(group,i){return '<div class="cobas-test-column-wrap"><span class="cobas-edit cobas-test-column" data-instrument-id="'+escapeHtml(data.id)+'" data-instrument-field="tests" data-branch="'+escapeHtml(branch.id)+'" data-module="'+escapeHtml(module.id)+'" data-test-column="'+i+'" contenteditable="'+(isAdmin?'true':'false')+'" spellcheck="false" data-placeholder="'+escapeHtml(placeholder)+'">'+group.map(function(line){return highlightLine(cobas?instrumentAssayName(line):line,branchIndex,line)}).join('\n')+'</span></div>'}).join('')+'</div>';
+      return '<div class="cobas-test-columns" data-columns="'+groups.length+'" style="--test-columns:'+groups.length+'">'+groups.map(function(group,i){return '<div class="cobas-test-column-wrap"><span class="cobas-edit cobas-test-column" data-instrument-id="'+escapeHtml(data.id)+'" data-instrument-field="tests" data-branch="'+escapeHtml(branch.id)+'" data-module="'+escapeHtml(module.id)+'" data-test-column="'+i+'" contenteditable="'+(isAdmin?'true':'false')+'" spellcheck="false" data-placeholder="'+escapeHtml(placeholder)+'">'+group.map(function(line){return highlightLine(cobas&&!module.literalTests?instrumentAssayName(line):line,branchIndex,line)}).join('\n')+'</span></div>'}).join('')+'</div>';
     }
     function group(branch){return '<section class="cobas-line"><h3>'+edit(branch.title,'branch-title',branch.id)+'</h3><div class="cobas-modules">'+branch.modules.map(function(module){return '<div class="cobas-module"><div class="cobas-machine" style="--module-fill:'+sanitizeColor(module.fill,'#ffffff')+'">'+edit(module.name,'module-name',branch.id,module.id)+'<label class="cobas-color-control admin-only">Color <input type="color" data-action="instrument-module-color" data-branch="'+escapeHtml(branch.id)+'" data-module="'+escapeHtml(module.id)+'" value="'+sanitizeColor(module.fill,'#ffffff')+'"></label><button type="button" class="mini-btn danger admin-only cobas-remove-module" data-action="remove-instrument-module" data-branch="'+escapeHtml(branch.id)+'" data-module="'+escapeHtml(module.id)+'">Remove this module</button></div><div class="cobas-test-list">'+testColumns(module,branch)+'</div></div>'}).join('')+'</div><div class="cobas-module-actions admin-only"><button type="button" class="mini-btn cobas-add-module" data-action="add-instrument-module" data-branch="'+escapeHtml(branch.id)+'">+ Add module</button><button type="button" class="mini-btn danger" data-action="remove-last-instrument-module" data-branch="'+escapeHtml(branch.id)+'" '+(branch.modules.length?'':'disabled')+'>− Remove last module</button></div></section>'}
     var keyHtml='<div class="cobas-color-key"><h3>Color Key</h3><div class="cobas-key-items">'+(data.colorKey||[]).map(function(item){return '<span class="cobas-key-chip"><mark style="background:'+sanitizeColor(item.color,'#fff0a8')+'">'+escapeHtml(item.text)+'</mark><input type="color" class="admin-only" data-action="instrument-key-color" data-key="'+escapeHtml(item.id)+'" value="'+sanitizeColor(item.color,'#fff0a8')+'" aria-label="Color for '+escapeHtml(item.text)+'"><button type="button" class="mini-btn danger admin-only" data-action="delete-instrument-highlight" data-key="'+escapeHtml(item.id)+'" aria-label="Remove '+escapeHtml(item.text)+' from key">×</button></span>'}).join('')+'</div><div class="cobas-key-builder admin-only"><input type="text" data-highlight-text placeholder="Word or phrase" aria-label="Word or phrase to highlight"><input type="color" data-highlight-color value="#fff0a8" aria-label="Highlight color"><button type="button" class="mini-btn" data-action="add-instrument-highlight">Add highlight</button></div></div>';
@@ -2153,6 +2190,19 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(isAdmin&&act==='add-instrument'){var fresh=blankInstrumentChart();state.instrumentCharts.push(fresh);activeInstrumentId=fresh.id;localStorage.setItem('chemistryActiveInstrument',activeInstrumentId);renderAll();markDirty();return}
     if(isAdmin&&act==='duplicate-instrument'){var originalInstrument=findInstrument(activeInstrumentId);if(originalInstrument){var copyInstrument=clone(originalInstrument);copyInstrument.id=uid('instrument');copyInstrument.title=(copyInstrument.title||'Instrument Flowchart')+' copy';state.instrumentCharts.push(copyInstrument);activeInstrumentId=copyInstrument.id;localStorage.setItem('chemistryActiveInstrument',activeInstrumentId);renderAll();markDirty()}return}
     if(isAdmin&&act==='delete-instrument'){state.instrumentCharts=state.instrumentCharts.filter(function(chart){return chart.id!==activeInstrumentId});activeInstrumentId=(state.instrumentCharts[0]&&state.instrumentCharts[0].id)||'';localStorage.setItem('chemistryActiveInstrument',activeInstrumentId);renderAll();markDirty();return}
+    if(isAdmin&&/^qc-(add|remove)-(branch|row|column)$/.test(act)){
+      var qcChart=findInstrument('instrument-calibration-qc'),qcBranch=qcChart&&qcChart.branches.find(function(branch){return branch.id===action.dataset.branch});
+      if(!qcChart)return;
+      if(act==='qc-add-branch'&&qcChart.branches.length<12){qcChart.branches.push({id:uid('branch'),title:'New branch',modules:[{id:uid('module'),name:'Calibration and controls',tests:''}],qcTable:normalizeQcTable(null,[])});}
+      else if(act==='qc-remove-branch'&&qcBranch&&qcChart.branches.length>1){qcChart.branches=qcChart.branches.filter(function(branch){return branch.id!==qcBranch.id})}
+      else if(qcBranch){var table=qcBranch.qcTable||(qcBranch.qcTable=normalizeQcTable(null,qcBranch.modules));
+        if(act==='qc-add-row'&&table.rows.length<1000){var cells={};table.columns.forEach(function(col){cells[col.id]=''});table.rows.push({id:uid('qc-row'),cells:cells})}
+        if(act==='qc-remove-row')table.rows=table.rows.filter(function(row){return row.id!==action.dataset.row});
+        if(act==='qc-add-column'&&table.columns.length<30){var col={id:uid('qc-col'),label:'New column'};table.columns.push(col);table.rows.forEach(function(row){row.cells[col.id]=''})}
+        if(act==='qc-remove-column'&&table.columns.length>1){table.columns=table.columns.filter(function(col){return col.id!==action.dataset.column});table.rows.forEach(function(row){delete row.cells[action.dataset.column]})}
+      }
+      renderAll();markDirty();return;
+    }
     if(isAdmin&&act==='add-instrument-module'){var addInstrument=findInstrument(activeInstrumentId),addBranch=addInstrument&&addInstrument.branches.find(function(branch){return branch.id===action.dataset.branch});if(addBranch){addBranch.modules.push({id:uid('module'),name:'Module',tests:''});renderAll();markDirty()}return}
     if(isAdmin&&act==='remove-last-instrument-module'){var lastInstrument=findInstrument(activeInstrumentId),lastBranch=lastInstrument&&lastInstrument.branches.find(function(branch){return branch.id===action.dataset.branch});if(lastBranch&&lastBranch.modules.length){lastBranch.modules.pop();renderAll();markDirty()}return}
     if(isAdmin&&act==='remove-instrument-module'){var removeInstrument=findInstrument(activeInstrumentId),removeBranch=removeInstrument&&removeInstrument.branches.find(function(branch){return branch.id===action.dataset.branch});if(removeBranch){removeBranch.modules=removeBranch.modules.filter(function(module){return module.id!==action.dataset.module});renderAll();markDirty()}return}
@@ -2520,7 +2570,12 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   });
   document.addEventListener('blur',function(event){
     if(!isAdmin)return;
-    if(event.target.matches&&event.target.matches('[data-instrument-field]')){var target=event.target,instrument=findInstrument(target.dataset.instrumentId),field=target.dataset.instrumentField,value=plainCellText(target.innerHTML);if(!instrument)return;if(field==='title'||field==='sample'||field==='instrument-title')instrument[field==='instrument-title'?'instrumentTitle':field]=value||'Title';else{var branch=instrument.branches.find(function(item){return item.id===target.dataset.branch});if(branch){if(field==='branch-title')branch.title=value||'Title';else{var module=branch.modules.find(function(item){return item.id===target.dataset.module});if(module){if(field==='module-name')module.name=value;else{var cobas=instrument.id==='instrument-default'||instrument.id==='instrument-rl',groups=instrumentTestColumns(module,cobas),column=Number(target.dataset.testColumn)||0;while(groups.length<=column)groups.push([]);var shown=groups[column].map(function(item){return cobas?instrumentAssayName(item):item}).join('\n');if(value!==shown){groups[column]=assayLines(value);saveInstrumentTestColumns(module,groups,cobas)}}}}}}renderAll();markDirty();return}
+    if(event.target.matches&&event.target.matches('[data-qc-cell], [data-qc-header]')){
+      var cell=event.target,chart=findInstrument('instrument-calibration-qc'),branch=chart&&chart.branches.find(function(item){return item.id===cell.dataset.branch}),table=branch&&branch.qcTable,value=plainCellText(cell.innerHTML);
+      if(table){if(cell.hasAttribute('data-qc-header')){var col=table.columns.find(function(item){return item.id===cell.dataset.column});if(col)col.label=value||'Column'}else{var row=table.rows.find(function(item){return item.id===cell.dataset.row});if(row)row.cells[cell.dataset.column]=value}renderAll();markDirty()}
+      return;
+    }
+    if(event.target.matches&&event.target.matches('[data-instrument-field]')){var target=event.target,instrument=findInstrument(target.dataset.instrumentId),field=target.dataset.instrumentField,value=plainCellText(target.innerHTML);if(!instrument)return;if(field==='title'||field==='sample'||field==='instrument-title')instrument[field==='instrument-title'?'instrumentTitle':field]=value||'Title';else{var branch=instrument.branches.find(function(item){return item.id===target.dataset.branch});if(branch){if(field==='branch-title')branch.title=value||'Title';else{var module=branch.modules.find(function(item){return item.id===target.dataset.module});if(module){if(field==='module-name')module.name=value;else{var cobas=instrument.id==='instrument-default'||instrument.id==='instrument-rl',groups=instrumentTestColumns(module,cobas),column=Number(target.dataset.testColumn)||0;while(groups.length<=column)groups.push([]);var shown=groups[column].map(function(item){return cobas&&!module.literalTests?instrumentAssayName(item):item}).join('\n');if(value!==shown){if(cobas&&!module.literalTests){groups=groups.map(function(group){return group.map(instrumentAssayName)});module.literalTests=true}groups[column]=assayLines(value);saveInstrumentTestColumns(module,groups,cobas)}}}}}}renderAll();markDirty();return}
     if(event.target&&event.target.dataset&&event.target.dataset.action)chemEditSessionKey='';
     var title=event.target.closest&&event.target.closest('[data-direct-node-title]');
     if(!title)return;
@@ -2550,7 +2605,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       }
       if(safeDoc.missingRemote&&hadLocal){await flushPendingEdit('migration');needsStarterSync=false}
       else if(needsStarterSync&&!safeDoc.missingRemote){
-        safeDoc.baseData.version=Math.min(Number(safeDoc.baseData.version)||26,26);
+        safeDoc.baseData.version=Math.min(Number(safeDoc.baseData.version)||27,27);
         state.updatedAt=Date.now();saveLocal();
         await flushPendingEdit('starter-upgrade');
         needsStarterSync=false;
