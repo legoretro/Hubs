@@ -292,6 +292,21 @@ html,body{max-width:100%;overflow-x:clip}
 .hub-pdf-preview-content.chem-instrument-print-preview,.hub-pdf-preview-page:has(.chem-instrument-print-preview){height:auto!important;min-height:0!important;overflow:visible!important}
 @media print{body.instrument-printing #printArea .instrument-print-page{break-after:auto!important;page-break-after:auto!important}body.instrument-printing #printArea .cobas-lines{display:block!important}body.instrument-printing #printArea .cobas-line{margin-bottom:10px}body.instrument-printing #printArea .qc-table th,body.instrument-printing #printArea .qc-table td{font-size:10pt;overflow-wrap:break-word}}
 </style>
+<style>
+/* Keep the two Cobas branches together; make assay text compact within each branch. */
+.cobas-lines{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
+.cobas-line{min-width:0!important;padding:10px!important}
+.cobas-module{grid-template-columns:70px minmax(0,1fr)!important;gap:6px!important}
+.cobas-test-list{padding:5px 6px!important}
+.cobas-test-columns{grid-template-columns:repeat(var(--test-columns,1),minmax(0,1fr))!important;gap:4px!important}
+.cobas-test-column-wrap:not(:first-child){padding-left:4px!important}
+@media(max-width:900px){.cobas-lines{grid-template-columns:minmax(0,1fr)!important}}
+@media(max-width:800px){.cobas-module{grid-template-columns:minmax(0,1fr)!important}}
+.instrument-print-page .cobas-lines{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+.instrument-print-page .cobas-line{break-inside:auto!important;page-break-inside:auto!important}
+.instrument-print-page .cobas-module{grid-template-columns:62px minmax(0,1fr)!important;break-inside:avoid;page-break-inside:avoid}
+@media print{body.instrument-printing #printArea .cobas-lines{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}body.instrument-printing #printArea .cobas-line{break-inside:auto!important;page-break-inside:auto!important}}
+</style>
 </head>
 <body class="intro-active">
 <div id="intro">
@@ -757,7 +772,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   function instrumentTestColumns(module,alphabetical){
     var items=assayLines(module.tests),groups=[];
     if(alphabetical)items=assayLines(sortInstrumentAssays(items.join('\n'),module.literalTests));
-    var count=Math.max(1,Math.min(4,Math.ceil(items.length/10))),size=Math.max(1,Math.ceil(items.length/count));
+    var count=Math.max(1,Math.min(2,Math.ceil(items.length/10))),size=Math.max(1,Math.ceil(items.length/count));
     for(var i=0;i<items.length;i+=size)groups.push(items.slice(i,i+size));
     return groups.length?groups:[[]];
   }
@@ -825,7 +840,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(key==='AST'||/^ASPARTATE AMINOTRANSFERASE(?:\s*\(AST\))?$/.test(key))return 'AST';
     if(key==='ALT'||/^ALANINE AMINOTRANSFERASE(?:\s*\(ALT\))?$/.test(key))return 'ALT';
     if(key==='BUN'||key==='BLOOD UREA NITROGEN')return 'BUN';
-    return assayFullName(code).replace(/\bimmunoglobulin\s+([a-z])\b/gi,function(_,letter){return 'Ig'+letter.toUpperCase()}).replace(/\bimmunoglobulin\b/gi,'Ig').replace(/\bhemoglobin\b/gi,'Hgb');
+    return assayFullName(code).replace(/\bimmunoglobulin\s+([a-z])\b/gi,function(_,letter){return 'Ig'+letter.toUpperCase()}).replace(/\bimmunoglobulin\b/gi,'Ig').replace(/\bhemoglobin\b/gi,'Hgb').replace(/\bhuman chorionic gonadotropin\b/gi,'hCG');
   }
   function differenceSummaryHtml(chart){
     var names=chart.id==='instrument-default'?['Cobas 4','Cobas 2']:['Cobas 1','Cobas 3'];
@@ -936,7 +951,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   function normalizeInstrumentChart(value,index){
     var base=defaultInstrumentChart();if(!value||typeof value!=='object')return base;
     var id=String(value.id||uid('instrument')).slice(0,80),alphabetical=id==='instrument-default'||id==='instrument-rl';
-    var out={id:id,title:String(value.title==null?'Instrument Flowchart':value.title).slice(0,100),instrumentTitle:String(value.instrumentTitle==null?(id==='instrument-default'?'Cobas 8000':'Title'):value.instrumentTitle).slice(0,100),sample:String(value.sample==null?'Sample Handling':value.sample).slice(0,100),sampleColor:sanitizeColor(value.sampleColor,'#f4fbff'),colorKey:(Array.isArray(value.colorKey)?value.colorKey:[]).slice(0,30).map(function(item){return{id:String(item.id||uid('highlight')).slice(0,80),text:String(item.text||'').slice(0,80),color:sanitizeColor(item.color,'#fff0a8')}}).filter(function(item){return item.text}),testListsRevision:String(value.testListsRevision||''),branches:(Array.isArray(value.branches)&&value.branches.length?value.branches:base.branches).slice(0,12).map(function(branch,i){return{id:String(branch.id||uid('branch')).slice(0,80),title:String(branch.title==null?'Title':branch.title).slice(0,100),qcTable:id==='instrument-calibration-qc'?normalizeQcTable(branch.qcTable,branch.modules):undefined,modules:(Array.isArray(branch.modules)?branch.modules:base.branches[i%2].modules).slice(0,60).map(function(module){var raw=Array.isArray(module.testColumns)&&module.testColumns.length?module.testColumns.join('\n'):String(module.tests||'');raw=raw.slice(0,20000);return{id:String(module.id||uid('module')).slice(0,80),name:String(module.name==null?'Module':module.name).slice(0,100),fill:sanitizeColor(module.fill,'#ffffff'),literalTests:!!module.literalTests,tests:alphabetical?sortInstrumentAssays(raw,!!module.literalTests):assayLines(raw).join('\n')}})}})};
+    var out={id:id,title:String(value.title==null?'Instrument Flowchart':value.title).slice(0,100),instrumentTitle:String(value.instrumentTitle==null?(id==='instrument-default'?'Cobas 8000':'Title'):value.instrumentTitle).slice(0,100),sample:String(value.sample==null?'Sample Handling':value.sample).slice(0,100),sampleColor:sanitizeColor(value.sampleColor,'#f4fbff'),colorKey:(Array.isArray(value.colorKey)?value.colorKey:[]).slice(0,30).map(function(item){return{id:String(item.id||uid('highlight')).slice(0,80),text:String(item.text||'').slice(0,80),color:sanitizeColor(item.color,'#fff0a8')}}).filter(function(item){return item.text}),testListsRevision:String(value.testListsRevision||''),branches:(Array.isArray(value.branches)&&value.branches.length?value.branches:base.branches).slice(0,12).map(function(branch,i){return{id:String(branch.id||uid('branch')).slice(0,80),title:String(branch.title==null?'Title':branch.title).slice(0,100),qcTable:id==='instrument-calibration-qc'?normalizeQcTable(branch.qcTable,branch.modules):undefined,modules:(Array.isArray(branch.modules)?branch.modules:base.branches[i%2].modules).slice(0,60).map(function(module){var raw=Array.isArray(module.testColumns)&&module.testColumns.length?module.testColumns.join('\n'):String(module.tests||'');raw=raw.slice(0,20000);if(alphabetical)raw=raw.replace(/\bhuman chorionic gonadotropin\b/gi,'hCG');return{id:String(module.id||uid('module')).slice(0,80),name:String(module.name==null?'Module':module.name).slice(0,100),fill:sanitizeColor(module.fill,'#ffffff'),literalTests:!!module.literalTests,tests:alphabetical?sortInstrumentAssays(raw,!!module.literalTests):assayLines(raw).join('\n')}})}})};
     return out;
   }
   function calibrationQcChart(){
@@ -945,7 +960,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       {id:'controls',title:'Controls',modules:[{id:'control-notes',name:'Controls',fill:'#ffffff',tests:''}]}
     ]};
   }
-  function defaultState(){var main=defaultInstrumentChart();return{version:28,starter:'maintenance-sim-v1',updatedAt:Date.now(),charts:restoredRegularFlowcharts(),instrumentCharts:[main,rlInstrumentChart(),calibrationQcChart()],resourceTables:starterResourceTables(),simulations:[defaultMaintenanceSimulation()]}}
+  function defaultState(){var main=defaultInstrumentChart();return{version:29,starter:'maintenance-sim-v1',updatedAt:Date.now(),charts:restoredRegularFlowcharts(),instrumentCharts:[main,rlInstrumentChart(),calibrationQcChart()],resourceTables:starterResourceTables(),simulations:[defaultMaintenanceSimulation()]}}
   state=defaultState();
   function looksLikeMinimalLiverStarter(data){
     var charts=data&&Array.isArray(data.charts)?data.charts:[];
@@ -1057,8 +1072,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(Number(incoming.version||0)<24){var mainChart=instrumentCharts.find(function(chart){return chart.id==='instrument-default'});if(mainChart)(mainChart.branches||[]).forEach(function(branch,index){if(branch.title==='Title')branch.title=index===0?'Cobas 4':'Cobas 2'});var rl=instrumentCharts.find(function(chart){return chart.id==='instrument-rl'});if(rl)(rl.branches||[]).forEach(function(branch){var c=(branch.modules||[]).find(function(module){return /^c\s*702/i.test(module.name)}),e=(branch.modules||[]).find(function(module){return /^e\s*801/i.test(module.name)});if(!c)return;var added=['HA1C','HBW3','A1W3'],cItems=String(c.tests||'').split(/\r?\n/).filter(Boolean);added.forEach(function(code){if(!cItems.some(function(item){return item.toUpperCase()===code}))cItems.push(code)});c.tests=alphabetizeTests(cItems.join('\n'));delete c.testColumns;if(e)e.tests=String(e.tests||'').split(/\r?\n/).filter(function(code){return !added.includes(code.toUpperCase())}).join('\n')});needsStarterSync=true}
     if(Number(incoming.version||0)<26){var savedRl=instrumentCharts.find(function(chart){return chart.id==='instrument-rl'});if(savedRl)(savedRl.branches||[]).forEach(function(branch){var c=(branch.modules||[]).find(function(module){return /^c\s*\d+/i.test(module.name)}),e=(branch.modules||[]).find(function(module){return /^e\s*\d+/i.test(module.name)});if(!c)return;var added=['HA1C','HBW3','A1W3'],cGroups=instrumentTestColumns(c),cCodes=new Set(cGroups.reduce(function(all,group){return all.concat(group)},[]).map(function(code){return code.toUpperCase()}));added.forEach(function(code){if(!cCodes.has(code))cGroups[cGroups.length-1].push(code)});saveInstrumentTestColumns(c,cGroups);if(e){var eGroups=instrumentTestColumns(e).map(function(group){return group.filter(function(code){return !added.includes(code.toUpperCase())})});saveInstrumentTestColumns(e,eGroups)}});needsStarterSync=true}
     if(Number(incoming.version||0)<27){if(!instrumentCharts.some(function(chart){return chart.id==='instrument-calibration-qc'}))instrumentCharts.push(calibrationQcChart());needsStarterSync=true}
-    if(Number(incoming.version||0)<28)needsStarterSync=true;
-    return {version:28,starter:base.starter,updatedAt:incoming.updatedAt||Date.now(),charts:charts,instrumentCharts:instrumentCharts,resourceTables:resourceTables,simulations:simulations};
+    if(Number(incoming.version||0)<29)needsStarterSync=true;
+    return {version:29,starter:base.starter,updatedAt:incoming.updatedAt||Date.now(),charts:charts,instrumentCharts:instrumentCharts,resourceTables:resourceTables,simulations:simulations};
   }
   function saveLocal(){try{localStorage.setItem('chemistryHubState',JSON.stringify(state))}catch(e){}}
   var pendingEditTimer=null;
@@ -2632,7 +2647,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       }
       if(safeDoc.missingRemote&&hadLocal){await flushPendingEdit('migration');needsStarterSync=false}
       else if(needsStarterSync&&!safeDoc.missingRemote){
-        safeDoc.baseData.version=Math.min(Number(safeDoc.baseData.version)||27,27);
+        safeDoc.baseData.version=Math.min(Number(safeDoc.baseData.version)||28,28);
         state.updatedAt=Date.now();saveLocal();
         await flushPendingEdit('starter-upgrade');
         needsStarterSync=false;
