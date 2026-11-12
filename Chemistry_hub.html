@@ -321,7 +321,53 @@ html,body{max-width:100%;overflow-x:clip}
 .instrument-print-page .qc-branches{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 @media print{body.instrument-printing #printArea .qc-branches{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 </style>
-<style id="chemistry-scale-and-assay-count">body{zoom:.9}@media print{body{zoom:1!important}}.assay-count-badge{display:inline-grid;place-items:center;vertical-align:middle;min-width:25px;height:25px;padding:0 3px;margin-left:8px;border:1px solid #5d839c;border-radius:50%;background:#edf6fb;color:#123b53;font:700 11px/1 Arial,Helvetica,sans-serif}.resource-print-title .assay-count-badge{min-width:20px;height:20px;font-size:9px;border-color:#111;background:#fff;color:#111}@media print{.assay-count-badge{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style></head>
+<style id="chemistry-scale-and-assay-count">body{zoom:.9}@media print{body{zoom:1!important}}.assay-count-badge{display:inline-grid;place-items:center;vertical-align:middle;min-width:25px;height:25px;padding:0 3px;margin-left:8px;border:1px solid #5d839c;border-radius:50%;background:#edf6fb;color:#123b53;font:700 11px/1 Arial,Helvetica,sans-serif}.resource-print-title .assay-count-badge{min-width:20px;height:20px;font-size:9px;border-color:#111;background:#fff;color:#111}@media print{.assay-count-badge{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style><style id="chemistry-results-simulation-style">
+.result-simulation{display:grid;grid-template-columns:minmax(210px,28%) minmax(0,1fr);gap:18px;align-items:start}
+.result-analyzer-scene{min-height:470px;display:grid;place-items:center;padding:35px 12px;border:1px solid var(--line);border-radius:16px;background:radial-gradient(circle at 30% 20%,#fff,#e9f4f9 70%);overflow:hidden;perspective:900px}
+.result-analyzer{position:relative;width:min(80%,280px);height:290px;transform:rotateY(-16deg) rotateX(5deg);filter:drop-shadow(18px 24px 12px rgba(13,53,81,.21))}
+.result-analyzer-face{position:absolute;inset:24px 0 0 0;z-index:2;display:flex;flex-direction:column;align-items:center;padding:25px 16px;border:3px solid #517086;border-radius:12px 5px 5px 12px;background:linear-gradient(125deg,#fdfefe,#d6e6ee 70%,#bacbd7);box-shadow:inset 0 0 0 7px #eff7fa}
+.result-analyzer-top{position:absolute;top:0;left:0;right:-20px;height:42px;transform:skewX(-30deg);border:3px solid #517086;border-radius:8px 8px 0 0;background:linear-gradient(100deg,#f7fcff,#b8d3e2)}
+.result-analyzer-side{position:absolute;top:31px;right:-33px;width:35px;height:258px;transform:skewY(28deg);transform-origin:left top;border:3px solid #517086;background:linear-gradient(#8eb0c3,#5e8197)}
+.result-analyzer-label{width:100%;padding:8px 5px;border-radius:4px;background:#1e597d;color:#fff;text-align:center;font:800 clamp(15px,1.6vw,22px)/1.15 Arial,sans-serif}
+.result-analyzer-window{display:flex;justify-content:space-around;align-items:center;width:85%;height:95px;margin-top:22px;border:7px solid #748d9e;border-radius:6px;background:linear-gradient(140deg,#7ea9b6,#2c5969);box-shadow:inset 0 0 18px #163d50}
+.result-analyzer-window span{width:18%;height:45px;border-radius:4px;background:linear-gradient(#dae9e8,#8ab6b8);opacity:.8}
+.result-analyzer-status{align-self:flex-start;margin:25px 0 0 8px;color:#17415c;font:800 11px Arial,sans-serif;letter-spacing:.09em}
+.result-analyzer-status i{display:inline-block;width:9px;height:9px;margin-right:5px;border-radius:50%;background:#42bd73;box-shadow:0 0 8px #42bd73}
+.result-monitor{min-width:0}
+.result-monitor-frame{padding:11px;border:10px solid #25475c;border-radius:16px;background:#25475c;box-shadow:0 18px 30px rgba(10,41,60,.24)}
+.result-monitor-screen{min-height:515px;border-radius:5px;background:#f8fcff;color:#16364b;overflow:hidden}
+.result-monitor-header{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:13px 17px;background:#144e75;color:#fff;font:700 14px Arial,sans-serif}
+.result-monitor-header span{font-size:12px;font-weight:500}
+.result-monitor-body{padding:16px 20px 20px}
+.result-monitor-top,.result-practice-head{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.result-monitor-top h2,.result-practice h2{font:800 24px/1.1 Arial,sans-serif;color:#103e5b}
+.result-monitor-kicker{display:block;margin-bottom:5px;color:#4c7288;font:800 10px Arial,sans-serif;letter-spacing:.11em;text-transform:uppercase}
+.result-sample-id{padding:5px 8px;border:1px solid #a9c8d9;border-radius:6px;background:#e7f3fa;font:700 11px Arial,sans-serif}
+.result-panel-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:16px 0 10px}
+.result-panel-tab{padding:7px 11px;border:1px solid #9bbcd0;border-radius:7px;background:#fff;color:#174563;font:700 12px Arial,sans-serif;cursor:pointer}
+.result-panel-tab.active{border-color:#1e74a6;background:#1e74a6;color:#fff}
+.result-table{width:100%;border-collapse:collapse;table-layout:fixed;font:14px/1.25 Arial,sans-serif}
+.result-table th,.result-table td{padding:7px 9px;border-bottom:1px solid #d5e4ed;text-align:left;overflow-wrap:normal;word-break:normal}
+.result-table thead th{background:#e8f3f9;color:#31566c;font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+.result-table th:first-child{width:59%}.result-table th:nth-child(2){width:21%}.result-table th:nth-child(3){width:20%}
+.result-table tbody td:nth-child(2){font-weight:800;font-variant-numeric:tabular-nums}
+.result-table tbody tr:nth-child(even){background:#f2f8fb}
+.result-table .result-shifted td:nth-child(2){color:#9a3f1f}
+.result-monitor-stand{width:90px;height:20px;margin:auto;background:linear-gradient(#738d9c,#496b80);border-radius:0 0 7px 7px}
+.result-practice{grid-column:1/-1;padding:20px 24px;border:1px solid var(--line);border-radius:14px;background:#fff;box-shadow:var(--shadow)}
+.result-practice>p{margin:9px 0;color:#49697e;font:14px/1.4 Arial,sans-serif}
+.result-flag-list{display:flex;flex-wrap:wrap;gap:8px;margin:15px 0}
+.result-flag{padding:8px 12px;border:1px solid #99b6c8;border-radius:999px;background:#f6fbfe;color:#19435c;font:700 12px Arial,sans-serif;cursor:pointer}
+.result-flag.selected{border-color:#b47720;background:#fff0c8;color:#683c03}
+.result-custom-flag{display:flex;gap:8px;margin:10px 0}.result-custom-flag input{min-width:0;width:230px;max-width:100%;padding:7px 9px;border:1px solid #9bbcd0;border-radius:6px}
+.result-reveal{margin:6px 0}.result-answer{max-width:850px;margin:10px 0;padding:12px 15px;border-left:4px solid #1e74a6;background:#eaf5fb;color:#163f5a;font:14px/1.4 Arial,sans-serif}
+.result-answer p{margin-top:5px}
+.result-sim-note{font-size:11px!important;color:#5e7280!important}
+.qc-delete-chart{float:right;margin:0 0 8px 12px}
+@media(max-width:900px){.result-simulation{grid-template-columns:1fr}.result-analyzer-scene{min-height:300px}.result-analyzer{transform:rotateY(-16deg) rotateX(5deg) scale(.76)}.result-practice{grid-column:1}}
+@media(max-width:520px){.result-monitor-header{display:block}.result-monitor-header span{display:block;margin-top:3px}.result-monitor-body{padding:12px}.result-table{font-size:12px}.result-table th,.result-table td{padding:6px 5px}.result-practice{padding:15px}}
+@media print{.result-simulation{display:block}.result-analyzer-scene,.result-practice button,.result-custom-flag{display:none!important}.result-monitor-frame{box-shadow:none;border:2px solid #111}.result-monitor-screen{min-height:0}.result-practice{box-shadow:none;margin-top:12px}.result-flag{border-color:#111}.result-table th,.result-table td{border-color:#777}}
+</style><style id="chemistry-result-print-polish">.result-practice-actions{display:flex;gap:7px;flex-wrap:wrap}@media print{@page{size:letter portrait;margin:.35in}body.result-printing #printArea .result-print-page{width:100%;height:auto;overflow:visible;color:#111}body.result-printing #printArea .result-print-page h1{font:800 17pt Arial,sans-serif;margin-bottom:12px}body.result-printing #printArea .result-simulation{display:block}body.result-printing #printArea .result-analyzer-scene{display:none}body.result-printing #printArea .result-monitor-frame{padding:0;border:0}body.result-printing #printArea .result-monitor-header{color:#111;background:#eee}body.result-printing #printArea .result-practice{border:0;padding:12px 0}body.result-printing #printArea .result-monitor-screen{min-height:0}body.result-printing #printArea .result-monitor-body{padding:8px}body.result-printing #printArea .result-flag-list{margin:6px 0}}</style></head>
 <body class="intro-active">
 <div id="intro">
   <div class="lab-window-bg"><span class="lab-rack"></span><span class="lab-flask"></span></div>
@@ -344,7 +390,7 @@ html,body{max-width:100%;overflow-x:clip}
     <button type="button" class="nav-tab active" data-section="general">General</button>
     <button type="button" class="nav-tab" data-section="flowcharts">Flowcharts</button>
     <button type="button" class="nav-tab" data-section="tables">Tables</button>
-    <button type="button" class="nav-tab" data-section="simulation">Simulation</button>
+    <button type="button" class="nav-tab" data-section="simulation">Instrument Results Simulation</button>
     <button type="button" class="nav-tab" data-section="resources">Resources</button>
   </nav>
   <button type="button" class="tool-btn" data-ui-action="admin-login" id="adminBtn">Admin</button>
@@ -366,7 +412,7 @@ html,body{max-width:100%;overflow-x:clip}
 
 <main class="wrap">
   <section class="section active" id="sec-general">
-    <div class="hero"><h1>Clinical Chemistry</h1><p>A blue CC workspace for flowcharts, tables, and study organization.</p></div>
+    <div class="hero"><h1>Clinical Chemistry</h1></div>
     <div class="panel coming-soon"><div><strong>Coming Soon</strong><span>General chemistry notes will live here after the core flowchart tools are stable.</span></div></div>
   </section>
   <section class="section" id="sec-flowcharts">
@@ -386,7 +432,7 @@ html,body{max-width:100%;overflow-x:clip}
     <div id="resourceTables" class="resource-shell"></div>
   </section>
   <section class="section" id="sec-simulation">
-    <div class="hero"><h1>Instrument Maintenance</h1></div>
+    <div class="hero"><h1>Instrument Results Simulation</h1></div>
     <div id="chemMaintenanceSimulation"></div>
   </section>
   <section class="section" id="sec-resources">
@@ -1020,7 +1066,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       {id:'calibration-4',title:'#4 C',modules:[{id:'calibration-notes-4',name:'Calibration and controls',fill:'#ffffff',tests:''}]}
     ]};
   }
-  function defaultState(){var main=defaultInstrumentChart();return{version:31,starter:'maintenance-sim-v1',updatedAt:Date.now(),charts:restoredRegularFlowcharts(),instrumentCharts:[main,rlInstrumentChart(),calibrationQcChart()],resourceTables:starterResourceTables(),simulations:[defaultMaintenanceSimulation()]}}
+  function defaultState(){var main=defaultInstrumentChart();return{version:32,starter:'maintenance-sim-v1',updatedAt:Date.now(),charts:restoredRegularFlowcharts(),instrumentCharts:[main,rlInstrumentChart(),calibrationQcChart()],resourceTables:starterResourceTables(),simulations:[defaultMaintenanceSimulation()],resultPractice:defaultResultPractice()}}
   state=defaultState();
   function looksLikeMinimalLiverStarter(data){
     var charts=data&&Array.isArray(data.charts)?data.charts:[];
@@ -1133,8 +1179,10 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(Number(incoming.version||0)<26){var savedRl=instrumentCharts.find(function(chart){return chart.id==='instrument-rl'});if(savedRl)(savedRl.branches||[]).forEach(function(branch){var c=(branch.modules||[]).find(function(module){return /^c\s*\d+/i.test(module.name)}),e=(branch.modules||[]).find(function(module){return /^e\s*\d+/i.test(module.name)});if(!c)return;var added=['HA1C','HBW3','A1W3'],cGroups=instrumentTestColumns(c),cCodes=new Set(cGroups.reduce(function(all,group){return all.concat(group)},[]).map(function(code){return code.toUpperCase()}));added.forEach(function(code){if(!cCodes.has(code))cGroups[cGroups.length-1].push(code)});saveInstrumentTestColumns(c,cGroups);if(e){var eGroups=instrumentTestColumns(e).map(function(group){return group.filter(function(code){return !added.includes(code.toUpperCase())})});saveInstrumentTestColumns(e,eGroups)}});needsStarterSync=true}
     if(Number(incoming.version||0)<27){if(!instrumentCharts.some(function(chart){return chart.id==='instrument-calibration-qc'}))instrumentCharts.push(calibrationQcChart());needsStarterSync=true}
     if(Number(incoming.version||0)<30){var qcChart=instrumentCharts.find(function(chart){return chart.id==='instrument-calibration-qc'});if(qcChart){var qcDefaults=calibrationQcChart().branches;while(qcChart.branches.length<4){var next=qcDefaults[qcChart.branches.length];qcChart.branches.push({id:next.id,title:next.title,modules:next.modules,qcTable:normalizeQcTable(null,next.modules)})}}needsStarterSync=true}
-    var out={version:31,starter:base.starter,updatedAt:incoming.updatedAt||Date.now(),charts:charts,instrumentCharts:instrumentCharts,resourceTables:resourceTables,simulations:simulations,cobasAssayFingerprint:String(incoming.cobasAssayFingerprint||'')};
+    var out={version:32,starter:base.starter,updatedAt:incoming.updatedAt||Date.now(),charts:charts,instrumentCharts:instrumentCharts,resourceTables:resourceTables,simulations:simulations,cobasAssayFingerprint:String(incoming.cobasAssayFingerprint||'')};
     if(Number(incoming.version||0)<31){syncCobasAssayTables(out);needsStarterSync=true}
+    if(Number(incoming.version||0)<32){out.instrumentCharts=out.instrumentCharts.filter(function(chart){return chart.id!=='instrument-calibration-qc'});needsStarterSync=true}
+    out.resultPractice=normalizeResultPractice(incoming.resultPractice);
     return out;
   }
   function saveLocal(){try{localStorage.setItem('chemistryHubState',JSON.stringify(state))}catch(e){}}
@@ -1791,7 +1839,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function renderCalibrationQcChart(data,host){
     function titleEdit(value,field,branch,module){return '<span class="cobas-edit" data-instrument-id="'+escapeHtml(data.id)+'" data-instrument-field="'+field+'" data-branch="'+escapeHtml(branch||'')+'" data-module="'+escapeHtml(module||'')+'" contenteditable="'+(isAdmin?'true':'false')+'" spellcheck="false">'+escapeHtml(value||'')+'</span>'}
-    host.innerHTML='<article class="qc-chart"><div class="qc-chart-head"><div class="cobas-section-title">Instrument diagram</div><h2>'+titleEdit(data.title,'title')+'</h2><div>'+titleEdit(data.instrumentTitle,'instrument-title')+'</div><div>'+titleEdit(data.sample,'sample')+'</div></div><div class="qc-branches">'+data.branches.map(function(branch,index){
+    host.innerHTML='<article class="qc-chart"><div class="qc-chart-head"><button type="button" class="mini-btn danger admin-only qc-delete-chart" data-action="delete-instrument">Delete flowchart</button><div class="cobas-section-title">Instrument diagram</div><h2>'+titleEdit(data.title,'title')+'</h2><div>'+titleEdit(data.instrumentTitle,'instrument-title')+'</div><div>'+titleEdit(data.sample,'sample')+'</div></div><div class="qc-branches">'+data.branches.map(function(branch,index){
       var table=branch.qcTable||normalizeQcTable(null,branch.modules),module=branch.modules[0];
       return '<section class="qc-branch" data-qc-branch="'+escapeHtml(branch.id)+'"><h3>'+titleEdit(branch.title,'branch-title',branch.id)+'</h3>'+(module?'<h4>'+titleEdit(module.name,'module-name',branch.id,module.id)+'</h4>':'')+'<div class="qc-table-wrap"><table class="qc-table"><thead><tr>'+table.columns.map(function(col){return '<th><span data-qc-header data-branch="'+escapeHtml(branch.id)+'" data-column="'+escapeHtml(col.id)+'" contenteditable="'+(isAdmin?'true':'false')+'" spellcheck="false">'+escapeHtml(col.label)+'</span><button type="button" class="mini-btn danger admin-only" data-action="qc-remove-column" data-branch="'+escapeHtml(branch.id)+'" data-column="'+escapeHtml(col.id)+'" aria-label="Remove column '+escapeHtml(col.label)+'">×</button></th>'}).join('')+(isAdmin?'<th>Row</th>':'')+'</tr></thead><tbody>'+table.rows.map(function(row){return '<tr>'+table.columns.map(function(col){return '<td><span data-qc-cell data-branch="'+escapeHtml(branch.id)+'" data-row="'+escapeHtml(row.id)+'" data-column="'+escapeHtml(col.id)+'" contenteditable="'+(isAdmin?'true':'false')+'" spellcheck="false">'+escapeHtml(row.cells[col.id]||'')+'</span></td>'}).join('')+(isAdmin?'<td><button type="button" class="mini-btn danger" data-action="qc-remove-row" data-branch="'+escapeHtml(branch.id)+'" data-row="'+escapeHtml(row.id)+'" aria-label="Remove row">×</button></td>':'')+'</tr>'}).join('')+'</tbody></table></div><div class="qc-tools admin-only"><button type="button" class="mini-btn" data-action="qc-add-row" data-branch="'+escapeHtml(branch.id)+'">+ Add row</button><button type="button" class="mini-btn" data-action="qc-add-column" data-branch="'+escapeHtml(branch.id)+'">+ Add column</button>'+(index>=4?'<button type="button" class="mini-btn danger" data-action="qc-remove-branch" data-branch="'+escapeHtml(branch.id)+'">Remove branch</button>':'')+'</div></section>'
     }).join('')+'</div><div class="qc-tools admin-only"><button type="button" class="mini-btn" data-action="qc-add-branch">+ Add branch</button></div></article>';
@@ -1941,32 +1989,59 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function saveSimulationProgress(){try{localStorage.setItem('chemistrySimulationProgress',JSON.stringify(simulationProgress))}catch(e){}}
   function saveSimulationOrders(){try{localStorage.setItem('chemistrySimulationOrders',JSON.stringify(simulationOrders))}catch(e){}}
+  var RESULT_TESTS=[
+    {id:'na',name:'Sodium',unit:'mmol/L',base:'140',panels:'BMP CMP'},
+    {id:'k',name:'Potassium',unit:'mmol/L',base:'4.2',panels:'BMP CMP'},
+    {id:'cl',name:'Chloride',unit:'mmol/L',base:'102',panels:'BMP CMP'},
+    {id:'co2',name:'Total carbon dioxide',unit:'mmol/L',base:'25',panels:'BMP CMP'},
+    {id:'bun',name:'Blood urea nitrogen',unit:'mg/dL',base:'14',panels:'BMP CMP'},
+    {id:'creat',name:'Creatinine',unit:'mg/dL',base:'0.9',panels:'BMP CMP'},
+    {id:'glu',name:'Glucose',unit:'mg/dL',base:'94',panels:'BMP CMP'},
+    {id:'ca',name:'Calcium',unit:'mg/dL',base:'9.4',panels:'BMP CMP'},
+    {id:'tp',name:'Total protein',unit:'g/dL',base:'7.1',panels:'CMP'},
+    {id:'alb',name:'Albumin',unit:'g/dL',base:'4.2',panels:'CMP'},
+    {id:'alp',name:'Alkaline phosphatase',unit:'U/L',base:'82',panels:'CMP'},
+    {id:'alt',name:'ALT',unit:'U/L',base:'23',panels:'CMP'},
+    {id:'ast',name:'AST',unit:'U/L',base:'26',panels:'CMP'},
+    {id:'tbili',name:'Total bilirubin',unit:'mg/dL',base:'0.7',panels:'CMP'},
+    {id:'chol',name:'Total cholesterol',unit:'mg/dL',base:'178',panels:'Lipid'},
+    {id:'hdl',name:'HDL cholesterol',unit:'mg/dL',base:'54',panels:'Lipid'},
+    {id:'ldl',name:'LDL cholesterol',unit:'mg/dL',base:'102',panels:'Lipid'},
+    {id:'trig',name:'Triglycerides',unit:'mg/dL',base:'112',panels:'Lipid'},
+    {id:'mg',name:'Magnesium',unit:'mg/dL',base:'1.9',panels:'Add-ons'},
+    {id:'phos',name:'Phosphorus',unit:'mg/dL',base:'3.5',panels:'Add-ons'},
+    {id:'ldh',name:'Lactate dehydrogenase',unit:'U/L',base:'185',panels:'Add-ons'},
+    {id:'a1c',name:'Hgb A1c',unit:'%',base:'5.4',panels:'Add-ons'},
+    {id:'tsh',name:'Thyroid-stimulating hormone',unit:'mIU/L',base:'2.1',panels:'Add-ons'},
+    {id:'crp',name:'C-reactive protein',unit:'mg/L',base:'1.2',panels:'Add-ons'}
+  ];
+  var RESULT_CASES=[
+    {id:'clean',title:'Clean sample',changes:{},clue:'No sample interference is built into this practice specimen.'},
+    {id:'hemolysis',title:'Hemolyzed sample',changes:{k:'6.3',ast:'91',ldh:'580'},clue:'A rise in potassium, AST, and LDH can be a clue to hemolysis. Check the specimen index and local rejection rules.'},
+    {id:'edta',title:'EDTA carryover',changes:{k:'7.0',ca:'5.6',mg:'1.0',alp:'24'},clue:'High potassium together with low calcium, magnesium, and alkaline phosphatase can suggest EDTA carryover.'},
+    {id:'dilution',title:'IV fluid dilution',changes:{k:'3.1',bun:'7',creat:'0.5',tp:'4.5',alb:'2.7',ca:'7.4'},clue:'Several unexpectedly low results together can suggest sample dilution from a line draw.'}
+  ];
+  var RESULT_FLAGS=['Hemolysis','Lipemia','Icterus','EDTA carryover','IV fluid dilution'];
+  function defaultResultPractice(){return {panel:'CMP',caseId:'clean',reveal:false,flags:[],customFlags:[]}}
+  function normalizeResultPractice(value){
+    value=value&&typeof value==='object'?value:{};
+    var panels=['BMP','CMP','Lipid','Add-ons'];
+    return {panel:panels.includes(value.panel)?value.panel:'CMP',caseId:RESULT_CASES.some(function(item){return item.id===value.caseId})?value.caseId:'clean',reveal:!!value.reveal,flags:(Array.isArray(value.flags)?value.flags:[]).map(function(x){return plainCellText(x).slice(0,60)}).filter(Boolean).slice(0,30),customFlags:(Array.isArray(value.customFlags)?value.customFlags:[]).map(function(x){return plainCellText(x).slice(0,60)}).filter(Boolean).slice(0,20)};
+  }
   function renderSimulation(){
     var host=document.getElementById('chemMaintenanceSimulation');
     if(!host)return;
-    var simulations=state.simulations||[];
-    if(simulations.length&&!findSimulation(activeSimulationId))activeSimulationId=simulations[0].id;
-    var simulation=findSimulation(activeSimulationId);
-    var tabs=simulations.map(function(item){return '<button type="button" class="chem-chart-tab '+(item.id===activeSimulationId?'active':'')+'" data-action="sim-select" data-simulation="'+escapeHtml(item.id)+'">'+escapeHtml(item.title)+'</button>'}).join('');
-    var toolbar='<div class="sim-toolbar"><div class="chem-chart-tabs">'+tabs+'</div><button type="button" class="mini-btn admin-only" data-action="sim-add">+ Simulation</button></div>';
-    if(!simulation){host.innerHTML='<div class="sim-shell">'+toolbar+'<div class="resource-empty">No simulations yet.</div></div>';return}
-    var source=simulationSource(simulation);
-    if(!source||!source.branch){host.innerHTML='<div class="sim-shell">'+toolbar+'<div class="resource-empty">Choose an instrument for this simulation.</div></div>';return}
-    var modules=source.branch.modules||[];
-    selectedSimulationModule=Math.max(0,Math.min(selectedSimulationModule,modules.length-1));
-    var module=modules[selectedSimulationModule]||{name:'Module'};
-    var steps=simulation.moduleSteps[selectedSimulationModule]||[];
-    var prefix=simulation.id+':'+selectedSimulationModule+':';
-    var completed=steps.filter(function(step){return !!simulationProgress[prefix+step.id]}).length;
-    var model='<div class="sim-stage"><div class="sim-model"><div class="sim-machine-heading">'+escapeHtml(simulationBranchName(source.chart,source.index))+'</div><div class="sim-machine-bay"><div class="sim-units" style="--sim-modules:'+Math.max(1,modules.length)+'">'+modules.map(function(item,index){var lidKey=simulation.id+':'+index,open=!!simulationLids[lidKey];return '<div class="sim-unit-wrap"><button type="button" class="sim-unit '+(open?'lid-open':'')+'" data-action="sim-module" data-index="'+index+'" aria-pressed="'+(index===selectedSimulationModule)+'" aria-label="Select '+escapeHtml(item.name)+'"><span class="sim-unit-cavity">Interior<br>check area</span><span class="sim-unit-lid" aria-hidden="true">Top cover</span><span class="sim-unit-front" style="--sim-fill:'+sanitizeColor(item.fill,'#f4fbff')+'"><span class="sim-unit-screen"></span><span class="sim-unit-label">'+escapeHtml(item.name)+'</span><span class="sim-unit-light"></span></span></button><button type="button" class="sim-lid-toggle" data-action="sim-lid" data-index="'+index+'" aria-expanded="'+open+'">'+(open?'Close top':'Open top')+'</button></div>'}).join('')+'</div><div class="sim-bulk"><div class="sim-bulk-title">Outside machine</div><div class="sim-bulk-cabinet '+(simulationBulkOpen?'open':'')+'"><div class="sim-bulk-interior"><span>Bulk reagents</span><span>Waste</span><small>Check expiration and volume per SOP</small></div><div class="sim-bulk-door" aria-hidden="true">Bulk<br>reagents<br>&amp; waste</div></div><button type="button" class="sim-lid-toggle" data-action="sim-bulk-door" aria-expanded="'+simulationBulkOpen+'">'+(simulationBulkOpen?'Close doors':'Open doors')+'</button></div></div></div></div>';
-    var orderKey=prefix+simulationComputerTab,ordered=!!simulationOrders[orderKey];
-    var isE=/\be\s*801\b/i.test(module.name),maintenanceKey=simulation.id+':'+selectedSimulationModule,maintenanceOn=!!simulationEMaintenance[maintenanceKey];
-    var computer='<div class="sim-workstation" aria-label="Instrument computer"><div class="sim-computer-monitor"><div class="sim-computer-screen"><div class="sim-computer-bar">'+escapeHtml(source.chart.instrumentTitle||'Cobas 8000')+' · Practice workstation</div><div class="sim-computer-content"><label class="sim-computer-module">Module<select data-action="sim-module-select" aria-label="Choose module">'+modules.map(function(item,index){return '<option value="'+index+'" '+(index===selectedSimulationModule?'selected':'')+'>'+escapeHtml(item.name)+'</option>'}).join('')+'</select></label><div class="sim-computer-tabs" role="tablist" aria-label="Practice orders"><button type="button" role="tab" data-action="sim-computer-tab" data-tab="qc" aria-selected="'+(simulationComputerTab==='qc')+'">QC</button><button type="button" role="tab" data-action="sim-computer-tab" data-tab="calibration" aria-selected="'+(simulationComputerTab==='calibration')+'">Calibration</button></div><div class="sim-computer-order" role="tabpanel"><strong>'+ (simulationComputerTab==='qc'?'QC':'Calibration')+' order</strong><p>Practice order for '+escapeHtml(module.name)+'</p><button type="button" class="sim-order-btn" data-action="sim-order">'+(ordered?'Clear practice order':'Place practice order')+'</button><span role="status">'+(ordered?'Practice order queued locally':'No practice order queued')+'</span></div>'+(isE?'<div class="sim-maintenance-mode"><strong>e 801 maintenance mode</strong><button type="button" data-action="sim-maintenance-mode" aria-pressed="'+maintenanceOn+'">'+(maintenanceOn?'Remove from maintenance mode':'Enter maintenance mode')+'</button></div>':'')+'</div></div></div><div class="sim-computer-stand"></div><div class="sim-computer-keyboard" aria-hidden="true"></div></div>';
-    var stepHtml=steps.map(function(step){var checked=!!simulationProgress[prefix+step.id];return '<button type="button" class="sim-step" data-action="sim-step" data-step="'+escapeHtml(step.id)+'" aria-pressed="'+checked+'"><span class="sim-step-check">'+(checked?'✓':'')+'</span><span class="sim-step-label">'+escapeHtml(step.title)+'</span></button>'}).join('');
-    var sourceOptions=(state.instrumentCharts||[]).map(function(chart){return (chart.branches||[]).map(function(branch,index){var selected=chart.id===source.chart.id&&index===source.index;return '<option value="'+escapeHtml(chart.id)+':'+index+'" '+(selected?'selected':'')+'>'+escapeHtml(chart.title+' · '+simulationBranchName(chart,index))+'</option>'}).join('')}).join('');
-    var admin='<div class="sim-edit-panel admin-only"><label>Simulation title<input type="text" maxlength="100" data-action="sim-title" data-simulation="'+escapeHtml(simulation.id)+'" value="'+escapeHtml(simulation.title)+'"></label><label>Instrument<select data-action="sim-source" data-simulation="'+escapeHtml(simulation.id)+'">'+sourceOptions+'</select></label><h3>Edit '+escapeHtml(module.name)+' tasks</h3>'+steps.map(function(step){return '<div class="sim-edit-row"><input type="text" maxlength="160" data-action="sim-step-title" data-step="'+escapeHtml(step.id)+'" value="'+escapeHtml(step.title)+'"><button type="button" class="mini-btn danger" data-action="sim-remove-step" data-step="'+escapeHtml(step.id)+'" aria-label="Remove task">×</button></div>'}).join('')+'<div class="sim-edit-actions"><button type="button" class="mini-btn" data-action="sim-add-step">+ Task</button><button type="button" class="mini-btn danger" data-action="sim-delete">Delete simulation</button></div></div>';
-    var panel='<aside class="sim-panel"><div class="sim-example-banner"><strong>Example only</strong>Follow your laboratory SOP for all instrument maintenance.</div><h2>'+escapeHtml(simulation.title)+'</h2><div>'+escapeHtml(simulationBranchName(source.chart,source.index))+' · '+escapeHtml(module.name)+'</div><h3>Maintenance practice</h3><div class="sim-steps">'+stepHtml+'</div><div class="sim-progress">'+completed+' of '+steps.length+' tasks marked complete</div><div class="sim-edit-actions"><button type="button" class="mini-btn" data-action="sim-reset">Reset practice</button></div>'+admin+'</aside>';
-    host.innerHTML='<div class="sim-shell">'+toolbar+'<div class="sim-layout">'+model+computer+panel+'</div></div>';
+    var practice=state.resultPractice=normalizeResultPractice(state.resultPractice);
+    var caseData=RESULT_CASES.find(function(item){return item.id===practice.caseId})||RESULT_CASES[0];
+    var panelNames=['BMP','CMP','Lipid','Add-ons'];
+    var panelButtons=panelNames.map(function(name){return '<button type="button" class="result-panel-tab '+(practice.panel===name?'active':'')+'" data-action="result-panel" data-panel="'+escapeHtml(name)+'" aria-pressed="'+(practice.panel===name)+'">'+escapeHtml(name)+'</button>'}).join('');
+    var tests=RESULT_TESTS.filter(function(item){return item.panels.split(' ').includes(practice.panel)});
+    var resultRows=tests.map(function(item){var changed=Object.prototype.hasOwnProperty.call(caseData.changes,item.id),value=changed?caseData.changes[item.id]:item.base;return '<tr class="'+(changed?'result-shifted':'')+'"><th scope="row">'+escapeHtml(item.name)+'</th><td>'+escapeHtml(value)+'</td><td>'+escapeHtml(item.unit)+'</td></tr>'}).join('');
+    var flags=RESULT_FLAGS.concat(practice.customFlags.filter(function(item){return !RESULT_FLAGS.includes(item)})).map(function(name){var on=practice.flags.includes(name);return '<button type="button" class="result-flag '+(on?'selected':'')+'" data-action="result-flag" data-flag="'+escapeHtml(name)+'" aria-pressed="'+on+'">'+escapeHtml(name)+'</button>'}).join('');
+    var machine='<div class="result-analyzer-scene" aria-label="Three-dimensional Chemistry Analyzer illustration"><div class="result-analyzer"><div class="result-analyzer-top"></div><div class="result-analyzer-face"><div class="result-analyzer-label">Chemistry Analyzer</div><div class="result-analyzer-window"><span></span><span></span><span></span></div><div class="result-analyzer-status"><i></i> READY</div></div><div class="result-analyzer-side"></div></div></div>';
+    var monitor='<section class="result-monitor" aria-label="Practice chemistry results"><div class="result-monitor-frame"><div class="result-monitor-screen"><div class="result-monitor-header"><strong>Chemistry Analyzer</strong><span>Practice results · simulated specimen</span></div><div class="result-monitor-body"><div class="result-monitor-top"><div><span class="result-monitor-kicker">Results workspace</span><h2>'+escapeHtml(practice.panel)+' results</h2></div><span class="result-sample-id">Practice sample</span></div><div class="result-panel-tabs" role="group" aria-label="Choose chemistry panel">'+panelButtons+'</div><div class="result-table-wrap"><table class="result-table"><thead><tr><th>Assay</th><th>Result</th><th>Unit</th></tr></thead><tbody>'+resultRows+'</tbody></table></div><p class="result-sim-note">Synthetic results for learning sample patterns. Values and effects vary by assay and method.</p></div></div></div><div class="result-monitor-stand"></div></section>';
+    var controls='<section class="result-practice"><div class="result-practice-head"><div><span class="result-monitor-kicker">Practice specimen</span><h2>Spot the pattern</h2></div><div class="result-practice-actions"><button type="button" class="mini-btn" data-action="result-new-case">New specimen</button><button type="button" class="mini-btn" data-action="result-print">Print results</button></div></div><p>Review the results, mark suspected sample flags, then reveal the specimen issue.</p><div class="result-flag-list" role="group" aria-label="Suspected specimen flags">'+flags+'</div><div class="result-custom-flag admin-only"><input type="text" maxlength="60" data-result-new-flag placeholder="Add a flag" aria-label="New specimen flag"><button type="button" class="mini-btn" data-action="result-add-flag">Add flag</button></div><button type="button" class="mini-btn result-reveal" data-action="result-reveal">'+(practice.reveal?'Hide answer':'Reveal specimen issue')+'</button>'+(practice.reveal?'<div class="result-answer"><strong>'+escapeHtml(caseData.title)+'</strong><p>'+escapeHtml(caseData.clue)+'</p></div>':'')+'<p class="result-sim-note">Practice tool only. Use your laboratory’s instrument flags, interference limits, and SOP for real specimens.</p></section>';
+    host.innerHTML='<div class="result-simulation">'+machine+monitor+controls+'</div>';
   }
   function renderResources(){
     var target=document.getElementById('chemResources');
@@ -2324,6 +2399,12 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       renderAll();
       return;
     }
+    if(act==='result-panel'){state.resultPractice.panel=action.dataset.panel||'CMP';renderSimulation();markDirty();return}
+    if(act==='result-new-case'){var order=RESULT_CASES.map(function(item){return item.id}),current=order.indexOf(state.resultPractice.caseId);state.resultPractice.caseId=order[(current+1+Math.floor(Math.random()*(order.length-1)))%order.length];state.resultPractice.reveal=false;state.resultPractice.flags=[];renderSimulation();markDirty();return}
+    if(act==='result-flag'){var flag=plainCellText(action.dataset.flag||'').slice(0,60),list=state.resultPractice.flags||[];if(flag){state.resultPractice.flags=list.includes(flag)?list.filter(function(item){return item!==flag}):list.concat(flag);renderSimulation();markDirty()}return}
+    if(act==='result-reveal'){state.resultPractice.reveal=!state.resultPractice.reveal;renderSimulation();markDirty();return}
+    if(act==='result-print'){var area=document.getElementById('printArea'),screen=document.querySelector('.result-simulation');if(!screen)return;var copy=screen.cloneNode(true);copy.querySelectorAll('.admin-only').forEach(function(node){node.remove()});area.innerHTML='<div class="result-print-page"><h1>Instrument Results Simulation</h1>'+copy.outerHTML+'</div>';document.body.classList.add('printing','result-printing');window.print();setTimeout(function(){document.body.classList.remove('printing','result-printing');area.innerHTML=''},1200);return}
+    if(act==='result-add-flag'){var input=document.querySelector('[data-result-new-flag]'),flag=plainCellText(input&&input.value||'').slice(0,60);if(flag&&!RESULT_FLAGS.concat(state.resultPractice.customFlags||[]).some(function(item){return item.toLowerCase()===flag.toLowerCase()})){state.resultPractice.customFlags=(state.resultPractice.customFlags||[]).concat(flag);renderSimulation();markDirty()}return}
     if(act==='sim-select'){activeSimulationId=action.dataset.simulation;selectedSimulationModule=0;localStorage.setItem('chemistryActiveSimulation',activeSimulationId);renderSimulation();return}
     if(act==='sim-module'){selectedSimulationModule=Number(action.dataset.index)||0;localStorage.setItem('chemistrySimulationModule',String(selectedSimulationModule));renderSimulation();return}
     if(act==='sim-lid'){var lidIndex=Number(action.dataset.index)||0,lidKey=activeSimulationId+':'+lidIndex;selectedSimulationModule=lidIndex;simulationLids[lidKey]=!simulationLids[lidKey];localStorage.setItem('chemistrySimulationModule',String(selectedSimulationModule));renderSimulation();return}
@@ -2710,7 +2791,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       }
       if(safeDoc.missingRemote&&hadLocal){await flushPendingEdit('migration');needsStarterSync=false}
       else if(needsStarterSync&&!safeDoc.missingRemote){
-        safeDoc.baseData.version=Math.min(Number(safeDoc.baseData.version)||30,30);
+        safeDoc.baseData.version=Math.min(Number(safeDoc.baseData.version)||31,31);
         state.updatedAt=Date.now();saveLocal();
         await flushPendingEdit('starter-upgrade');
         needsStarterSync=false;
