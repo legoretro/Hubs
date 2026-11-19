@@ -378,7 +378,6 @@
     <header>
       <div class="eyebrow">Medical Laboratory Science</div>
       <h1>Welcome to the Hubs</h1>
-      <p class="intro">Click on any hub to study more in depth. Each one opens as its own focused learning space.</p>
       <a class="home-link" href="https://legoretro.github.io/MLS/">Back to MLS Home</a>
       <button class="admin-toggle" id="adminBtn" onclick="toggleAdminLogin()">Admin</button>
       <div class="admin-badge" id="adminBadge">Admin editing is unlocked</div>
@@ -441,15 +440,11 @@
       </section>
     </main>
 
-    <footer>
-      Built as a portable GitHub Pages landing page. Use relative links so it works anywhere.
-    </footer>
   </div>
 
   <div class="admin-modal" id="adminModal" aria-hidden="true">
     <div class="admin-card" role="dialog" aria-modal="true" aria-labelledby="adminTitle">
       <h2 id="adminTitle">Admin Login</h2>
-      <p>Use the same admin password as the Blood Bank hub to edit the hub URLs.</p>
       <label for="adminPwInput">Password</label>
       <input id="adminPwInput" type="password" autocomplete="current-password" onkeydown="if(event.key === 'Enter') attemptAdminLogin()">
       <div class="admin-error" id="adminError"></div>

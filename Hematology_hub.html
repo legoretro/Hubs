@@ -272,7 +272,7 @@ body{overflow-x:hidden}
       <div class="home-page-hero">
         <p class="home-page-kicker">Hematology and Hemostasis</p>
         <h1 id="homePageTitle">Welcome to the Hematology Hub</h1>
-        <p id="homePageSubtitle">Where we talk hematology and hemostasis.</p>
+        <p id="homePageSubtitle"></p>
       </div>
       <div class="home-builder-toolbar admin-only" aria-label="Add a home page section">
         <strong>Add a section</strong>
@@ -284,7 +284,7 @@ body{overflow-x:hidden}
         <span class="home-save-note">Edits also save automatically.</span>
       </div>
       <div id="homePageSections"></div>
-      <div class="home-empty admin-only" id="homePageEmpty">Add a section above to start building this page.</div>
+      <div class="home-empty admin-only" id="homePageEmpty">No sections yet.</div>
     </div>
   </section>
   <section class="section" id="sec-hematology">
@@ -792,7 +792,9 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   function renderHome(){
     var s=ensureState(),home=s.homePage,title=document.getElementById('homePageTitle'),subtitle=document.getElementById('homePageSubtitle'),mount=document.getElementById('homePageSections'),empty=document.getElementById('homePageEmpty');
     if(!mount)return;
-    title.textContent=home.title;subtitle.textContent=home.subtitle;
+    title.textContent=home.title;
+    subtitle.textContent=/^Where we talk (hematology and hemostasis|all hematology and coag!)\.?$/.test(home.subtitle||'')?'':home.subtitle;
+    subtitle.hidden=!subtitle.textContent&&!canEdit();
     title.contentEditable=canEdit()?'true':'false';subtitle.contentEditable=canEdit()?'true':'false';
     mount.innerHTML=home.sections.map(function(section,index){return sectionHtml(section,index,home.sections.length)}).join('');
     if(empty)empty.classList.toggle('visible',!home.sections.length);

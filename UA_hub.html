@@ -207,7 +207,6 @@ button,input{font-family:inherit}button{cursor:pointer}
 <div class="modal-overlay" id="adminModal">
   <div class="modal-box">
     <h3>Admin Mode</h3>
-    <p>Enter the password to unlock editing.</p>
     <input class="modal-input" type="password" id="adminPwInput" placeholder="password" autocomplete="off" maxlength="30"/>
     <div class="modal-error" id="adminErr"></div>
     <div style="display:flex;gap:8px;justify-content:center">
@@ -1407,7 +1406,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         '<button type="button" class="mini-btn" data-handout-action="move-handout" data-handout="'+handout.id+'" data-dir="1">Move Tab Right</button>'+
         '<button type="button" class="mini-btn danger" data-handout-action="delete-handout" data-handout="'+handout.id+'">Delete Handout</button>'+
       '</div></div>'+
-      (blocks?'<div class="handout-grid">'+blocks+'</div>':'<div class="handout-empty">Add step cards in admin mode.</div>')+
+      (blocks?'<div class="handout-grid">'+blocks+'</div>':'<div class="handout-empty">No step cards yet.</div>')+
     '</article>';
   }
   function handleHandoutAction(btn){

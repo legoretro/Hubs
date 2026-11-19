@@ -193,7 +193,6 @@ body.admin-mode #resources .micro-resource-grid{display:none}
 <div class="modal-overlay" id="adminModal">
   <div class="modal-box">
     <h3>Admin Mode</h3>
-    <p>Enter the password to unlock editing.</p>
     <input class="modal-input" type="password" id="adminPwInput" placeholder="password" autocomplete="off" maxlength="30"/>
     <div class="modal-error" id="adminErr"></div>
     <div style="display:flex;gap:8px;justify-content:center">
@@ -206,7 +205,6 @@ body.admin-mode #resources .micro-resource-grid{display:none}
 <div class="modal-overlay" id="exportModal">
   <div class="modal-box">
     <h3>Export PDF</h3>
-    <p>Choose exactly what to include.</p>
     <div class="export-options" id="exportOptions"></div>
     <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
       <button type="button" class="btn" data-ui-action="export-select-all">Select All</button>
@@ -226,7 +224,7 @@ body.admin-mode #resources .micro-resource-grid{display:none}
 
 <main class="wrap">
   <section class="section active" id="overview">
-    <div class="hero"><h1>Microbiology Lab Hub</h1><p>A green bench-style hub for organisms, media, tests, identification pathways, and editable specimen flowcharts.</p></div>
+    <div class="hero"><h1>Microbiology Lab Hub</h1></div>
     <div class="lab-layout">
       <div class="lab-menu">
         <h3>Lab Bench</h3>
@@ -239,11 +237,10 @@ body.admin-mode #resources .micro-resource-grid{display:none}
       <div class="lab-content">
         <article class="lab-card">
           <div class="lab-header"><div class="lab-icon">MB</div><div><div class="lab-name">Microbiology Workflow</div><div class="lab-sub">Organism to identification</div></div></div>
-          <p class="lab-copy">Use this as a student-built space for morphology, Gram reaction, colony appearance, media, biochemical tests, and chart-based identification logic.</p>
           <div class="lab-quick-grid">
-            <button class="lab-quick" onclick="showSection('gramPositive')"><strong>Gram Positive</strong><span>Organism, morphology, media, tests, diseases, and location/specimen.</span></button>
-            <button class="lab-quick" onclick="showSection('gramNegative')"><strong>Gram Negative</strong><span>Enteric, non-fermenter, respiratory, anaerobe, and special-workup organisms.</span></button>
-            <button class="lab-quick" onclick="showSection('charts')"><strong>Organism Flowcharts</strong><span>Build downward ID workups from Gram stain to final bacteria.</span></button>
+            <button class="lab-quick" onclick="showSection('gramPositive')"><strong>Gram Positive</strong></button>
+            <button class="lab-quick" onclick="showSection('gramNegative')"><strong>Gram Negative</strong></button>
+            <button class="lab-quick" onclick="showSection('charts')"><strong>Organism Flowcharts</strong></button>
           </div>
         </article>
         <article class="lab-card"><div class="card-title"><h2>Big Picture</h2><span class="tag">Core</span></div><div class="table-tools" data-tools-for="overview_core"></div><div class="table-slot" data-table-id="overview_core"></div></article>
@@ -263,7 +260,6 @@ body.admin-mode #resources .micro-resource-grid{display:none}
           </div>
           <div class="body-map-panel body-map-notes-panel">
             <h3>Specimen Body Notes</h3>
-            <p class="body-map-card-note">Student input cells for your own quick specimen reminders.</p>
             <div class="table-tools" data-tools-for="overview_specimen_notes"></div>
             <div class="table-slot" data-table-id="overview_specimen_notes"></div>
           </div>
@@ -273,21 +269,21 @@ body.admin-mode #resources .micro-resource-grid{display:none}
   </section>
 
   <section class="section" id="gramPositive">
-    <div class="hero"><h1>Gram Positive</h1><p>Editable organism tables with morphology, media, tests, diseases, and location/specimen.</p></div>
+    <div class="hero"><h1>Gram Positive</h1></div>
     <div class="grid">
       <article class="card"><div class="card-title"><h2>Gram Positive Organisms</h2><span class="tag">Organisms</span></div><div class="table-tools" data-tools-for="gram_positive"></div><div class="table-slot" data-table-id="gram_positive"></div></article>
     </div>
   </section>
 
   <section class="section" id="gramNegative">
-    <div class="hero"><h1>Gram Negative</h1><p>Editable organism tables with morphology, media, tests, diseases, and location/specimen.</p></div>
+    <div class="hero"><h1>Gram Negative</h1></div>
     <div class="grid">
       <article class="card"><div class="card-title"><h2>Gram Negative Organisms</h2><span class="tag">Organisms</span></div><div class="table-tools" data-tools-for="gram_negative"></div><div class="table-slot" data-table-id="gram_negative"></div></article>
     </div>
   </section>
 
   <section class="section" id="mediaTests" data-view="media">
-    <div class="hero"><h1>Media & Tests</h1><p>One bench category for media, biochemical tests, spot tests, expected reactions, and images.</p></div>
+    <div class="hero"><h1>Media & Tests</h1></div>
     <div class="media-tests-tabs" role="tablist" aria-label="Media and tests"><button type="button" class="media-tests-tab active" data-media-view="media" role="tab" aria-selected="true">Media</button><button type="button" class="media-tests-tab" data-media-view="tests" role="tab" aria-selected="false">Tests</button></div>
     <div class="grid">
       <article class="card media-card"><div class="card-title"><h2>Media</h2><span class="tag">Media</span></div><div class="table-tools" data-tools-for="media_tests"></div><div class="table-slot" data-table-id="media_tests"></div></article>
@@ -296,7 +292,7 @@ body.admin-mode #resources .micro-resource-grid{display:none}
   </section>
 
   <section class="section" id="bodySites">
-    <div class="hero"><h1>Body Sites</h1><p>Specimen-site tables for organisms, disease/case clues, media, and ID tests.</p></div>
+    <div class="hero"><h1>Body Sites</h1></div>
     <article class="card site-workup-card">
       <div class="card-title"><h2>Body Site Tables</h2><span class="tag">Tables</span></div>
       <div class="table-tools"><button class="mini-btn" data-action="add-site-workup">Add Body Site Table</button><button class="mini-btn" data-action="add-site-organism">Add Organism Row</button></div>
@@ -305,7 +301,7 @@ body.admin-mode #resources .micro-resource-grid{display:none}
   </section>
 
   <section class="section" id="charts">
-      <div class="hero"><h1>Flowchart</h1><p>Build branching organism flows with editable labels, Micro colors, and clean landscape export.</p></div>
+      <div class="hero"><h1>Flowchart</h1></div>
     <article class="card">
       <div class="card-title"><h2>Specimen Flow Builder</h2><span class="tag">Flow</span></div>
       <div class="table-tools"><button class="mini-btn" data-action="add-simple-chart">Add Flowchart</button></div>
@@ -314,7 +310,7 @@ body.admin-mode #resources .micro-resource-grid{display:none}
   </section>
 
   <section class="section" id="resources">
-    <div class="hero"><h1>Resources and Attribution</h1><p>References for the organism tables, specimen workups, and identification pathways.</p></div>
+    <div class="hero"><h1>Resources and Attribution</h1></div>
     <div class="grid">
       <div class="micro-resource-grid" id="microResourceCards"></div>
       <article class="card resource-edit-table"><div class="card-title"><h2>Edit resources</h2><span class="tag">References</span></div><div class="table-tools" data-tools-for="resources"></div><div class="table-slot" data-table-id="resources"></div></article>
@@ -322,8 +318,8 @@ body.admin-mode #resources .micro-resource-grid{display:none}
   </section>
 
   <section class="section" id="simulation">
-    <div class="hero"><h1>Simulation</h1><p>Simulation will be built later.</p></div>
-    <article class="card"><div class="coming-soon"><div><strong>Coming Soon</strong><span>Microbiology simulation space reserved for future case workflow.</span></div></div></article>
+    <div class="hero"><h1>Simulation</h1></div>
+    <article class="card"><div class="coming-soon"><div><strong>Coming Soon</strong></div></div></article>
   </section>
 </main>
 
@@ -1810,7 +1806,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var page=pages[activeVisualAidPage];
     var controls='<div class="visual-book-controls"><button type="button" data-action="visual-aid-prev" '+(activeVisualAidPage?'':'disabled')+'>← Previous</button><strong>'+(pages.length?'Page '+(activeVisualAidPage+1)+' of '+pages.length:'No pages yet')+'</strong><button type="button" data-action="visual-aid-next" '+(activeVisualAidPage<pages.length-1?'':'disabled')+'>Next →</button></div>';
     var add='<div class="visual-book-admin"><button type="button" data-action="visual-aid-add">+ Add portrait page</button></div>';
-    if(!page){box.innerHTML=controls+'<div class="visual-book-page"><p class="visual-book-empty">Add your first specimen page in Admin mode.</p></div>'+add;return}
+    if(!page){box.innerHTML=controls+'<div class="visual-book-page"><p class="visual-book-empty">No pages yet.</p></div>'+add;return}
     var images=(page.images||[]).map(function(item){return '<figure class="visual-book-figure"><img src="'+escapeHtml(item.src||'')+'" alt="'+escapeHtml(item.caption||'Specimen visual')+'"><figcaption>'+escapeHtml(item.caption||'')+'</figcaption></figure>'}).join('');
     var editors=(page.images||[]).map(function(item){return '<div class="visual-book-image-editor"><input aria-label="Image caption" data-visual-aid-page="'+page.id+'" data-visual-aid-image-caption="'+item.id+'" value="'+escapeHtml(item.caption||'')+'" placeholder="Image caption"><button type="button" data-action="visual-aid-remove-image" data-image="'+item.id+'">Remove</button></div>'}).join('');
     box.innerHTML=controls+'<div class="visual-book-page"><h3>'+escapeHtml(page.specimen||'Untitled specimen')+'</h3>'+(page.title?'<h4>'+escapeHtml(page.title)+'</h4>':'')+'<div class="visual-book-image-grid">'+images+'</div><div class="visual-book-notes">'+cellDisplayHtml(page.notes||'')+'</div><div class="visual-book-page-number">'+(activeVisualAidPage+1)+'</div></div><div class="visual-book-admin"><label>Specimen<input data-visual-aid-page="'+page.id+'" data-visual-aid-field="specimen" value="'+escapeHtml(page.specimen||'')+'" placeholder="Specimen name"></label><label>Page title<input data-visual-aid-page="'+page.id+'" data-visual-aid-field="title" value="'+escapeHtml(page.title||'')+'"></label><label>Notes<textarea data-visual-aid-page="'+page.id+'" data-visual-aid-field="notes">'+escapeHtml(page.notes||'')+'</textarea></label><label>Add images<input type="file" accept="image/*" multiple data-action="visual-aid-upload"></label>'+editors+'<button type="button" data-action="visual-aid-add">+ Add portrait page</button><button type="button" data-action="visual-aid-delete">Delete this page</button></div>';
@@ -2317,7 +2313,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function endpointPickerHtml(chart){
     var endpoints=speciesPaths(chart);
-    if(!endpoints.length)return '<p class="chart-note">No bacteria are listed in this workup yet. Add organisms manually in admin mode if needed.</p>';
+    if(!endpoints.length)return '<p class="chart-note">No bacteria are listed in this workup yet.</p>';
     var active=activeEndpointKeys(chart,endpoints);
     var pills=endpoints.map(function(item){
       var checked=active.indexOf(item.species.id)>-1;
@@ -3671,7 +3667,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     state.simpleCharts=ensureAllCombined((state.simpleCharts&&state.simpleCharts.length?state.simpleCharts:defaultSimpleCharts()).map(normalizeSimpleChart));
     if(!state.simpleCharts.length){
       activeChartId=null;
-      grid.innerHTML='<div class="chart-card"><p class="chart-note">No flowcharts yet. In admin mode, add a flowchart to start.</p></div>';
+      grid.innerHTML='<div class="chart-card"><p class="chart-note">No flowcharts yet.</p></div>';
       return;
     }
     if(!activeChartId||!simpleChartById(activeChartId))activeChartId=state.simpleCharts[0].id;
