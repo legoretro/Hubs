@@ -90,7 +90,13 @@ body.intro-active .site-header,body.intro-active .wrap{opacity:0}body:not(.intro
 /* Match the Blood Bank navigation layout while retaining Microbiology colors. */
 html,body{max-width:100%;overflow-x:hidden}
 .site-header{min-height:70px;flex-wrap:nowrap}
-.nav-tabs{position:fixed;left:14px;top:86px;z-index:29;width:194px;max-height:calc(100vh - 100px);overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;flex-wrap:nowrap;gap:6px;padding:10px;background:var(--deep);border:1px solid rgba(255,255,255,.25);border-radius:16px;box-shadow:var(--shadow)}
+.nav-tabs{position:fixed;left:14px;top:86px;z-index:29;width:194px;max-height:calc(100vh - 100px);overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;flex-wrap:nowrap;gap:6px;padding:10px;background:var(--deep);border:1px solid rgba(255,255,255,.25);border-radius:16px;box-shadow:var(--shadow);overscroll-behavior:contain}
+.site-header{position:relative}
+.site-alert{display:inline-block;padding:2px 6px;border-radius:6px;background:#fff4dc;color:#765016;font-size:11px;font-weight:700}
+.body-map-inputs{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;margin-top:12px}
+.body-map-inputs label{display:grid;gap:4px;font-size:12px;font-weight:800;color:var(--deep)}
+.body-map-inputs textarea{min-height:54px;padding:7px;border:1px solid var(--line);border-radius:8px;resize:vertical}
+body:not(.admin-mode) .body-map-inputs{display:none}
 .nav-tabs .nav-tab{width:100%;min-height:41px;justify-content:flex-start;text-align:left;border-radius:9px;font-size:13px;line-height:1.2;white-space:normal;padding:9px 12px}
 .nav-tabs .nav-tab.active{background:var(--green);border-color:#bce9d8;color:#fff}
 .wrap{width:calc(100% - 224px);max-width:none;margin:0 0 0 224px;padding:20px 18px 50px;min-width:0}
@@ -172,7 +178,6 @@ body.admin-mode #resources .micro-resource-grid{display:none}
     <button type="button" class="nav-tab" data-section="gramPositive">Gram Positive +</button>
     <button type="button" class="nav-tab" data-section="gramNegative">Gram Negative -</button>
     <button type="button" class="nav-tab" data-section="mediaTests">Media & Tests</button>
-    <button type="button" class="nav-tab" data-section="bodySites">Body Sites</button>
     <button type="button" class="nav-tab" data-section="charts">Flowchart</button>
     <button type="button" class="nav-tab" data-section="simulation">Simulation</button>
     <button type="button" class="nav-tab" data-section="resources">Resources</button>
@@ -225,7 +230,6 @@ body.admin-mode #resources .micro-resource-grid{display:none}
         <button class="lab-btn" onclick="showSection('gramPositive')"><span class="lab-dot"></span>Gram Positive</button>
         <button class="lab-btn" onclick="showSection('gramNegative')"><span class="lab-dot"></span>Gram Negative</button>
         <button class="lab-btn" onclick="showSection('mediaTests')"><span class="lab-dot"></span>Media & Tests</button>
-        <button class="lab-btn" onclick="showSection('bodySites')"><span class="lab-dot"></span>Body Sites</button>
         <button class="lab-btn" onclick="showSection('charts')"><span class="lab-dot"></span>Flowchart</button>
         <button class="lab-btn" onclick="showSection('simulation')"><span class="lab-dot"></span>Simulation</button>
       </div>
@@ -236,7 +240,6 @@ body.admin-mode #resources .micro-resource-grid{display:none}
           <div class="lab-quick-grid">
             <button class="lab-quick" onclick="showSection('gramPositive')"><strong>Gram Positive</strong><span>Organism, morphology, media, tests, diseases, and location/specimen.</span></button>
             <button class="lab-quick" onclick="showSection('gramNegative')"><strong>Gram Negative</strong><span>Enteric, non-fermenter, respiratory, anaerobe, and special-workup organisms.</span></button>
-            <button class="lab-quick" onclick="showSection('bodySites')"><strong>Body Sites</strong><span>Specimen-site organism tables with disease clues, media, and ID tests.</span></button>
             <button class="lab-quick" onclick="showSection('charts')"><strong>Organism Flowcharts</strong><span>Build downward ID workups from Gram stain to final bacteria.</span></button>
           </div>
         </article>
@@ -247,6 +250,7 @@ body.admin-mode #resources .micro-resource-grid{display:none}
             <div class="body-map-figure image-map" aria-label="Static specimen body map with specimen labels">
               <div id="overviewBodyDiagram" class="body-site-diagram-shell"></div>
             </div>
+            <div id="bodyMapInputs" class="body-map-inputs"></div>
             <div class="body-map-panel">
               <h3>Go to Flowchart</h3>
               <div class="body-map-list body-map-vertical-list">
@@ -351,7 +355,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   var SPECIMEN_BANK_VERSION=6;
   var WORKUP_REQUIREMENTS_VERSION=3;
   var SITE_WORKUP_VERSION=7;
-  var SIMPLE_CHART_VERSION=3;
+  var SIMPLE_CHART_VERSION=4;
+  var MANUAL_TABLE_VERSION=1;
   var MEDIA_TESTS_VERSION=2;
   var state=defaultState();
   var activeChartId=null;
@@ -401,7 +406,6 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     ['gram_negative','Gram Negative Organisms'],
     ['media_tests','Media'],
     ['micro_tests','Tests'],
-    ['site_workups','Body Sites'],
     ['charts','Flowcharts'],
     ['resources','Resources']
   ];
@@ -1324,9 +1328,9 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     });
     if(!replaced)base.charts.unshift(refreshedBoc);
   }
-  function defaultState(){
+  function defaultState(keepAutomaticContent){
     var bank=defaultSpecimenBank();
-    return {
+    var defaults={
       version:1,
       updatedAt:Date.now(),
       specimenBankVersion:SPECIMEN_BANK_VERSION,
@@ -1334,6 +1338,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
       siteWorkupVersion:SITE_WORKUP_VERSION,
       simpleChartVersion:SIMPLE_CHART_VERSION,
       mediaTestsVersion:MEDIA_TESTS_VERSION,
+      manualTableVersion:MANUAL_TABLE_VERSION,
       specimenBank:bank,
       siteWorkups:defaultSiteWorkups(),
       tables:{
@@ -1361,8 +1366,129 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
         resources:makeTable('Resources',['Type','Title','Notes'],microbiologyResourceRows(),false)
       },
       charts:defaultSpecimenCharts(bank),
-      simpleCharts:defaultSimpleCharts()
+      simpleCharts:ensureAllCombined(defaultSimpleCharts()),
+      bodyMapEntries:{}
     };
+    if(!keepAutomaticContent)clearAutomaticTableContent(defaults.tables);
+    return defaults;
+  }
+  function clearAutomaticTableContent(tables){
+    Object.keys(tables).forEach(function(id){
+      if(id==='resources')return;
+      tables[id].rows.forEach(function(row){
+        tables[id].columns.forEach(function(col,index){
+          if((id==='gram_positive'||id==='gram_negative')&&index===0)return;
+          row.cells[col.id]='';
+        });
+      });
+      if(id!=='gram_positive'&&id!=='gram_negative')tables[id].rows=[];
+    });
+    addNormalLocationColumns(tables.gram_positive);
+    addNormalLocationColumns(tables.gram_negative);
+    ensureExamOrganismNames(tables);
+  }
+  function ensureExamOrganismNames(tables){
+    var missing={
+      gram_positive:['Staphylococcus saprophyticus','Cutibacterium acnes','Clostridium perfringens'],
+      gram_negative:['Acinetobacter baumannii']
+    };
+    Object.keys(missing).forEach(function(id){
+      var table=tables[id];
+      if(!table)return;
+      var nameCol=table.columns[0];
+      var existing={};
+      table.rows.forEach(function(row){existing[simpleKey(row.cells[nameCol.id])]=true});
+      missing[id].forEach(function(name){
+        if(existing[simpleKey(name)])return;
+        var cells={};
+        table.columns.forEach(function(col){cells[col.id]=''});
+        cells[nameCol.id]=name;
+        var normal=table.columns.find(function(col){return col.label==='Normal location in body'});
+        var concern=table.columns.find(function(col){return col.label==='Pathogenic when'});
+        if(normal)cells[normal.id]=normalLocationFor(name);
+        if(concern)cells[concern.id]=concerningLocationFor(name);
+        table.rows.push({id:uid('row'),cells:cells});
+      });
+    });
+  }
+  function normalLocationFor(name){
+    var locations={
+      'Staphylococcus aureus':'Skin / anterior nares',
+      'Staphylococcus saprophyticus':'Perineal skin / genital tract',
+      'Coagulase-negative Staphylococcus':'Skin',
+      'Cutibacterium acnes':'Skin',
+      'Clostridium perfringens':'Intestine',
+      'Enterococcus spp.':'Intestine / genital tract',
+      'Streptococcus pyogenes':'Throat / skin carriage',
+      'Streptococcus agalactiae':'GI / genital tract',
+      'Streptococcus pneumoniae':'Nasopharynx',
+      'Viridans group Streptococcus':'Mouth / upper airway',
+      'Corynebacterium diphtheriae / Corynebacterium spp.':'Skin / upper airway (nontoxigenic spp.)',
+      'Gardnerella vaginalis':'Vagina',
+      'Escherichia coli':'Intestine',
+      'Klebsiella pneumoniae':'Intestine / upper airway',
+      'Proteus mirabilis':'Intestine',
+      'Haemophilus parainfluenzae / parahemolyticus':'Upper airway',
+      'Moraxella catarrhalis':'Upper airway',
+      'Neisseria meningitidis':'Nasopharynx',
+      'Bacteroides fragilis group':'Colon',
+      'Fusobacterium spp.':'Mouth / GI tract'
+    };
+    return locations[name]||'—';
+  }
+  function concerningLocationFor(name){
+    var location=normalLocationFor(name);
+    if(location==='—')return '';
+    return 'Sterile site';
+  }
+  function addNormalLocationColumns(table){
+    if(!table)return;
+    var names=table.columns[0];
+    var normal=table.columns.find(function(col){return col.label==='Normal location in body'});
+    var concern=table.columns.find(function(col){return col.label==='Pathogenic when'});
+    if(!normal){normal={id:uid('col'),label:'Normal location in body',type:'text'};table.columns.push(normal)}
+    if(!concern){concern={id:uid('col'),label:'Pathogenic when',type:'text'};table.columns.push(concern)}
+    table.rows.forEach(function(row){
+      var name=String(row.cells[names.id]||'').trim();
+      if(!(normal.id in row.cells))row.cells[normal.id]=normalLocationFor(name);
+      if(!(concern.id in row.cells))row.cells[concern.id]=concerningLocationFor(name);
+    });
+  }
+  function migrateAutomaticTableContent(table,legacy,id){
+    if(!table||!legacy)return;
+    var oldName=legacy.columns[0];
+    table.rows.forEach(function(row,index){
+      var first=table.columns[0];
+      var name=String(row.cells[first.id]||'').trim();
+      var old=legacy.rows.find(function(candidate){return String(candidate.cells[oldName.id]||'').trim()===name})||legacy.rows[index];
+      if(!old)return;
+      table.columns.forEach(function(col,i){
+        if((id==='gram_positive'||id==='gram_negative')&&i===0)return;
+        var oldCol=legacy.columns[i];
+        if(oldCol&&String(row.cells[col.id]||'')===String(old.cells[oldCol.id]||''))row.cells[col.id]='';
+      });
+    });
+    if(id!=='gram_positive'&&id!=='gram_negative')table.rows=table.rows.filter(function(row){return Object.keys(row.cells||{}).some(function(key){return String(row.cells[key]||'').trim()})});
+  }
+  function makeAllCombined(charts){
+    var seen={};
+    var paths=[];
+    charts.filter(function(chart){return chart.id!=='all_combined'}).forEach(function(chart){
+      (chart.paths||[]).forEach(function(path){
+        var parts=simplePathParts(path);
+        if(parts.length&&simpleKey(parts[0])===simpleKey(chart.root))parts.shift();
+        var combined=['All Combined',chart.title].concat(parts).join(' > ');
+        var key=simpleKey(combined);
+        if(!seen[key]){seen[key]=true;paths.push(combined)}
+      });
+    });
+    return {id:'all_combined',title:'All Combined',root:'All Combined',note:'Combined specimen flow paths; each specimen appears once.',paths:paths,colors:{'All Combined':'#0b4f3d'}};
+  }
+  function ensureAllCombined(charts){
+    var seen={};
+    var unique=charts.filter(function(chart){var key=simpleKey(chart.title)||chart.id;if(seen[key])return false;seen[key]=true;return true});
+    if(!unique.some(function(chart){return chart.id==='all_combined'}))unique.unshift(makeAllCombined(unique));
+    return unique;
   }
   function mergeState(incoming){
     var base=defaultState();
@@ -1371,16 +1497,22 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     var incomingWorkupVersion=Number(incoming.workupRequirementsVersion||0)||0;
     var incomingSiteWorkupVersion=Number(incoming.siteWorkupVersion||0)||0;
     var incomingMediaTestsVersion=Number(incoming.mediaTestsVersion||0)||0;
+    var legacyTables=Number(incoming.manualTableVersion||0)<MANUAL_TABLE_VERSION?defaultState(true).tables:null;
     base.specimenBank=mergeSpecimenBank(incoming.specimenBank,bankVersion);
     base.siteWorkups=mergeSiteWorkups(incoming.siteWorkups,incomingSiteWorkupVersion);
     if(Array.isArray(incoming.specimenBank)&&incoming.specimenBank.length&&!base.specimenBank.length)base.specimenBank=defaultSpecimenBank();
     if(incoming.tables){
       Object.keys(base.tables).forEach(function(id){
-        if(incoming.tables[id]&&Array.isArray(incoming.tables[id].columns)&&Array.isArray(incoming.tables[id].rows)&&tableHasContent(incoming.tables[id]))base.tables[id]=incoming.tables[id];
+        if(incoming.tables[id]&&Array.isArray(incoming.tables[id].columns)&&Array.isArray(incoming.tables[id].rows)){
+          base.tables[id]=incoming.tables[id];
+          if(legacyTables&&id!=='resources')migrateAutomaticTableContent(base.tables[id],legacyTables[id],id);
+          if(id==='gram_positive'||id==='gram_negative')addNormalLocationColumns(base.tables[id]);
+        }
       });
       base.tables.resources=ensureResourceRows(base.tables.resources);
     }
-    if(incomingMediaTestsVersion<MEDIA_TESTS_VERSION){
+    ensureExamOrganismNames(base.tables);
+    if(incomingMediaTestsVersion<MEDIA_TESTS_VERSION&&Number(incoming.manualTableVersion||0)>=MANUAL_TABLE_VERSION){
       var freshMediaTests=defaultState();
       base.tables.media_tests=freshMediaTests.tables.media_tests;
       base.tables.micro_tests=freshMediaTests.tables.micro_tests;
@@ -1398,14 +1530,16 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     }else{
       base.charts=defaultSpecimenCharts(base.specimenBank);
     }
-    base.simpleCharts=Array.isArray(incoming.simpleCharts)&&incoming.simpleCharts.length?incoming.simpleCharts.map(normalizeSimpleChart):defaultSimpleCharts();
-    if(incomingWorkupVersion<WORKUP_REQUIREMENTS_VERSION)refreshRequiredWorkupContent(base);
+    base.simpleCharts=ensureAllCombined(Array.isArray(incoming.simpleCharts)&&incoming.simpleCharts.length?incoming.simpleCharts.map(normalizeSimpleChart):defaultSimpleCharts());
+    base.bodyMapEntries=incoming.bodyMapEntries&&typeof incoming.bodyMapEntries==='object'?incoming.bodyMapEntries:{};
+    if(incomingWorkupVersion<WORKUP_REQUIREMENTS_VERSION&&Number(incoming.manualTableVersion||0)>=MANUAL_TABLE_VERSION)refreshRequiredWorkupContent(base);
     base.version=1;
     base.specimenBankVersion=SPECIMEN_BANK_VERSION;
     base.workupRequirementsVersion=WORKUP_REQUIREMENTS_VERSION;
     base.siteWorkupVersion=SITE_WORKUP_VERSION;
     base.simpleChartVersion=SIMPLE_CHART_VERSION;
     base.mediaTestsVersion=MEDIA_TESTS_VERSION;
+    base.manualTableVersion=MANUAL_TABLE_VERSION;
     base.updatedAt=Number(incoming.updatedAt||0)||base.updatedAt;
     return base;
   }
@@ -1479,6 +1613,10 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     document.querySelectorAll('[data-specimen-field]').forEach(function(el){
       var specimen=(state.specimenBank||[]).find(function(item){return item.id===el.dataset.specimen});
       if(specimen)specimen[el.dataset.specimenField]=el.value;
+    });
+    document.querySelectorAll('[data-body-map-site]').forEach(function(el){
+      state.bodyMapEntries=state.bodyMapEntries||{};
+      state.bodyMapEntries[el.dataset.bodyMapSite]=normalizeCellText(el.value);
     });
     document.querySelectorAll('[data-site-field]').forEach(function(el){
       var workup=siteWorkupById(el.dataset.site);
@@ -1619,7 +1757,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
           var img=value?'<img class="image-preview" src="'+escapeHtml(value)+'" alt="uploaded image" title="Click to zoom" data-action="zoom-table-image" data-table="'+escapeHtml(id)+'" data-row="'+escapeHtml(row.id)+'" data-col="'+escapeHtml(col.id)+'"/>':'<div class="empty-image">Blank</div>';
           return '<td><div class="image-cell">'+img+'<input class="file-input" type="file" accept="image/*" data-action="upload-image" data-table="'+id+'" data-row="'+row.id+'" data-col="'+col.id+'"/></div></td>';
         }
-        return '<td><div class="cell-text" contenteditable="'+editMode+'" data-table="'+id+'" data-row="'+row.id+'" data-col="'+col.id+'" data-action="edit-cell">'+cellDisplayHtml(value)+'</div></td>';
+        var context=(id==='gram_positive'||id==='gram_negative')&&col.label==='Pathogenic when'&&value?' site-alert':'';
+        return '<td><div class="cell-text'+context+'" contenteditable="'+editMode+'" data-table="'+id+'" data-row="'+row.id+'" data-col="'+col.id+'" data-action="edit-cell">'+cellDisplayHtml(value)+'</div></td>';
       }).join('');
       return '<tr>'+cells+'<td class="admin-only"><button class="mini-btn danger" data-action="delete-row" data-table="'+id+'" data-row="'+row.id+'">Delete Row</button></td></tr>';
     }).join('');
@@ -3478,7 +3617,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   }
   function renderCharts(){
     var grid=document.getElementById('chartsGrid');if(!grid)return;
-    state.simpleCharts=(state.simpleCharts&&state.simpleCharts.length?state.simpleCharts:defaultSimpleCharts()).map(normalizeSimpleChart);
+    state.simpleCharts=ensureAllCombined((state.simpleCharts&&state.simpleCharts.length?state.simpleCharts:defaultSimpleCharts()).map(normalizeSimpleChart));
     if(!state.simpleCharts.length){
       activeChartId=null;
       grid.innerHTML='<div class="chart-card"><p class="chart-note">No flowcharts yet. In admin mode, add a flowchart to start.</p></div>';
@@ -3595,14 +3734,13 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     return names;
   }
   function bodySiteDiagramHtml(printMode){
-    syncBodyDiagramWorkups();
     var lineHtml=BODY_SITE_DIAGRAM_ITEMS.map(function(item){
       return '<polyline points="'+escapeHtml(item.line)+'"></polyline>';
     }).join('');
     var callouts=BODY_SITE_DIAGRAM_ITEMS.map(function(item){
-      var names=bodySiteOrganismNames(item.site);
+      var names=String(state.bodyMapEntries&&state.bodyMapEntries[item.site]||'').split(/[,\n]/).map(function(name){return name.trim()}).filter(Boolean);
       var cls='body-site-callout '+escapeHtml(item.klass||'')+(names.length>7?' long':'')+(names.length>10?' compact':'')+(names.length?'':' empty');
-      var list=names.length?names.map(function(name){return '<li>'+escapeHtml(name)+'</li>'}).join(''):'<li>Student input</li>';
+      var list=names.map(function(name){return '<li>'+escapeHtml(name)+'</li>'}).join('');
       return '<aside class="'+cls+'" style="--x:'+escapeHtml(item.x)+';--y:'+escapeHtml(item.y)+';--w:'+escapeHtml(item.w||'260px')+'"><h4>'+escapeHtml(item.label)+'</h4><ul>'+list+'</ul></aside>';
     }).join('');
     return '<div class="body-site-association-map '+(printMode?'print-map':'')+'">'+
@@ -3622,6 +3760,8 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   function renderBodySiteDiagram(){
     var box=document.getElementById('overviewBodyDiagram');
     if(box)box.innerHTML=bodySiteDiagramHtml(false);
+    var inputs=document.getElementById('bodyMapInputs');
+    if(inputs)inputs.innerHTML=BODY_SITE_DIAGRAM_ITEMS.map(function(item){return '<label>'+escapeHtml(item.label)+'<textarea data-body-map-site="'+escapeHtml(item.site)+'" placeholder="Add specimens, one per line">'+escapeHtml(state.bodyMapEntries&&state.bodyMapEntries[item.site]||'')+'</textarea></label>'}).join('');
   }
   function exportBodySiteDiagram(){
     collectVisibleState();saveLocal();
@@ -4038,7 +4178,7 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
     if(btn.dataset.action==='delete-simple-chart'){
       if(!isAdmin||!editMode)return;
       state.simpleCharts=(state.simpleCharts||[]).filter(function(chart){return chart.id!==btn.dataset.chart});
-      if(!state.simpleCharts.length)state.simpleCharts=defaultSimpleCharts();
+      if(!state.simpleCharts.length)state.simpleCharts=[makeAllCombined([])];
       activeChartId=state.simpleCharts[0].id;
       renderCharts();saveDraft();return;
     }
@@ -4362,6 +4502,12 @@ const PASS_HASH='d936608baaacc6b762c14b0c356026fba3b84e77d5b22e86f2fc29d3da09c67
   });
   document.addEventListener('change',function(e){
     var input=e.target;
+    if(input.dataset.bodyMapSite){
+      if(!isAdmin||!editMode)return;
+      state.bodyMapEntries=state.bodyMapEntries||{};
+      state.bodyMapEntries[input.dataset.bodyMapSite]=normalizeCellText(input.value);
+      saveDraft();renderBodySiteDiagram();return;
+    }
     if(input.dataset.action==='simple-link-label'||input.dataset.action==='simple-link-from-port'||input.dataset.action==='simple-link-to-port'){
       if(!isAdmin||!editMode)return;
       var linkChart=simpleChartById(input.dataset.chart);
